@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2008/09/08/extending-the-linkbutton-control-in-flex/ -->
+<mx:LinkButton xmlns:mx="http://www.adobe.com/2006/mxml">
+	
+	<mx:Metadata>
+		[Style(name="toggleBackgroundColor",
+		type="uint",
+		format="Color",
+		inherit="yes")]
+	</mx:Metadata>
+	
+	<mx:Script>
+		<![CDATA[
+			override public function set enabled(value:Boolean):void {
+				super.enabled = value;
+				useHandCursor = value;
+			}
+		]]>
+	</mx:Script>
+
+</mx:LinkButton>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2010/04/04/changing-the-close-button-skin-on-the-spark-titlewindow-container-in-flex-4/ -->
+<s:SparkSkin name="CustomTitleWindowCloseButtonSkin"
+			 xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009"
+			 alpha.disabled="0.5">
+	<!-- states -->
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over"/>
+		<s:State name="down" />
+		<s:State name="disabled" />
+	</s:states>
+	
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("spark.components.Button")]
+	</fx:Metadata> 
+	
+	<fx:Script fb:purpose="styling">
+		<![CDATA[
+			/* Define the skin elements that should not be colorized. 
+			For closeButton, the graphics are colorized but the x is not. */
+			static private const exclusions:Array = ["xSymbol"];
+			
+			override public function get colorizeExclusions():Array {
+				return exclusions;
+			}
+			
+			/* Define the symbol fill items that should be colored by the "symbolColor" style. */
+			static private const symbols:Array = [];
+			
+			override public function get symbolItems():Array {
+				return symbols;
+			}
+		]]>
+	</fx:Script>
+	
+	<!--- Defines the appearance of the x in the close button. -->
+	<s:Group top="1" left="1" id="xSymbol">
+		<s:BitmapImage source="@Embed('images/btnClose.png')"
+					   source.over="@Embed('images/btnClose_over.png')"
+					   source.down="@Embed('images/btnClose_over.png')"
+					   source.disabled="@Embed('images/btnClose_over.png')" />
+	</s:Group>
+	
+</s:SparkSkin>
