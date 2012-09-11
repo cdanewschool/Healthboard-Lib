@@ -121,9 +121,9 @@ in accordance with the terms of the license agreement accompanying it.
 		
 		private function handleHeaderClick():void {
 			
-			if( !hostComponent.headerClickable ) return;
-			
-			if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
+			if(parentApplication.currentState == 'providerHome') {
+				if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
+			}
 			else {
 				parentApplication.currentState = hostComponent.module;
 				

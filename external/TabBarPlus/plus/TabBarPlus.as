@@ -3,7 +3,7 @@ package external.TabBarPlus.plus
 	import external.TabBarPlus.plus.tabskins.TabBarPlusSkin;
 	
 	import mx.collections.IList;
-	
+	import mx.controls.Alert;
 	import mx.events.ListEvent;
 	
 	import spark.components.TabBar;
@@ -89,7 +89,7 @@ package external.TabBarPlus.plus
 			if(dataProvider is IList){
 				dataProvider.removeItemAt(index);
 				//ADDED-DAMIAN
-				if(parentApplication.currentState == "modMessages") {
+				if(dataProvider == parentApplication.viewStackMessages) {		//this used to be if(parentApplication.currentState == "modMessages")... It now APPLIES TO BOTH PATIENT AND PROVIDER PORTALS
 					var arrNewMessagesInOpenTabs:Array = new Array(); //this array will hold the index values of each "NEW" message in arrOpenTabs. Its purpose is to know which "NEW" message we're closing (if it is in fact a new message)
 					for(var i:uint = 0; i < parentApplication.arrOpenTabs.length; i++) {
 						if(parentApplication.arrOpenTabs[i] == "NEW") arrNewMessagesInOpenTabs.push(i);
@@ -111,8 +111,8 @@ package external.TabBarPlus.plus
 				else if(parentApplication.currentState == "modImmunizations") {
 					parentApplication.arrOpenTabsIM.splice(index-1,1);
 				}
-				else if(parentApplication.currentState == "widgetView") {		//i.e. PROVIDER PORTAL!
-					parentApplication.arrOpenPatients.splice(index-1,1);
+				else if(parentApplication.currentState == "providerHome") {		//aka PROVIDER PORTAL!
+					if(dataProvider == parentApplication.viewStackMain) parentApplication.arrOpenPatients.splice(index-1,1);
 				}
 			}
 			else {

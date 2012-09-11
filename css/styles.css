@@ -100,7 +100,7 @@ s|ToggleButton:disabledAndSelected {
 	color: "0xFFFFFF";
 }
 
-s|ButtonBar, s:ToggleButton { 
+s|ButtonBar, s|ToggleButton { 
 	chromeColor: "0xB3B3B3";
 	color: "0x4E4E4E";
 }
@@ -172,6 +172,7 @@ s|TextArea {
 
 .linkBtnOrange {
 	skin: ClassReference(null);
+	color: "0xFFFFFF";
 	textRollOverColor: "0xFF931E";
 	textSelectedColor: "0xFF931E";
 	paddingLeft: 0;
