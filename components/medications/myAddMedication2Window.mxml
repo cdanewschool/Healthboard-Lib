@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="508" height="440"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			import mx.utils.ObjectUtil;
+			[Bindable] public var medTypeLabel:String;
+			[Bindable] public var medTypeData:String;
+			[Bindable] public var medName:String;
+			
+			private function goBack():void {
+				var myAddMedication1:myAddMedication1Window = myAddMedication1Window(PopUpManager.createPopUp(this, myAddMedication1Window) as spark.components.TitleWindow);
+				PopUpManager.centerPopUp(myAddMedication1);
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function displayWarning():void {
+				var myAddMedWarning:myAddMedicationWarning = myAddMedicationWarning(PopUpManager.createPopUp(this, myAddMedicationWarning) as spark.components.TitleWindow);
+				PopUpManager.centerPopUp(myAddMedWarning);
+			}
+			
+			private function addRecord():void {
+				if(txtName.text == "ZOCOR") displayWarning();
+				
+				var strFrequency:String = (asNeeded.selected) ? "as needed" : (numFrequency.value == 1) ? "every day" : (numFrequency.value == 2) ? "twice a day" : numFrequency.value + " times a day";
+				var newMedication:Object = {name: parentApplication.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, intake: numRoute.value, taken: false, status: 'active', reason: txtReason.text};
+				
+				var temp:Array = new Array();		//we create this temp array because the y-axis is not updating unless we medicationsCategories is set to "new Array" and reset...
+				temp = parentApplication.unique(parentApplication.medicationsCategories);
+				var indexToAddNewMedCategories:int;
+				var indexToAddNewMedData:int;
+				var indexToAddNewMedDataOriginal:int;
+				var indexToAddNewMedTree:int;
+				if(txtType.text == "Over-The-Counter Drugs") {
+					indexToAddNewMedCategories = temp.indexOf("Supplements") + 1;
+					indexToAddNewMedTree = 1;
+					for(var k:uint = 0; k < parentApplication.medicationsData.length; k++) {
+						if(parentApplication.medicationsData.getItemAt(k).name == "Supplements") {
+							indexToAddNewMedData = k + 1;
+							break;
+						}
+					}
+					/*for(var l:uint = 0; l < parentApplication.medicationsDataOriginal.length; l++) {
+						if(parentApplication.medicationsDataOriginal.getItemAt(l).name == "Supplements") {
+							indexToAddNewMedDataOriginal = l + 1;
+							break;
+						}
+					}*/
+				}
+				else if(txtType.text == "Supplements") {
+					indexToAddNewMedCategories = temp.indexOf("Herbal Medicines") + 1;
+					indexToAddNewMedTree = 2;
+					for(var m:uint = 0; m < parentApplication.medicationsData.length; m++) {
+						if(parentApplication.medicationsData.getItemAt(m).name == "Herbal Medicines") {
+							indexToAddNewMedData = m + 1;
+							break;
+						}
+					}
+					/*for(var n:uint = 0; n < parentApplication.medicationsDataOriginal.length; n++) {
+						if(parentApplication.medicationsDataOriginal.getItemAt(n).name == "Herbal Medicines") {
+							indexToAddNewMedDataOriginal = n + 1;
+							break;
+						}
+					}*/
+				}
+				else if(txtType.text == "Herbal Medicines") {
+					indexToAddNewMedCategories = indexToAddNewMedData = indexToAddNewMedDataOriginal = 0;
+					indexToAddNewMedTree = 3;
+				}
+				temp.splice(indexToAddNewMedCategories,0,parentApplication.titleCase(txtName.text.toLowerCase()));
+				parentApplication.medicationsCategories = new Array();		//reset medicationsCategories so the y-axis is updated
+				parentApplication.medicationsCategories = temp;
+				
+				var newLeaf:Object = new Object();
+				newLeaf = {category: newMedication.name};
+				parentApplication.medicationsCategoriesTree[indexToAddNewMedTree].children[parentApplication.medicationsCategoriesTree[indexToAddNewMedTree].children.length] = newLeaf;
+				
+				parentApplication.updateMedsHeightAndColors();
+				
+				parentApplication.medicationsDataFiltered.addItem(newMedication);
+				
+				var myDate:Date;
+				var myDateString:String;
+				var twoDigitMonth:String;
+				var twoDigitHours:String;
+				
+				var arrTimesBasedOnFrequency:Array = new Array([12],[8,18],[8,14,20],[7,12,17,22],[6,10,14,18,22],[7,10,13,16,19,22],[8,10,12,14,16,18,20],[8,10,12,14,16,18,20,22],[7,9,11,13,15,17,19,21,23],[5,7,9,11,13,15,17,19,21,23]);
+				var myHours:uint;
+				var myMeridiem:String;
+				var myFrequency:uint; //= asNeeded.selected ? 1 : numFrequency.value;
+				var myRecurrence:String;
+				if(asNeeded.selected) {
+					myFrequency = 1;
+					myRecurrence = "day"
+				}
+				else {
+					myFrequency = numFrequency.value;
+					myRecurrence = dropRecurrence.selectedItem;
+				}
+				
+				
+				var newMedicationOP:ObjectProxy;
+				for(var i:uint = 0; i < 365; i++){
+					for(var j:uint = 0; j < myFrequency; j++) {
+						newMedication = new Object();
+						newMedication = {name: parentApplication.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, directedIntake: numRoute.value, intake: numRoute.value, directedFrequency: myFrequency, refillsLeft: '---', taken: false, status: 'active', reason: txtReason.text, asNeeded: asNeeded.selected};
+						myDate = new Date("06/16/2012");
+						myHours = (arrTimesBasedOnFrequency[myFrequency-1][j] <= 12) ? arrTimesBasedOnFrequency[myFrequency-1][j] : arrTimesBasedOnFrequency[myFrequency-1][j] - 12;
+						myMeridiem = (arrTimesBasedOnFrequency[myFrequency-1][j] < 12) ? "AM" : "PM";
+						//myDate.setHours(myHours,0,0,0);
+						myDate.setDate(myDate.date+i);
+						twoDigitMonth = (myDate.getMonth() + 1 < 10) ? "0" + (myDate.getMonth() + 1) + "/" : (myDate.getMonth() + 1) + "/";
+						twoDigitHours = (myHours < 10) ? "0" + myHours + ":" : myHours + ":";		//adding the extra colon to ensure it's a string
+						
+						myDateString = twoDigitMonth + myDate.getDate() + "/" + myDate.getFullYear() + " " + twoDigitHours + "00:00 " + myMeridiem;
+						
+						/* if(txtType.text == "Over-The-Counter Drugs") newMedication.dateO = myDateString;
+						else if(txtType.text == "Supplements") newMedication.dateS = myDateString;
+						else if(txtType.text == "Herbal Medicines") newMedication.dateH = myDateString; */
+						if(asNeeded.selected) newMedication.dateAN = myDateString;
+						else newMedication.date = myDateString;
+						
+						newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
+						
+						parentApplication.medicationsData.addItemAt(newMedicationOP,indexToAddNewMedData);		//parentApplication.medicationsData.addItem(newMedication);
+						//parentApplication.medicationsDataOriginal.addItemAt(newMedicationOP,indexToAddNewMedDataOriginal);
+					}
+					if(myRecurrence == "week") i += 6;
+					else if(myRecurrence == "month") i += 29;
+				}
+				
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+	
+	<s:Label text="Add Medication" fontWeight="bold" fontSize="16" color="#4D4D4D" />
+	<s:HGroup paddingTop="7" verticalAlign="middle" gap="12">
+		<s:Label text="Type:" textAlign="right" width="123" />
+		<s:Label id="txtType" text="{medTypeLabel}" />
+	</s:HGroup>
+	<s:HGroup paddingTop="7" verticalAlign="middle" gap="12">
+		<s:Label text="Name:" textAlign="right" width="123" />
+		<s:TextInput id="txtName" text="{medName}" width="176" height="24" />
+	</s:HGroup>
+	<s:HGroup paddingTop="7" verticalAlign="middle" gap="12">
+		<s:Label text="Dosage (PO):" textAlign="right" width="123" />
+		<s:TextInput id="txtDosage" width="46" height="24" />
+		<s:Label text="mg" color="0x666666" />
+	</s:HGroup>
+	<s:HGroup paddingTop="7" verticalAlign="middle" gap="12">
+		<s:Label text="Quantity:" textAlign="right" width="123" />
+		<s:Label text="Take" color="0x666666" />
+		<s:NumericStepper id="numRoute" value="1" minimum="1" width="40" />
+		<s:Label text="tablets for each intake" color="0x666666" />
+	</s:HGroup>
+	<s:HGroup paddingTop="7" gap="12">
+		<s:Label text="Frequency:" textAlign="right" width="123" paddingTop="7" />
+		<s:VGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:RadioButton groupName="frequency" id="daily" selected="true" />
+				<s:NumericStepper id="numFrequency" value="1" minimum="1" width="40" />
+				<s:Label text="times /" paddingTop="1" color="0x666666" />
+				<s:DropDownList id="dropRecurrence" selectedIndex="0" width="74" height="23">
+					<s:ArrayCollection>
+						<fx:String>day</fx:String>
+						<fx:String>week</fx:String>
+						<fx:String>month</fx:String>
+					</s:ArrayCollection>
+				</s:DropDownList>
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:RadioButton groupName="frequency" id="asNeeded" />
+				<s:Label text="As needed" color="0x666666" />
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	<s:HGroup paddingTop="7" gap="12">
+		<s:Label text="Sig/Directions:" textAlign="right" width="123" />
+		<s:Label text="{'• Take one every 4 - 6 hours while symptoms persist.\n• Do not exceed 6 tablets in 24 hours unless directed by a doctor.'}" />
+	</s:HGroup>
+	<s:HGroup paddingTop="7" gap="12" paddingBottom="8">
+		<s:Label text="Reason for Taking:" textAlign="right" width="123" paddingTop="6" />
+		<s:TextArea id="txtReason" width="344" height="91" />
+	</s:HGroup>
+	
+	<s:Line xFrom="0" xTo="479">
+		<s:stroke>
+			<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="8">
+		<s:Button label="Add Record" click="addRecord()" styleName="buttonText" height="24" />
+		<s:Button label="Go Back" click="goBack()" styleName="buttonText" height="24" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+	</s:HGroup>
+</s:TitleWindow>

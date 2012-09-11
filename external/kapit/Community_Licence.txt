@@ -1,0 +1,93 @@
+﻿
+COMPONENT LICENSE AGREEMENT - COMMUNITY VERSION
+
+
+The component (hereinafter referred to as the "Component") you are about to download or install, including its documentation, is protected under the French intellectual property Code. Ownership of this Component is and shall remain vested in KAP IT, a French company registered under Evry RCS number B 483 404 570. The Component is deposited at the French "Agence pour la Protection des Programmes" under number 07.91.11864. 
+By downloading or installing the Component, you acknowledge your understanding and acceptance of the following terms and conditions, and your authority to do so on behalf of your company (if applicable). KAP IT is only willing to grant to you the right to use the Component under these terms and conditions. 
+Any use or reproduction of the Component, even partially, outside of the terms and conditions expressed below, is strictly prohibited, would infringe KAP IT intellectual property rights and could result in civil and criminal prosecutions. 
+No right, title or interest in the Component is transferred to you by this Component License Agreement, except for the perpetual, non-exclusive and non-transferable right to use the Component under the conditions and limits defined below: 
+
+1. You are authorized, for your personal needs or for the internal needs of your company:
+•	to make as many copies of the Component as you wish;
+•	to integrate the Component in a software application if the use of such application is also limited to your personal needs or to the internal needs of your company.
+
+2. You cannot provide the Component to a third party, nor use it for the benefit of a third party, whether for consideration or free of charge, except in the case stated below.
+You are authorized to provide the Component to a third party if the Component is integrated, in object code form only, in an application you developed (hereinafter the "Application"), subject to the following cumulative conditions:
+•	If you provide such Application as a hosted software, accessed by users over the Internet:
+-	such access to the Application must be granted free of charge; and
+-	you must ensure that the users of the Application are aware that this Application includes KAP IT’s copyrighted Component, by reproducing KAP IT’s logo on the website hosting the Application, with a hyperlink to “KapLab” website (http://lab.kapit.fr);
+
+•	If you distribute such Application, on physical media or via electronic download, as a traditional licensed software: 
+-	the Application must be exclusively provided to end users; 
+-	the Application must be provided to these users free of charge; 
+-	the license agreement of the Application must inform the end user that the Application includes KAP IT’s copyrighted Component ; this license agreement must ensure that the end user abides, in turn, by the terms of Section 4 hereafter, whether by reproducing it in your license agreement, or by referring, in your license agreement, to KAP IT’s website: http://store.kapit.biz/default/getlicense/community
+
+
+3. The right you are hereby granted, to integrate the Component in an application, within the limits set forth in Sections 1 and 2, is limited to one single application.
+This right is also limited to one single developer (a “developer” meaning an individual of your company who develops an application which integrates the Component).
+Therefore, if you wish to integrate the Component in several applications or if several developers working for you or your company develop an application with the Component, you must purchase a standard or OEM license of the Component.
+
+4. In any case, you are strictly prohibited from:
+•	using the Component to develop another software component;
+•	developing a software product likely to compete with the Component;
+•	receiving, directly or indirectly, any consideration or compensation for providing the Component to a third party (in such a case, you must purchase an OEM license);
+•	deleting, removing, deactivating or concealing, in any way, the mention "powered by KAP IT" or the hyperlink to “KapLab” website (http://lab.kapit.fr) which appear when running the Component;
+•	translating, creating derivative works, decompiling, disassembling, reverse-engineering or trying in any other manner to obtain or deduce the source code from the executable code, except in the cases expressly provided by the French intellectual property Code and subject to prior notice to KAP IT.  The rights you are hereby granted on the Component relate exclusively to its executable code.
+Ownership of the demonstration programs provided with the Component is and shall remain vested in KAP IT. These programs are protected in the same way as the Component: their source code is provided for illustration purposes. You can use it in order to assist with the development of related software but you may not modify, reproduce or redistribute this source code, even free of charge.
+5. Apart from the cases defined above, any distribution or transfer, whether for consideration or free of charge, and any commercial exploitation of the Component, in whole or in part, or of any application containing the Component, in whole or in part, are strictly prohibited.
+6. This license agreement entitles you, for an unlimited period, to access “KapLab” community forum and to obtain the updates and fixes that KAP IT may release from time to time. However, it does not entitles you to Support services.
+
+INDEMNIFICATION: KAP IT will indemnify, defend and hold you harmless from and against all damages or expenses, including reasonable court costs, related to any third party claim that the Component infringes or violates any copyright, patent or other intellectual property right of such third party;  provided, however, that in such a case you will (i) provide KAP IT with prompt notice of any such claim; (ii) permit KAP IT to assume and control the defense of such action; and (iii) upon KAP IT’s written request, provide to KAP IT all available information and assistance reasonably necessary for KAP IT to defend such claim. If your use of the Component is enjoined due to such infringement, then KAP IT will, at its sole option and expense, either (i) procure for you the right to continue using such Component, (ii) replace or modify such Component so that it is non-infringing and substantially equivalent in function to the enjoined Component, or (iii) refund to you the fees paid by you for such Component. 
+DISCLAIMER - LIMITATION OF LIABILITY: Without prejudice to the Indemnification rights above, the Component is provided "as is" without warranty of any kind, either expressed or implied, including, but not limited to, warranty of compatibility with any hardware, software or operating system. KAP IT does not warrant the Component will meet your requirements or that its operation will be uninterrupted, error-free or virus-free. IN NO EVENT WILL KAP IT BE LIABLE TO YOU FOR ANY DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE SOFTWARE. 
+
+This Component License Agreement shall be governed by and construed under the laws of France. It is written in English and French: in the event of divergence between the two versions, the English document will prevail. Any dispute relating to the Component shall be subject to the exclusive jurisdiction of the Paris, France courts. 
+
+
+=======================================================================================================================================
+
+
+ 
+LICENCE D’UTILISATION DE COMPOSANT LOGICIEL - VERSION COMMUNAUTAIRE
+
+
+Le composant que vous allez télécharger ou installer (ci-après le « Composant »), y compris sa documentation, est protégé par le Code de la propriété intellectuelle français. Les droits de propriété intellectuelle sur ce Composant appartiennent à la société KAP IT, immatriculée au registre du commerce et des sociétés d’Evry sous le numéro B 483 404 570. Ce Composant est déposé à l’Agence pour la Protection des Programmes sous le numéro 07.91.11864. 
+En téléchargeant ou en installant ce Composant, vous reconnaissez que vous comprenez et acceptez sans réserve les termes de la licence consentie par KAP IT, telle que définie ci-après, et, si vous agissez pour le compte de votre société, que vous en avez le pouvoir. 
+Toute utilisation ou toute reproduction même partielle du Composant, hors des cas expressément autorisés et des restrictions imposées par la présente licence, est strictement interdite et constituerait une contrefaçon passible de poursuites civiles et pénales. 
+La présente licence n’emporte cession ou concession, à votre profit, d’aucun droit de propriété intellectuelle, si ce n’est le droit perpétuel, non-exclusif et non cessible d’utiliser le Composant dans les conditions et limites définies ci-après, que vous vous engagez à respecter : 
+
+1. Vous êtes autorisé, pour vos besoins personnels ou pour les besoins de votre société :
+•	à effectuer autant de copies du Composant que vous le souhaitez ;
+•	à intégrer le Composant dans une application si l’utilisation de cette application est également limitée à vos besoins personnels ou aux besoins de votre société.
+
+
+2. Il vous est interdit de fournir, que ce soit à titre gratuit ou à titre payant, le Composant à un tiers ou de l’utiliser pour les besoins d’un tiers, sauf dans le cas défini ci-après.
+Vous êtes autorisé à fournir le Composant à un tiers si ce Composant est intégré, en code objet exclusivement, dans une application que vous avez développée (ci-après « l’Application »), sous réserve que les conditions suivantes soient cumulativement remplies :
+•	Si vous fournissez cette Application en tant qu’application hébergée, à laquelle les utilisateurs accèdent via Internet :
+-	l’accès à l’Application doit être fourni gratuitement ; et
+-	vous devez vous assurer que les utilisateurs de l’Application sont informés que cette Application intègre un Composant dont KAP IT est propriétaire, en reproduisant le logo de KAP IT sur le site web hébergeant l’Application, avec un lien hypertexte vers le site web de « KapLab » (http://lab.kapit.fr) ;
+
+•	Si vous distribuez cette Application sur un support physique ou par téléchargement, selon une licence traditionnelle :
+-	l’Application doit être exclusivement fournie à des utilisateurs finaux ; 
+-	l’Application doit être fournie à ces utilisateurs à titre gratuit ;
+-	la licence d’utilisation de l’Application doit informer l’utilisateur final que cette Application intègre un Composant dont KAP IT est propriétaire ; cette licence doit imposer à l’utilisateur final de respecter les dispositions du paragraphe 4 ci-après, soit en le reproduisant dans votre licence soit en faisant référence, dans votre licence, au site web de KAP IT : http://store.kapit.biz/default/getlicense/community
+
+3. Le droit, accordé par la présente licence, d’intégrer le Composant dans une application, dans les limites définies aux paragraphes 1 et 2, est limité à une seule application.
+Ce droit est également limité à un seul développeur (un développeur s’entend d’une personne de votre entreprise qui développe une application intégrant le Composant).
+Par conséquent, si vous souhaitez intégrer le Composant dans plusieurs applications ou si plusieurs développeurs travaillant pour vous ou votre société intègrent ce Composant, vous devez faire l’acquisition de licences standard ou de licences OEM du Composant.
+
+4. Dans tous les cas, il est strictement interdit :
+•	d’utiliser le Composant pour développer un autre composant logiciel ; 
+•	de développer un logiciel susceptible de concurrencer le Composant ;
+•	de percevoir directement ou indirectement une rémunération en contrepartie de la fourniture du Composant à un tiers (dans ce cas, l’acquisition d’une licence OEM du Composant est nécessaire) ; 
+•	de supprimer, de désactiver ou de dissimuler, par quelque procédé que ce soit, la mention « powered by KAP IT » ou le lien hypertexte vers le site web de « KapLab » (http://lab.kapit.fr) qui s’affichent lors de l’exécution du Composant ; 
+•	de traduire, créer des dérivés, décompiler, désassembler, pratiquer de l’ingénierie inverse ou tenter de toute autre manière d’obtenir ou de déduire le code source du Composant à partir de son code exécutable, sauf dans les cas expressément prévus par les dispositions impératives du Code de la propriété intellectuelle et à condition d’en informer préalablement KAP IT. Les droits qui vous sont concédés sur le Composant portent exclusivement sur son code exécutable. 
+Les programmes de démonstration fournis avec le Composant appartiennent également à KAP IT et sont protégés au même titre que le Composant lui-même : leur code source n’est fourni qu’à titre d’exemple. Vous pouvez l’utiliser pour vous aider à développer vos applications. Toute modification, reproduction ou redistribution, même gratuite, est en revanche strictement interdite.
+5. Toute redistribution, toute cession à titre gratuit ou payant, et toute exploitation commerciale de tout ou partie du Composant, ou d’un logiciel utilisant tout ou partie du Composant, sont strictement interdites en dehors des cas définis ci-dessus.
+6. La présente licence vous donne accès, sans limitation de durée, au forum de discussion de la communauté « KapLab » et aux mises à jour ou correctifs du Composant que KAP IT pourra diffuser. En revanche, elle ne vous donne pas accès au service de Support.
+
+GARANTIE : KAP IT s’engage à vous indemniser de tous dommages-intérêts et frais, y compris les frais de justice raisonnablement exposés, consécutifs à une réclamation ou action en justice d’un tiers qui prétendrait que le Composant constituerait une contrefaçon ou une violation de ses droits d’auteur, d’un brevet ou de tout autre droit de propriété intellectuelle dont il serait titulaire, sous réserve, dans un tel cas, (i) que vous ayez informé KAP IT, dans les plus brefs délais, de cette réclamation ou action en justice, (ii) que vous ayez mis KAP IT en mesure d’assurer et de contrôler la défense d’une telle action ou réclamation, et (iii) qu’à la demande écrite de KAP IT, vous lui fournissiez toutes les informations disponibles et l’assistance raisonnablement nécessaires pour permettre à KAP IT d’assurer cette défense. Si, du fait de cette contrefaçon, vous êtes empêché d’utiliser le Composant, KAP IT s’engage, à ses frais et à sa discrétion, soit (i) à obtenir pour vous le droit de continuer à utiliser le Composant, soit (ii) à remplacer ou modifier le Composant de manière à le rendre non-contrefaisant, soit (iii) à vous rembourser le prix que vous avez versé à KAP IT pour la présente licence.
+
+EXCLUSION DE RESPONSABILITE : La présente licence, consentie par KAP IT, titulaire des droits d’auteur sur le Composant, n’est assortie d’aucune autre garantie que celle définie au paragraphe précédent. En particulier KAP IT ne garantit pas la conformité ni l’adéquation du Composant à vos besoins, ni sa compatibilité avec quelque matériel ou quelque logiciel ou système d’exploitation que ce soit. Elle ne garantit pas davantage que le Composant fonctionnera de manière ininterrompue ni qu’il est exempt d’anomalies ou de virus. PAR CONSEQUENT, LA RESPONSABILITE DE KAP IT NE SAURAIT EN AUCUN CAS ETRE ENGAGEE EN CAS DE PREJUDICE, DE QUELQUE NATURE QU’IL SOIT, CAUSE DIRECTEMENT OU INDIRECTEMENT PAR L’UTILISATION DU LOGICIEL OU PAR L’IMPOSSIBILITE DE L’UTILISER. 
+
+La présente licence est soumise au droit français. Elle est rédigée en anglais et en français : en cas de divergence entre les deux versions, la version en anglais prévaudra. Tout litige relatif au Composant sera soumis aux tribunaux de Paris (France).
+

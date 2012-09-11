@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="301" height="172" color="#4D4D4D"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingLeft="13" paddingRight="13" gap="12" />
+	</s:layout>
+	
+	<s:Label text="Drug Interaction Warning" fontWeight="bold" fontSize="16" />
+	<mx:Text htmlText="{'Our records show possible drug interaction between:\n&lt;b&gt;COUDAMIN (Warfarin)&lt;/b&gt; and &lt;b&gt;ZOCOR (Simvastatin).&lt;/b&gt;'}" />
+	<s:Label text="This issue will be reported to the provider." />
+		
+	<s:HGroup paddingTop="5">
+		<s:Line xFrom="0" xTo="272">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="1">
+		<s:Button label="Send A Message To Provider" click="PopUpManager.removePopUp(this)" styleName="buttonText" height="24" />
+		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+	</s:HGroup>
+</s:TitleWindow>

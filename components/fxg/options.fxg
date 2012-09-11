@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Graphic version="2.0" viewHeight="24" viewWidth="24" ai:appVersion="15.0.0.399" ATE:version="1.0.0" flm:version="1.0.0" d:id="1" d:using="" xmlns="http://ns.adobe.com/fxg/2008" xmlns:ATE="http://ns.adobe.com/ate/2009" xmlns:ai="http://ns.adobe.com/ai/2009" xmlns:d="http://ns.adobe.com/fxg/2008/dt" xmlns:flm="http://ns.adobe.com/flame/2008">
+  <Library/>
+  <Group ai:artboardActive="1" ai:artboardIndex="0" ai:seqID="1" d:layerType="page" d:pageHeight="24" d:pageWidth="24" d:type="layer" d:userLabel="Artboard 1">
+    <Group ai:objID="3017ac80" ai:seqID="2" d:id="2" d:type="layer" d:userLabel="Layer 1">
+      <Path x="0.53418" y="0.145996" winding="nonZero" ai:objID="2c07f4a0" ai:seqID="3" data="M24 13.6001 24 10.4033 21.0508 10.1177C20.8145 8.96289 20.3604 7.8877 19.7305 6.93066L21.6182 4.646 19.3555 2.38721 17.0684 4.27246C16.1113 3.64551 15.0381 3.19092 13.8818 2.94971L13.6025 0 10.4053 0 10.1182 2.94971C8.96484 3.19092 7.88867 3.64209
+ 6.93945 4.27246L4.64746 2.38721 2.38965 4.646 4.27344 6.93066C3.64844 7.8877 3.19336 8.96289 2.94922 10.1177L0 10.4033 0 13.6001 2.94922 13.8833C3.19336 15.0376 3.64844 16.1099 4.27344 17.0659L2.38965 19.354 4.64746 21.6118 6.93945 19.729C7.88867
+ 20.354 8.96484 20.8091 10.1182 21.0532L10.4053 24.0024 13.6025 24.0024 13.8818 21.0532C15.0381 20.8091 16.1113 20.354 17.0684 19.729L19.3555 21.6118 21.6182 19.354 19.7305 17.0659C20.3604 16.1099 20.8145 15.0376 21.0508 13.8833L24 13.6001ZM12.002
+ 17.0298C9.22656 17.0298 6.97266 14.7788 6.97266 12 6.97266 9.22119 9.22656 6.97168 12.002 6.97168 14.7803 6.97168 17.0322 9.22119 17.0322 12 17.0322 14.7788 14.7803 17.0298 12.002 17.0298Z">
+        <fill>
+          <SolidColor color="#CCCCCC"/>
+        </fill>
+        <stroke>
+          <SolidColorStroke weight="0.5" caps="none" joints="miter" miterLimit="10" color="#F2F2F2"/>
+        </stroke>
+      </Path>
+    </Group>
+  </Group>
+  <Private>
+      <ai:PrivateElement d:ref="#1">
+        <ai:SaveOptions>
+          <ai:Dict data="B writeImages 1 I preserveTextPolicy 4 B includeXMP 0 B downsampleLinkedImages 0 I versionKey 2 I expandBlendsOption 5 I rasterizeResolution 72 I preserveFilterPolicy 3 B includeSymbol 0 I preserveGradientPolicy 4 B aiEditCap 1 B includeObjectOutsideArtboard 0 "/>
+        </ai:SaveOptions>
+        <ai:DocData base="options.assets/images" rulerCanvasDiffH="12.5" rulerCanvasDiffV="12.5">
+          <ai:DocRasterSettings>
+            <ai:Dict data="I dpi. 300 B spot 1 I colr 4 B mask 0 R padd 36 B alis 0 "/>
+          </ai:DocRasterSettings>
+        </ai:DocData>
+        <ai:AutoGenImageList>
+          <ai:Dict/>
+        </ai:AutoGenImageList>
+      </ai:PrivateElement>
+      <ai:PrivateElement flm:hashcode="34DC16CC666B7C16651F2DDEB4024302" d:ref="#2">
+        <ai:LayerOptions color="5 79.31 257 128.502"/>
+      </ai:PrivateElement>
+    </Private>
+  </Graphic>

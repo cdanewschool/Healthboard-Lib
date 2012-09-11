@@ -1,0 +1,1 @@
+Put the tech-doc-x.x.x-eclipse-plugin.jar file into "plugins" folder of Eclipse. At the next restart of Eclipse, the technical documentation will be available in the Eclipse help (F1). 

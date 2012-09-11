@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="8" height="8">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			[Bindable]
+			public var fillColor:uint = 0xFFFFFF;		//damian
+			[Bindable]
+			public var fillAlpha:Number = 1;
+		]]>
+	</fx:Script>
+	<s:states>
+		<s:State name="expanded"/>
+		<s:State name="collapsed"/>
+	</s:states>
+	<s:transitions>
+		<s:Transition fromState="expanded">
+			<s:Rotate target="{triangle}" duration="400"/>
+		</s:Transition>
+		<s:Transition fromState="collapsed">
+			<s:Rotate target="{triangle}" duration="400"/>
+		</s:Transition>
+	</s:transitions>
+	<s:Path id="triangle" data="M 6.10 10.50 L 0.04 0.00 12.16 -0.00 Z " y="-1" height="8" width="8" transformX="4" transformY="4" rotation.expanded="0" rotation.collapsed="-90">
+		<s:fill>
+			<s:SolidColor color="{fillColor}" alpha="{fillAlpha}"/>
+		</s:fill>
+	</s:Path>
+</s:Group>
