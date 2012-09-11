@@ -139,7 +139,6 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 					this.dispatchEvent( new EnhancedTitleWindowEvent(EnhancedTitleWindowEvent.EXPANDED,true) );
 				else
 					this.dispatchEvent( new EnhancedTitleWindowEvent(EnhancedTitleWindowEvent.COLLAPSED,true));
-				
 				expandedChanged = false;
 			}
 		}

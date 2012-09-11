@@ -504,17 +504,3 @@ s|FormItem {
 .iconButton {
 	skinClass: ClassReference("skins.general.IconButtonSkin");
 }
-
-/*s|Form {
-skinClass: ClassReference("spark.skins.spark.StackedFormSkin");
-}*/
-
-/*mx|DataTip {
-paddingRight:30;
-paddingLeft:30;
-}*/
-
-enhancedtitlewindow|EnhancedTitleWindow {
-	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
-	show-expand-indicator:true;
-}

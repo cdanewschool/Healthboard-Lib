@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx"
+					xmlns:net="flash.net.*"
+					label="{messages.subject}" creationComplete="populateIfDraft(); isTrashMessage();"><!--edit-->
+	<s:layout>
+		<s:VerticalLayout />
+	</s:layout>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			[Bindable] public var messages:Object;
+			
+			protected function btnSend_clickHandler():void {
+				var arrImageAttachmentsCopy:ArrayCollection = new ArrayCollection(arrImageAttachments.source.slice());			//these "duplicate copies" are created so we can empty the original arrays without affecting the new ones...
+				var arrNonImageAttachmentsCopy:ArrayCollection = new ArrayCollection(arrNonImageAttachments.source.slice());
+				if(!messages.isDraft) {					
+					var newMessage:Object = new Object();
+					newMessage = ({sender: "You", date: new Date(), text: messageText.text, imageAttachments: arrImageAttachmentsCopy, nonImageAttachments: arrNonImageAttachmentsCopy, urgency: dropUrgency.selectedItem.label});
+					messages.messages[messages.messages.length] = newMessage;		//messages.messages.addItem(newMessage) is throwing an error for some reason
+				}
+				else {
+					messages.isDraft = false;
+					messages.messages[messages.messages.length - 1].date = new Date();
+					messages.messages[messages.messages.length - 1].text = messageText.text;
+					messages.messages[messages.messages.length - 1].imageAttachments = arrImageAttachmentsCopy;
+					messages.messages[messages.messages.length - 1].nonImageAttachments = arrNonImageAttachmentsCopy;
+					messages.messages[messages.messages.length - 1].urgency = dropUrgency.selectedItem.label;
+					dgMessages.dataProvider = messages.messages;
+					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+				}
+				messageText.text = "";
+				arrImageAttachments.removeAll();
+				arrNonImageAttachments.removeAll();
+				dgAttachments.includeInLayout = false;
+				listAttachments.includeInLayout = false;
+				btnAttachment.label = "Add attachment";
+				parentApplication.acMessages[parentApplication.acMessages.getItemIndex(messages)].status = "replied";
+				parentApplication.dgMessages.invalidateList();	//refresh the main datagrid so the "replied" icon is displayed
+				dgMessages.invalidateList();		//refresh this message's datagrid so the msg we just replied is displayed
+				dgMessages.percentHeight = 100;
+				//parent.removeChild(this);				
+			}
+			
+			protected function btnDraft_clickHandler():void {
+				var newMessage:Object = new Object();
+				newMessage = ({sender: "You", date: new Date(), text: messageText.text, imageAttachments: arrImageAttachments, nonImageAttachments: arrNonImageAttachments, urgency: dropUrgency.selectedItem.label});
+				if(messages.isDraft) messages.messages[messages.messages.length - 1] = newMessage;
+				else { 
+					messages.messages[messages.messages.length] = newMessage;
+					parentApplication.acMessages[parentApplication.acMessages.getItemIndex(messages)].isDraft = true;
+					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+				}
+				parent.removeChild(this);
+				parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
+				if(parentApplication.currentMainBox == "Inbox") parentApplication.showInboxMessages();
+				else if(parentApplication.currentMainBox == "Sent") parentApplication.showSentMessages();
+				else if(parentApplication.currentMainBox == "Drafts") parentApplication.showDraftMessages();
+			}
+			
+			private function deleteMessage():void {
+				if(messageText.text == "") {	
+					if(parentApplication.acMessages.contains(messages)) {		//if the message we're deleting belongs to any folder other than "Trash"
+						parentApplication.acTrashMessages.addItem(parentApplication.acMessages.removeItemAt(parentApplication.acMessages.getItemIndex(messages)));
+						parent.removeChild(this);
+						parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
+						if(parentApplication.currentMainBox == "Inbox") parentApplication.showInboxMessages();
+						else if(parentApplication.currentMainBox == "Sent") parentApplication.showSentMessages();
+						else if(parentApplication.currentMainBox == "Drafts") parentApplication.showDraftMessages();
+						parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+					}
+					else {														//if the message we're deleting belongs to the Trash folder, then we warn the user that it will be deleted permanently
+						Alert.show("Are you sure you want to permanently delete this message?","Message will be deleted permanently",Alert.YES | Alert.CANCEL,this,alertListenerTrash);
+					}
+				}
+				else {
+					Alert.show("Are you sure you want to discard your message?","Message will be deleted permanently",Alert.YES | Alert.CANCEL,this,alertListener);
+				}
+			}
+			
+			private function alertListener(eventObj:CloseEvent):void {
+				if (eventObj.detail==Alert.YES) {
+					if(parentApplication.acMessages.contains(messages)) {		//if the message we're deleting belongs to any folder other than "Trash"
+						parentApplication.acTrashMessages.addItem(parentApplication.acMessages.removeItemAt(parentApplication.acMessages.getItemIndex(messages)));
+					}
+					else {														//in this case we don't show a second Alert cause it would be too much.
+						parentApplication.acTrashMessages.removeItemAt(parentApplication.acTrashMessages.getItemIndex(messages));
+					}
+					parent.removeChild(this);
+					parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
+					if(parentApplication.currentMainBox == "Inbox") parentApplication.showInboxMessages();
+					else if(parentApplication.currentMainBox == "Sent") parentApplication.showSentMessages();
+					else if(parentApplication.currentMainBox == "Drafts") parentApplication.showDraftMessages();
+					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+				}
+			}
+			
+			private function alertListenerTrash(eventObj:CloseEvent):void {
+				if(eventObj.detail==Alert.YES) {
+					parentApplication.acTrashMessages.removeItemAt(parentApplication.acTrashMessages.getItemIndex(messages));
+					parent.removeChild(this);
+					parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
+					if(parentApplication.currentMainBox == "Inbox") parentApplication.showInboxMessages();
+					else if(parentApplication.currentMainBox == "Sent") parentApplication.showSentMessages();
+					else if(parentApplication.currentMainBox == "Drafts") parentApplication.showDraftMessages();
+					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+				}
+			}
+			
+			private function selectDefaultUrgency():void {
+				var urgencyLabels:Array = new Array("Not urgent", "Somewhat urgent", "Urgent");
+				dropUrgency.selectedIndex = urgencyLabels.indexOf(messages.messages[messages.messages.length - 1].urgency);
+			}
+			
+			[Bindable] public var messagesWithoutDraft:Array;
+			private function populateIfDraft():void {
+				if(messages.isDraft == true) {
+					messagesWithoutDraft = new Array();
+					for(var i:uint = 0; i < messages.messages.length - 1; i++) {
+						messagesWithoutDraft[i] = messages.messages[i];
+					}
+					dgMessages.dataProvider = messagesWithoutDraft;
+					
+					messageText.text = messages.messages[messages.messages.length - 1].text;
+					if(messages.messages[messages.messages.length - 1].imageAttachments.length > 0 && messages.messages[messages.messages.length - 1].imageAttachments != null) {
+						arrImageAttachments.addAll(messages.messages[messages.messages.length - 1].imageAttachments);
+						dgAttachments.visible = true;
+						dgAttachments.includeInLayout = true;
+						btnAttachment.label = "Attach another file";
+					}
+					if(messages.messages[messages.messages.length - 1].nonImageAttachments.length > 0 && messages.messages[messages.messages.length - 1].nonImageAttachments != null) {
+						arrNonImageAttachments.addAll(messages.messages[messages.messages.length - 1].nonImageAttachments);
+						listAttachments.visible = true;
+						listAttachments.includeInLayout = true;
+						btnAttachment.label = "Attach another file";
+					}
+				}
+			}
+			
+			private function isTrashMessage():void {
+				if(parentApplication.acTrashMessages.contains(messages)) {
+					btnDraft.visible = false;
+					replyForm.visible = false;
+				}
+			}
+			
+			/*Refer to http://blog.flexexamples.com/2008/08/25/previewing-an-image-before-uploading-it-using-the-filereference-class-in-flash-player-10/ */		
+			private function browseAttachment(evt:MouseEvent):void {
+				/*var arr:Array = [];
+				arr.push(new FileFilter("Images", "*.gif;*.jpeg;*.jpg;*.png"));*/
+				fileReference.browse();
+			}
+			
+			private function fileReference_select(evt:Event):void {
+				fileReference.load();
+			}
+			
+			[Bindable] public var arrImageAttachments:ArrayCollection = new ArrayCollection();
+			[Bindable] public var arrNonImageAttachments:ArrayCollection = new ArrayCollection();
+			
+			private function fileReference_complete(evt:Event):void {
+				var myAttachment:Object;
+				if(isImage(fileReference.name)) {
+					myAttachment = {image: fileReference.data, filename: fileReference.name};
+					arrImageAttachments.addItem(myAttachment);
+					dgAttachments.visible = true;
+					dgAttachments.includeInLayout = true;
+				}
+				else {
+					myAttachment = {file: fileReference.data, filename: fileReference.name, filesize: fileSize(fileReference.size)};
+					arrNonImageAttachments.addItem(myAttachment);
+					listAttachments.visible = true;
+					listAttachments.includeInLayout = true;
+				}
+				
+				//Alert.show(ObjectUtil.toString(fileReference));
+				btnAttachment.label = "Attach another file";
+			}
+			
+			private function isImage(filename:String):Boolean {
+				if(filename.substr(-4) == ".jpg" || filename.substr(-5) == ".jpeg" || filename.substr(-4) == ".gif" || filename.substr(-4) == ".png" || filename.substr(-4) == ".JPG" || filename.substr(-5) == ".JPEG" || filename.substr(-4) == ".GIF" || filename.substr(-4) == ".PNG") return true;
+				return false;
+			}
+			
+			private function fileSize(bytes:int):String {
+				if(bytes < 1024*1024) return '(' + Math.round(bytes/1024) + 'KB)';
+				else return '(' + int((bytes/(1024*1024))*10)/10 + 'MB)';
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<net:FileReference id="fileReference" select="fileReference_select(event);" complete="fileReference_complete(event);"/>
+	</fx:Declarations>
+	
+	<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" paddingLeft="10"/>
+		</s:layout>
+		<s:Button label="Delete" styleName="buttonText" height="24" width="58" click="deleteMessage()" />
+		<s:Button id="btnDraft" label="Save Draft" styleName="buttonText" height="24" click="btnDraft_clickHandler()" />
+	</s:BorderContainer>
+	
+	<s:VGroup paddingLeft="13" paddingTop="6" paddingBottom="6">
+		<s:Label text="{messages.subject}" styleName="greenBoldText" />
+		<s:Label text="{'Between You and ' + messages.prefix + messages.correspondent}" color="0xF2F2F2" fontSize="11"/>
+	</s:VGroup>
+	
+	<!--<mx:HRule width="100%" strokeColor="0x7C7C7C" strokeWidth="3" />-->
+	<mx:DataGrid id="dgMessages" dataProvider="{messages.messages}" width="100%" headerHeight="0" borderVisible="false" verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0xE3E3E3,0xF6F6F6]" rowCount="{dgMessages.dataProvider.length}" selectable="false" fontSize="12" variableRowHeight="true"><!--variableRowHeight="true" rowCount="{messages.messages.length}"-->
+		<mx:columns>
+			<mx:DataGridColumn paddingLeft="15">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox>
+							<mx:HBox width="17" paddingTop="8">
+								<s:Image source="@Embed('images/messagesUrgent.png')" toolTip="Urgent" visible="{data.urgency == 'Urgent'}" includeInLayout="{data.urgency == 'Urgent'}" />
+								<s:Image source="@Embed('images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.urgency == 'Somewhat urgent'}" includeInLayout="{data.urgency == 'Somewhat urgent'}" />
+							</mx:HBox>
+							<mx:VBox width="430" paddingTop="10" paddingBottom="16" verticalGap="13">
+								<mx:HBox width="100%" verticalAlign="middle">
+									<s:Label text="{data.sender}" fontWeight="bold" color="0x1D6487" />
+									<s:Spacer width="100%" />
+									<s:Label text="{outerDocument.parentApplication.displayTime(data.date)}" fontSize="11" color="0x706F6F" />
+								</mx:HBox>
+								<mx:DataGrid id="dgAttachments" dataProvider="{data.imageAttachments}" width="430" headerHeight="0" borderVisible="false" verticalGridLines="false" horizontalGridLines="false" visible="{data.imageAttachments != null &amp;&amp; data.imageAttachments.length > 0}" includeInLayout="{data.imageAttachments != null &amp;&amp; data.imageAttachments.length > 0}" variableRowHeight="true" wordWrap="true" contentBackgroundAlpha="0" alternatingItemColors="[]" selectable="false" maxHeight="140"><!--maxHeight="270" -->
+									<mx:columns>
+										<mx:DataGridColumn paddingLeft="15">
+											<mx:itemRenderer>
+												<fx:Component>
+													<mx:Canvas horizontalCenter="0">
+														<mx:Image id="imgAttachment" source="{data.image}" maxWidth="430" maxHeight="430" horizontalAlign="center" horizontalCenter="0" click="{outerDocument.outerDocument.fileReference.save(data.image,data.filename)}" /> <!--visible="false" includeInLayout="false"-->
+													</mx:Canvas>
+												</fx:Component>
+											</mx:itemRenderer>
+										</mx:DataGridColumn>
+									</mx:columns>
+								</mx:DataGrid>								
+								<s:Label text="{data.text}" width="430" color="0x3C3C3B" />
+								<mx:HBox visible="{data.nonImageAttachments != null &amp;&amp; data.nonImageAttachments.length > 0}" includeInLayout="{data.nonImageAttachments != null &amp;&amp; data.nonImageAttachments.length > 0}" horizontalGap="0">
+									<s:Label text="Attachments:" />
+									<s:List dataProvider="{data.nonImageAttachments}" contentBackgroundAlpha="0" borderAlpha="0">
+										<s:layout>
+											<s:VerticalLayout requestedRowCount="{data.nonImageAttachments.length}" gap="-2" paddingTop="-5" />
+										</s:layout>
+										<s:itemRenderer>
+											<fx:Component>
+												<mx:HBox>
+													<mx:LinkButton label="{data.filename}" skin="{null}" color="0x064E71" paddingTop="-2" paddingRight="-5" click="{outerDocument.outerDocument.fileReference.save(data.file,data.filename)}" />
+													<mx:Label text="{data.filesize}" />
+												</mx:HBox>
+											</fx:Component>
+										</s:itemRenderer>
+									</s:List>
+								</mx:HBox>
+							</mx:VBox>
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	<!--<mx:HRule width="100%" strokeColor="0x7C7C7C" strokeWidth="3" />-->
+	
+	<s:Form id="replyForm">
+		<s:layout>
+			<s:FormLayout gap="-5" paddingLeft="-10" paddingTop="-10" />
+		</s:layout>
+		<s:FormItem>
+			<s:VGroup paddingLeft="24" width="430" >
+				<mx:DataGrid id="dgAttachments" dataProvider="{arrImageAttachments}" width="430" maxHeight="270" headerHeight="0" borderVisible="false" verticalGridLines="false" horizontalGridLines="false" visible="false" includeInLayout="false" variableRowHeight="true" wordWrap="true" alternatingItemColors="{0x4A4A49,0x4A4A49}" selectable="false">
+					<mx:columns>
+						<mx:DataGridColumn paddingLeft="15" wordWrap="true">
+							<mx:itemRenderer>
+								<fx:Component>
+									<mx:Canvas horizontalCenter="0">
+										<fx:Script>
+											<![CDATA[
+												protected function delete_clickHandler(event:MouseEvent):void {
+													//outerDocument.arrAttachments.splice(outerDocument.arrAttachments.indexOf(data),1);
+													outerDocument.arrImageAttachments.removeItemAt(outerDocument.arrImageAttachments.getItemIndex(data));
+													if(outerDocument.arrImageAttachments.length == 0) outerDocument.dgAttachments.includeInLayout = false;
+													if(outerDocument.arrImageAttachments.length == 0 && outerDocument.arrNonImageAttachments.length == 0) outerDocument.btnAttachment.label = "Add attachment";
+												}
+											]]>
+										</fx:Script>
+										<mx:Image id="imgAttachment" source="{data.image}" maxWidth="430" maxHeight="430" horizontalAlign="center" horizontalCenter="0" /> <!--visible="false" includeInLayout="false"-->
+										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete image attachment" buttonMode="true" right="5" top="5" click="delete_clickHandler(event)" />
+									</mx:Canvas>
+								</fx:Component>
+							</mx:itemRenderer>
+						</mx:DataGridColumn>
+					</mx:columns>
+				</mx:DataGrid>
+				<s:TextArea id="messageText" width="430" fontSize="12" heightInLines="7" />
+				<s:HGroup width="430" verticalAlign="top">
+					<s:VGroup>
+						<s:List id="listAttachments" dataProvider="{arrNonImageAttachments}" visible="false" includeInLayout="false" contentBackgroundAlpha="0" borderAlpha="0" color="0xAEDEE4">
+							<s:layout>
+								<s:VerticalLayout requestedRowCount="{arrNonImageAttachments.length}" gap="-2" />
+							</s:layout>
+							<s:itemRenderer>
+								<fx:Component>
+									<mx:HBox horizontalGap="0" verticalAlign="middle">
+										<fx:Script>
+											<![CDATA[
+												protected function delete_clickHandler(event:MouseEvent):void {
+													//outerDocument.arrAttachments.splice(outerDocument.arrAttachments.indexOf(data),1);
+													outerDocument.arrNonImageAttachments.removeItemAt(outerDocument.arrNonImageAttachments.getItemIndex(data));
+													if(outerDocument.arrNonImageAttachments.length == 0) outerDocument.listAttachments.includeInLayout = false;
+													if(outerDocument.arrImageAttachments.length == 0 && outerDocument.arrNonImageAttachments.length == 0) outerDocument.btnAttachment.label = "Add attachment";
+												}
+											]]>
+										</fx:Script>
+										<mx:Label text="{data.filename}" color="0xAEDEE4" />
+										<mx:Label text="{data.filesize}" color="0xFFFFFF" />
+										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete attachment" buttonMode="true" click="delete_clickHandler(event)" />
+									</mx:HBox>
+								</fx:Component>
+							</s:itemRenderer>
+						</s:List>
+						<mx:LinkButton id="btnAttachment" label="Add attachment" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-2" paddingTop="-5" click="browseAttachment(event)" rollOver="btnAttachment.styleName='linkBtnUnderline';" rollOut="btnAttachment.styleName='linkBtn';" />
+					</s:VGroup>
+					<s:Spacer width="100%" />
+					<s:DropDownList id="dropUrgency" selectedIndex="0" styleName="buttonText" height="24" width="126" skinClass="skins.messages.CustomDropdownListWithIcon" creationComplete="selectDefaultUrgency()">
+						<s:dataProvider>
+							<s:ArrayList>
+								<fx:Object label="Not urgent" />
+								<fx:Object label="Somewhat urgent" icon="@Embed('images/messagesSomewhatUrgent.png')" />
+								<fx:Object label="Urgent" icon="@Embed('images/messagesUrgent.png')" />
+							</s:ArrayList>							
+						</s:dataProvider>
+					</s:DropDownList>
+					<s:Button label="Reply" styleName="buttonText" height="24" click="btnSend_clickHandler()"/>
+				</s:HGroup>
+			</s:VGroup>
+		</s:FormItem>
+	</s:Form>
+</s:NavigatorContent>

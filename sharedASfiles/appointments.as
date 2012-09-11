@@ -29,5 +29,4 @@ public function populateDatesForWidget():void {
 		{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + daysToAddToReachWednesday[today.getDay()])).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + daysToAddToReachWednesday[today.getDay()])).getDate(), daytime: 'WEDNESDAY 11:00 AM', details: "Physical Therapy\nDr. Berg\n(999) 999-9999"},
 		{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + daysToAddToReachFriday[today.getDay()])).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + daysToAddToReachFriday[today.getDay()])).getDate(), daytime: 'FRIDAY 9:30 AM', details: "Allergies\nDr. Greenfield\n(999) 999-9999"},
 		{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + nextWeekButNotWednesday)).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + nextWeekButNotWednesday)).getDate(), daytime: (myDate.getDay() != 3) ? Constants.DAYS[myDate.getDay()] + ' 11:30 AM' : 'THURSDAY 11:30 AM', details: "Flu Vaccination\nDr. Berg\n(999) 999-9999"});
-	
 }
