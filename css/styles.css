@@ -85,7 +85,7 @@ s|Button {
 	color: "0x000000";
 	disabledColor: "0x000000";
 	textRollOverColor: "0x000000";
-	chromeColor: "0xB3B3B3";
+/*	chromeColor: "0xB3B3B3";*/
 }
 
 s|ButtonBar s|ButtonBarButton:upAndSelected,
@@ -109,8 +109,16 @@ s|DropDownList {
 	font-size: 11;
 	color: #000000;
 	textSelectedColor: #000000;
-	chromeColor: #B3B3B3;
-	contentBackgroundColor: #B3B3B3;
+/*	chromeColor: #B3B3B3;
+	contentBackgroundColor: #B3B3B3;*/
+}
+
+.dropDownListDark {
+	contentBackgroundColor: "0x3C3C3B";
+	chromeColor: "0x3C3C3B";
+	color: "0xCCCBCB";
+	rollOverColor: "0x666666";
+	selectionColor: "0x888888";
 }
 
 s|TextArea {
