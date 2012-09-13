@@ -149,6 +149,19 @@ s|TextArea {
 	color: "0xFFFFFF";
 }
 
+.whiteText11 {
+	fontSize: 11;
+	font-weight:normal;
+	color: "0xffffff";
+}
+
+.searchPlaceholder {
+	font-style:italic;
+	fontSize: 11;
+	font-weight:normal;
+	color: "0x999999";
+}
+
 .formTextField {
 	content-background-color: "0xFFFFFF";
 	color: "0x666666";
@@ -161,6 +174,22 @@ s|TextArea {
 
 .linkBtnUnderline {
 	textDecoration: underline;	
+}
+
+.linkBtnGray {
+	skin: ClassReference(null);
+	color: "0x999999";
+	textRollOverColor: "0x999999";
+	fontSize: 12;
+	fontFamily: "myMyriad";
+}
+
+.linkBtnYellow {
+	skin: ClassReference(null);
+	color: "0xB3B3B3";
+	textRollOverColor: "0xCCCC33";
+	fontSize: 12;
+	fontFamily: "myMyriad";
 }
 
 .linkBtnBlue {
