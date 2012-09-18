@@ -3,6 +3,7 @@ package models
 	import flash.net.FileReference;
 	import flash.utils.ByteArray;
 
+	[Bindable]
 	public class FileUpload
 	{
 		public var name:String;
