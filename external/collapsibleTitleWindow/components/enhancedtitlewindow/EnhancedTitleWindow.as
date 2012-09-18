@@ -12,6 +12,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 	import spark.components.Button;
 	import spark.components.Group;
 	import spark.components.TitleWindow;
+	import spark.core.IDisplayText;
 	import spark.layouts.supportClasses.LayoutBase;
 	
 	[Style(name="titleBarHeight", type="Number", inherit="no", theme="spark")]
@@ -22,6 +23,21 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 	
 	public class EnhancedTitleWindow extends TitleWindow
 	{
+		[SkinPart(required="false")]
+		
+		/**
+		 *  The skin part that defines the appearance of the 
+		 *  title text in the container.
+		 *
+		 *  @see spark.skins.spark.PanelSkin
+		 *  
+		 *  @langversion 3.0
+		 *  @playerversion Flash 10
+		 *  @playerversion AIR 1.5
+		 *  @productversion Flex 4
+		 */
+		public var subTitleDisplay:IDisplayText;
+		
 		public var module:String;
 		
 		public var headerClickable:Boolean;
@@ -45,6 +61,8 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		protected var _expanded:Boolean = true;
 		protected var _titleBarContent:Array;
 		protected var _titleBarLayout:LayoutBase;
+		
+		private var _subtitle:String;
 		
 		public function EnhancedTitleWindow()
 		{
@@ -155,6 +173,22 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 				}
 			}
 			return state;
+		}
+		
+		public function get subtitle():String 
+		{
+			return _subtitle;
+		}
+		
+		/**
+		 *  @private
+		 */
+		public function set subtitle(value:String):void 
+		{
+			_subtitle = value;
+			
+			if (subTitleDisplay)
+				subTitleDisplay.text = subtitle;
 		}
 	}
 }

@@ -30,7 +30,7 @@ in accordance with the terms of the license agreement accompanying it.
 	<fx:Script fb:purpose="styling">
 		/* Define the skin elements that should not be colorized. 
 		For panel, border and title background are skinned, but the content area and title text are not. */
-		static private const exclusions:Array = ["background", "titleDisplay", "contentGroup"];
+		static private const exclusions:Array = ["background", "titleDisplay", "subTitleDisplay", "contentGroup"];
 		
 		/**
 		 * @private
@@ -280,11 +280,19 @@ in accordance with the terms of the license agreement accompanying it.
 					<s:VGroup paddingTop="-2" visible="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}" includeInLayout="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}">
 						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="Immunizations overdue" buttonMode="true" click="{parentApplication.currentState = hostComponent.module; if(!parentApplication.wasImmunizationDataLoaded) parentApplication.immunizationsXMLdata.send();}" />
 					</s:VGroup>
-					<s:Label id="titleDisplay" maxDisplayedLines="1"
-							 height="100%"
-							 verticalAlign="middle" fontWeight="bold"
-							 color="0xFFFFFF" fontSize="16" click="handleHeaderClick()" buttonMode="true" rollOver="{titleDisplay.styleName='linkBtnUnderline'}" rollOut="{titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
-					</s:Label>
+					<s:HGroup gap="15">
+						<s:Label id="titleDisplay" maxDisplayedLines="1"
+								 height="100%"
+								 verticalAlign="middle" fontWeight="bold"
+								 color="0xFFFFFF" fontSize="16" click="handleHeaderClick()" buttonMode="true" rollOver="{titleDisplay.styleName='linkBtnUnderline'}" rollOut="{titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+						</s:Label>
+						<s:Label id="subTitleDisplay" maxDisplayedLines="1"
+								 height="100%"
+								 verticalAlign="middle" fontWeight="normal"
+								 color="0x868686" fontSize="16" click="handleHeaderClick()" buttonMode="true" rollOver="{titleDisplay.styleName='linkBtnUnderline'}" rollOut="{titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+						</s:Label>
+					</s:HGroup>
+					
 					<s:Label visible="{hostComponent.module == 'modNutrition'}" includeInLayout="{hostComponent.module == 'modNutrition'}" click="{parentApplication.currentState = 'modNutrition'}" buttonMode="true" fontSize="16" color="0x868686" verticalAlign="middle" paddingLeft="2" text="{parentApplication.dateFormatterDay.format(new Date())}" />
 					<s:Group id="titleBarContentGroup" width="100%" height="100%">
 						<s:layout><s:HorizontalLayout/></s:layout>
