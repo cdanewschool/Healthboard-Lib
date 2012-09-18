@@ -594,6 +594,22 @@ paddingLeft:30;
 	fontWeight:bold;
 	color: "0xBED63A";
 }
+.blue9SemiBold {
+	font-family: "myMyriad";
+	font-size: 9;
+	color: "0xAEDEE4";
+}
+.white9 {
+	font-family: "myMyriad";
+	font-size: 9;
+	color: "0xffffff";
+}
+.white9Bold {
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 9;
+	color: "0xffffff";
+}
 
 .chartTitle {
 	backgroundColor: "0xB3B3B3";
