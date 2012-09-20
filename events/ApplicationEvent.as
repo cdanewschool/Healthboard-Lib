@@ -13,5 +13,13 @@ package events
 		{
 			super(type, bubbles, cancelable);
 		}
+		
+		override public function clone():Event
+		{
+			var event:ApplicationEvent = new ApplicationEvent(type, bubbles, cancelable);
+			event.data = data;
+			
+			return event;
+		}
 	}
 }
