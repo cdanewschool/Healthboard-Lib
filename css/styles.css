@@ -575,34 +575,36 @@ paddingLeft:30;
 	font-weight: normal;
 	font-size: 12;
 }
-
 .white11 {
 	color: "0xffffff";
 	font-family: "myMyriad";
 	font-weight: normal;
 	font-size: 11;
 }
-
 .white12 {
 	color: "0xffffff";
 	font-family: "myMyriad";
 	font-weight: normal;
 	font-size: 12;
 }
-
 .white12SemiBold {
 	color: "0xffffff";
 	font-family: "myMyriad";
 	font-weight: normal;
 	font-size: 12;
 }
-
 .gray9Italic {
 	color: "0xCCCCCC";
 	font-family: "myMyriad";
 	font-weight: normal;
 	font-size: 9;
 	font-style: italic;
+}
+.gray9 {
+	color: "0xEDEDED";
+	font-family: "myMyriad";
+	font-weight: normal;
+	font-size: 9;
 }
 .greenBold12 {
 	fontSize: 12;
@@ -635,6 +637,18 @@ paddingLeft:30;
 	backgroundColor: "0xB3B3B3";
 	borderColor: "0xFFFFFF";
 	borderThickness: 0;
+}
+.darkGrayBold12 {
+	color: "0x4D4D4D";
+	font-family: "myMyriad";
+	font-size: 12;
+	font-weight: bold;
+}
+.darkGray12 {
+	color: "0x4D4D4D";
+	font-family: "myMyriad";
+	font-size: 12;
+	font-weight: normal;
 }
 enhancedtitlewindow|EnhancedTitleWindow {
 	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
