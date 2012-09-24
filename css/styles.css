@@ -71,9 +71,6 @@ There isn't a fix for the legend control that I know of...
 mx|global {
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
-mx|LegendItem {
-	textFieldClass: ClassReference("mx.core.UITextField");
-}
 
 s|Button {
 	fontSize: 11;
@@ -650,6 +647,12 @@ paddingLeft:30;
 	font-size: 12;
 	font-weight: normal;
 }
+.lightGray11 {
+	font-size: 11;
+	font-family: "myMyriad";
+	color: "0xEDEDED";
+}
+
 enhancedtitlewindow|EnhancedTitleWindow {
 	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 	show-expand-indicator:true;
