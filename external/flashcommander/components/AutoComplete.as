@@ -1,6 +1,8 @@
 package external.flashcommander.components
 {
 
+	import external.flashcommander.event.CustomEvent;
+	
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -16,8 +18,6 @@ package external.flashcommander.components
 	import mx.events.FlexEvent;
 	import mx.events.FlexMouseEvent;
 	import mx.events.SandboxMouseEvent;
-	
-	import external.flashcommander.event.CustomEvent;
 	
 	import spark.components.Group;
 	import spark.components.List;
@@ -88,7 +88,7 @@ package external.flashcommander.components
 		
 		private var collection:ListCollectionView = new ArrayCollection();
 		
-		public function set dataProvider(value:Object){
+		public function set dataProvider(value:Object):void{
 			if (value is Array)
 				collection = new ArrayCollection(value as Array);
 			else if (value is ListCollectionView){
@@ -102,14 +102,14 @@ package external.flashcommander.components
 		}
 		public function get dataProvider():Object { return collection; }
 		
-		private function collectionChange(event:CollectionEvent){
+		private function collectionChange(event:CollectionEvent):void{
 			if (event.kind == CollectionEventKind.RESET || event.kind == CollectionEventKind.ADD)
 				filterData();
 		}
 		
 		private var _text:String = "";
 		
-		public function set text(t:String){
+		public function set text(t:String):void{
 			_text = t;
 			if (inputTxt) inputTxt.text = t;
 		}
@@ -136,7 +136,7 @@ package external.flashcommander.components
 		
 		public function get selectedItem() : Object	{ return _selectedItem; }
 		
-		public function set selectedItem(item:Object) {
+		public function set selectedItem(item:Object):void {
 			_selectedItem = item;
 			//inputTxt.text = returnFunction(item);
 			text = returnFunction(item)
@@ -147,7 +147,7 @@ package external.flashcommander.components
 		public function get selectedIndex() : int { return _selectedIndex; }
 		private var _selectedIndex : int = -1;
 		
-		private function onChange(event:TextOperationEvent){
+		private function onChange(event:TextOperationEvent):void{
 			_text = inputTxt.text;
 			
 			filterData()
@@ -157,7 +157,7 @@ package external.flashcommander.components
 			dispatchEvent(event);
 		}
 		
-		public function filterData(){
+		public function filterData():void{
 			if (!this.focusManager || this.focusManager.getFocus()!=inputTxt) return;
 			
 			if (!popUp) return;
@@ -235,7 +235,7 @@ package external.flashcommander.components
 		{
 			if (item == null) return "";
 			
-			if (labelFunction)
+			if (labelFunction!=null)
 				return labelFunction(item);
 			else if (labelField && item[labelField])
 				return item[labelField];
@@ -297,14 +297,14 @@ package external.flashcommander.components
 			}
 		}
 		
-		private function enter(event:FlexEvent){
+		private function enter(event:FlexEvent):void{
 			if (popUp.displayPopUp && list.selectedIndex>-1) return;
 			dispatchEvent(event)
 		}
 		
 		// this is a workaround to reset the Mouse cursor
 		
-		private function onMouseOut(event:MouseEvent){
+		private function onMouseOut(event:MouseEvent):void{
 			Mouse.cursor = MouseCursor.AUTO;
 		}
 		
@@ -335,14 +335,14 @@ package external.flashcommander.components
 		
 		public var forceOpen:Boolean = false;
 		
-		private function _focusInHandler(event:FocusEvent){
+		private function _focusInHandler(event:FocusEvent):void{
 			if (forceOpen){
 				filterData();
 			}
 		}
 		
-		private function _focusOutHandler(event:FocusEvent){
-			close(event)
+		private function _focusOutHandler(event:FocusEvent):void{
+			close()
 			
 			if (collection.length==0){
 				_selectedIndex = -1;
@@ -350,7 +350,7 @@ package external.flashcommander.components
 			}
 		}
 		
-		private function mouseOutsideHandler(event){
+		private function mouseOutsideHandler(event:MouseEvent):void{
 			if (event is FlexMouseEvent){
 				var e:FlexMouseEvent = event as FlexMouseEvent;
 				if (inputTxt.hitTestPoint(e.stageX, e.stageY)) return;
@@ -359,11 +359,11 @@ package external.flashcommander.components
 			close(event);
 		}
 		
-		private function close(event){
+		private function close(event:MouseEvent=null):void{
 			popUp.displayPopUp = false;
 		}
 		
-		private function addClickListener(event){
+		private function addClickListener(event:MouseEvent):void{
 			list.dataGroup.addEventListener(MouseEvent.CLICK, listItemClick)
 		}
 		

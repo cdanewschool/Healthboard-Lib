@@ -38,6 +38,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		 */
 		public var subTitleDisplay:IDisplayText;
 		
+		[Bindable]
 		public var module:String;
 		
 		public var headerClickable:Boolean;
