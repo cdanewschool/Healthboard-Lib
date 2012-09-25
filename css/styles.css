@@ -652,7 +652,18 @@ paddingLeft:30;
 	font-family: "myMyriad";
 	color: "0xEDEDED";
 }
-
+.black16SemiBold {
+	font-size: 16;
+	font-family: "myMyriad";
+	color: "0x000000";
+	font-weight: bold;
+}
+.black12Bold {
+	color: "0x000000";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 12;
+}
 enhancedtitlewindow|EnhancedTitleWindow {
 	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 	show-expand-indicator:true;
