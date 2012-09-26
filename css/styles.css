@@ -71,11 +71,9 @@ There isn't a fix for the legend control that I know of...
 mx|global {
 	textFieldClass: ClassReference("mx.core.UIFTETextField");
 }
-/*
 mx|LegendItem {
 	textFieldClass: ClassReference("mx.core.UITextField");
 }
-*/
 
 s|Button {
 	fontSize: 11;
