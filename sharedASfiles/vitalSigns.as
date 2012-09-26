@@ -4,8 +4,8 @@
 						{value:195, expectation:170, date:'10/03/2011', type:'provider', vital:'weight'},
 						{value:190, expectation:170, date:'11/03/2011', type:'patient', vital:'weight'},
 						{value:180, expectation:170, date:'07/14/2012', type:'patient', vital:'weight'},
-						{value:185, expectation:170, date:'08/14/2012', type:'patient', vital:'weight'},
-						{value:180, expectation:170, date:'09/14/2012', type:'provider', vital:'weight'}]
+						{value:185, expectation:170, date:'08/14/2012', type:'provider', vital:'weight'},
+						{value:175, expectation:170, date:'09/14/2012', type:'patient', vital:'weight'}]
 			  } ]
 	},
 	
@@ -16,8 +16,8 @@
 						{value:128, expectation:120, value2:80, expectation2:80, date:'05/03/2012', type:'patient', vital:'bloodPressure'},
 						{value:126, expectation:120, value2:80, expectation2:80, date:'06/03/2012', type:'patient', vital:'bloodPressure'},
 						{value:130, expectation:120, value2:82, expectation2:80, date:'07/14/2012', type:'patient', vital:'bloodPressure'},
-						{value:124, expectation:120, value2:76, expectation2:80, date:'08/14/2012', type:'patient', vital:'bloodPressure'},
-						{value:120, expectation:120, value2:78, expectation2:80, date:'09/14/2012', type:'provider', vital:'bloodPressure'}]
+						{value:124, expectation:120, value2:76, expectation2:80, date:'08/14/2012', type:'provider', vital:'bloodPressure'},
+						{value:120, expectation:120, value2:78, expectation2:80, date:'09/14/2012', type:'patient', vital:'bloodPressure'}]
 			  } ]
 	},
 	
@@ -35,9 +35,9 @@
 		chart:[ { data:[{value:26, expectation:18, date:'09/03/2011', type:'patient', vital:'respiratory'},
 						{value:24, expectation:18, date:'10/03/2011', type:'provider', vital:'respiratory'},
 						{value:28, expectation:18, date:'11/03/2011', type:'patient', vital:'respiratory'},
-						{value:22, expectation:18, date:'08/14/2012', type:'patient', vital:'respiratory'},
-						{value:20, expectation:18, date:'09/13/2012', type:'patient', vital:'respiratory'},
-						{value:20, expectation:18, date:'09/14/2012', type:'provider', vital:'respiratory'}]
+						{value:22, expectation:18, date:'08/14/2012', type:'provider', vital:'respiratory'},
+						{value:20, expectation:18, date:'09/08/2012', type:'patient', vital:'respiratory'},
+						{value:20, expectation:18, date:'09/14/2012', type:'patient', vital:'respiratory'}]
 			  } ]
 	},
 	
@@ -45,13 +45,14 @@
 		chart:[ { data:[{value:98, expectation:98, date:'09/03/2011', type:'patient', vital:'temperature'},
 						{value:107, expectation:98, date:'10/03/2011', type:'provider', vital:'temperature'},
 						{value:98, expectation:98, date:'10/04/2011', type:'patient', vital:'temperature'},
-						{value:98, expectation:98, date:'09/14/2012', type:'provider', vital:'temperature'}]
+						{value:98, expectation:98, date:'08/14/2012', type:'provider', vital:'temperature'},
+						{value:103, expectation:98, date:'09/14/2012', type:'patient', vital:'temperature'}]
 			  } ]
 	},
 	
 	{ vital: "Height", chartType: "normal", chartMin: 61, chartMax: 81,
 		chart:[ { data:[{value:71, expectation:71, date:'09/03/2011', type:'patient', vital:'height'},
-						{value:71, expectation:71, date:'09/14/2012', type:'provider', vital:'height'}]
+						{value:71, expectation:71, date:'09/14/2012', type:'patient', vital:'height'}]
 			  } ]
 	},
 	
@@ -61,9 +62,8 @@
 						{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/03/2011',comments:'I got closer to my target weight', vital:'comments'},
 						{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/01/2012',comments:'I got closer to my target weight', vital:'comments'},
 						{type:'patient',expectation:'expectation',author:fullname,datePatient:'02/01/2012',comments:'I got closer to my target weight', vital:'comments'},
-						{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/14/2012',comments:'I got closer to my target weight', vital:'comments'},
-						{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/13/2012',comments:'Respiratory rate is normal', vital:'comments'},
-						{type:'provider',expectation:'expectation',author:'Dr. Andrew Berg',dateProvider:'09/14/2012',comments:'The patient has gotten closer to his target weight', vital:'comments'}]
+						{type:'provider',expectation:'expectation',author:fullname,dateProvider:'08/14/2012',comments:'Slight weight increase, please be aware.', vital:'comments'},
+						{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/08/2012',comments:'Respiratory rate is normal, but I am not feeling so well.', vital:'comments'}]
 			  } ]
 	}	
 ]);
@@ -81,9 +81,9 @@
 	{Date:'05/03/2012', WeightBMI: '', BloodPressure: '128/80', HeartRate: 76, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
 	{Date:'06/03/2012', WeightBMI: '', BloodPressure: '126/80', HeartRate: 70, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
 	{Date:'07/14/2012', WeightBMI: '180 / 25.1', BloodPressure: '130/82', HeartRate: 66, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
-	{Date:'08/14/2012', WeightBMI: '185 / 25.7', BloodPressure: '124/76', HeartRate: '', Respiratory: '22', Temperature: '', Height: '', Comments: 'I got closer to my target weight', RecordedBy: 'You'},
-	{Date:'09/13/2012', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '20', Temperature: '', Height: '', Comments: 'Respiratory rate is normal', RecordedBy: 'You'},
-	{Date:'09/14/2012', WeightBMI: '180 / 25.1', BloodPressure: '120/78', HeartRate: '', Respiratory: '20', Temperature: '98', Height: "5'11''", Comments: 'The patient has gotten closer to his target weight', RecordedBy: 'Dr. Andrew Berg', abnormalWeight: true, abnormalPressure: false}
+	{Date:'08/14/2012', WeightBMI: '185 / 25.7', BloodPressure: '124/76', HeartRate: '', Respiratory: '22', Temperature: 98, Height: '', Comments: 'Slight weight increase, please be aware.', RecordedBy: 'Dr. Andrew Berg'},
+	{Date:'09/08/2012', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '20', Temperature: '', Height: '', Comments: 'Respiratory rate is normal, but I am not feeling so well.', RecordedBy: 'You'},
+	{Date:'09/14/2012', WeightBMI: '175 / 24.4', BloodPressure: '120/78', HeartRate: '', Respiratory: '20', Temperature: 103, Height: "5'11''", Comments: '', RecordedBy: 'You', abnormalWeight: true, abnormalPressure: false}
 ]);
 
 [Bindable] public var chartMin:Date = new Date(2011,7,26);
