@@ -2,7 +2,6 @@
 
 <!--
 
-<<<<<<< HEAD
 ADOBE SYSTEMS INCORPORATED
 Copyright 2008 Adobe Systems Incorporated
 All Rights Reserved.
@@ -31,6 +30,7 @@ in accordance with the terms of the license agreement accompanying it.
 		/* Define the skin elements that should not be colorized. 
 		For panel, border and title background are skinned, but the content area and title text are not. */
 		static private const exclusions:Array = ["background", "titleDisplay", "subTitleDisplay", "contentGroup"];
+		[Bindable] private var isWidgetClickable:Boolean;		//added (Damian)
 		
 		/**
 		 * @private
@@ -42,6 +42,7 @@ in accordance with the terms of the license agreement accompanying it.
 		 */
 		override protected function initializationComplete():void
 		{
+			isWidgetClickable = (hostComponent.module != 'modHealthFocus' &amp;&amp; hostComponent.module != 'modChat' &amp;&amp; hostComponent.module != 'modPatientProfile');
 			useChromeColor = true;
 			super.initializationComplete();
 		}
@@ -113,11 +114,9 @@ in accordance with the terms of the license agreement accompanying it.
 		
 		private var cornerRadius:Number;
 		
-		
 		[Bindable] [Embed("images/btnWidgetArrow.png")] public var myArrow:Class;
 		[Bindable] [Embed("images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
 		//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
-		
 		
 		private function handleHeaderClick():void {
 			
@@ -270,7 +269,7 @@ in accordance with the terms of the license agreement accompanying it.
 				
 				<!-- layer 4: moveArea -->
 				<!--- @copy spark.components.TitleWindow#moveArea -->
-				<s:Group id="moveArea" left="0" right="0" top="0" bottom="0" click="handleHeaderClick()" buttonMode="true" />		<!--adding link on header's background?-->
+				<s:Group id="moveArea" left="0" right="0" top="0" bottom="0" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}" />		<!--adding link on header's background?-->
 				
 				<!-- layer 3: text -->
 				<!--- @copy spark.components.Panel#titleDisplay -->
@@ -278,28 +277,28 @@ in accordance with the terms of the license agreement accompanying it.
 					<s:layout><s:HorizontalLayout verticalAlign="middle" gap="5"/></s:layout>
 					<enhancedtitlewindow:TriangleIndicator id="expandIndicator"/>
 					<s:VGroup paddingTop="-2" visible="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}" includeInLayout="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}">
-						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="Immunizations overdue" buttonMode="true" click="{parentApplication.currentState = hostComponent.module; if(!parentApplication.wasImmunizationDataLoaded) parentApplication.immunizationsXMLdata.send();}" />
+						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="{hostComponent.module == 'modImmunizations' ? 'Immunizations overdue' : (hostComponent.module == 'modHealthFocus' ? 'Patient needs attention' : 'There are patients who need attention')}" buttonMode="{hostComponent.module != 'modHealthFocus'}" click="{if(isWidgetClickable) handleHeaderClick();}" />
 					</s:VGroup>
 					<s:HGroup gap="15">
 						<s:Label id="titleDisplay" maxDisplayedLines="1"
 								 height="100%"
 								 verticalAlign="middle" fontWeight="bold"
-								 color="0xFFFFFF" fontSize="16" click="handleHeaderClick()" buttonMode="true" rollOver="{titleDisplay.styleName='linkBtnUnderline'}" rollOut="{titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+								 color="0xFFFFFF" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}" rollOver="{if(isWidgetClickable) titleDisplay.styleName='linkBtnUnderline'}" rollOut="{if(isWidgetClickable) titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
 						</s:Label>
 						<s:Label id="subTitleDisplay" maxDisplayedLines="1"
 								 height="100%"
 								 verticalAlign="middle" fontWeight="normal"
-								 color="0x868686" fontSize="16" click="handleHeaderClick()" buttonMode="true" rollOver="{titleDisplay.styleName='linkBtnUnderline'}" rollOut="{titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+								 color="0x868686" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
 						</s:Label>
 					</s:HGroup>
 					
-					<s:Label visible="{hostComponent.module == 'modNutrition'}" includeInLayout="{hostComponent.module == 'modNutrition'}" click="{parentApplication.currentState = 'modNutrition'}" buttonMode="true" fontSize="16" color="0x868686" verticalAlign="middle" paddingLeft="2" text="{parentApplication.dateFormatterDay.format(new Date())}" />
+					<!--<s:Label visible="{hostComponent.module == 'modNutrition'}" includeInLayout="{hostComponent.module == 'modNutrition'}" click="{parentApplication.currentState = 'modNutrition'}" buttonMode="true" fontSize="16" color="0x868686" verticalAlign="middle" paddingLeft="2" text="{parentApplication.dateFormatterDay.format(new Date())}" />--><!--Replaced by Noah's subTitleDisplay above-->
 					<s:Group id="titleBarContentGroup" width="100%" height="100%">
 						<s:layout><s:HorizontalLayout/></s:layout>
 					</s:Group>
 					
 					<!--- @copy spark.components.TitleWindow#closeButton -->
-					<s:Image id="arrow" source="@Embed('images/btnWidgetArrow.png')" visible="{hostComponent.module != 'modHealthFocus'}" includeInLayout="{hostComponent.module != 'modHealthFocus'}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
+					<s:Image id="arrow" source="@Embed('images/btnWidgetArrow.png')" visible="{isWidgetClickable}" includeInLayout="{isWidgetClickable}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
 					<s:HGroup paddingTop="-6" paddingLeft="-9" visible="{hostComponent.module == 'modHealthFocus'}" includeInLayout="{hostComponent.module == 'modHealthFocus'}">
 						<s:DropDownList id="dropDownView" dropShadowVisible="false" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12"><!--change="dropDownView_changeHandler(event)"--> 
 							<mx:ArrayCollection>
