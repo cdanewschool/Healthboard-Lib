@@ -365,7 +365,7 @@ in accordance with the terms of the license agreement accompanying it.
 		
 		<!--- @copy spark.components.TitleWindow#closeButton -->
 		<!--added down here (Damian) so that the button is displayed ON TOP / OUTSIDE the TitleWindow-->
-		<s:Button id="closeButton" skinClass="skins.general.CustomTitleWindowCloseButtonSkinSMALL" visible="{hostComponent.showCloseButton}" includeInLayout="{hostComponent.showCloseButton}"
+		<s:Button id="closeButton" skinClass="{hostComponent.closeButtonSkinClass}" visible="{hostComponent.showCloseButton}" includeInLayout="{hostComponent.showCloseButton}"
 				  click="{parentApplication.falsifyWidget(hostComponent.module);}"
 				  width="21" height="21" right="-9" top="-12" /> <!-- (damian) orig: spark.skins.spark.TitleWindowCloseButtonSkin width="15" height="15"--><!--hostComponent.visible = false; hostComponent.includeInLayout = false; -->
 	</s:Group>

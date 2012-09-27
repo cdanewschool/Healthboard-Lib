@@ -9,11 +9,14 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 	import mx.core.UIComponent;
 	import mx.events.CloseEvent;
 	
+	import skins.general.CustomTitleWindowCloseButtonSkinSMALL;
+	
 	import spark.components.Button;
 	import spark.components.Group;
 	import spark.components.TitleWindow;
 	import spark.core.IDisplayText;
 	import spark.layouts.supportClasses.LayoutBase;
+	import spark.skins.spark.TitleWindowCloseButtonSkin;
 	
 	[Style(name="titleBarHeight", type="Number", inherit="no", theme="spark")]
 	[Style(name="showExpandIndicator", type="Boolean", inherit="no", theme="spark")]
@@ -49,6 +52,9 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		
 		[Bindable]
 		public var showCloseButton:Boolean;
+		
+		[Bindable]
+		public var closeButtonSkinClass:Class = CustomTitleWindowCloseButtonSkinSMALL;
 		
 		[SkinPart(required="false")]
 		public var expandIndicator:UIComponent;
@@ -162,6 +168,19 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 				else
 					this.dispatchEvent( new EnhancedTitleWindowEvent(EnhancedTitleWindowEvent.COLLAPSED,true));
 				expandedChanged = false;
+			}
+		}
+		
+		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			super.updateDisplayList( unscaledWidth, unscaledHeight );
+			
+			if( closeButtonSkinClass == TitleWindowCloseButtonSkin )
+			{
+				closeButton.width = 15;
+				closeButton.height = 15;
+				closeButton.right = 7;
+				closeButton.top = 7;
 			}
 		}
 		
