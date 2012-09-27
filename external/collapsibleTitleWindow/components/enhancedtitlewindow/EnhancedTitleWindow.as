@@ -20,6 +20,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 
 	[Event(name="expanded", type="events.EnhancedTitleWindowEvent")]
 	[Event(name="collapsed", type="events.EnhancedTitleWindowEvent")]
+	[Event(name="headerClicked", type="events.EnhancedTitleWindowEvent")]
 	
 	public class EnhancedTitleWindow extends TitleWindow
 	{
@@ -117,6 +118,8 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		
 		protected function onHeaderClicked(event:MouseEvent):void
 		{
+			this.dispatchEvent( new EnhancedTitleWindowEvent(EnhancedTitleWindowEvent.HEADER_CLICKED,true) );
+			
 			if(headerClickable && collapsible)
 				expanded = !expanded;
 		}

@@ -6,6 +6,7 @@ package events
 	{
 		public static const EXPANDED:String = "expanded";
 		public static const COLLAPSED:String = "collapsed";
+		public static const HEADER_CLICKED:String = "headerClicked";
 		
 		public function EnhancedTitleWindowEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
