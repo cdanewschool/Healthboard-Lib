@@ -42,7 +42,7 @@ in accordance with the terms of the license agreement accompanying it.
 		 */
 		override protected function initializationComplete():void
 		{
-			isWidgetClickable = (hostComponent.module != 'modHealthFocus' &amp;&amp; hostComponent.module != 'modChat' &amp;&amp; hostComponent.module != 'modPatientProfile');
+			isWidgetClickable = (hostComponent.module != null);
 			useChromeColor = true;
 			super.initializationComplete();
 		}
