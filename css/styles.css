@@ -200,7 +200,7 @@ s|TextArea {
 .linkBtnBlue {
 	skin: ClassReference(null);
 	color: "0xAEDEE4";
-	textRollOverColor: "0xFF931E";
+	textRollOverColor: "0xAEDEE4";
 	paddingLeft: 0;
 	paddingTop:0;
 	paddingRight:0;
