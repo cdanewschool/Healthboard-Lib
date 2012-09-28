@@ -6,6 +6,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.collections.ArrayCollection;
 	import mx.core.UIComponent;
 	import mx.events.CloseEvent;
 	
@@ -76,6 +77,11 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		{
 			super();
 		}
+		
+		[Bindable] public var showDropDown:Boolean = false;
+		[Bindable] public var dropDownDataProvider:ArrayCollection;
+		[Bindable] public var displayWarning:Boolean = false;
+		[Bindable] public var warningToolTip:String = new String();
 		
 		[Bindable]
 		public function get expanded():Boolean
