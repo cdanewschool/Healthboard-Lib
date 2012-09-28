@@ -169,6 +169,13 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 					this.dispatchEvent( new EnhancedTitleWindowEvent(EnhancedTitleWindowEvent.COLLAPSED,true));
 				expandedChanged = false;
 			}
+			
+			if( subtitle 
+				&& subTitleDisplay 
+				&& subTitleDisplay.text != subtitle )
+			{
+				subTitleDisplay.text = subtitle;
+			}
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
@@ -210,8 +217,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		{
 			_subtitle = value;
 			
-			if (subTitleDisplay)
-				subTitleDisplay.text = subtitle;
+			invalidateProperties();
 		}
 	}
 }
