@@ -200,7 +200,7 @@ s|TextArea {
 .linkBtnBlue {
 	skin: ClassReference(null);
 	color: "0xAEDEE4";
-	textRollOverColor: "0xFF931E";
+	textRollOverColor: "0xAEDEE4";
 	paddingLeft: 0;
 	paddingTop:0;
 	paddingRight:0;
@@ -554,6 +554,11 @@ s|FormItem {
 	font-weight: normal;
 	font-size: 12;
 }
+.yellow11 {
+	color: "0xCCCC33";
+	fontSize: 11;
+	fontFamily: "myMyriad";
+}
 
 .iconButton {
 	skinClass: ClassReference("skins.general.IconButtonSkin");
@@ -667,6 +672,18 @@ paddingLeft:30;
 	font-weight: bold;
 	font-size: 12;
 }
+
+/*	context menu	*/
+
+.chatModes {
+	chromeColor:"0x3c3c3b";
+	color: "0xb3b3b3";
+	cornerRadius: 0;
+	firstButton: ClassReference("skins.general.FlatButtonSkin");
+	middleButton: ClassReference("skins.general.FlatButtonSkin");
+	lastButton: ClassReference("skins.general.FlatButtonSkin");
+}
+
 enhancedtitlewindow|EnhancedTitleWindow {
 	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 	show-expand-indicator:true;

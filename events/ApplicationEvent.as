@@ -7,6 +7,8 @@ package events
 		public static const NAVIGATE:String = "navigate";
 		public static const VIEW_FILE:String = "viewFile";
 		
+		public static const SHOW_TOOLTIP:String = "showTooltip";
+		
 		public var data:*;
 		
 		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
