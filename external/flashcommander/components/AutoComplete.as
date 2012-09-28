@@ -3,6 +3,7 @@ package external.flashcommander.components
 
 	import external.flashcommander.event.CustomEvent;
 	
+	import flash.events.Event;
 	import flash.events.FocusEvent;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
@@ -350,7 +351,7 @@ package external.flashcommander.components
 			}
 		}
 		
-		private function mouseOutsideHandler(event:MouseEvent):void{
+		private function mouseOutsideHandler(event:Event):void{
 			if (event is FlexMouseEvent){
 				var e:FlexMouseEvent = event as FlexMouseEvent;
 				if (inputTxt.hitTestPoint(e.stageX, e.stageY)) return;
@@ -359,11 +360,11 @@ package external.flashcommander.components
 			close(event);
 		}
 		
-		private function close(event:MouseEvent=null):void{
+		private function close(event:Event=null):void{
 			popUp.displayPopUp = false;
 		}
 		
-		private function addClickListener(event:MouseEvent):void{
+		private function addClickListener(event:Event):void{
 			list.dataGroup.addEventListener(MouseEvent.CLICK, listItemClick)
 		}
 		
