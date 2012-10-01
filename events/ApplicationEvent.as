@@ -2,6 +2,8 @@ package events
 {
 	import flash.events.Event;
 	
+	import models.Message;
+	
 	public class ApplicationEvent extends Event
 	{
 		public static const NAVIGATE:String = "navigate";
@@ -10,8 +12,8 @@ package events
 		public static const SHOW_TOOLTIP:String = "showTooltip";
 		
 		public var data:*;
-		public var users:Array;
-		public var alias:String;
+		
+		public var message:Message;
 		
 		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
