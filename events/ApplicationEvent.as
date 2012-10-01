@@ -10,6 +10,8 @@ package events
 		public static const SHOW_TOOLTIP:String = "showTooltip";
 		
 		public var data:*;
+		public var users:Array;
+		public var alias:String;
 		
 		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
