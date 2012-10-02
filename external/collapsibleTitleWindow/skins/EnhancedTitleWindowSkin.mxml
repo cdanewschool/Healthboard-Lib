@@ -233,10 +233,8 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1">
 					<s:fill>
 						<s:LinearGradient>
-							<s:GradientEntry color="{hostComponent.module != 'modImmunizations' &amp;&amp; hostComponent.module != 'modHealthFocus' &amp;&amp; hostComponent.module != 'modPatients' ? 0x323231 : 0x6B3736}"				
-											 color.inactiveGroup="0xEAEAEA"/><!--damian-->
-							<s:GradientEntry color="0x757574"
-											 color.inactiveGroup="0xCECECE"/><!--damian-->
+							<s:GradientEntry color="{!hostComponent.displayWarning ? 0x323231 : 0x6B3736}" /><!--damian--><!--color.inactiveGroup="0xEAEAEA"-->
+							<s:GradientEntry color="0x757574" /><!--damian--><!--color.inactiveGroup="0xCECECE"-->
 						</s:LinearGradient>
 					</s:fill>
 				</s:Rect>
@@ -276,8 +274,8 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:Group id="titleBarGroup" left="6" right="6" top="1">
 					<s:layout><s:HorizontalLayout verticalAlign="middle" gap="5"/></s:layout>
 					<enhancedtitlewindow:TriangleIndicator id="expandIndicator"/>
-					<s:VGroup paddingTop="-2" visible="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}" includeInLayout="{hostComponent.module == 'modImmunizations' || hostComponent.module == 'modHealthFocus' || hostComponent.module == 'modPatients'}">
-						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="{hostComponent.module == 'modImmunizations' ? 'Immunizations overdue' : (hostComponent.module == 'modHealthFocus' ? 'Patient needs attention' : 'There are patients who need attention')}" buttonMode="{hostComponent.module != 'modHealthFocus'}" click="{if(isWidgetClickable) handleHeaderClick();}" />
+					<s:VGroup paddingTop="-2" visible="{hostComponent.displayWarning}" includeInLayout="{hostComponent.displayWarning}">
+						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="{hostComponent.warningToolTip}" buttonMode="{isWidgetClickable}" click="{if(isWidgetClickable) handleHeaderClick();}" />
 					</s:VGroup>
 					<s:HGroup gap="15">
 						<s:Label id="titleDisplay" maxDisplayedLines="1"
@@ -299,13 +297,8 @@ in accordance with the terms of the license agreement accompanying it.
 					
 					<!--- @copy spark.components.TitleWindow#closeButton -->
 					<s:Image id="arrow" source="@Embed('images/btnWidgetArrow.png')" visible="{isWidgetClickable}" includeInLayout="{isWidgetClickable}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
-					<s:HGroup paddingTop="-6" paddingLeft="-9" visible="{hostComponent.module == 'modHealthFocus'}" includeInLayout="{hostComponent.module == 'modHealthFocus'}">
-						<s:DropDownList id="dropDownView" dropShadowVisible="false" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12"><!--change="dropDownView_changeHandler(event)"--> 
-							<mx:ArrayCollection>
-								<fx:String>     Add New Internal Note</fx:String>
-								<fx:String>     View...</fx:String>
-							</mx:ArrayCollection>
-						</s:DropDownList>
+					<s:HGroup paddingTop="-6" paddingLeft="-9" visible="{hostComponent.showDropDown}" includeInLayout="{hostComponent.showDropDown}">
+						<s:DropDownList id="dropDownView" dropShadowVisible="false" dataProvider="{hostComponent.dropDownDataProvider}" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12" /><!--change="dropDownView_changeHandler(event)"-->
 					</s:HGroup>
 				</s:Group>
 				
