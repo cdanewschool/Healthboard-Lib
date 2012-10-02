@@ -233,10 +233,8 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1">
 					<s:fill>
 						<s:LinearGradient>
-							<s:GradientEntry color="{!hostComponent.displayWarning ? 0x323231 : 0x6B3736}"				
-											 color.inactiveGroup="0xEAEAEA"/><!--damian-->
-							<s:GradientEntry color="0x757574"
-											 color.inactiveGroup="0xCECECE"/><!--damian-->
+							<s:GradientEntry color="{!hostComponent.displayWarning ? 0x323231 : 0x6B3736}" /><!--damian--><!--color.inactiveGroup="0xEAEAEA"-->
+							<s:GradientEntry color="0x757574" /><!--damian--><!--color.inactiveGroup="0xCECECE"-->
 						</s:LinearGradient>
 					</s:fill>
 				</s:Rect>
