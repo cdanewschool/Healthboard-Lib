@@ -45,12 +45,8 @@ package external.TabBarPlus.plus
 				tab.setStyle("skinClass", tabSkinCls);
 			}
 			
-			// var tabCloseCls:Class = getStyle("tabCloseBtnSkin");
-			
-			
 			tab.canClose= (_closePolicy == CLOSE_ALWAYS);
 		}
-
 
 		public function setTabClosePolicy(index:int, can:Boolean):void
 		{
@@ -77,7 +73,6 @@ package external.TabBarPlus.plus
 				dataGroup.removeEventListener(RendererExistenceEvent.RENDERER_ADD, tabAdded);
 			}
 		}
-	
 		
 		public function onCloseTabClicked(event:ListEvent):void
 		{
@@ -86,34 +81,9 @@ package external.TabBarPlus.plus
 			
 			// Perform default action
 			// remove the child
-			if(dataProvider is IList){
+			if(dataProvider is IList)
+			{
 				dataProvider.removeItemAt(index);
-				//ADDED-DAMIAN
-				if(dataProvider == parentApplication.viewStackMessages) {		//this used to be if(parentApplication.currentState == "modMessages")... It now APPLIES TO BOTH PATIENT AND PROVIDER PORTALS
-					var arrNewMessagesInOpenTabs:Array = new Array(); //this array will hold the index values of each "NEW" message in arrOpenTabs. Its purpose is to know which "NEW" message we're closing (if it is in fact a new message)
-					for(var i:uint = 0; i < parentApplication.arrOpenTabs.length; i++) {
-						if(parentApplication.arrOpenTabs[i] == "NEW") arrNewMessagesInOpenTabs.push(i);
-					}
-					if(parentApplication.arrOpenTabs[index-1] == "NEW") parentApplication.arrNewMessages.splice(arrNewMessagesInOpenTabs.indexOf(index-1),1);
-					parentApplication.arrOpenTabs.splice(index-1,1);
-					parentApplication.viewStackMessages.selectedIndex--;
-				}
-				else if(parentApplication.currentState == "modMedicalRecords") {
-					parentApplication.arrOpenTabsMR.splice(index-1,1);
-					if(parentApplication.tabsMedicalRecords.selectedIndex == 0) {			
-						parentApplication.medicalRecordsBottomBoxes.visible = parentApplication.medicalRecordsBottomBoxes.includeInLayout = true;
-						parentApplication.viewStackMedicalRecords.height = 406;
-					}
-				}
-				else if(parentApplication.currentState == "modMedications") {
-					parentApplication.arrOpenTabsME.splice(index-1,1);
-				}
-				else if(parentApplication.currentState == "modImmunizations") {
-					parentApplication.arrOpenTabsIM.splice(index-1,1);
-				}
-				else if(parentApplication.currentState == "providerHome") {		//aka PROVIDER PORTAL!
-					if(dataProvider == parentApplication.viewStackMain) parentApplication.arrOpenPatients.splice(index-1,1);
-				}
 			}
 			else {
 				trace("Bad data provider");

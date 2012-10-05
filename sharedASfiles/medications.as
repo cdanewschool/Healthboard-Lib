@@ -17,7 +17,6 @@ import components.medications.MedicationDetails;
 import components.medications.myAddMedication1Window;
 import components.medications.myAddMedication2Window;
 
-
 import flash.display.CapsStyle;
 import flash.display.DisplayObject;
 import flash.display.JointStyle;
@@ -48,13 +47,15 @@ import mx.utils.ObjectUtil;
 
 import spark.components.TitleWindow;
 
+import util.ChartLabelFunctions;
+
 [Bindable] public var medicationsData:ArrayCollection = new ArrayCollection();			//data provider for the Plot Chart
 [Bindable] public var medicationsDataFiltered:ArrayCollection;							//data provider for the Data Grid
 [Bindable] public var medicationsCategories:Array;										//data provider for the Plot Chart's vertical axis
 //[Bindable] private var wasInitialLoadDone:Boolean = false;
 
-[Bindable] private var myHorizontalAlternateFill:uint = 0x303030;
-[Bindable] private var myHorizontalFill:uint = 0x4A4A49;
+[Bindable] public var myHorizontalAlternateFill:uint = 0x303030;
+[Bindable] public var myHorizontalFill:uint = 0x4A4A49;
 
 public var wasMedicationDataLoaded:Boolean = false;
 private function medicationsResultHandler(event:ResultEvent):void {
@@ -183,7 +184,7 @@ private function medicationsCategoriesForTree():void {
 
 public function medicationsFillFunction(element:ChartItem, index:Number):IFill {
 	var item:PlotSeriesItem = PlotSeriesItem(element);
-	var c:SolidColor = colorMedicationsPast; //gray	
+	var c:SolidColor = controller.model.chartStyles.colorMedicationsPast; //gray	
 	
 	//if(item.item.taken == true && item.item.dateHpast == null && item.item.dateSpast == null && item.item.dateOpast == null && item.item.datePpast == null) { //if the medication isn't one in the past
 	if(item.item.taken) {
@@ -200,10 +201,10 @@ public function medicationsFillFunction(element:ChartItem, index:Number):IFill {
 		c = colorMedicationsHerbalMedicines;		//green
 		}*/
 		if(item.item.asNeeded) {
-			c = colorMedicalRecordsInpatient;		//orange
+			c = controller.model.chartStyles.colorMedicalRecordsInpatient;		//orange
 		}
 		else {
-			c = colorMedicalRecordsOutpatient;	//blue
+			c = controller.model.chartStyles.colorMedicalRecordsOutpatient;	//blue
 		}
 	}
 	
@@ -322,25 +323,25 @@ private function medicationsSetMinMax():void {
 	canvasMed.lineTo('09/19/2011 12:00:00 PM','Jiang Ya Pian');	
 	canvasMed.moveTo('09/13/2011','Herbal Medicines');
 	canvasMed.lineTo('09/19/2011 12:00:00 PM','Herbal Medicines');*/
-	canvasMed.lineStyle(100,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
-	canvasMed.moveTo('06/16/2012 12:00:00 PM','Prescription Drugs');
-	canvasMed.lineTo('06/16/2012 12:00:00 PM','Herbal Medicines');
+	controller.model.chartStyles.canvasMed.lineStyle(100,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
+	controller.model.chartStyles.canvasMed.moveTo('06/16/2012 12:00:00 PM','Prescription Drugs');
+	controller.model.chartStyles.canvasMed.lineTo('06/16/2012 12:00:00 PM','Herbal Medicines');
 }
 
 public function medicationsSetMinMaxWidget():void {
 	hAxisMedicationsWidget.minimum = minDateMedi;
 	hAxisMedicationsWidget.maximum = maxDateMediWidget;
-	canvasMedWidget.lineStyle(75,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
-	canvasMedWidget.moveTo('06/16/2012 12:00:00 PM','Lisinopril (Prinivil/Zestril)');
-	canvasMedWidget.lineTo('06/16/2012 12:00:00 PM','Jiang Ya Pian');
+	controller.model.chartStyles.canvasMedWidget.lineStyle(75,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
+	controller.model.chartStyles.canvasMedWidget.moveTo('06/16/2012 12:00:00 PM','Lisinopril (Prinivil/Zestril)');
+	controller.model.chartStyles.canvasMedWidget.lineTo('06/16/2012 12:00:00 PM','Jiang Ya Pian');
 }
 
 private function handleMedicationsDateRange(range:String):void {
 	if(range == '1w') {
 		minDateMedi = new Date( "Jun 13 2012 12:00:00 AM");
 		maxDateMedi = new Date( "Jun 19 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartDay;
-		medicationsVerticalGridLine.alpha = 0;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0;
 		hAxisMedications.minorTickInterval = 12;
 		hAxisMedications.minorTickUnits = "hours";
 		btnMedi1m.selected = btnMedi3m.selected = btnMedi1y.selected = btnMedi3y.selected = btnMediAll.selected = btnMediCustom.selected = false;
@@ -348,8 +349,8 @@ private function handleMedicationsDateRange(range:String):void {
 	else if(range == '1m') {
 		minDateMedi = new Date("May 19 2012 12:00:00 PM");
 		maxDateMedi = new Date("Jun 19 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartDay;
-		medicationsVerticalGridLine.alpha = 0;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0;
 		hAxisMedications.minorTickInterval = 1;
 		hAxisMedications.minorTickUnits = "days";
 		btnMedi1w.selected = btnMedi3m.selected = btnMedi1y.selected = btnMedi3y.selected = btnMediAll.selected = btnMediCustom.selected = false;
@@ -357,8 +358,8 @@ private function handleMedicationsDateRange(range:String):void {
 	else if(range == '3m') {
 		minDateMedi = new Date( "Mar 19 2012 12:00:00 PM");
 		maxDateMedi = new Date( "Jun 19 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartMonth;
-		medicationsVerticalGridLine.alpha = 0;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0;
 		hAxisMedications.minorTickInterval = 1;
 		hAxisMedications.minorTickUnits = "days";
 		btnMedi1w.selected = btnMedi1m.selected = btnMedi1y.selected = btnMedi3y.selected = btnMediAll.selected = btnMediCustom.selected = false;
@@ -366,8 +367,8 @@ private function handleMedicationsDateRange(range:String):void {
 	else if(range == '1y') {
 		minDateMedi = new Date( "Aug 20 2011 12:00:00 PM");
 		maxDateMedi = new Date( "Aug 20 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartMonth;
-		medicationsVerticalGridLine.alpha = 0;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0;
 		hAxisMedications.minorTickInterval = NaN;
 		hAxisMedications.minorTickUnits = "years";
 		btnMedi1w.selected = btnMedi1m.selected = btnMedi3m.selected = btnMedi3y.selected = btnMediAll.selected = btnMediCustom.selected = false;
@@ -375,8 +376,8 @@ private function handleMedicationsDateRange(range:String):void {
 	else if(range == '3y') {
 		minDateMedi = new Date( "Aug 20 2009 12:00:00 PM");
 		maxDateMedi = new Date( "Aug 20 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartYear;
-		medicationsVerticalGridLine.alpha = 0.3;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0.3;
 		hAxisMedications.minorTickInterval = 1;
 		hAxisMedications.minorTickUnits = "months";
 		btnMedi1w.selected = btnMedi1m.selected = btnMedi3m.selected = btnMedi1y.selected = btnMediAll.selected = btnMediCustom.selected = false;
@@ -384,8 +385,8 @@ private function handleMedicationsDateRange(range:String):void {
 	else if(range == 'all') {
 		minDateMedi = new Date( "Aug 20 2009 12:00:00 PM");
 		maxDateMedi = new Date( "Aug 20 2012 12:00:00 PM");
-		hAxisMedications.labelFunction = lblHAxisPlotChartYear;
-		medicationsVerticalGridLine.alpha = 0.3;
+		hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+		controller.model.chartStyles.medicationsVerticalGridLine.alpha = 0.3;
 		hAxisMedications.minorTickInterval = 1;
 		hAxisMedications.minorTickUnits = "months";
 		btnMedi1w.selected = btnMedi1m.selected = btnMedi3m.selected = btnMedi1y.selected = btnMedi3y.selected = btnMediCustom.selected = false;

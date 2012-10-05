@@ -3,18 +3,17 @@ package events
 	import flash.events.Event;
 	
 	import models.Message;
-	import models.UserModel;
 	
 	public class ApplicationEvent extends Event
 	{
 		public static const NAVIGATE:String = "navigate";
-		public static const VIEW_FILE:String = "viewFile";
 		
-		public static const SHOW_CONTEXT_MENU:String = "showContextMenu";
+		public static const SET_STATE:String = "setState";
+		
+		public static const VIEW_FILE:String = "viewFile";
 		
 		public var data:*;
 		
-		public var user:UserModel;
 		public var message:Message;
 		
 		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)

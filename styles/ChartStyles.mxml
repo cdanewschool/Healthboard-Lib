@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Declarations>
+		
+		<fx:Array id="bgeImmunizations">
+			<mx:GridLines gridDirection="both">
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="immVerticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="0x303030" />
+				</mx:horizontalAlternateFill>
+			</mx:GridLines>
+			<mx:CartesianDataCanvas id="canvas" />
+		</fx:Array>
+
+		<fx:Array id="bgeMedicalRecords">
+			<mx:GridLines gridDirection="both">
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="medRecVerticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="{myMedRecHorizontalAlternateFill}" />
+				</mx:horizontalAlternateFill>
+				<mx:horizontalFill>
+					<s:SolidColor color="{myMedRecHorizontalFill}" />
+				</mx:horizontalFill>
+			</mx:GridLines>
+		</fx:Array>
+		
+		<fx:Array id="bgeMedications">
+			<mx:GridLines gridDirection="both" >
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="medicationsVerticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="{horizontalAlternateFill}" />
+				</mx:horizontalAlternateFill>
+				<mx:horizontalFill>
+					<s:SolidColor color="{horizontalFill}" />
+				</mx:horizontalFill>
+			</mx:GridLines>
+			<mx:CartesianDataCanvas id="canvasMed" />
+		</fx:Array>
+		
+		<fx:Array id="bgeMedicationsWidget">
+			<mx:GridLines gridDirection="both" >
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0.1" color="0xB3B3B3" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="medicationsVerticalGridLine2" weight="2" alpha="0.4" color="0x86888A" />
+				</mx:verticalStroke>
+			</mx:GridLines>
+			<mx:CartesianDataCanvas id="canvasMedWidget" />
+		</fx:Array>
+		
+		<s:SolidColor id="colorImmunizationsDue" color="0xF40000" />
+		<s:SolidColor id="colorImmunizationsDue1Month" color="0xFCEE21" />
+		<s:SolidColor id="colorImmunizationsToday" color="0x39B54A" />
+		<s:SolidColor id="colorImmunizationsCompleted" color="0xC0CED2" />
+		
+		<s:SolidColor id="colorVitalSignsProvider" color="0x3C69B4" />
+		<s:SolidColor id="colorVitalSignsPatient" color="0xD78C73" />
+		<s:SolidColor id="colorVitalSignsWidgetBlack" color="0x000000" />
+		
+		<s:SolidColor id="colorExerciseUntrackable" color="0x717070" />
+		
+		<s:SolidColor id="colorNutritionGrains" color="0xCC9966" />
+		<s:SolidColor id="colorNutritionVegetables" color="0x669966" />
+		<s:SolidColor id="colorNutritionFruits" color="0xCC6666" />
+		<s:SolidColor id="colorNutritionDairy" color="0x6699CC" />
+		<s:SolidColor id="colorNutritionProteins" color="0x996699" />
+		<s:SolidColor id="colorNutritionFats" color="0xFFB293" />
+		<s:SolidColor id="colorNutritionSweets" color="0xCCCC99" />
+		
+		<s:SolidColorStroke id="whiteStroke" color="0xFFFFFF" />
+		<s:SolidColorStroke id="grayStroke" color="0xC8C8C8" />
+		
+		<s:SolidColor id="colorExerciseGraySlider" color="0x999999" />
+		
+		<s:SolidColor id="colorMedicalRecordsOutpatient" color="0x71B2D1" /><!--also used for Medication's "Prescription Drugs"-->
+		<s:SolidColor id="colorMedicalRecordsInpatient" color="0xDC9D00" /><!--also used for Medication's "Supplements"-->
+		<s:SolidColor id="colorMedicationsOverTheCounterDrugs" color="0xE5B0B5" />
+		<s:SolidColor id="colorMedicationsHerbalMedicines" color="0x9CB40D" />
+		<s:SolidColor id="colorMedicationsPast" color="0x646464" />	
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import models.modules.MedicalRecordsModel;
+			[Bindable] public var horizontalFill:uint;
+			[Bindable] public var horizontalAlternateFill:uint;
+			[Bindable] public var myMedRecHorizontalFill:uint = 0x4A4A49;
+			[Bindable] public var myMedRecHorizontalAlternateFill:uint = 0x303030;
+			
+		]]>
+	</fx:Script>
+</s:Group>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="483" height="509"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow"
+			   creationComplete="populateNextSteps()">
+	
+	<fx:Script>
+		<![CDATA[
+			import models.modules.MedicalRecordsModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Text;
+			import mx.managers.PopUpManager;
+			
+			/*PENDING: 
+			1. Allow the action of "Mark completed" to be displayed in the Next Steps History
+			2. MAYBE (if very simple) do it so that multiple steps assigned in the same appointment show up in the same "item" (see specs)
+			3. Enable dropdowns.
+			4. Maybe (not important) define the "date" in medicalRecords.as programatically instead of creating a duplicate? xml element.
+			5. Maybe (even less important) make it so that the VGroup's height matches in the bottom the position of the horizontal line, so that the horizontal line becomes the limit...
+			---
+			On the main module: enable the recommendation buttons.
+			*/
+			private function populateNextSteps():void {
+				var myVGroup:VGroup;
+				var myTxtNextStepHeader:Text;
+				var myHGroup:HGroup;
+				var myLblBullet:Text;
+				var myTxtDescription:Text;
+				
+				var medicalRecordsNextSteps:ArrayCollection = MedicalRecordsModel(AppProperties.getInstance().controller.medicalRecordsController.model).medicalRecordsNextSteps;
+				
+				for(var i:uint = 0; i < medicalRecordsNextSteps.length; i++) {
+					myVGroup = new VGroup();
+					myTxtNextStepHeader = new Text();
+					myTxtNextStepHeader.htmlText = '<b>' + medicalRecordsNextSteps[i].date + '</b> - ' + medicalRecordsNextSteps[i].provider;
+					myHGroup = new HGroup();
+					myHGroup.paddingLeft = 27;
+					myHGroup.gap = 0;
+					myLblBullet = new Text();
+					myTxtDescription = new Text();
+					myTxtDescription.width = 420;
+					myLblBullet.htmlText = "•";
+					myTxtDescription.htmlText = medicalRecordsNextSteps[i].task;
+					if(medicalRecordsNextSteps[i].recommendation != '') myTxtDescription.htmlText += "<br>Recommendation: " + medicalRecordsNextSteps[i].recommendation;
+					myHGroup.addElement(myLblBullet);
+					myHGroup.addElement(myTxtDescription);
+					myVGroup.addElement(myTxtNextStepHeader);
+					myVGroup.addElement(myHGroup);
+					VGnextSteps.addElement(myVGroup);
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingLeft="13" paddingRight="13" gap="10" />
+	</s:layout>
+	
+	<s:Label text="Next Step History" fontWeight="bold" fontSize="16" color="#4D4D4D" />
+	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle">
+		<s:Label text="Provider:" />
+		<s:DropDownList selectedIndex="0" height="24" styleName="buttonText">
+			<s:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Dr. Berg" />
+				</s:ArrayList>							
+			</s:dataProvider>
+		</s:DropDownList>
+		<s:Label text="Time Range:" />
+		<s:DropDownList selectedIndex="1" height="24" styleName="buttonText">
+			<s:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Past week" />
+					<fx:Object label="Past month" />
+					<fx:Object label="Past year" />
+				</s:ArrayList>							
+			</s:dataProvider>
+		</s:DropDownList>
+	</s:HGroup>
+	<s:VGroup id="VGnextSteps" paddingTop="5" height="373">
+		
+	</s:VGroup>
+	<s:Line xFrom="0" xTo="453">
+		<s:stroke>
+			<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="2">
+		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+	</s:HGroup>			
+</s:TitleWindow>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<medicalRecords>
+	<medicalRecord inpdate="10/07/2011" name="Procedures" order="0.5" classification="Inpatient" reason="Colonscopy" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord inpdate="07/07/2011" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord inpdate="10/07/2011" name="Surgeries" order="1.5" classification="Inpatient" reason="Appendectomy" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord date="08/11/2011" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond"></medicalRecord>
+	<medicalRecord date="08/11/2011" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein"></medicalRecord>
+	<medicalRecord date="09/16/2011" name="Radiology" order="3.5" classification="Outpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord inpdate="10/16/2011" name="Radiology" order="3.5" classification="Inpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord name="Diagnostic Studies" order="4.5" classification="Outpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord date="08/11/2011" name="ER" order="5.5" classification="Outpatient" reason="Brain Surgery" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord date="08/11/2011" name="Specialist" order="6.5" classification="Outpatient" reason="Consultation" provider="Dr. Hammond"></medicalRecord>
+	<medicalRecord date="09/16/2011" name="PCP" order="7.5" classification="Outpatient" reason="Physician Examination" provider="Dr. Berg">
+		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Gentle Chair Yoga Class" date="17:22, October 7, 2011" />
+		<nextSteps task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Set a Reminder" date="17:23, October 7, 2011" />		
+	</medicalRecord>
+	<medicalRecord name="Visits" order="8.5" classification="Outpatient" reason="Visit" provider="Dr. Berg"></medicalRecord>
+</medicalRecords>

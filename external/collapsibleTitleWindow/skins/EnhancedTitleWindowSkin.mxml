@@ -27,121 +27,136 @@ in accordance with the terms of the license agreement accompanying it.
 	<fx:Metadata>[HostComponent("external.collapsibleTitleWindow.components.enhancedtitlewindow.EnhancedTitleWindow")]</fx:Metadata>
 	
 	<fx:Script fb:purpose="styling">
-		/* Define the skin elements that should not be colorized. 
-		For panel, border and title background are skinned, but the content area and title text are not. */
-		static private const exclusions:Array = ["background", "titleDisplay", "subTitleDisplay", "contentGroup"];
-		[Bindable] private var isWidgetClickable:Boolean;		//added (Damian)
 		
-		/**
-		 * @private
-		 */  
-		override public function get colorizeExclusions():Array {return exclusions;}
+		<![CDATA[
+			
+			import events.ApplicationDataEvent;
 		
-		/**
-		 * @private
-		 */
-		override protected function initializationComplete():void
-		{
-			isWidgetClickable = (hostComponent.module != null);
-			useChromeColor = true;
-			super.initializationComplete();
-		}
-		
-		/**
-		 * @private
-		 */
-		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
-		{
-			if (getStyle("borderVisible") == true)
+			/* Define the skin elements that should not be colorized. 
+			For panel, border and title background are skinned, but the content area and title text are not. */
+			static private const exclusions:Array = ["background", "titleDisplay", "subTitleDisplay", "contentGroup"];
+			[Bindable] private var isWidgetClickable:Boolean;		//added (Damian)
+			
+			/**
+			 * @private
+			 */  
+			override public function get colorizeExclusions():Array {return exclusions;}
+			
+			/**
+			 * @private
+			 */
+			override protected function initializationComplete():void
 			{
-				border.visible = true;
-				background.left = background.top = background.right = background.bottom = 1;
-				contents.left = contents.top = contents.right = contents.bottom = 1;
+				isWidgetClickable = (hostComponent.module != null);
+				useChromeColor = true;
+				super.initializationComplete();
 			}
-			else
+			
+			/**
+			 * @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 			{
-				border.visible = false;
-				background.left = background.top = background.right = background.bottom = 0;
-				contents.left = contents.top = contents.right = contents.bottom = 0;
-			}
-			
-			dropShadow.visible = getStyle("dropShadowVisible");
-			
-			var cr:Number = 3; //damian getStyle("cornerRadius");
-			var withControls:Boolean = 
-				(currentState == "disabledWithControlBar" || 
-					currentState == "normalWithControlBar" ||
-					currentState == "inactiveWithControlBar");
-			
-			if (cornerRadius != cr)
-			{
-				cornerRadius = cr;
+				if (getStyle("borderVisible") == true)
+				{
+					border.visible = true;
+					background.left = background.top = background.right = background.bottom = 1;
+					contents.left = contents.top = contents.right = contents.bottom = 1;
+				}
+				else
+				{
+					border.visible = false;
+					background.left = background.top = background.right = background.bottom = 0;
+					contents.left = contents.top = contents.right = contents.bottom = 0;
+				}
 				
-				dropShadow.tlRadius = cornerRadius;
-				dropShadow.trRadius = cornerRadius;
-				dropShadow.blRadius = withControls ? cornerRadius : 0;
-				dropShadow.brRadius = withControls ? cornerRadius : 0;
+				dropShadow.visible = getStyle("dropShadowVisible");
 				
-				setPartCornerRadii(topMaskRect, withControls); 
-				setPartCornerRadii(border, withControls); 
-				setPartCornerRadii(background, withControls);
-			}
-			
-			if (bottomMaskRect) setPartCornerRadii(bottomMaskRect, withControls); 
-			
-			borderStroke.color = 0xBDBDBC;	//damian
-			borderStroke.alpha = getStyle("borderAlpha");
-			backgroundFill.color = 0x3C3C3B;	//damian
-			backgroundFill.alpha = getStyle("backgroundAlpha");
-			
-			expandIndicator.visible = expandIndicator.includeInLayout = getStyle("showExpandIndicator");
-			var barHeight:Number = getStyle("titleBarHeight");
-			titleBarGroup.height = isNaN(barHeight) ? 20 : barHeight;
-			
-			super.updateDisplayList(unscaledWidth, unscaledHeight);
-		}
-		
-		/**
-		 * @private
-		 */  
-		private function setPartCornerRadii(target:Rect, includeBottom:Boolean):void
-		{            
-			target.topLeftRadiusX = cornerRadius;
-			target.topRightRadiusX = cornerRadius;
-			target.bottomLeftRadiusX = cornerRadius;		//DB includeBottom ? cornerRadius : 0;
-			target.bottomRightRadiusX = cornerRadius;		//DB includeBottom ? cornerRadius : 0;
-		}
-		
-		private var cornerRadius:Number;
-		
-		[Bindable] [Embed("images/btnWidgetArrow.png")] public var myArrow:Class;
-		[Bindable] [Embed("images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
-		//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
-		
-		private function handleHeaderClick():void {
-			
-			if(parentApplication.currentState == 'providerHome') {
-				if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
-			}
-			else {
-				parentApplication.currentState = hostComponent.module;
+				var cr:Number = 3; //damian getStyle("cornerRadius");
+				var withControls:Boolean = 
+					(currentState == "disabledWithControlBar" || 
+						currentState == "normalWithControlBar" ||
+						currentState == "inactiveWithControlBar");
 				
-				//the following if statements were originally written in "if(hostComponent.module == 'modCalendar' ANDAND parentApplication.shouldAddInitialAppointments) parentApplication.onApplicationStart()" form, but Flex was throwing strange errors regarding the ANDAND (with characters) use.
-				if(hostComponent.module == 'modCalendar') {
-					if(parentApplication.shouldAddInitialAppointments) parentApplication.onApplicationStart();
+				if (cornerRadius != cr)
+				{
+					cornerRadius = cr;
+					
+					dropShadow.tlRadius = cornerRadius;
+					dropShadow.trRadius = cornerRadius;
+					dropShadow.blRadius = withControls ? cornerRadius : 0;
+					dropShadow.brRadius = withControls ? cornerRadius : 0;
+					
+					setPartCornerRadii(topMaskRect, withControls); 
+					setPartCornerRadii(border, withControls); 
+					setPartCornerRadii(background, withControls);
 				}
-				else if(hostComponent.module == 'modImmunizations') {
-					if(!parentApplication.wasImmunizationDataLoaded) parentApplication.immunizationsXMLdata.send();
+				
+				if (bottomMaskRect) setPartCornerRadii(bottomMaskRect, withControls); 
+				
+				borderStroke.color = 0xBDBDBC;	//damian
+				borderStroke.alpha = getStyle("borderAlpha");
+				backgroundFill.color = 0x3C3C3B;	//damian
+				backgroundFill.alpha = getStyle("backgroundAlpha");
+				
+				expandIndicator.visible = expandIndicator.includeInLayout = getStyle("showExpandIndicator");
+				var barHeight:Number = getStyle("titleBarHeight");
+				titleBarGroup.height = isNaN(barHeight) ? 20 : barHeight;
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			/**
+			 * @private
+			 */  
+			private function setPartCornerRadii(target:Rect, includeBottom:Boolean):void
+			{            
+				target.topLeftRadiusX = cornerRadius;
+				target.topRightRadiusX = cornerRadius;
+				target.bottomLeftRadiusX = cornerRadius;		//DB includeBottom ? cornerRadius : 0;
+				target.bottomRightRadiusX = cornerRadius;		//DB includeBottom ? cornerRadius : 0;
+			}
+			
+			private var cornerRadius:Number;
+			
+			[Bindable] [Embed("images/btnWidgetArrow.png")] public var myArrow:Class;
+			[Bindable] [Embed("images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
+			//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
+			
+			private function handleHeaderClick():void {
+				
+				if(parentApplication.currentState == 'providerHome') {
+					if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
 				}
-				else if(hostComponent.module == 'modMedicalRecords') {
-					if(!parentApplication.wasMedicalRecordsDataLoaded) parentApplication.medicalRecordsXMLdata.send();
-				}
-				else if(hostComponent.module == 'modMedications') {
-					if(!parentApplication.wasMedicationDataLoaded) parentApplication.medicationsXMLdata.send();
+				else {
+					parentApplication.currentState = hostComponent.module;
+					
+					//the following if statements were originally written in "if(hostComponent.module == 'modCalendar' ANDAND parentApplication.shouldAddInitialAppointments) parentApplication.onApplicationStart()" form, but Flex was throwing strange errors regarding the ANDAND (with characters) use.
+					if(hostComponent.module == 'modCalendar') 
+					{
+						if(parentApplication.shouldAddInitialAppointments) 
+							parentApplication.onApplicationStart();
+					}
+					else if(hostComponent.module == 'modImmunizations') 
+					{
+						if(!parentApplication.wasImmunizationDataLoaded) 
+							parentApplication.immunizationsXMLdata.send();
+					}
+					else if(hostComponent.module == 'modMedicalRecords') 
+					{
+						if(!AppProperties.getInstance().controller.medicalRecordsController.model.dataLoaded) 
+						{
+							var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
+							evt.data = "medicalRecords";
+							dispatchEvent( evt );
+						}
+					}
+					else if(hostComponent.module == 'modMedications') {
+						if(!parentApplication.wasMedicationDataLoaded) parentApplication.medicationsXMLdata.send();
+					}
 				}
 			}
-		}
-		
+		]]>
 		
 	</fx:Script>
 	
