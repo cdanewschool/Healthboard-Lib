@@ -673,6 +673,13 @@ paddingLeft:30;
 	font-size: 12;
 }
 
+/*	patient search	*/
+.white14Bold {
+	font-weight: bold;
+	fontSize: 14;
+	color: "0xFFFFFF";
+}
+
 /*	context menu	*/
 
 .chatModes {

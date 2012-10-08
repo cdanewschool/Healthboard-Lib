@@ -15,8 +15,6 @@ package models
 		public var patientAlerts:ArrayCollection;
 		public var patientAppointments:ArrayCollection;
 		public var patientVitalSigns:ArrayCollection;
-		public var patientExercises:ArrayCollection;
-		public var patientExercisesWidget:ArrayCollection;
 		
 		public var patientAppointmentIndex:int;
 		
@@ -31,8 +29,6 @@ package models
 			patientAlerts = new ArrayCollection();
 			patientAppointments = new ArrayCollection();
 			patientVitalSigns = new ArrayCollection();
-			patientExercises = new ArrayCollection();
-			patientExercisesWidget = new ArrayCollection();
 		}
 
 		private function dispatchDataLoad( data:* ):void

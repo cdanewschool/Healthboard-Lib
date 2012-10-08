@@ -4,6 +4,9 @@ package ASclasses
 	{
 		public static const STATE_LOGGED_IN:String = "loggedIn";
 		
+		public static const MODULE_EDUCATIONAL_RESOURCES:String = "modEducationalResources";
+		
+		public static const IMMUNIZATIONS:String = "immunizations";
 		public static const MEDICATIONS:String = "medications";
 		public static const MEDICAL_RECORDS:String = "medicalRecords";
 		

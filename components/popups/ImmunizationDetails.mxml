@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	label="{immunizationData.name}"
+	creationComplete="init()">
+	
+	<fx:Script>
+		<![CDATA[
+			import controllers.ImmunizationsController;
+			
+			import models.modules.ImmunizationsModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.LinkButton;
+			import mx.controls.Text;
+			import mx.utils.ObjectProxy;
+			
+			[Bindable] public var immunizationData:Object;
+			[Bindable] public var immunizationHistory:ArrayCollection = new ArrayCollection();
+			
+			[Bindable] private var controller:ImmunizationsController = AppProperties.getInstance().controller.immunizationsController;
+			private var model:ImmunizationsModel = controller.model as ImmunizationsModel;
+			
+			private function init():void 
+			{
+				for(var i:uint = 0; i < model.immunizationsData.length; i++) 
+				{
+					if(model.immunizationsData.getItemAt(i).name == immunizationData.name) immunizationHistory.addItem( model.immunizationsData.getItemAt(i) );
+				}
+				
+				var number:uint = immunizationHistory.length;
+				
+				for(var j:uint = 0; j < immunizationHistory.length; j++) 
+				{
+					immunizationHistory.getItemAt(j).number = number;
+					number--;
+				}
+			}
+			
+			private function lblAge(item:Object, column:DataGridColumn):String 
+			{
+				return item.Date == '-' ? '-' : String(int(item.date.substr(6)) - 1965);
+			}
+			
+			private function lblStatus(item:Object, column:DataGridColumn):String 
+			{
+				return controller.getStatus(item.completed,item.date);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout gap="0" />
+	</s:layout>
+	
+	<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+		
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="22" />
+		</s:layout>
+
+		<s:Button label="Print Vaccination Information Statement" height="24" styleName="buttonText" />
+		<s:CheckBox label="I have read and acknowledged the Vaccination Information Statement" color="0xFFFFFF" />
+		
+	</s:BorderContainer>
+	
+	<s:Scroller height="100%" horizontalScrollPolicy="off">	
+		<s:HGroup paddingTop="6" paddingBottom="15" width="960">
+			<s:VGroup width="325" gap="15">
+				<s:Label text="Vaccination Details" styleName="greenBoldText" paddingLeft="20" paddingTop="13" />
+				<s:VGroup color="#EDEDED" gap="4">
+					<s:VGroup gap="4">
+						<s:HGroup>
+							<s:Label text="Name" width="120" textAlign="right" fontWeight="bold" />
+							<s:Label text="{immunizationData.name}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label text="Description" width="120" textAlign="right" fontWeight="bold" />
+							<s:Label text="{immunizationData.description}" paddingLeft="7" width="150" />
+						</s:HGroup>
+					</s:VGroup>
+					<s:VGroup gap="4">
+						<s:HGroup paddingTop="15">
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Exempt" />
+							<s:Label text="{immunizationData.exempt}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Occupational Status" />
+							<s:Label text="{immunizationData.occupationalStatus}" paddingLeft="7" />
+						</s:HGroup>
+					</s:VGroup>
+					<s:HGroup paddingTop="15"> 
+						<s:Label text="Status" width="120" textAlign="right" fontWeight="bold" />
+						<s:Label text="{controller.getStatus(immunizationData.completed,immunizationData.date)}" paddingLeft="7" />
+					</s:HGroup>
+					<s:VGroup gap="4">
+						<s:HGroup paddingTop="15">
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Last Given" />
+							<s:Label text="{immunizationData.lastGiven}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="At age" />
+							<s:Label text="{immunizationData.lastGiven == '-' ? '-' : int(immunizationData.lastGiven.substr(6)) - 1965}" paddingLeft="7" />
+						</s:HGroup>
+					</s:VGroup>
+					<s:VGroup gap="4">
+						<s:HGroup paddingTop="15">
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Next Due" />
+							<s:Label text="{immunizationData.nextDue}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="At age" />
+							<s:Label text="{immunizationData.nextDue == '-' ? '-' : int(immunizationData.nextDue.substr(6)) - 1965}" paddingLeft="7" />
+						</s:HGroup>
+					</s:VGroup>
+					<s:VGroup gap="4">
+						<s:HGroup paddingTop="15">
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Series" />
+							<s:Label text="{immunizationData.series}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Size/Result" />
+							<s:Label text="{immunizationData.sizeResult}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Mfg" />
+							<s:Label text="{immunizationData.mfg}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Lot Nbr" />
+							<s:Label text="{immunizationData.lotNbr}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Expires" />
+							<s:Label text="{immunizationData.expires}" paddingLeft="7" />
+						</s:HGroup>
+					</s:VGroup>
+					<s:VGroup gap="4">
+						<s:HGroup paddingTop="15">
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Last Edit" />
+							<s:Label text="{immunizationData.lastEdit}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="DEERS ack" />
+							<s:Label text="{immunizationData.deersAck}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="MTF Code" />
+							<s:Label text="{immunizationData.mtfCode}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Route" />
+							<s:Label text="{immunizationData.route}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Site" />
+							<s:Label text="{immunizationData.site}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Dosate" />
+							<s:Label text="{immunizationData.dosate}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="Vaccine ID" />
+							<s:Label text="{immunizationData.vaccineID}" paddingLeft="7" />
+						</s:HGroup>
+						<s:HGroup>
+							<s:Label width="120" textAlign="right" fontWeight="bold" text="VIS Version" />
+							<s:Label text="{immunizationData.visVersion}" paddingLeft="7" />
+						</s:HGroup>
+					</s:VGroup>
+					
+				</s:VGroup>
+			</s:VGroup>
+			
+			<s:VGroup>
+				
+				<s:Label text="Vaccination History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
+				<mx:DataGrid 
+					dataProvider="{immunizationHistory}" width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
+					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="16"
+					headerBackgroundSkin="skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeaderAlternative" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
+					 borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
+					
+					<mx:columns> 
+						<mx:DataGridColumn dataField="number" headerText="Number" paddingLeft="5" width="78" />
+						<mx:DataGridColumn dataField="date" headerText="Date" paddingLeft="5" width="134" />
+						<mx:DataGridColumn dataField="age" headerText="Age" labelFunction="lblAge" paddingLeft="5" width="64" />
+						<mx:DataGridColumn dataField="status" headerText="Status" labelFunction="lblStatus" paddingLeft="5" />
+					</mx:columns> 
+				</mx:DataGrid>		
+				
+			</s:VGroup>
+			
+		</s:HGroup>
+	</s:Scroller>
+</s:NavigatorContent>

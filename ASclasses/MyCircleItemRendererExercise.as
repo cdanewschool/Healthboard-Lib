@@ -3,6 +3,8 @@ package ASclasses
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
+	import models.modules.ExerciseModel;
+	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
 	import mx.charts.renderers.CircleItemRenderer;
@@ -111,13 +113,15 @@ package ASclasses
 			if (fill) fill.begin(g, rcFill, null);
 			
 			var maxDate:String;
-			if(_data.item.measure == 'PRTscore') maxDate = FlexGlobals.topLevelApplication.PRTscoreMax;
-			else if(_data.item.measure == 'mileRun') maxDate = FlexGlobals.topLevelApplication.mileRunMax;
-			else if(_data.item.measure == 'curlUps') maxDate = FlexGlobals.topLevelApplication.curlUpsMax;
-			else if(_data.item.measure == 'pushUps') maxDate = FlexGlobals.topLevelApplication.pushUpsMax;
-			else if(_data.item.measure == 'runWalk') maxDate = FlexGlobals.topLevelApplication.runWalkMax;
-			else if(_data.item.measure == 'bike') maxDate = FlexGlobals.topLevelApplication.bikeMax;
-			else if(_data.item.measure == 'comments') maxDate = FlexGlobals.topLevelApplication.exPAcommentsMax;
+			var model:ExerciseModel = ExerciseModel(AppProperties.getInstance().controller.exerciseController.model);
+			
+			if(_data.item.measure == 'PRTscore') maxDate = model.PRTscoreMax;
+			else if(_data.item.measure == 'mileRun') maxDate = model.mileRunMax;
+			else if(_data.item.measure == 'curlUps') maxDate = model.curlUpsMax;
+			else if(_data.item.measure == 'pushUps') maxDate = model.pushUpsMax;
+			else if(_data.item.measure == 'runWalk') maxDate = model.runWalkMax;
+			else if(_data.item.measure == 'bike') maxDate = model.bikeMax;
+			else if(_data.item.measure == 'comments') maxDate = model.exPAcommentsMax;
 			
 			if(_data.item.date != maxDate) {
 				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
