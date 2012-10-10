@@ -6,6 +6,7 @@ package controllers
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.mxml.HTTPService;
 	
 	public class ImmunizationsController extends BaseModuleController
 	{
@@ -14,6 +15,8 @@ package controllers
 			super();
 			
 			model = new ImmunizationsModel();
+			model.dataService.url = "data/immunizations.xml";
+			model.dataService.addEventListener( ResultEvent.RESULT, dataResultHandler );
 		}
 		
 		override public function dataResultHandler(event:ResultEvent):void 

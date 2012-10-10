@@ -6,6 +6,7 @@ package controllers
 	import mx.charts.DateTimeAxis;
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.mxml.HTTPService;
 	import mx.utils.ObjectProxy;
 	import mx.utils.ObjectUtil;
 	
@@ -19,6 +20,8 @@ package controllers
 			super();
 			
 			model = new MedicalRecordsModel();
+			model.dataService.url = "data/medicalRecords.xml";
+			model.dataService.addEventListener( ResultEvent.RESULT, dataResultHandler );
 		}
 		
 		override public function dataResultHandler(event:ResultEvent):void 
