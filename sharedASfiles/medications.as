@@ -41,12 +41,12 @@ import mx.graphics.SolidColor;
 import mx.managers.PopUpManager;
 import mx.managers.SystemManager;
 import mx.rpc.events.ResultEvent;
-import mx.utils.ArrayUtil;
 import mx.utils.ObjectProxy;
 import mx.utils.ObjectUtil;
 
 import spark.components.TitleWindow;
 
+import util.ArrayUtil;
 import util.ChartLabelFunctions;
 
 [Bindable] public var medicationsData:ArrayCollection = new ArrayCollection();			//data provider for the Plot Chart
@@ -163,7 +163,7 @@ private function medicationsCategoriesForTree():void {
 		{category: "Supplements", children: []},
 		{category: "Herbal Medicines", children: []}
 	]);
-	var medicationsCategoriesReversed:Array = unique(medicationsCategories).reverse();
+	var medicationsCategoriesReversed:Array = ArrayUtil.unique(medicationsCategories).reverse();
 	var currentCategory:int = -1;
 	var currentLeaf:uint = 0;
 	for(var i:uint = 0; i < medicationsCategoriesReversed.length; i++) {

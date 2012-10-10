@@ -10,6 +10,8 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
+			
+			import util.StringUtil;
 			[Bindable] public var medTypeLabel:String;
 			[Bindable] public var medTypeData:String;
 			[Bindable] public var medName:String;
@@ -29,7 +31,7 @@
 				if(txtName.text == "ZOCOR") displayWarning();
 				
 				var strFrequency:String = (asNeeded.selected) ? "as needed" : (numFrequency.value == 1) ? "every day" : (numFrequency.value == 2) ? "twice a day" : numFrequency.value + " times a day";
-				var newMedication:Object = {name: parentApplication.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, intake: numRoute.value, taken: false, status: 'active', reason: txtReason.text};
+				var newMedication:Object = {name: StringUtil.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, intake: numRoute.value, taken: false, status: 'active', reason: txtReason.text};
 				
 				var temp:Array = new Array();		//we create this temp array because the y-axis is not updating unless we medicationsCategories is set to "new Array" and reset...
 				temp = parentApplication.unique(parentApplication.medicationsCategories);

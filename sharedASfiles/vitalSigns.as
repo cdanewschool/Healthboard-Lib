@@ -1,3 +1,5 @@
+private var fullname:String = '';	//	TODO: pull from module once this stuff is in it's own model
+
 [Bindable] public var arrVitalSigns:ArrayCollection = new ArrayCollection([
 	{ vital: "Weight", chartType: "normal", chartMin: 160, chartMax: 210,
 		chart:[ { data:[{value:200, expectation:170, date:'09/03/2011', type:'patient', vital:'weight'},
