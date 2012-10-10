@@ -16,9 +16,11 @@ package events
 		
 		public var message:Message;
 		
-		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
+		public function ApplicationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, data:* = null )
 		{
 			super(type, bubbles, cancelable);
+			
+			this.data = data;
 		}
 		
 		override public function clone():Event
