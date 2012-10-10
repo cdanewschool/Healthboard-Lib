@@ -12,23 +12,25 @@ package models
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
-		public var patientAlerts:ArrayCollection;
-		public var patientAppointments:ArrayCollection;
-		public var patientVitalSigns:ArrayCollection;
+		public var fullname:String;
 		
-		public var patientAppointmentIndex:int;
+		public var patientAlerts:ArrayCollection;
+		public var patientVitalSigns:ArrayCollection;
 		
 		public var chartStyles:ChartStyles;
 		
 		private var _patientAlertsLoaded:Boolean;
+		
+		public var today:Date;
 		
 		public function ApplicationModel()
 		{
 			super();
 			
 			patientAlerts = new ArrayCollection();
-			patientAppointments = new ArrayCollection();
 			patientVitalSigns = new ArrayCollection();
+			
+			today = new Date();
 		}
 
 		private function dispatchDataLoad( data:* ):void

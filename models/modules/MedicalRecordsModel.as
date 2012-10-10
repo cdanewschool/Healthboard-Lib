@@ -19,6 +19,8 @@ package models.modules
 				]
 			);
 		
+		public var pendingIndex:int = -1;
+		
 		public function MedicalRecordsModel()
 		{
 			super();

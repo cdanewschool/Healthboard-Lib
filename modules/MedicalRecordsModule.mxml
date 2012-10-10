@@ -2,7 +2,7 @@
 <s:VGroup 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" show="onShow()"
 	creationComplete="init()" xmlns:general="components.general.*" xmlns:plus="external.TabBarPlus.plus.*" xmlns:components="components.*">
 	
 	<fx:Declarations>
@@ -20,7 +20,7 @@
 			import controllers.MedicalRecordsController;
 			
 			import events.ApplicationDataEvent;
-			import events.RecommendationEvent;
+			import events.AppointmentEvent;
 			
 			import external.TabBarPlus.plus.TabPlus;
 			
@@ -52,7 +52,6 @@
 			
 			import util.ChartLabelFunctions;
 			
-			[Bindable] public var selectedAppointmentIndex:int = 0;
 			[Bindable] public var showHeader:Boolean = true;
 			
 			[Bindable] private var controller:MedicalRecordsController = AppProperties.getInstance().controller.medicalRecordsController as MedicalRecordsController;
@@ -345,9 +344,9 @@
 				lblNoMedicalRecords1.visible = lblNoMedicalRecords1.includeInLayout = lblNoMedicalRecords2.visible = lblNoMedicalRecords2.includeInLayout = false;
 			}
 			
-			public function handleRecommendation(recommendation:String):void 
+			public function requestClass(recommendation:String):void 
 			{
-				dispatchEvent( new RecommendationEvent( RecommendationEvent.HANDLE, true, false, recommendation ) );
+				dispatchEvent( new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, recommendation ) );
 			}
 			
 			private function searchFilterMedRed():void 
@@ -404,24 +403,6 @@
 				invalidateDisplayList();
 			}
 			
-			/**
-			 * This function only runs the very first time the Medical Records module is created/opened.
-			 * Its purpose is to check if the module is being opened from the "Appointments" module (there's a link under completed appts to "View Medical Record").
-			 * If so, we show the corresponding medical record/
-			 */
-			private function handleIfFromAppts():void 
-			{
-				if( model.moduleCreated ) 
-				{
-					//this will only be true if being called from the appts menu, before the Medical Records module was created.
-					var index:int = selectedAppointmentIndex;
-					viewServiceDetails( model.medicalRecordsData.getItemAt(index) );
-				}
-				
-				//	this is used to tell the Appointments module (MonthView.as) that there the viewServiceDetails() can be called directly.
-				else model.moduleCreated = true;
-			}
-			
 			private function onDataLoaded(event:ApplicationDataEvent=null):void
 			{
 				//	setting openItems = the first two only (instead of all 4 categories), because if we have the 4 categories "open", then we have a conflict with the filter (this is done so we could have "Surgeries" and "Procedures" as branches, without children, without the "open/close" arrows)
@@ -436,6 +417,18 @@
 				plotMedicalRecords.height= model.medicalRecordsCategories.length * 28 + 24;
 				
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
+				
+				onShow();
+			}
+			
+			private function onShow():void
+			{
+				if( model.pendingIndex > -1 )
+				{
+					viewServiceDetails( model.medicalRecordsData.getItemAt( model.pendingIndex ) );
+					
+					model.pendingIndex = -1
+				}
 			}
 			
 			private function init():void
@@ -454,8 +447,6 @@
 				}
 				
 				header.searchPlaceholder = SEARCH_PLACEHOLDER;
-				
-				handleIfFromAppts();
 				
 				tabsMedicalRecords.addEventListener( TabPlus.CLOSE_TAB_EVENT, onCloseTab );
 				
@@ -697,7 +688,7 @@
 										<s:Label text="{data.task}" width="420" lineHeight="16" />
 										<mx:HBox visible="{data.recommendation != ''}" includeInLayout="{data.recommendation != ''}">
 											<s:Label text="Recommendation:" paddingTop="4" /><!--paddingTop was 2 when fontFamily="myMyriadNoCFF"-->
-											<mx:LinkButton id="btnNextStepsRecommendation" label="{data.recommendation}" paddingTop="-5" paddingLeft="-7" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsRecommendation.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation.styleName='linkBtn';" click="{outerDocument.handleRecommendation(data.recommendation)}" />
+											<mx:LinkButton id="btnNextStepsRecommendation" label="{data.recommendation}" paddingTop="-5" paddingLeft="-7" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsRecommendation.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation.styleName='linkBtn';" click="{outerDocument.requestClass(data.recommendation)}" />
 										</mx:HBox>
 									</mx:VBox>
 								</mx:HBox>
