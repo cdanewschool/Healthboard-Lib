@@ -3,7 +3,6 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"  xmlns:fxg="components.fxg.*"  
-	horizontalAlign="center" paddingTop="156" 
 	creationComplete="init()">
 	
 	<fx:Metadata>
@@ -50,6 +49,8 @@
 			
 			private var model:ApplicationModel;
 			
+			public var adminUsername:String = 'pipi';
+			
 			private function clearValidationErrors():void 
 			{
 				hgLoginFail.visible = hgLoginFail.includeInLayout = false; 
@@ -90,7 +91,7 @@
 			{
 				var model:ApplicationModel = AppProperties.getInstance().controller.model;
 				
-				if( userID.text == 'pipi' 
+				if( userID.text == adminUsername
 					|| (userID.text == 'piim' && password.text == 'password') 
 					|| (userID.text == 'james' && password.text == 'archer') 
 					|| (userID.text == 'melissa' && password.text == 'archer') 
@@ -275,7 +276,7 @@
 		
 	</s:BorderContainer>
 	
-	<s:VGroup>
+	<s:VGroup width="100%" horizontalAlign="center" paddingTop="156" >
 		
 		<s:BorderContainer 
 			id="bcLogin" width="528" height="328" 
