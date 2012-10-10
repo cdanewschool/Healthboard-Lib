@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:LinkButton xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   width="100%" fontSize="9" color="0xFFFFFF" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" toggle="true" skin="skins.appointments.MyLinkButtonSkin" textAlign="left" paddingLeft="1" selected="{data.selected}">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+</mx:LinkButton>

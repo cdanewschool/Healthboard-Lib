@@ -18,7 +18,7 @@
 			import components.popups.myClassesWindow;
 			import components.popups.myConfirmCancelWindow;
 			
-			import controllers.PatientAppointmentsController;
+			import controllers.AppointmentsController;
 			
 			import events.ApplicationEvent;
 			import events.AppointmentEvent;
@@ -37,9 +37,11 @@
 			
 			import styles.ChartStyles;
 			
-			[Bindable] private var controller:PatientAppointmentsController = AppProperties.getInstance().controller.appointmentsController as PatientAppointmentsController;
+			[Bindable] private var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController as AppointmentsController;
 			[Bindable] public var model:AppointmentsModel = controller.model as AppointmentsModel;
 			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] public var showHeader:Boolean = true;
 			
 			private var cancelAppointmentButton:Button;
 			private var cancelAppointmentPopup:myConfirmCancelWindow;
@@ -601,7 +603,8 @@
 		id="header"
 		icon="@Embed('images/btnHome.png')" title="Appointments" 
 		actionPrefix="You have" actionCount="0" actionSuffix="appointments in the coming week." showBackground="false"
-		showSearch="true" searchPlaceholder="Search appointments" />
+		showSearch="true" searchPlaceholder="Search appointments" 
+		visible="{showHeader}" includeInLayout="{showHeader}" />
 	
 	<s:Spacer height="10" />
 	
