@@ -688,3 +688,15 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	skin-class:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 	show-expand-indicator:true;
 }
+
+.dateChooserDark {
+	contentBackgroundColor: "0x3C3C3B";
+	borderColor: "0x4D4D4D";
+	color: "0xEDEDED";
+	headerColors: "0xF7F7F7","0xB3B3B3";
+	selectionColor: "0x585858";
+	rollOverColor: "0x3C3C3B";
+	todayColor: "0xD6D6D6";
+	headerStyleName: "dateChooserVitalGrayHeader";
+	fontSize: 11;
+}

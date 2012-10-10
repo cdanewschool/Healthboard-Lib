@@ -122,6 +122,7 @@ in accordance with the terms of the license agreement accompanying it.
 			
 			if(parentApplication.currentState == 'providerHome') {
 				if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
+				//else parentApplication.viewStackMain.selectedChild.currentState = hostComponent.module;
 			}
 			else {
 				parentApplication.currentState = hostComponent.module;
