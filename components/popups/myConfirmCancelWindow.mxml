@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="142"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow"
+			   color="0x4D4D4D">
+	
+	<fx:Script>
+		<![CDATA[
+			import events.AppointmentEvent;
+			
+			import external.calendar.classes.model.DataHolder;
+			
+			import mx.managers.PopUpManager;
+			
+			public var apptToCancel:Object;
+			
+			private function cancelAppt():void 
+			{
+				var event:AppointmentEvent = new AppointmentEvent( AppointmentEvent.CANCEL_APPOINTMENT, true );
+				event.data = apptToCancel;
+				dispatchEvent( event );
+				
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="12" paddingBottom="12" paddingLeft="12" paddingRight="12" />
+	</s:layout>
+	
+	<s:Label text="Are you sure you want to cancel this appointment?" fontWeight="bold" fontSize="16" />
+	<s:Label text="Once you cancel this apppointment, a message with be sent to your provider team informing them of your cancelation. This action cannot be undone." width="350" paddingTop="14" paddingBottom="8" />
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Cancel Appointment" click="cancelAppt()" styleName="buttonText" height="24" />
+		<s:Button label="Do Not Cancel Appointment" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+	</s:HGroup>			
+</s:TitleWindow>
