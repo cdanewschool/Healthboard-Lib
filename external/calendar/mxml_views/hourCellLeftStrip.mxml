@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LEFT BKUE SIDE OF DAY AND WEEK VIEW. SHOWS HOURS -->
+<mx:Canvas
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	x="0"
+	y="0"
+	width="70"
+	height="72">  <!-- (damian) backgroundColor="#7FC4FF" -->
+	<s:Label x="35" y="5" text="24" styleName="lblHours" id="lblHours"/>
+	<s:Label x="48" y="5" text="00" styleName="lblMins" id="lblMins"/>
+	<!--<mx:HRule bottom="0" width="62" strokeColor="#FFFFFF" left="4" strokeWidth="1"/>
+	<mx:VRule x="68" y="0" height="100%" strokeColor="#004C7C"/>-->
+</mx:Canvas>

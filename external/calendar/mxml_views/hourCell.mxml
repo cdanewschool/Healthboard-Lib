@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Buttons/Child view for showing hour strip used in day view and month view -->
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml"
+		   xmlns:s="library://ns.adobe.com/flex/spark" 
+		   width="720"
+		   height="72"
+		   xmlns:ns="calendar.mxml_views.*">
+	<mx:Script>
+		<![CDATA[
+			import events.AppointmentEvent;
+			
+			import external.calendar.classes.model.DataHolder;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			import mx.core.FlexGlobals;
+			import mx.utils.ObjectUtil;
+			
+			/*
+			public function isVisible():Boolean {
+				return FlexGlobals.topLevelApplication.appointmentRequested && (Math.floor(Math.random()*20)+1 == 1);
+			}*/
+			
+			private var myReason:String;
+			
+			//ADDED BY DAMIAN, TRYING TO CALL THIS FUNCTION ONCE THE USER CLICKS ON "REQUEST AN APPOINTMENT"; TO DISPLAY 5% OF THE BUTTONS...
+			public function makeButtonsVisible():void {
+				btnFirstHalf.visible = Math.floor(Math.random()*20)+1 == 1;
+				btnSecondHalf.visible = Math.floor(Math.random()*20)+1 == 1;
+			}
+			
+			/**
+			 * FUNCTION ADDED BY MICHAEL
+			 * you might wana use View States for these buttons and just swap states out??
+			 */
+			
+			public function fillSlot(data:Object, today:Date = null, thisHour:int = 0):void{
+				//////THE FOLLOWING CHUNK OF CODE WAS ADDED BY DB; IT IS USED WHEN THE USER ADDS A NEW APPOINTMENT (and CommonUtils' createRightHourStripTimeSlots() function is called redrawing the calendar with the new appointment),
+				//////BUT THEN THIS FUNCTION IS CALLED WHICH OVERWRITE the calendar and only shows the buttons from timeSlots (below)...
+				//////SO THIS CHUNK CHECKS FOR EXISTING APPOINTMENTS AND DISPLAYS THEM (and ensures they're not overwritten below, by setting the "ignore" variables...)
+				
+				var ignoreData:Boolean = false;				//these 'ignore' variables wll be true if there is an existing appointment for a given timeslot, thus telling the function not to make additional buttons available for that slot
+				var ignoreFirstHalf:Boolean = false;
+				var ignoreSecondHalf:Boolean = false;
+				var strLabel:String;
+				var thisMeridiem:String;
+				if(thisHour == 0){
+					strLabel = "12";
+					thisMeridiem = "am";
+				}else if(thisHour>12){
+					strLabel = String(thisHour-12);
+					thisMeridiem = "pm";
+				}else{
+					strLabel = String(thisHour);
+					thisMeridiem = "am";
+				}
+				strLabel = (strLabel.length < 2) ? ("0" + strLabel) : strLabel;
+				
+				// check if event already saved for current time then show its description
+				for(var j:int=0; j<DataHolder.getInstance().dataProvider.length; j++) {
+					var obj:Object = DataHolder.getInstance().dataProvider[j];
+					//Alert.show(obj.date.toString());
+					//Alert.show(obj.date + "///" + today + "///" + ObjectUtil.dateCompare(obj.date,today));
+					if(ObjectUtil.dateCompare(obj.date, today) == 0){
+						if(obj.hour == strLabel && obj.meridiem == thisMeridiem){
+							if(obj.mins == 0){
+								btnFirstHalf.label = obj.desc;
+								btnFirstHalf.visible = true;
+								//btnFirstHalf.id = currentDate + '1';		//added
+								ignoreFirstHalf = true;
+							}else{
+								btnSecondHalf.label = obj.desc;
+								btnSecondHalf.visible = true;
+								//btnSecondHalf.id = currentDate + '2';		//added
+								ignoreSecondHalf = true;
+							}
+							//ignoreData = true;
+						}
+					}
+				}
+				
+				////////END "CHUNK"
+				
+				var myDHlength:uint = DataHolder.getInstance().dataProvider.length;
+					
+				// if there is a data object define decide what buttons to enable
+				//if(!ignoreData) {
+					if(data){
+						if(!ignoreFirstHalf && data.firstSlot){
+							btnFirstHalf.visible = true;
+							btnFirstHalf.label = '+ Click to Request';
+							if(data.type == "appointment") btnFirstHalf.addEventListener(MouseEvent.CLICK, handleClick);
+							else btnFirstHalf.addEventListener(MouseEvent.CLICK, handleClickClass);
+							myReason = data.reason;
+						}
+						if(!ignoreSecondHalf && data.secondSlot){
+							btnSecondHalf.visible = true;
+							btnSecondHalf.label = '+ Click to Request';
+							if(data.type == "appointment") btnSecondHalf.addEventListener(MouseEvent.CLICK, handleClick2);
+							else btnSecondHalf.addEventListener(MouseEvent.CLICK, handleClick2Class);
+							myReason = data.reason;
+						}
+					}else{
+						// if no data disable both
+						if(!ignoreFirstHalf) btnFirstHalf.visible = false;
+						if(!ignoreSecondHalf) btnSecondHalf.visible = false;
+						if(!ignoreFirstHalf) btnFirstHalf.label = '';
+						if(!ignoreSecondHalf) btnSecondHalf.label = '';
+					}
+				//}
+			}
+			
+			private function handleClick(event:Event):void {
+				addAppointment('first', myReason);
+			}
+			
+			private function handleClick2(event:Event):void {
+				addAppointment('second', myReason);
+			}
+			
+			private function handleClickClass(event:Event):void {
+				addClass('first', myReason);
+			}
+			
+			private function handleClick2Class(event:Event):void {
+				addClass('second', myReason);
+			}
+			
+			private function addAppointment(half:String, reason:String):void {
+				var obj:Object = new Object();
+				obj.date = data.date;	// currentDate;
+				obj.hour = data.time; // cmbHours.selectedItem.data;
+				obj.meridiem = data.meridiem;	//cmbMeridiem.selectedItem.data;
+				obj.mins = half == 'first' ? 0 : 30;	//  cmbMins.selectedItem.data;
+				obj.desc = reason;	//"Appt requested";
+				obj.type = "Appointment";
+				obj.provider = "Dr. Berg";
+				obj.status = "Scheduled";
+				DataHolder.getInstance().addEvent(obj);
+				
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_APPOINTMENT, true );
+				evt.data = obj;
+				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+			}
+			
+			private function addClass(half:String, reason:String):void {
+				var obj:Object = new Object();
+				obj.date = data.date;	// currentDate;
+				obj.hour = data.time; // cmbHours.selectedItem.data;
+				obj.meridiem = data.meridiem;	//cmbMeridiem.selectedItem.data;
+				obj.mins = half == 'first' ? 0 : 30;	//  cmbMins.selectedItem.data;
+				obj.desc = reason;	//"Appt requested";
+				obj.type = "Class";
+				obj.provider = "Nurse Lee";
+				obj.status = "Scheduled";
+				DataHolder.getInstance().addEvent(obj);
+				
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_CLASS, true );
+				evt.data = obj;
+				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+			}
+		]]>
+	</mx:Script>
+	<mx:Button width="100%" height="50%" styleName="btnDayItems" paddingTop="-15" paddingLeft="1" fontSize="9" color="0xFFFFFF" id="btnFirstHalf" visible="false" />				<!--label="+ Click to Request" click="addAppointment('first')"--><!--textRollOverColor="0xFFFFFF" -->
+	<mx:Button width="100%" height="50%" styleName="btnDayItems" paddingTop="-15" paddingLeft="1" fontSize="9" color="0xFFFFFF" bottom="0" id="btnSecondHalf" visible="false" />	<!--label="+ Click to Request" click="addAppointment('second')"-->
+	
+	<mx:VRule height="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6" />
+	<mx:HRule x="0" top="0" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6"/>
+	<mx:HRule x="0" top="18" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1" />
+	<mx:HRule x="0" top="36" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+	<mx:HRule x="0" top="54" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+</mx:Canvas>

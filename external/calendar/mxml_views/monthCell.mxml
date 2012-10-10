@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- MONTH CELL IS USED IN MONTH VIEW TO SHOW SQUARE BOXES
+DESCRIPTION TEXT IS USED TO SHOW EVENT'S DESCRIPTION
+-->
+<mx:Canvas
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	width="93"
+	styleName="canDayCellBase"
+	horizontalScrollPolicy="off" verticalScrollPolicy="off"> <!-- orig: w=115 h=112 --><!-- height="106"-->
+	<mx:ApplicationControlBar id="canHeader" x="0" y="-3" height="22" width="100%" styleName="appBarDayCell" visible="false">	<!-- (damian) added the visible="false" to remove the header; cause if I remove the whole thing it messes up the days --> 
+		<mx:Label width="11" height="16" id="lblDateX" color="#FFFFFF" fontWeight="bold" styleName="lblHours"/>
+	</mx:ApplicationControlBar>
+
+	
+	<mx:Label width="90" height="16" id="lblDate" fontSize="12" textAlign="right" top="6" right="5" styleName="calendarNonSelectedDay" /><!-- styleName="lblHours"-->
+	<!--<mx:LinkButton width="100%" id="txtDesc" top="22" fontSize="9" color="0xFFFFFF" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" toggle="true" skin="skins.appointments.MyLinkButtonSkin" />-->
+ 	<!--<mx:Label width="100%" selectable="true" id="txtDesc" top="22" fontSize="9" color="0xFFFFFF" paddingLeft="3" />--><!--styleName="txtArea"-->
+</mx:Canvas>
