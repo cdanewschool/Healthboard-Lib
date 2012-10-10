@@ -19,6 +19,7 @@ package controllers
 	import mx.core.FlexGlobals;
 	import mx.events.ListEvent;
 	import mx.managers.PopUpManager;
+	import mx.states.State;
 	
 	import spark.components.Application;
 	import spark.components.TitleWindow;
@@ -72,7 +73,13 @@ package controllers
 		
 		protected function onSetState( event:ApplicationEvent ):void
 		{
-			application.currentState = event.data;
+			for each( var states:State in application.states )
+			{
+				if( states.name == event.data )
+				{
+					application.currentState = event.data;
+				}
+			}
 		}
 		
 		protected function onHandleAppointmentRequest( event:AppointmentEvent ):void 
