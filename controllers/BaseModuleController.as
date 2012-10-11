@@ -23,7 +23,7 @@ package controllers
 			model.dataLoaded = true;
 			
 			var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOADED, true );
-			dispatchEvent( evt );
+			model.dispatchEvent( evt );
 		}
 	}
 }

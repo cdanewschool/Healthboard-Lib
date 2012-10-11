@@ -15,6 +15,9 @@ package controllers
 	import flash.display.DisplayObject;
 	
 	import models.ApplicationModel;
+	import models.modules.ImmunizationsModel;
+	import models.modules.MedicalRecordsModel;
+	import models.modules.MedicationsModel;
 	
 	import mx.core.FlexGlobals;
 	import mx.events.ListEvent;
@@ -128,7 +131,7 @@ package controllers
 		
 		public function loadData( id:String ):Boolean
 		{
-			if( id == Constants.IMMUNIZATIONS )
+			if( id == ImmunizationsModel.ID )
 			{
 				if( !immunizationsController.model.dataLoaded ) 
 				{
@@ -137,7 +140,7 @@ package controllers
 					return true;
 				}
 			}
-			else if( id == Constants.MEDICATIONS )
+			else if( id == MedicationsModel.ID )
 			{
 				if( !medicationsController.model.dataLoaded ) 
 				{
@@ -146,7 +149,7 @@ package controllers
 					return true;
 				}
 			}
-			else if( id == Constants.MEDICAL_RECORDS )
+			else if( id == MedicalRecordsModel.ID )
 			{
 				if( !medicalRecordsController.model.dataLoaded ) 
 				{
