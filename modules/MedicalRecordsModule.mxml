@@ -6,7 +6,22 @@
 	creationComplete="init()" xmlns:general="components.general.*" xmlns:plus="external.TabBarPlus.plus.*" xmlns:components="components.*">
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:Array id="bgeMedicalRecords">
+			<mx:GridLines gridDirection="both">
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="medRecVerticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="{myMedRecHorizontalAlternateFill}" />
+				</mx:horizontalAlternateFill>
+				<mx:horizontalFill>
+					<s:SolidColor color="{myMedRecHorizontalFill}" />
+				</mx:horizontalFill>
+			</mx:GridLines>
+		</fx:Array>
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -50,6 +65,7 @@
 			
 			import styles.ChartStyles;
 			
+			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
 			
 			[Bindable] public var showHeader:Boolean = true;
@@ -61,13 +77,16 @@
 			[Bindable] private var minDateMedRec:Date = new Date( "Nov 20 2010 01:03:54 AM");
 			[Bindable] private var maxDateMedRec:Date = new Date( "Nov 20 2011 01:03:54 AM");
 			
+			[Bindable] private var myMedRecHorizontalAlternateFill:uint = 0x303030;
+			[Bindable] private var myMedRecHorizontalFill:uint = 0x4A4A49;
+
 			private const SEARCH_PLACEHOLDER:String = "Search medical records";
 			
 			override protected function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
 			{
 				super.updateDisplayList(unscaledWidth, unscaledHeight);
 				
-				if(tabsMedicalRecords.selectedIndex == 0) 
+				if( tabsMedicalRecords.selectedIndex == 0 ) 
 				{			
 					medicalRecordsBottomBoxes.visible = medicalRecordsBottomBoxes.includeInLayout = true;
 					viewStackMedicalRecords.height = 406;
@@ -76,33 +95,6 @@
 				{
 					medicalRecordsBottomBoxes.visible = medicalRecordsBottomBoxes.includeInLayout = false;
 					viewStackMedicalRecords.height = 602;
-				}
-			}
-			
-			private function filterMedRecFromTree():void 
-			{
-				model.medicalRecordsData.filterFunction = filterMedRec;
-				model.medicalRecordsData.refresh();
-				model.medicalRecordsDataGrid.filterFunction = null;
-				model.medicalRecordsDataGrid.refresh();
-				
-				model.medicalRecordsCategories = new Array();
-				for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
-				{
-					if(model.medicalRecordsCategories.indexOf(model.medicalRecordsData[i].name) == -1) 
-						model.medicalRecordsCategories.push( model.medicalRecordsData[i].name );
-				}
-				
-				plotMedicalRecords.height = model.medicalRecordsCategories.length * 28 + 24;
-				myTreeMedRec.rowCount = model.medicalRecordsCategories.length;
-				
-				controller.updateMedRecHeightAndColors();
-				
-				if( header.search.text != SEARCH_PLACEHOLDER ) 
-				{
-					header.search.text = "";
-					
-					lblSearchResultsMedRec.visible = btnClearSearchMedRec.visible = false;
 				}
 			}
 			
@@ -122,14 +114,17 @@
 				for(var x:uint = 0; x < arrMedRecCategories.length; x++) 
 				{
 					myOpenLeaves.push(arrMedRecCategories[x]);
-					if(myOpenCategories.indexOf(arrMedRecCategories[x]) == -1) {
+					
+					if(myOpenCategories.indexOf(arrMedRecCategories[x]) == -1) 
+					{
 						//myOpenLeaves.push(arrMedCategories[x]);
 						count--;
 					}
 					else
 					{
 						//myOpenLeaves.push(myTree.openItems[count].category);
-						for(var j:uint = 0; j < myTreeMedRec.openItems[count].children.length; j++) {
+						for(var j:uint = 0; j < myTreeMedRec.openItems[count].children.length; j++) 
+						{
 							myOpenLeaves.push(myTreeMedRec.openItems[count].children[j].category);
 						}
 					}
@@ -142,6 +137,71 @@
 				
 				//var pattern:RegExp = new RegExp("[^]*"+medicationsSearch.text+"[^]*", "i");
 				//return pattern.test(item.name) || pattern.test(item.dose) || pattern.test(item.type) || pattern.test(item.prescription) || pattern.test(item.directions) || pattern.test(item.pharmacy) || pattern.test(item.lastFilledDate);
+			}
+			
+			private function filterMedRecFromTree():void 
+			{
+				model.medicalRecordsData.filterFunction = filterMedRec;
+				model.medicalRecordsData.refresh();
+				model.medicalRecordsDataGrid.filterFunction = null;
+				model.medicalRecordsDataGrid.refresh();
+				
+				model.medicalRecordsCategories = new ArrayCollection();
+				
+				for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
+				{
+					if(model.medicalRecordsCategories.getItemIndex(model.medicalRecordsData[i].name) == -1) 
+						model.medicalRecordsCategories.addItem( model.medicalRecordsData[i].name );
+				}
+				
+				plotMedicalRecords.height = model.medicalRecordsCategories.length * 28 + 24;
+				
+				updateMedRecHeightAndColors();
+				
+				if( header.search.text != SEARCH_PLACEHOLDER ) 
+				{
+					header.search.text = "";
+					
+					lblSearchResultsMedRec.visible = btnClearSearchMedRec.visible = false;
+				}
+			}
+			
+			private function medicalRecordsCategoriesForTree():void 
+			{
+				var model:MedicalRecordsModel = model as MedicalRecordsModel;
+				
+				var medicalRecordsCategoriesReversed:Array = ArrayUtil.unique( model.medicalRecordsCategories.source ).reverse();
+				var currentCategory:int = -1;
+				var currentLeaf:uint = 0;
+				
+				for(var i:uint = 0; i < medicalRecordsCategoriesReversed.length; i++) 
+				{
+					if(medicalRecordsCategoriesReversed[i] == "Visits" || medicalRecordsCategoriesReversed[i] == "Diagnostic Studies" || medicalRecordsCategoriesReversed[i] == "Surgeries" || medicalRecordsCategoriesReversed[i] == "Procedures") {
+						currentCategory++;
+						currentLeaf = 0;
+					}
+					else 
+					{
+						var newLeaf:Object = new Object();
+						newLeaf = ({category: medicalRecordsCategoriesReversed[i]});
+						model.medicalRecordsCategoriesTree[currentCategory].children[currentLeaf] = newLeaf;
+						currentLeaf++;
+					}
+				}
+				
+				//	setting openItems = the first two only (instead of all 4 categories), because if we have the 4 categories "open", then we have a conflict with the filter (this is done so we could have "Surgeries" and "Procedures" as branches, without children, without the "open/close" arrows)
+				var myTreeMedRecOpenItem:ArrayCollection = new ArrayCollection();
+				myTreeMedRecOpenItem.addItem( model.medicalRecordsCategoriesTree[0] );
+				myTreeMedRecOpenItem.addItem( model.medicalRecordsCategoriesTree[1] );
+				myTreeMedRec.openItems = myTreeMedRecOpenItem;
+			}
+			
+			private function updateMedRecHeightAndColors():void
+			{
+				plotMedicalRecords.height = model.medicalRecordsCategories.length * 28 + 24;
+				
+				myMedRecHorizontalAlternateFill = model.medicalRecordsCategories.length % 2 == 1 ? 0x303030 : 0x4A4A49;
+				myMedRecHorizontalFill = model.medicalRecordsCategories.length % 2 == 1 ? 0x4A4A49 : 0x303030;
 			}
 			
 			private function medicalRecordsFillFunction(element:ChartItem, index:Number):IFill 
@@ -254,14 +314,16 @@
 					minDateMedRec = new Date( "Oct 6 2011 01:03:54 AM");
 					maxDateMedRec = new Date( "Oct 8 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
-					chartStyles.medRecVerticalGridLine.alpha = 0;
+					medRecVerticalGridLine.alpha = 0;
+					
 					btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == '1w') {
 					minDateMedRec = new Date( "Oct 1 2011 01:03:54 AM");
 					maxDateMedRec = new Date( "Oct 8 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
-					chartStyles.medRecVerticalGridLine.alpha = 0;
+					medRecVerticalGridLine.alpha = 0;
+					
 					btnMed1d.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == '1m')
@@ -269,7 +331,8 @@
 					minDateMedRec = new Date("Sep 20 2011 01:03:54 AM");
 					maxDateMedRec = new Date("Oct 20 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
-					chartStyles.medRecVerticalGridLine.alpha = 0;
+					medRecVerticalGridLine.alpha = 0;
+					
 					btnMed1d.selected = btnMed1w.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == '3m') 
@@ -277,7 +340,7 @@
 					minDateMedRec = new Date( "Jul 20 2011 01:03:54 AM");
 					maxDateMedRec = new Date( "Oct 20 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					chartStyles.medRecVerticalGridLine.alpha = 0;
+					medRecVerticalGridLine.alpha = 0
 					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == '1y') 
@@ -285,7 +348,8 @@
 					minDateMedRec = new Date( "Nov 20 2010 01:03:54 AM");
 					maxDateMedRec = new Date( "Nov 20 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					chartStyles.medRecVerticalGridLine.alpha = 0;
+					medRecVerticalGridLine.alpha = 0;
+					
 					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == '3y') 
@@ -293,7 +357,8 @@
 					minDateMedRec = new Date("Nov 20 2008 01:03:54 AM");
 					maxDateMedRec = new Date("Nov 20 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.medRecVerticalGridLine.alpha = 0.3;
+					medRecVerticalGridLine.alpha = 0.3;
+					
 					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
 				else if(range == 'all') 
@@ -301,9 +366,11 @@
 					minDateMedRec = new Date("Nov 20 2008 01:03:54 AM");
 					maxDateMedRec = new Date("Nov 20 2011 01:03:54 AM");
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.medRecVerticalGridLine.alpha = 0.3;
+					medRecVerticalGridLine.alpha = 0.3;
+					
 					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedCustom.selected = false;
 				}
+				
 				hAxisMedicalRecords.minimum = minDateMedRec;
 				hAxisMedicalRecords.maximum = maxDateMedRec;
 				
@@ -404,17 +471,12 @@
 			}
 			
 			private function onDataLoaded(event:ApplicationDataEvent=null):void
-			{
-				//	setting openItems = the first two only (instead of all 4 categories), because if we have the 4 categories "open", then we have a conflict with the filter (this is done so we could have "Surgeries" and "Procedures" as branches, without children, without the "open/close" arrows)
-				var myTreeMedRecOpenItem:ArrayCollection = new ArrayCollection();
-				myTreeMedRecOpenItem.addItem( model.medicalRecordsCategoriesTree[0] );
-				myTreeMedRecOpenItem.addItem( model.medicalRecordsCategoriesTree[1] );
+			{	
+				calculateServiceUsage();
 				
-				myTreeMedRec.openItems = myTreeMedRecOpenItem;
-				myTreeMedRec.rowCount = model.medicalRecordsCategories.length;
-				myTreeMedRec.openItems = myTreeMedRecOpenItem;
+				medicalRecordsCategoriesForTree();
 				
-				plotMedicalRecords.height= model.medicalRecordsCategories.length * 28 + 24;
+				updateMedRecHeightAndColors();
 				
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
@@ -438,7 +500,7 @@
 					model.addEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 					
 					var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
-					evt.data = Constants.MEDICAL_RECORDS;
+					evt.data = MedicalRecordsModel.ID;
 					dispatchEvent( evt );
 				}
 				else
@@ -449,8 +511,6 @@
 				header.searchPlaceholder = SEARCH_PLACEHOLDER;
 				
 				tabsMedicalRecords.addEventListener( TabPlus.CLOSE_TAB_EVENT, onCloseTab );
-				
-				calculateServiceUsage();
 			}
 		]]>
 	</fx:Script>
@@ -551,13 +611,13 @@
 								selectable="false"
 								itemRenderer="components.itemrenderers.MyTreeItemRendererMedRec"
 								contentBackgroundAlpha="0" color="0xBED63A" fontWeight="bold" alternatingItemColors="[0x4A4A49,0x303030]"
-								rowHeight="28"
+								rowHeight="28" rowCount="{model.medicalRecordsCategories.length}"
 								defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"
 								itemOpen="filterMedRecFromTree()" itemClose="filterMedRecFromTree()" />
 							
 							<mx:PlotChart 
 								id="plotMedicalRecords" width="100%"
-								dataProvider="{model.medicalRecordsData}" showDataTips="true" backgroundElements="{chartStyles.bgeMedicalRecords}"
+								dataProvider="{model.medicalRecordsData}" showDataTips="true" backgroundElements="{bgeMedicalRecords}"
 								paddingLeft="-4" dataTipFunction="dataTipsMedicalRecords" creationComplete="applyCustomDataTips(); medicalRecordsSetMinMax();" itemClick="showServiceDetails(event)"><!--height="300"-->
 								
 								<mx:horizontalAxisRenderers>

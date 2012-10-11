@@ -20,41 +20,6 @@
 			</mx:GridLines>
 			<mx:CartesianDataCanvas id="canvas" />
 		</fx:Array>
-
-		<fx:Array id="bgeMedicalRecords">
-			<mx:GridLines gridDirection="both">
-				<mx:horizontalStroke>
-					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
-				</mx:horizontalStroke>
-				<mx:verticalStroke>
-					<s:SolidColorStroke id="medRecVerticalGridLine" alpha="0" color="0xFFFFFF" />
-				</mx:verticalStroke>
-				<mx:horizontalAlternateFill>
-					<mx:SolidColor color="{myMedRecHorizontalAlternateFill}" />
-				</mx:horizontalAlternateFill>
-				<mx:horizontalFill>
-					<s:SolidColor color="{myMedRecHorizontalFill}" />
-				</mx:horizontalFill>
-			</mx:GridLines>
-		</fx:Array>
-		
-		<fx:Array id="bgeMedications">
-			<mx:GridLines gridDirection="both" >
-				<mx:horizontalStroke>
-					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
-				</mx:horizontalStroke>
-				<mx:verticalStroke>
-					<s:SolidColorStroke id="medicationsVerticalGridLine" alpha="0" color="0xFFFFFF" />
-				</mx:verticalStroke>
-				<mx:horizontalAlternateFill>
-					<mx:SolidColor color="{horizontalAlternateFill}" />
-				</mx:horizontalAlternateFill>
-				<mx:horizontalFill>
-					<s:SolidColor color="{horizontalFill}" />
-				</mx:horizontalFill>
-			</mx:GridLines>
-			<mx:CartesianDataCanvas id="canvasMed" />
-		</fx:Array>
 		
 		<fx:Array id="bgeMedicationsWidget">
 			<mx:GridLines gridDirection="both" >
@@ -102,12 +67,8 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import models.modules.MedicalRecordsModel;
-			[Bindable] public var horizontalFill:uint;
-			[Bindable] public var horizontalAlternateFill:uint;
 			[Bindable] public var myMedRecHorizontalFill:uint = 0x4A4A49;
 			[Bindable] public var myMedRecHorizontalAlternateFill:uint = 0x303030;
-			
 		]]>
 	</fx:Script>
 </s:Group>

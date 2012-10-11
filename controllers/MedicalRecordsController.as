@@ -30,12 +30,12 @@ package controllers
 			
 			model.medicalRecordsData = event.result.medicalRecords.medicalRecord;
 			model.medicalRecordsDataGrid = ObjectUtil.copy( model.medicalRecordsData ) as ArrayCollection;
-			model.medicalRecordsCategories = new Array();		//this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
+			model.medicalRecordsCategories = new ArrayCollection();		//this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
 			model.medicalRecordsNextSteps = new ArrayCollection();
 			
 			for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
 			{
-				if( model.medicalRecordsCategories.indexOf( model.medicalRecordsData[i].name ) == -1) model.medicalRecordsCategories.push( model.medicalRecordsData[i].name );
+				if( model.medicalRecordsCategories.getItemIndex( model.medicalRecordsData[i].name ) == -1) model.medicalRecordsCategories.addItem( model.medicalRecordsData[i].name );
 				
 				if( model.medicalRecordsData[i].nextSteps is ArrayCollection) 
 				{
@@ -51,40 +51,7 @@ package controllers
 				}
 			}
 			
-			medicalRecordsCategoriesForTree();
-			
-			updateMedRecHeightAndColors();
-			
 			super.dataResultHandler(event);
 		}
-		
-		private function medicalRecordsCategoriesForTree():void 
-		{
-			var model:MedicalRecordsModel = model as MedicalRecordsModel;
-			
-			var medicalRecordsCategoriesReversed:Array = ArrayUtil.unique( model.medicalRecordsCategories ).reverse();
-			var currentCategory:int = -1;
-			var currentLeaf:uint = 0;
-			
-			for(var i:uint = 0; i < medicalRecordsCategoriesReversed.length; i++) 
-			{
-				if(medicalRecordsCategoriesReversed[i] == "Visits" || medicalRecordsCategoriesReversed[i] == "Diagnostic Studies" || medicalRecordsCategoriesReversed[i] == "Surgeries" || medicalRecordsCategoriesReversed[i] == "Procedures") {
-					currentCategory++;
-					currentLeaf = 0;
-				}
-				else 
-				{
-					var newLeaf:Object = new Object();
-					newLeaf = ({category: medicalRecordsCategoriesReversed[i]});
-					model.medicalRecordsCategoriesTree[currentCategory].children[currentLeaf] = newLeaf;
-					currentLeaf++;
-				}
-			}
-		}
-		
-		public function updateMedRecHeightAndColors():void 
-		{
-		}
-		
 	}
 }

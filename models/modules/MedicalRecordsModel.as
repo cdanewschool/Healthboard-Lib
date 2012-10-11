@@ -5,9 +5,11 @@ package models.modules
 	[Bindable] 
 	public class MedicalRecordsModel extends ModuleModel
 	{
+		public static const ID:String = "medicalrecords";
+		
 		public var medicalRecordsData:ArrayCollection = new ArrayCollection();
 		public var medicalRecordsDataGrid:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsCategories:Array;
+		public var medicalRecordsCategories:ArrayCollection;
 		public var medicalRecordsNextSteps:ArrayCollection;
 		public var medicalRecordsCategoriesTree:ArrayCollection = new ArrayCollection
 			(
