@@ -335,7 +335,7 @@
 					</s:stroke>
 				</s:Line>
 				
-				<mx:ViewStack id="viewsVitalSigns" width="100%" height="100%" creationPolicy="all"><!---->
+				<mx:ViewStack id="viewsVitalSigns" width="100%" height="100%" creationPolicy="all" change="model.moduleViewIndex=viewsVitalSigns.selectedIndex"><!---->
 					
 					<s:NavigatorContent width="100%">
 						
