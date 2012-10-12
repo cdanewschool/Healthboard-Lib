@@ -2,6 +2,8 @@ package ASclasses
 {
 	public class Constants
 	{
+		public static const DEBUG:Boolean = true;
+		
 		public static const STATE_DEFAULT:String = "default";
 		public static const STATE_LOGGED_IN:String = "loggedIn";
 		
@@ -10,6 +12,7 @@ package ASclasses
 		public static const MODULE_IMMUNIZATIONS:String = "modImmunizations";
 		public static const MODULE_MESSAGES:String = "modMessages";
 		public static const MODULE_MEDICATIONS:String = "modMedications";
+		public static const MODULE_MEDICAL_RECORDS:String = "modMedicalRecords";
 		
 		public static const IMMUNIZATIONS:String = "immunizations";
 		public static const MEDICATIONS:String = "medications";

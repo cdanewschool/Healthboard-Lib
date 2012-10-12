@@ -20,6 +20,7 @@ package controllers
 	import models.modules.MedicationsModel;
 	
 	import mx.core.FlexGlobals;
+	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
 	import mx.managers.PopUpManager;
 	import mx.states.State;
@@ -59,6 +60,20 @@ package controllers
 			application.addEventListener( AppointmentEvent.REQUEST_APPOINTMENT, onHandleAppointmentRequest );
 			application.addEventListener( AppointmentEvent.REQUEST_CLASS, onHandleAppointmentRequest );
 			application.addEventListener( TabPlus.CLOSE_TAB_EVENT, onTabClose );
+			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
+		}
+		
+		private function onApplicationComplete(event:FlexEvent):void
+		{
+			init();
+		}
+		
+		protected function init():void
+		{
+			if( Constants.DEBUG ) 
+			{
+				application.dispatchEvent( new ApplicationEvent( ApplicationEvent.SET_STATE, false, false, Constants.STATE_LOGGED_IN ) );
+			}
 		}
 		
 		protected function onLoadDataRequest(event:ApplicationDataEvent):void
