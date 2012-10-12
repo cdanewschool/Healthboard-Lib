@@ -8,6 +8,7 @@ package controllers
 	import events.ApplicationDataEvent;
 	import events.ApplicationEvent;
 	import events.AppointmentEvent;
+	import events.AuthenticationEvent;
 	
 	import external.TabBarPlus.plus.TabBarPlus;
 	import external.TabBarPlus.plus.TabPlus;
@@ -54,6 +55,7 @@ package controllers
 			
 			application = FlexGlobals.topLevelApplication as Application;
 			
+			application.addEventListener( AuthenticationEvent.SUCCESS, onAuthenticated );
 			application.addEventListener( ApplicationDataEvent.LOAD, onLoadDataRequest );
 			application.addEventListener( ApplicationEvent.NAVIGATE, onNavigate );
 			application.addEventListener( ApplicationEvent.SET_STATE, onSetState );
@@ -61,6 +63,15 @@ package controllers
 			application.addEventListener( AppointmentEvent.REQUEST_CLASS, onHandleAppointmentRequest );
 			application.addEventListener( TabPlus.CLOSE_TAB_EVENT, onTabClose );
 			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
+		}
+		
+		private function onAuthenticated(event:AuthenticationEvent):void
+		{
+			application.removeEventListener( AuthenticationEvent.SUCCESS, onAuthenticated );
+			
+			vitalSignsController.init();
+			
+			setState( Constants.STATE_LOGGED_IN );
 		}
 		
 		private function onApplicationComplete(event:FlexEvent):void
@@ -72,7 +83,9 @@ package controllers
 		{
 			if( Constants.DEBUG ) 
 			{
-				application.dispatchEvent( new ApplicationEvent( ApplicationEvent.SET_STATE, false, false, Constants.STATE_LOGGED_IN ) );
+				model.fullname = "Isaac Goodman";
+				
+				application.dispatchEvent( new AuthenticationEvent( AuthenticationEvent.SUCCESS, true ) );
 			}
 		}
 		
@@ -91,13 +104,7 @@ package controllers
 		
 		protected function onSetState( event:ApplicationEvent ):void
 		{
-			for each( var states:State in application.states )
-			{
-				if( states.name == event.data )
-				{
-					application.currentState = event.data;
-				}
-			}
+			setState( event.data );
 		}
 		
 		protected function onHandleAppointmentRequest( event:AppointmentEvent ):void 
@@ -142,6 +149,17 @@ package controllers
 		protected function onViewAvailability( event:AppointmentEvent ):void
 		{
 			appointmentsController.setAvailable( 'set2', event.data.toString() );
+		}
+		
+		protected function setState( state:String ):void
+		{
+			for each( var states:State in application.states )
+			{
+				if( states.name == state )
+				{
+					application.currentState = state;
+				}
+			}
 		}
 		
 		public function loadData( id:String ):Boolean

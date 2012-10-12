@@ -101,9 +101,6 @@
 					|| (userID.text == 'doris' && password.text == 'sisko') 
 					|| (userID.text == registeredUserID && password.text == registeredPassword) ) 
 				{
-					var evt:AuthenticationEvent = new AuthenticationEvent( AuthenticationEvent.SUCCESS, true );
-					dispatchEvent( evt );
-					
 					if(userID.text == 'pipi' || (userID.text == 'piim' && password.text == 'password')) model.fullname = "Isaac Goodman";
 					else if(userID.text == 'james' && password.text == 'archer') model.fullname = "James Archer";
 					else if(userID.text == 'melissa' && password.text == 'archer') model.fullname = "Melissa Archer";
@@ -112,6 +109,9 @@
 					else if(userID.text == 'albert' && password.text == 'sisko') model.fullname = "Albert Sisko";
 					else if(userID.text == 'doris' && password.text == 'sisko') model.fullname = "Doris Sisko";
 					//else, fullname will contain the name the user indicated at registration.
+					
+					var evt:AuthenticationEvent = new AuthenticationEvent( AuthenticationEvent.SUCCESS, true );
+					dispatchEvent( evt );
 					
 					clearValidationErrorsLogin();
 					
