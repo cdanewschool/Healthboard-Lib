@@ -19,5 +19,12 @@ package util
 			
 			return Constants.MONTHS[uint(date.substr(0,2))-1] + ' ' + uint(date.substr(3,2)) + ', ' + date.substr(-4);
 		}
+		
+		public static function get10DigitDate(date:String):String 
+		{
+			if(date.charAt(1) == '/') date = '0' + date;									// 3/4/2012
+			if(date.charAt(4) == '/') date = date.substr(0,3) + '0' + date.substr(-6);		// 03/4/2012
+			return date;
+		}
 	}
 }
