@@ -324,7 +324,7 @@
 				if( !controller.model.dataLoaded ) 
 				{
 					var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
-					evt.data = Constants.IMMUNIZATIONS;
+					evt.data = ImmunizationsModel.ID;
 					dispatchEvent( evt );
 				}
 			}
@@ -336,7 +336,7 @@
 		visible="{showHeader}" includeInLayout="{showHeader}"
 		icon="@Embed('images/btnHome.png')" title="Immunizations"
 		showBackground="false" 
-		actionPrefix="You Have" actionCount="{model.immunizationsDueNumber}" actionSuffix="immunizations due or due soon." 
+		actionPrefix="You have" actionCount="{model.immunizationsDueNumber}" actionSuffix="immunizations due or due soon." 
 		showSearch="true" searchPlaceholder="Search immunizations"
 		moreText="Learn more about Immunizations:" moreLinkText="Educational Resources" moreLinkClickFunction="onLearnMoreClick" />
 	
