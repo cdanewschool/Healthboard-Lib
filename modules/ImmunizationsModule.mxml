@@ -579,7 +579,7 @@
 									</mx:DataGridColumn>
 									
 									<mx:DataGridColumn 
-										dataField="name" headerText="Immunization" width="145" paddingLeft="13" fontFamily="myMyriad">
+										dataField="name" headerText="Immunization" width="145" paddingLeft="13">
 										
 										<mx:itemRenderer>
 											<fx:Component>
