@@ -2,11 +2,13 @@ package controllers
 {
 	import ASclasses.Constants;
 	
-	import mx.utils.ObjectUtil;
-	
 	import controllers.BaseModuleController;
 	
 	import models.modules.AppointmentsModel;
+	
+	import mx.utils.ObjectUtil;
+	
+	import util.DateUtil;
 	
 	public class AppointmentsController extends BaseModuleController
 	{
@@ -117,27 +119,25 @@ package controllers
 		{
 			var model:AppointmentsModel = AppointmentsModel(model);
 			
-			var myDate:Date = new Date( new Date().setHours(0,0,0,0) );
-			var daysToAddToReachWednesday:Array = [3,2,1,7,6,5,4];
-			var daysToAddToReachFriday:Array = [5,4,3,2,1,7,6];
-			var nextWeekButNotWednesday:uint = (myDate.getDay() != 3) ? 7 : 8;
+			var today:Date = new Date( model.currentDate.fullYear, model.currentDate.month, model.currentDate.date ); 
 			
 			AppointmentsModel(model).appointments = new Array
 				(
-					{month:"JULY", date: 7, daytime: "THURSDAY 11:00 AM", details: "Nasal Procedure\nDr. Berg\n(999) 999-9999"},
-					{month:"AUGUST", date: 11, daytime: "THURSDAY 11:00 AM", details: "Consultation\nDr. Hammond\n(999) 999-9999"},
-					{month:"AUGUST", date: 11, daytime: "THURSDAY 1:00 PM", details: "Surgery\nDr. Berg\n(999) 999-9999"},
-					{month:"AUGUST", date: 11, daytime: "THURSDAY 4:00 PM", details: "Blood Test\nDr. Rothstein\n(999) 999-9999"},
-					{month:"AUGUST", date: 11, daytime: "THURSDAY 7:00 PM", details: "Cardiac Stress Test\nDr. Hammond\n(999) 999-9999"},
-					{month:"SEPTEMBER", date: 16, daytime: "FRIDAY 11:00 AM", details: "Physician Examination\nDr. Berg\n(999) 999-9999"},
-					{month:"SEPTEMBER", date: 16, daytime: "FRIDAY 1:00 PM", details: "MRI\nDr. Berg\n(999) 999-9999"},
-					{month:"OCTOBER", date: 7, daytime: "FRIDAY 11:00 AM", details: "Appendectomy\nDr. Berg\n(999) 999-9999"},
-					{month:"OCTOBER", date: 7, daytime: "FRIDAY 1:00 PM", details: "Colonscopy\nDr. Berg\n(999) 999-9999"},
-					{month:"OCTOBER", date: 16, daytime: "MONDAY 1:00 PM", details: "MRI\nDr. Berg\n(999) 999-9999"},
-					{month:String(Constants.MONTHS[model.currentDate.getMonth()]).toUpperCase(), date: model.currentDate.getDate(), daytime: String(Constants.DAYS[model.currentDate.getDay()]).toUpperCase() + ' 11:00 AM', details: "Physical Examination\nDr. Berg\n(999) 999-9999"},
-					{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + daysToAddToReachWednesday[model.currentDate.getDay()])).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + daysToAddToReachWednesday[model.currentDate.getDay()])).getDate(), daytime: 'WEDNESDAY 11:00 AM', details: "Physical Therapy\nDr. Berg\n(999) 999-9999"},
-					{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + daysToAddToReachFriday[model.currentDate.getDay()])).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + daysToAddToReachFriday[model.currentDate.getDay()])).getDate(), daytime: 'FRIDAY 9:30 AM', details: "Allergies\nDr. Greenfield\n(999) 999-9999"},
-					{month:String(Constants.MONTHS[new Date(new Date().setDate(myDate.date + nextWeekButNotWednesday)).getMonth()]).toUpperCase(), date: new Date(new Date().setDate(myDate.date + nextWeekButNotWednesday)).getDate(), daytime: (myDate.getDay() != 3) ? String(Constants.DAYS[myDate.getDay()]).toUpperCase() + ' 11:30 AM' : 'THURSDAY 11:30 AM', details: "Flu Vaccination\nDr. Berg\n(999) 999-9999"}
+					{datetime: Date.parse('07/7/12 11:00:00'),  details: "Nasal Procedure\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('08/11/12 11:00:00'), details: "Consultation\nDr. Hammond\n(999) 999-9999"},
+					{datetime: Date.parse('08/11/12 13:00:00'), details: "Surgery\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('08/11/12 16:00:00'), details: "Blood Test\nDr. Rothstein\n(999) 999-9999"},
+					{datetime: Date.parse('08/11/12 19:00:00'), details: "Cardiac Stress Test\nDr. Hammond\n(999) 999-9999"},
+					{datetime: Date.parse('09/16/12 11:00:00'), details: "Physician Examination\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('09/16/12 13:00:00'), details: "MRI\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('10/07/12 11:00:00'), details: "Appendectomy\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('10/07/12 13:00:00'), details: "Colonscopy\nDr. Berg\n(999) 999-9999"},
+					{datetime: Date.parse('10/16/12 13:00:00'), details: "MRI\nDr. Berg\n(999) 999-9999"},
+					
+					{datetime: today.time + (DateUtil.HOUR * 11), details: "Physical Examination\nDr. Berg\n(999) 999-9999"},
+					{datetime: today.time + (DateUtil.DAY * Math.abs(2 - today.day)) + (DateUtil.HOUR * 11), details: "Physical Therapy\nDr. Berg\n(999) 999-9999"},
+					{datetime: today.time + (DateUtil.DAY * Math.abs(4 - today.day)) + (DateUtil.HOUR * 9.5),  details: "Allergies\nDr. Greenfield\n(999) 999-9999"},
+					{datetime: today.time + (DateUtil.DAY * Math.abs(3 - today.day)) + (DateUtil.HOUR * 11.5), details: "Flu Vaccination\nDr. Berg\n(999) 999-9999"}
 				);
 		}
 	}

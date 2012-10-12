@@ -1,18 +1,26 @@
 package models.modules
 {
+	import enum.AppointmentStatus;
+	import enum.DateRanges;
+	
 	import models.modules.ModuleModel;
 	
+	import mx.collections.ArrayCollection;
+	
+	[Bindable] 
 	public class AppointmentsModel extends ModuleModel
 	{
-		[Bindable] [Embed("images/blueArrowLeft.png")] 	public var blueArrowLeft:Class;
-		[Bindable] [Embed("images/blueArrowRight.png")] public var blueArrowRight:Class;
-		[Bindable] [Embed("images/grayArrowLeft.png")] 	public var grayArrowLeft:Class;
-		[Bindable] [Embed("images/grayArrowRight.png")] public var grayArrowRight:Class;
+		public static const STATUSES:ArrayCollection = new ArrayCollection( [ AppointmentStatus.ALL, AppointmentStatus.SCHEDULED, AppointmentStatus.COMPLETED ] );
 		
-		[Bindable] public var appointments:Array;
-		[Bindable] public var currentAppointmentIndex:uint;
+		[Embed("images/blueArrowLeft.png")] 	public var blueArrowLeft:Class;
+		[Embed("images/blueArrowRight.png")] public var blueArrowRight:Class;
+		[Embed("images/grayArrowLeft.png")] 	public var grayArrowLeft:Class;
+		[Embed("images/grayArrowRight.png")] public var grayArrowRight:Class;
 		
-		[Bindable] public var timeSlots:Object = 
+		public var appointments:Array;
+		public var currentAppointmentIndex:uint;
+		
+		public var timeSlots:Object = 
 			{
 				'date-10-7-2011:04pm': 
 				{
@@ -21,7 +29,10 @@ package models.modules
 				}
 			};
 		
-		[Bindable] public var currentDate:Date = new Date();
+		public var currentDate:Date = new Date();
+		
+		public var dateRange:String = DateRanges.YEAR;
+		public var status:String = AppointmentStatus.ALL;
 		
 		public function AppointmentsModel()
 		{
