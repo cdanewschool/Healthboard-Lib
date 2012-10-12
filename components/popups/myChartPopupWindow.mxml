@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	skinClass="skins.general.myYellowTooltipTitleWindow"
+	width="214" height="278" fontSize="11"
+	close="PopUpManager.removePopUp(this);" >
+	
+	<fx:Script>
+		<![CDATA[
+			import controllers.MedicationsController;
+			
+			import models.modules.MedicationsModel;
+			
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			import mx.utils.ObjectUtil;
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] public var med:Object;
+			[Bindable] public var medName:String;
+			[Bindable] public var medDate:String;
+			[Bindable] public var medHour:String;
+			[Bindable] public var medMeridiem:String;
+			
+			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
+			
+			protected function txtComments_clickHandler(event:MouseEvent):void {
+				if(txtComments.text == "Comments") txtComments.text = "";
+			}
+			
+			private function save():void {
+				
+				var data:ArrayCollection = MedicationsModel(controller.model).medicationsData;
+				
+				//med.intake = numRoute.value;
+				med.comments = txtComments.text == "Comments" ? "" : txtComments.text;
+				//med.overdose = (numQuantity.value != med.intake);
+				med.intake = numQuantity.value;
+				med.frequency = numFrequency.value;
+				
+				if(med.date != null || numFrequency.value == 1) {		//if the medication is "SCHEDULED" (instead of "AS NEEDED"), we only show one daily icon.
+					/* if(med.dateP != null) med.dateP = med.dateP.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					else if(med.dateO != null) med.dateO = med.dateO.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					else if(med.dateS != null) med.dateS = med.dateS.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					else if(med.dateH != null) med.dateH = med.dateH.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem; */
+					if(med.date != null) med.date = med.date.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					else if(med.dateAN != null) med.dateAN = med.dateAN.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+				}
+				else {	//if(AS NEEDED and numFrequency.value > 1)
+					var arrTimesBasedOnFrequency:Array = new Array([12],[8,18],[8,14,20],[7,12,17,22],[6,10,14,18,22],[7,10,13,16,19,22],[8,10,12,14,16,18,20],[8,10,12,14,16,18,20,22],[7,9,11,13,15,17,19,21,23],[5,7,9,11,13,15,17,19,21,23]);
+					var myHours:uint;
+					var myMeridiem:String;
+					var newMedication:Object;
+					var newMedicationOP:ObjectProxy;
+					med.directedFrequency = numFrequency.value;		//updating the directedFrequency for this particular "As Needed" day, so that the frequency numstepper is no longer displayed in this day if this popup is called again. 
+					for(var j:uint = 0; j < numFrequency.value; j++) {
+						myHours = (arrTimesBasedOnFrequency[numFrequency.value-1][j] <= 12) ? arrTimesBasedOnFrequency[numFrequency.value-1][j] : arrTimesBasedOnFrequency[numFrequency.value-1][j] - 12;
+						myMeridiem = (arrTimesBasedOnFrequency[numFrequency.value-1][j] < 12) ? "AM" : "PM";
+						newMedication = ObjectUtil.copy(med);
+						/* if(med.dateP != null) newMedication.dateP = newMedication.dateP.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+						else if(med.dateO != null) newMedication.dateO = newMedication.dateO.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+						else if(med.dateS != null) newMedication.dateS = newMedication.dateS.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+						else if(med.dateH != null) newMedication.dateH = newMedication.dateH.substr(0,11) + myHours + ":00:00 " + myMeridiem; */
+						
+						//if(med.date != null) newMedication.date = newMedication.date.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+						//else if(med.dateAN != null)
+							newMedication.dateAN = newMedication.dateAN.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+							
+						newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
+						
+						data.addItemAt(newMedicationOP,data.getItemIndex(med));		//parentApplication.medicationsData.addItem(newMedication);
+						//parentApplication.medicationsDataOriginal.addItemAt(newMedicationOP,parentApplication.medicationsDataOriginal.getItemIndex(med));
+					}
+					data.removeItemAt(data.getItemIndex(med));
+					//parentApplication.medicationsDataOriginal.removeItemAt(parentApplication.medicationsDataOriginal.getItemIndex(med));
+				}
+				
+				data.refresh();
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="9" paddingLeft="8" paddingRight="8" gap="14" />
+	</s:layout>
+	
+	<s:Label text="{medName}" color="0x1D1D1B" />
+	<s:Label text="Intake Date" fontStyle="italic" color="0x595959" paddingBottom="-12" />
+	<s:Label text="{medDate}" color="0x1D1D1B" />
+	<s:Label text="Intake Time" fontStyle="italic" color="0x595959" paddingBottom="-12" />
+	<s:HGroup>
+		<s:DropDownList id="intakeHour" selectedItem="{medHour}" width="50">
+			<s:ArrayCollection>
+				<fx:String>12</fx:String>
+				<fx:String>01</fx:String>
+				<fx:String>02</fx:String>
+				<fx:String>03</fx:String>
+				<fx:String>04</fx:String>
+				<fx:String>05</fx:String>
+				<fx:String>06</fx:String>
+				<fx:String>07</fx:String>
+				<fx:String>08</fx:String>
+				<fx:String>09</fx:String>
+				<fx:String>10</fx:String>
+				<fx:String>11</fx:String>
+			</s:ArrayCollection>
+		</s:DropDownList>
+		<s:DropDownList id="intakeMinute" selectedIndex="0" width="50">
+			<s:ArrayCollection>
+				<fx:String>00</fx:String>
+				<fx:String>15</fx:String>
+				<fx:String>30</fx:String>
+				<fx:String>45</fx:String>
+			</s:ArrayCollection>
+		</s:DropDownList>
+		<s:DropDownList id="intakeMeridiem" selectedItem="{medMeridiem}" width="54">
+			<s:ArrayCollection>
+				<fx:String>PM</fx:String>
+				<fx:String>AM</fx:String>
+			</s:ArrayCollection>
+		</s:DropDownList>
+	</s:HGroup>
+	<s:HGroup gap="14">
+		<s:VGroup>
+			<s:Label text="Quantity" fontStyle="italic" color="0x595959" paddingBottom="-4" />
+			<s:HGroup verticalAlign="middle">
+				<s:NumericStepper id="numQuantity" value="{med.directedIntake}" minimum="1" maximum="30" width="40" />
+				<s:Label text="tablet(s)" color="0x595959" />
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup visible="{med.directedFrequency == 1}"><!--only showing the frequency numstepper when directed frequency = 1 (i.e. when there is one icon per day), because otherwise it's confusing for the user and easy to create conflicts as to what frequency to indicate-->
+			<s:Label text="Frequency" fontStyle="italic" color="0x595959" paddingBottom="-4" />
+			<s:HGroup verticalAlign="middle">
+				<s:NumericStepper id="numFrequency" value="{med.directedFrequency}" minimum="1" maximum="30" width="40" />
+				<s:Label text="time(s)" color="0x595959" />
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	<s:TextArea width="195" height="60" id="txtComments" text="{med.comments != null ? med.comments : 'Comments'}" fontStyle="italic" color="0x999999" click="txtComments_clickHandler(event)" />
+	<s:HGroup width="100%" horizontalAlign="center">
+		<s:Button label="OK" styleName="buttonText" height="24" width="50" click="save()" />
+	</s:HGroup>
+</s:TitleWindow>

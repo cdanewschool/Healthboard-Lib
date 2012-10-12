@@ -6,15 +6,22 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import controllers.MedicationsController;
+			
+			import models.modules.MedicationsModel;
+			
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
 			
+			import util.ArrayUtil;
 			import util.StringUtil;
 			[Bindable] public var medTypeLabel:String;
 			[Bindable] public var medTypeData:String;
 			[Bindable] public var medName:String;
+			
+			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			
 			private function goBack():void {
 				var myAddMedication1:myAddMedication1Window = myAddMedication1Window(PopUpManager.createPopUp(this, myAddMedication1Window) as spark.components.TitleWindow);
@@ -34,7 +41,7 @@
 				var newMedication:Object = {name: StringUtil.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, intake: numRoute.value, taken: false, status: 'active', reason: txtReason.text};
 				
 				var temp:Array = new Array();		//we create this temp array because the y-axis is not updating unless we medicationsCategories is set to "new Array" and reset...
-				temp = parentApplication.unique(parentApplication.medicationsCategories);
+				temp = ArrayUtil.unique( MedicationsModel(controller.model).medicationsCategories.source );
 				var indexToAddNewMedCategories:int;
 				var indexToAddNewMedData:int;
 				var indexToAddNewMedDataOriginal:int;
@@ -42,8 +49,8 @@
 				if(txtType.text == "Over-The-Counter Drugs") {
 					indexToAddNewMedCategories = temp.indexOf("Supplements") + 1;
 					indexToAddNewMedTree = 1;
-					for(var k:uint = 0; k < parentApplication.medicationsData.length; k++) {
-						if(parentApplication.medicationsData.getItemAt(k).name == "Supplements") {
+					for(var k:uint = 0; k < MedicationsModel(controller.model).medicationsData.length; k++) {
+						if(MedicationsModel(controller.model).medicationsData.getItemAt(k).name == "Supplements") {
 							indexToAddNewMedData = k + 1;
 							break;
 						}
@@ -58,8 +65,8 @@
 				else if(txtType.text == "Supplements") {
 					indexToAddNewMedCategories = temp.indexOf("Herbal Medicines") + 1;
 					indexToAddNewMedTree = 2;
-					for(var m:uint = 0; m < parentApplication.medicationsData.length; m++) {
-						if(parentApplication.medicationsData.getItemAt(m).name == "Herbal Medicines") {
+					for(var m:uint = 0; m < MedicationsModel(controller.model).medicationsData.length; m++) {
+						if(MedicationsModel(controller.model).medicationsData.getItemAt(m).name == "Herbal Medicines") {
 							indexToAddNewMedData = m + 1;
 							break;
 						}
@@ -75,17 +82,15 @@
 					indexToAddNewMedCategories = indexToAddNewMedData = indexToAddNewMedDataOriginal = 0;
 					indexToAddNewMedTree = 3;
 				}
-				temp.splice(indexToAddNewMedCategories,0,parentApplication.titleCase(txtName.text.toLowerCase()));
-				parentApplication.medicationsCategories = new Array();		//reset medicationsCategories so the y-axis is updated
-				parentApplication.medicationsCategories = temp;
+				temp.splice(indexToAddNewMedCategories,0,StringUtil.titleCase(txtName.text.toLowerCase()));
+				MedicationsModel(controller.model).medicationsCategories = new ArrayCollection();		//reset medicationsCategories so the y-axis is updated
+				MedicationsModel(controller.model).medicationsCategories = new ArrayCollection( temp );
 				
 				var newLeaf:Object = new Object();
 				newLeaf = {category: newMedication.name};
-				parentApplication.medicationsCategoriesTree[indexToAddNewMedTree].children[parentApplication.medicationsCategoriesTree[indexToAddNewMedTree].children.length] = newLeaf;
+				MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children[MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children.length] = newLeaf;
 				
-				parentApplication.updateMedsHeightAndColors();
-				
-				parentApplication.medicationsDataFiltered.addItem(newMedication);
+				MedicationsModel(controller.model).medicationsDataFiltered.addItem(newMedication);
 				
 				var myDate:Date;
 				var myDateString:String;
@@ -111,7 +116,7 @@
 				for(var i:uint = 0; i < 365; i++){
 					for(var j:uint = 0; j < myFrequency; j++) {
 						newMedication = new Object();
-						newMedication = {name: parentApplication.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, directedIntake: numRoute.value, intake: numRoute.value, directedFrequency: myFrequency, refillsLeft: '---', taken: false, status: 'active', reason: txtReason.text, asNeeded: asNeeded.selected};
+						newMedication = {name: StringUtil.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, directedIntake: numRoute.value, intake: numRoute.value, directedFrequency: myFrequency, refillsLeft: '---', taken: false, status: 'active', reason: txtReason.text, asNeeded: asNeeded.selected};
 						myDate = new Date("06/16/2012");
 						myHours = (arrTimesBasedOnFrequency[myFrequency-1][j] <= 12) ? arrTimesBasedOnFrequency[myFrequency-1][j] : arrTimesBasedOnFrequency[myFrequency-1][j] - 12;
 						myMeridiem = (arrTimesBasedOnFrequency[myFrequency-1][j] < 12) ? "AM" : "PM";
@@ -130,7 +135,7 @@
 						
 						newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
 						
-						parentApplication.medicationsData.addItemAt(newMedicationOP,indexToAddNewMedData);		//parentApplication.medicationsData.addItem(newMedication);
+						MedicationsModel(controller.model).medicationsData.addItemAt(newMedicationOP,indexToAddNewMedData);		//parentApplication.medicationsData.addItem(newMedication);
 						//parentApplication.medicationsDataOriginal.addItemAt(newMedicationOP,indexToAddNewMedDataOriginal);
 					}
 					if(myRecurrence == "week") i += 6;
