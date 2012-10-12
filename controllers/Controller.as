@@ -85,7 +85,7 @@ package controllers
 		{
 			if( event.data == 0 )
 			{
-				application.currentState = Constants.STATE_LOGGED_IN;
+				application.currentState = model.viewMode;
 			}
 		}
 		

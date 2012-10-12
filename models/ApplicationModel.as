@@ -1,5 +1,7 @@
 package models
 {
+	import ASclasses.Constants;
+	
 	import events.ApplicationDataEvent;
 	import events.ApplicationEvent;
 	
@@ -22,6 +24,8 @@ package models
 		private var _patientAlertsLoaded:Boolean;
 		
 		public var today:Date;
+		
+		public var viewMode:String = Constants.STATE_LOGGED_IN;
 		
 		public function ApplicationModel()
 		{

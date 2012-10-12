@@ -6,6 +6,7 @@ package ASclasses
 		
 		public static const STATE_DEFAULT:String = "default";
 		public static const STATE_LOGGED_IN:String = "loggedIn";
+		public static const STATE_WIDGET_VIEW:String = "widgetView";
 		
 		public static const MODULE_APPOINTMENTS:String = "modCalendar";
 		public static const MODULE_EDUCATIONAL_RESOURCES:String = "modEducationalResources";
