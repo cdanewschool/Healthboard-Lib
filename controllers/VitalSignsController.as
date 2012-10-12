@@ -12,5 +12,19 @@ package controllers
 			
 			model = new VitalSignsModel();
 		}
+		
+		public function updateVitalIndices():void 
+		{
+			var model:VitalSignsModel = model as VitalSignsModel;
+			
+			var vitalIndicesTemp:Array = new Array();
+			
+			for(var i:uint = 0; i < model.vitalSigns.length; i++) 
+			{
+				vitalIndicesTemp.push( model.vitalSigns.getItemAt(i).vital );
+			}
+			
+			model.vitalIndices = vitalIndicesTemp;
+		}
 	}
 }

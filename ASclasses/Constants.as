@@ -14,6 +14,7 @@ package ASclasses
 		public static const MODULE_MESSAGES:String = "modMessages";
 		public static const MODULE_MEDICATIONS:String = "modMedications";
 		public static const MODULE_MEDICAL_RECORDS:String = "modMedicalRecords";
+		public static const MODULE_VITAL_SIGNS:String = "modVitalSigns";
 		
 		public static const IMMUNIZATIONS:String = "immunizations";
 		public static const MEDICATIONS:String = "medications";

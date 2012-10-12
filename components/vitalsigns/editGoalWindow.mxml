@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="258" height="333"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000" creationComplete="creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.FlexEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			import spark.events.IndexChangeEvent;
+			
+			protected function creationCompleteHandler(event:FlexEvent):void {
+				if(parentApplication.viewsVitalSigns.selectedIndex == 3) {
+					dropDownVitalToEdit.selectedIndex = 1;
+					groupWeight.visible = groupWeight.includeInLayout = false;
+					groupBloodPressure.visible = groupBloodPressure.includeInLayout = true;
+					borderContainer.height = 287;
+					this.height = 373;
+				}				
+			}
+			
+			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
+			protected function dropDownCalendar_openHandler(event:DropDownEvent):void {
+				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
+			}
+			protected function stopPropagation(event:Event):void {
+				event.stopImmediatePropagation();
+			}
+			
+			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void {
+				txtDateAchieveBy.text = dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear;
+				dropDownCalendar.closeDropDown(true);					
+			}
+			
+			protected function dropDownVitalToEdit_changeHandler(event:IndexChangeEvent):void
+			{
+				if(dropDownVitalToEdit.selectedIndex == 0) {
+					groupWeight.visible = groupWeight.includeInLayout = true;
+					groupBloodPressure.visible = groupBloodPressure.includeInLayout = false;
+					borderContainer.height = 247;
+					this.height = 333;
+				}
+				else if(dropDownVitalToEdit.selectedIndex == 1) {
+					groupWeight.visible = groupWeight.includeInLayout = false;
+					groupBloodPressure.visible = groupBloodPressure.includeInLayout = true;
+					borderContainer.height = 287;
+					this.height = 373;
+				}
+				else {
+					dropDownVitalToEdit.selectedIndex = 0;
+					groupWeight.visible = groupWeight.includeInLayout = true;
+					groupBloodPressure.visible = groupBloodPressure.includeInLayout = false;
+					borderContainer.height = 247;
+					this.height = 333;
+				}
+			}
+			
+			private function saveGoal():void {
+				if(dropDownVitalToEdit.selectedIndex == 0) {
+					for(var i:uint = 0; i < parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length; i++) {
+						parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data[i].expectation = txtWeight.text;
+					}
+					
+					if(Number(txtWeight.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax = Number(txtWeight.text) + 10;
+					else if(Number(txtWeight.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin = Number(txtWeight.text) - 10;
+				}
+				else if(dropDownVitalToEdit.selectedIndex == 1) {
+					for(var j:uint = 0; j < parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data.length; j++) {
+						parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data[j].expectation = txtSystolic.text;
+						parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data[j].expectation2 = txtDiastolic.text;
+					}
+					
+					if(Number(txtSystolic.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMax - 20)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMax = Number(txtSystolic.text) + 20;
+					else if(Number(txtDiastolic.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMin + 20)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMin = Number(txtDiastolic.text) - 20;
+					
+				}
+				parentApplication.arrVitalSigns.refresh();
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="11" paddingBottom="11" paddingLeft="11" paddingRight="11" />
+	</s:layout>
+
+	<s:Label text="Edit Goal" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	
+	<s:BorderContainer id="borderContainer" width="233" height="247" borderColor="0x4E4E4E" borderAlpha=".5" backgroundAlpha="0">
+		<s:layout>
+			<s:VerticalLayout paddingBottom="12" paddingLeft="14" paddingRight="12" paddingTop="13" />
+		</s:layout>
+		
+		<s:Label text="Please select a category" fontStyle="italic" color="0x4E4E4E" />
+		<s:DropDownList id="dropDownVitalToEdit" selectedIndex="0" styleName="buttonText" height="24" width="206" change="dropDownVitalToEdit_changeHandler(event)">
+			<s:dataProvider>
+				<s:ArrayList>
+					<fx:Object label="Weight" />
+					<fx:Object label="Blood pressure" />
+					<fx:Object label="Heart Rate" />
+					<fx:Object label="Respiratory" />
+					<fx:Object label="Temperature" />
+					<fx:Object label="Height" />
+				</s:ArrayList>							
+			</s:dataProvider>
+		</s:DropDownList>
+		
+		<s:HGroup id="groupWeight" verticalAlign="middle" paddingTop="3">
+			<s:TextInput id="txtWeight" width="39" height="24" maxChars="3" text="{parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation}" change="{txtBMI.text = String(Math.round(((Number(txtWeight.text) * 703) / (Math.pow(parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data[parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" />
+			<s:Label color="0x666666" text="pounds    OR" paddingRight="5" paddingTop="1" />
+			<s:TextInput id="txtBMI" width="39" height="24" maxChars="4" text="{String(Math.round(((Number(parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data[parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" change="{txtWeight.text = String(Math.round((Number(txtBMI.text) * Math.pow(parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data[parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)) / 703))}" />
+			<s:Label color="0x666666" text="BMI" paddingTop="1" />
+		</s:HGroup>
+		
+		<s:VGroup id="groupBloodPressure" paddingTop="7" paddingBottom="3" gap="10" visible="false" includeInLayout="false">
+			<s:HGroup verticalAlign="middle">
+				<s:Label width="74" textAlign="right" color="0x000000" text="Systolic:" />
+				<s:TextInput id="txtSystolic" width="39" height="24" maxChars="3" text="{parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation}" />
+				<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:Label width="74" textAlign="right" color="0x000000" text="Diastolic:" />
+				<s:TextInput id="txtDiastolic" width="39" height="24" maxChars="3" text="{parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2}" />
+				<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
+			</s:HGroup>
+		</s:VGroup>
+		
+		<s:HGroup paddingTop="4" paddingBottom="5" verticalAlign="middle" gap="5">
+			<s:HGroup paddingRight="3">
+				<s:CheckBox id="checkAchieveBy" label="Achieve by:" color="0x000000" fontSize="12" /><!--click="checkImmunizationsRequired_clickHandler(event)" -->	
+			</s:HGroup>
+			<s:TextInput id="txtDateAchieveBy" width="88" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
+			<s:HGroup paddingTop="-2" paddingLeft="-3">
+				<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
+					<s:dataProvider>
+						<s:ArrayList>
+							<mx:DateChooser id="dateChooser" showToday="true"
+											contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+											fontSize="11" change="dateChooser_changeHandler(event)" />
+						</s:ArrayList>
+					</s:dataProvider>
+				</s:DropDownList>
+			</s:HGroup>	
+		</s:HGroup>
+		
+		<s:TextArea id="txtComments" width="206" height="98" text="Comments" fontStyle="italic" color="0x706F6F" borderColor="0x4E4E4E" borderAlpha=".5" paddingLeft="7" paddingTop="6" />
+		
+	</s:BorderContainer>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="7">
+		<s:Button label="Save" styleName="buttonText" height="24" width="55" click="saveGoal()" /><!--click="addRecord()"-->
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>

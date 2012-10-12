@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="323"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000" creationComplete="fillUnits()">
+	<fx:Script>
+		<![CDATA[
+			import controllers.VitalSignsController;
+			
+			import events.VitalsEvent;
+			
+			import models.modules.VitalSignsModel;
+			
+			import mx.controls.Alert;
+			import mx.controls.LinkButton;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			import util.DateUtil;
+			
+			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
+			[Bindable] private var model:VitalSignsModel = controller.model as VitalSignsModel;
+			
+			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
+			protected function dropDownCalendar_openHandler(event:DropDownEvent):void
+			{
+				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
+			}
+			protected function stopPropagation(event:Event):void 
+			{
+				event.stopImmediatePropagation();
+			}
+			
+			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void 
+			{
+				txtDate.text = dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear;
+				dropDownCalendar.closeDropDown(true);					
+			}
+			
+			[Bindable] public var trackerName:String;
+			
+			private function fillUnits():void 
+			{
+				if(trackerName == 'Blood glucose') txtUnits.text = 'mg/dL';
+				else if(trackerName == 'Oxygen saturation') txtUnits.text = 'SpO2';
+				else if(trackerName == 'Body fat percentage') txtUnits.text = '%';
+			}
+			
+			private function addRecord():void 
+			{
+				var chartMax:int = (Number(txtResult.text) > txtGoal.value) ? Number(txtResult.text) + 10 : txtGoal.value + 10;
+				var chartMin:int = (Number(txtResult.text) < txtGoal.value) ? Number(txtResult.text) - 10 : txtGoal.value - 10;
+				var yesterday:Date = new Date(new Date().getTime() - (1000*60*60*24));
+				
+				var newVital:Object = new Object();
+				newVital = ({value:Number(txtResult.text), expectation:txtGoal.value, date: DateUtil.get10DigitDate((yesterday.getMonth()+1) + "/" + yesterday.getDate() + "/" + yesterday.getFullYear()), type:'patient', vital:txtName.text});
+				
+				var newVital2:Object = new Object();
+				newVital2 = ({value:Number(txtResult.text), expectation:txtGoal.value, date: DateUtil.get10DigitDate(txtDate.text), type:'patient', vital:txtName.text}); 
+				
+				var vital:Object = {vital: txtName.text, chartType: "normal", chartMin: chartMin, chartMax: chartMax, units: txtUnits.text, chart:[{ data:[]}]};
+				
+				model.vitalSigns.addItemAt(vital, model.vitalSigns.length - 1);
+				model.vitalSigns.refresh();
+				model.vitalSigns[model.vitalSigns.length - 2].chart[0].data.splice(0,0,newVital,newVital2);
+				model.vitalSigns.refresh();				
+				
+/*				parentApplication.updateVitalIndices();
+				if(txtWeight.text != "") {
+					var weightStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data[model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length - 1].date)) ? model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
+					var newWeight:Object = new Object();
+					newWeight = ({value:txtWeight.text, expectation:model.vitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation, date:txtDate.text, type:'patient', vital:'weight'});
+					model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.splice(weightStartIndex,0,newWeight);
+					
+					if(Number(txtWeight.text) > (model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax - 10)) model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax = Number(txtWeight.text) + 10;
+					else if(Number(txtWeight.text) < (model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin + 10)) model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin = Number(txtWeight.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.weightMax)) parentApplication.weightMax = txtDate.text;
+					if(new Date(txtDate.text) > parentApplication.weightChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+						var myNewDate:Date = new Date(txtDate.text);
+						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						myNewDate.setMonth(myNewDate.getMonth() + 1);
+						parentApplication.weightChartMax = myNewDate;
+					}
+				}
+
+
+				var newChartMax:Date = new Date(txtDate.text);
+				newChartMax.setDate(newChartMax.getDate() + 8);			
+				var newChartMaxDummy:Date = new Date(parentApplication.chartMax.getFullYear(), parentApplication.chartMax.getMonth(), parentApplication.chartMax.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting parentApplication.chartMax (in this case to itself)
+				
+				if(new Date(txtDate.text) > parentApplication.chartMax) parentApplication.chartMax = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
+				else parentApplication.chartMax = newChartMaxDummy;//.setDate(parentApplication.chartMax.getDate() + 1);// = parentApplication.chartMax;
+				
+				//ADDING TO arrVitalSignsByDate FOR THE LIST VIEW
+				//if any field is entered?
+				var entryByDate:Object = new Object();
+				var myNewHeight:String = txtHeightFeet.text != "" ? txtHeightFeet.text + "'" + txtHeightInches.text + "''" : "";
+				var myNewHeightInInches:uint = txtHeightFeet.text != "" ? int(txtHeightFeet.text) * 12 + int(txtHeightInches.text) : model.vitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value;
+				var myNewWeightBMI:String = txtWeight.text == '' ? '' : txtWeight.text + ' / ' + String(int(((int(txtWeight.text) * 703) / Math.pow(myNewHeightInInches, 2))*10)/10);
+				var myNewBloodPressure:String = txtBloodPressure1.text == '' ? '' : txtBloodPressure1.text + '/' + txtBloodPressure2.text;
+				entryByDate = {Date: parentApplication.get10digitDate(txtDate.text), WeightBMI: myNewWeightBMI, BloodPressure: myNewBloodPressure, HeartRate: txtHeartRate.text, Respiratory: txtRespiratory.text, Temperature: txtTemperature.text, Height: myNewHeight, Comments: txtComments.text, RecordedBy: 'You'};
+				model.vitalSignsByDate.addItem(entryByDate);
+				
+				model.vitalSigns.refresh();
+				model.vitalSignsByDate.refresh();
+				
+				//parentApplication.chartMax = new Date(2012,5,5);*/
+				
+				var event:VitalsEvent = new VitalsEvent( VitalsEvent.ADD, true );
+				event.data = vital
+				dispatchEvent( event );
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="Create Your Own Tracker" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	
+	<s:HGroup paddingTop="10" verticalAlign="middle" gap="5">
+		<s:Label text="Name:" textAlign="right" width="42" paddingRight="7" />
+		<s:TextInput id="txtName" width="150" height="24" text="{trackerName}" />
+	</s:HGroup>
+	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
+		<s:Label text="Units:" textAlign="right" width="42" paddingRight="7" />
+		<s:TextInput id="txtUnits" width="150" height="24" />
+		<s:Label text="example: pounds, %" color="0x666666" />
+	</s:HGroup>
+	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
+		<s:Label text="Goal:" textAlign="right" width="42" paddingRight="7" />
+		<s:NumericStepper id="txtGoal" value="0" maximum="100000" width="86" />
+		<s:Label text="{txtUnits.text}" color="0x666666" />
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="11" paddingBottom="9">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:Label text="Tracker Entry" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	
+	<s:HGroup paddingTop="10" verticalAlign="middle" gap="5">
+		<s:Label text="Result:" textAlign="right" width="42" paddingRight="7" />
+		<s:TextInput id="txtResult" width="86" height="24" />
+	</s:HGroup>
+	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
+		<s:Label text="Date:" textAlign="right" width="42" paddingRight="7" />
+		<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />
+		<s:HGroup paddingTop="-2" paddingLeft="-3">
+			<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
+				<s:dataProvider>
+					<s:ArrayList>
+						<mx:DateChooser id="dateChooser" showToday="true"
+										contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+										fontSize="11" change="dateChooser_changeHandler(event)" />
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+		</s:HGroup>
+	</s:HGroup>
+
+	<s:HGroup paddingTop="11" paddingBottom="6">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Add Record" styleName="buttonText" height="24" click="addRecord()" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>
