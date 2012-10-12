@@ -1,0 +1,750 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:components="components.*"
+	xmlns:general="components.general.*" 
+	xmlns:plus="external.TabBarPlus.plus.*"
+	creationComplete="init()" show="onShow()" >
+	
+	<fx:Declarations>
+		<fx:Array id="bgeMedications">
+			<mx:GridLines gridDirection="both" >
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="medicationsVerticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="{myHorizontalAlternateFill}" />
+				</mx:horizontalAlternateFill>
+				<mx:horizontalFill>
+					<s:SolidColor color="{myHorizontalFill}" />
+				</mx:horizontalFill>
+			</mx:GridLines>
+			<mx:CartesianDataCanvas id="canvasMed" />
+		</fx:Array>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import ASclasses.MyCustomDataTip;
+			
+			import components.medications.MedicationDetails;
+			import components.medications.medTips;
+			import components.medications.myAddMedication1Window;
+			import components.popups.myChartPopupWindow;
+			
+			import controllers.MedicationsController;
+			
+			import events.ApplicationDataEvent;
+			
+			import models.modules.MedicationsModel;
+			
+			import mx.charts.ChartItem;
+			import mx.charts.HitData;
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.series.items.PlotSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.events.CollectionEvent;
+			import mx.events.ListEvent;
+			import mx.graphics.IFill;
+			import mx.graphics.SolidColor;
+			import mx.managers.PopUpManager;
+			
+			import spark.components.TitleWindow;
+			
+			import styles.ChartStyles;
+			
+			import util.ArrayUtil;
+			import util.ChartLabelFunctions;
+			
+			import enum.DateRanges;
+			
+			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
+			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
+			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] public var showHeader:Boolean = true;
+			
+			[Bindable] public var myHorizontalAlternateFill:uint = 0x303030;
+			[Bindable] public var myHorizontalFill:uint = 0x4A4A49;
+			
+			private var myChartPopup:myChartPopupWindow;
+			
+			private function updateHeightAndColors():void 
+			{
+				plotMedications.height = model.medicationsCategories.length * 34 + 29;
+				
+				myTree.rowCount = model.medicationsCategories.length;
+				
+				myHorizontalAlternateFill = model.medicationsCategories.length % 2 == 1 ? 0x303030 : 0x4A4A49;
+				myHorizontalFill = model.medicationsCategories.length % 2 == 1 ? 0x4A4A49 : 0x303030;
+			}
+			
+			private function updateOpenLeaves():void
+			{
+				var myOpenLeaves:Array = new Array();
+				var arrMedCategories:Array = new Array("Prescription Drugs","Over-The-Counter Drugs","Supplements","Herbal Medicines");
+				var myOpenCategories:Array = new Array();
+				
+				for(var i:uint = 0; i < myTree.openItems.length; i++) 
+				{
+					myOpenCategories.push(myTree.openItems[i].category);
+				}
+				
+				var count:uint = 0;
+				
+				for(var x:uint = 0; x < arrMedCategories.length; x++) 
+				{
+					myOpenLeaves.push(arrMedCategories[x]);
+					
+					if(myOpenCategories.indexOf(arrMedCategories[x]) == -1) 
+					{
+						count--;
+					}
+					else 
+					{
+						for(var j:uint = 0; j < myTree.openItems[count].children.length; j++) 
+						{
+							myOpenLeaves.push( myTree.openItems[count].children[j].category );
+						}
+					}
+					count++;
+				}
+				
+				model.openLeaves = myOpenLeaves;
+			}
+			
+			private function updateIntake(e:ChartItemEvent):void 
+			{
+				e.hitData.item.taken = !e.hitData.item.taken;
+				
+				//	this ensures that the chart points get colored/uncolored upon clicking them, by refreshing the chart's data provider.
+				model.medicationsData.refresh();		
+				
+				//remove existing popup (if any).
+				PopUpManager.removePopUp( myChartPopup );
+				
+				if(e.hitData.item.taken) 
+				{
+					myChartPopup = myChartPopupWindow( PopUpManager.createPopUp(this, myChartPopupWindow) as TitleWindow );
+					myChartPopup.med = e.hitData.item;
+					myChartPopup.medName = e.hitData.item.name;
+					
+					var myDate:String;
+					/*if(e.hitData.item.dateP != null) myDate = e.hitData.item.dateP;
+					else if(e.hitData.item.dateO != null) myDate = e.hitData.item.dateO;
+					else if(e.hitData.item.dateS != null) myDate = e.hitData.item.dateS;
+					else if(e.hitData.item.dateH != null) myDate = e.hitData.item.dateH;*/
+					if(e.hitData.item.dateAN != null) myDate = e.hitData.item.dateAN;
+					else if(e.hitData.item.date != null) myDate = e.hitData.item.date;
+					
+					myChartPopup.medDate = myDate.substr(0,10);
+					myChartPopup.medHour = myDate.substr(11,2);		//(myDate.substr(12,1) == ":") ? "0" + myDate.substr(11,1) : myDate.substr(11,2);
+					myChartPopup.medMeridiem = myDate.substr(-2);
+					myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
+				}
+			}
+			
+			private function medicationsSetMinMax():void 
+			{
+				hAxisMedications.minimum = model.minDate;	//new Date( "Oct 1 2010 12:00:00 PM");
+				hAxisMedications.maximum = model.maxDate;	//new Date( "Oct 1 2011 12:00:00 PM");
+				
+				canvasMed.lineStyle(100,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
+				
+				canvasMed.moveTo('06/16/2012 12:00:00 PM','Prescription Drugs');
+				canvasMed.lineTo('06/16/2012 12:00:00 PM','Herbal Medicines');
+			}
+			
+			private function applyCustomDataTips():void 
+			{
+				plotMedications.setStyle( "dataTipRenderer", MyCustomDataTip );    
+			}
+			
+			private function setDateRange(range:String=null):void
+			{
+				model.dateRange = range;
+				
+				updateDateRange();
+			}
+			
+			private function updateDateRange():void 
+			{
+				if( model.dateRange == DateRanges.DAY ) 
+				{
+					model.minDate = new Date( "Jun 13 2012 12:00:00 AM");
+					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
+					medicationsVerticalGridLine.alpha = 0;
+					
+					hAxisMedications.minorTickInterval = 12;
+					hAxisMedications.minorTickUnits = "hours";
+				}
+				else if(model.dateRange == DateRanges.MONTH) 
+				{
+					model.minDate = new Date("May 19 2012 12:00:00 PM");
+					model.maxDate = new Date("Jun 19 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
+					medicationsVerticalGridLine.alpha = 0;
+					
+					hAxisMedications.minorTickInterval = 1;
+					hAxisMedications.minorTickUnits = "days";
+				}
+				else if(model.dateRange == DateRanges.MONTH_THREE) 
+				{
+					model.minDate = new Date( "Mar 19 2012 12:00:00 PM");
+					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					medicationsVerticalGridLine.alpha = 0;
+					
+					hAxisMedications.minorTickInterval = 1;
+					hAxisMedications.minorTickUnits = "days";
+				}
+				else if(model.dateRange == DateRanges.YEAR) 
+				{
+					model.minDate = new Date( "Aug 20 2011 12:00:00 PM");
+					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					medicationsVerticalGridLine.alpha = 0;
+					
+					hAxisMedications.minorTickInterval = NaN;
+					hAxisMedications.minorTickUnits = "years";
+				}
+				else if(model.dateRange == DateRanges.YEAR_THREE) 
+				{
+					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
+					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					medicationsVerticalGridLine.alpha = 0.3;
+					
+					hAxisMedications.minorTickInterval = 1;
+					hAxisMedications.minorTickUnits = "months";
+				}
+				else
+				{
+					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
+					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					
+					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					medicationsVerticalGridLine.alpha = 0.3;
+					
+					hAxisMedications.minorTickInterval = 1;
+					hAxisMedications.minorTickUnits = "months";
+				}
+				
+				hAxisMedications.minimum = model.minDate;
+				hAxisMedications.maximum = model.maxDate;
+			}
+			
+			private function switchMedicationsView(index:uint):void 
+			{
+				viewsMedications.selectedIndex = index;
+				
+				if(index == 0) 
+				{
+					btnMedicationsChart.setStyle("chromeColor", 0xFF931E);
+					btnMedicationsList.setStyle("chromeColor", 0xB3B3B3);
+				}
+				else 
+				{
+					btnMedicationsChart.setStyle("chromeColor", 0xB3B3B3);
+					btnMedicationsList.setStyle("chromeColor", 0xFF931E);
+				}
+			}
+			
+			private function searchFilterMedications():void 
+			{
+				switchMedicationsView(1);
+				viewStackMedications.selectedIndex = 0;
+				
+				model.medicationsDataFiltered.filterFunction = filterSearchMedications;
+				model.medicationsDataFiltered.refresh();
+				
+				if( model.medicationsDataFiltered.length == 0 ) 
+				{
+					medicationsList.visible = medicationsList.includeInLayout = false;
+					lblNoMedications.visible = lblNoMedications.includeInLayout = true;
+				}
+				else 
+				{
+					medicationsList.visible = medicationsList.includeInLayout = true;
+					lblNoMedications.visible = lblNoMedications.includeInLayout = false;
+				}
+			}
+			
+			private function filterSearchMedications(item:Object):Boolean 
+			{
+				var pattern:RegExp = new RegExp("[^]*" + header.search.text + "[^]*", "i");
+				
+				return pattern.test(item.name) 
+					|| pattern.test(item.dose) 
+					|| pattern.test(item.type) 
+					|| pattern.test(item.prescription) 
+					|| pattern.test(item.directions) 
+					|| pattern.test(item.pharmacy) 
+					|| pattern.test(item.lastFilledDate);
+			}
+			
+			private function clearSearchMedications():void 
+			{
+				header.search.text = 'Search medications';
+				model.medicationsDataFiltered.filterFunction = null;
+				model.medicationsDataFiltered.refresh();
+				
+				medicationsList.visible = medicationsList.includeInLayout = true;
+				lblNoMedications.visible = lblNoMedications.includeInLayout = false;
+			}
+			
+			private function dataTipsMedicationsNew(hd:HitData):String 
+			{
+				return hd.item.taken ? (hd.item.dateAN != null || (hd.item.intake == hd.item.directedIntake && (hd.item.frequency == null || hd.item.frequency == hd.item.directedFrequency)) ? "Mark as Not Taken" : (hd.item.intake > hd.item.directedIntake || hd.item.frequency > hd.item.directedFrequency) ? "Overdose" : "Underdose") : "Mark as Taken";
+			}
+			
+			private function medicationsNameDoseLabelFunction(item:Object, column:DataGridColumn):String 
+			{
+				return item.dose != '' ? item.name + ' - ' + item.dose : item.name;
+			}
+			
+			private function verticalAxisNullLabelFunction(item:Object, prevValue:Object, axis:CategoryAxis, categoryItem:Object):String 
+			{
+				/**
+				 * this is quick (and efficient) fix to being able to display the axis renderer (WITH THE LONG MINOR TICKS) 
+				 * in the appropriate place without messing up the horizontal placement (witohut this the chart looks messed 
+				 * up because there would be no labels which means the labels for the x-axis start more to the right, which 
+				 * mess up the chart...)
+				**/ 
+				return "         ";		
+			}
+			
+			private function addMedication():void 
+			{
+				var myAddMedication1:myAddMedication1Window = myAddMedication1Window( PopUpManager.createPopUp(this, myAddMedication1Window ) as TitleWindow);
+				PopUpManager.centerPopUp(myAddMedication1);
+			}
+			
+			private function showMedicationDetailsDataGrid(e:ListEvent):void 
+			{
+				viewMedicationDetails(e.itemRenderer.data);
+			}
+			
+			private function viewMedicationDetails(service:Object):void 
+			{
+				var isServiceAlreadyOpen:Boolean = false;
+				
+				for(var j:uint = 0; j < model.openTabs.length; j++) 
+				{
+					if( model.openTabs[j] == service.name ) 
+					{
+						isServiceAlreadyOpen = true;
+						viewStackMedications.selectedIndex = j + 1;		//+1 because in arrOpenTabs we don't include the first tab
+						break;
+					}
+				}
+				
+				if( !isServiceAlreadyOpen ) 
+				{
+					var medicationDetails:MedicationDetails = new MedicationDetails();
+					medicationDetails.medicationData = service;
+					viewStackMedications.addChild(medicationDetails);
+					tabsMedications.selectedIndex = viewStackMedications.length - 1;
+					
+					model.openTabs.push(service.name);
+				}
+			}
+			
+			private function showTip():void 
+			{
+				var myTipWindow:medTips = medTips(PopUpManager.createPopUp(this, medTips) as spark.components.TitleWindow);
+				
+				myTipWindow.x = stage.stageWidth/2 - myTipWindow.width/2;
+				myTipWindow.y = height/2 + 50;
+			}
+			
+			private function onCategoriesChange( event:CollectionEvent = null ):void
+			{
+				updateHeightAndColors();
+			}
+			
+			private function onDataLoaded( event:ApplicationDataEvent = null ):void
+			{
+				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
+				
+				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
+				model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
+				
+				onCategoriesChange();
+			}
+			
+			private function onShow():void
+			{
+				controller.filterMedsFromStatus();
+				updateHeightAndColors();
+			}
+			
+			private function init():void
+			{
+				if( !model.dataLoaded )
+				{
+					model.addEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
+					
+					var event:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
+					event.data = MedicationsModel.ID;
+					dispatchEvent( event );
+				}
+				else
+				{
+					onDataLoaded();
+				}
+				
+				showTip();
+			}
+		]]>
+	</fx:Script>
+	
+	<components:ModuleHeader
+		id="header"
+		icon="@Embed('images/btnHome.png')"
+		title="Medications" 
+		actionSuffix="medications you need to refill now or soon." actionCount="2" 
+		showSearch="true" searchFunction="searchFilterMedications" searchPlaceholder="Search medications" showBackground="false" 
+		visible="{showHeader}" includeInLayout="{showHeader}" />
+	
+	<s:Spacer height="10" />
+	
+	<s:Group creationComplete="{tabsMedications.setTabClosePolicy(0, false);}"><!--tabBarMedRedInitializeHandler()-->
+		
+		<mx:ViewStack 
+			id="viewStackMedications" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" borderVisible="true" borderStyle="solid" x="0" y="22"><!--change="updateBreadcrumb('medications')"-->
+			
+			<s:NavigatorContent label="Medication History"><!--id="mainBox"-->
+				
+				<s:layout>
+					<s:HorizontalLayout gap="0" />
+				</s:layout>
+				
+				<s:VGroup gap="0" height="100%">
+					
+					<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+						
+						<s:layout>
+							<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8" gap="7"/>
+						</s:layout>
+						
+						<s:HGroup gap="3">
+							
+							<s:Button label="+ Add Medication" height="24" styleName="buttonText" click="addMedication()" />
+							<!--<s:Button label="+ Record Intake" height="24" styleName="buttonText"/>-->
+							<s:Button label="Print" height="24" width="51" styleName="buttonText" />
+							<s:Button label="Export" height="24" width="51" styleName="buttonText" />	
+							
+						</s:HGroup>
+						
+						<s:HGroup paddingLeft="100" paddingRight="5">
+							
+							<s:Label text="Status:" paddingTop="7" color="#FFFFFF" />
+							
+							<s:DropDownList 
+								id="dropMediFilter" 
+								height="24" width="74" 
+								styleName="buttonText" selectedItem="{model.type}" 
+								dataProvider="{MedicationsModel.TYPES}"
+								change="model.type = dropMediFilter.selectedItem;controller.filterMedsFromStatus(); updateHeightAndColors();" />
+						</s:HGroup>
+						
+						<s:HGroup color="0xFFFFFF" gap="2">
+							
+							<s:Label text="Time Range:" paddingTop="6" />
+							
+							<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton id="btnMedCustom" label="Custom" />
+							
+						</s:HGroup>
+						
+						<s:HGroup gap="0">
+							<s:Button id="btnMedicationsChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" chromeColor="0xFF931E" click="switchMedicationsView(0); clearSearchMedications();" />
+							<s:Button id="btnMedicationsList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" styleName="buttonText" click="PopUpManager.removePopUp(myChartPopup); switchMedicationsView(1)" />
+						</s:HGroup>
+						
+					</s:BorderContainer>
+					
+					<s:Line xFrom="0" xTo="792">
+						<s:stroke>
+							<s:SolidColorStroke color="#3F3E3D"/>
+						</s:stroke>
+					</s:Line>
+					
+					<mx:ViewStack id="viewsMedications" width="100%" height="100%" creationPolicy="all"><!---->
+						
+						<s:NavigatorContent width="100%">
+							
+							<s:layout>
+								<s:VerticalLayout />
+							</s:layout>
+							
+							<s:HGroup id="medicationsDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="19">
+								
+								<s:Label text="Medication Name" paddingTop="1" paddingRight="35" />
+								<s:Line yFrom="0" yTo="31">
+									<s:stroke>
+										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3"/>
+									</s:stroke>
+								</s:Line>
+								<s:Label text="Date" paddingTop="1" />
+								
+							</s:HGroup>
+							
+							<s:HGroup id="medicationsDGLine" paddingLeft="155" paddingTop="-7" paddingBottom="-7"><!--bottom = -6, left = -2 (without ticks)-->
+								
+								<s:Line xFrom="0" xTo="637">
+									<s:stroke>
+										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" />
+									</s:stroke>
+								</s:Line>
+								
+							</s:HGroup>
+							
+							<s:HGroup width="100%">
+								
+								<mx:Tree
+									id="myTree" 
+									dataProvider="{model.medicationsCategoriesTree}" 
+									openItems="{model.medicationsCategoriesTree}" labelField="category"
+									width="156"
+									verticalScrollPolicy="off" horizontalScrollPolicy="off"
+									selectable="false"
+									itemRenderer="ASclasses.MyTreeItemRenderer"
+									contentBackgroundAlpha="0" color="0xBED63A" fontWeight="bold" alternatingItemColors="[0x4A4A49,0x303030]"
+									rowHeight="34"
+									defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"
+									itemOpen="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" itemClose="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" />
+								
+								<mx:PlotChart 
+									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
+									backgroundElements="{bgeMedications}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
+									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew" 
+									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips();" dataTipMode="single"><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
+									
+									<mx:horizontalAxisRenderers>
+										
+										<mx:AxisRenderer id="hAxisRendMedications" axis="{hAxisMedications}" tickPlacement="cross" tickLength="4" minorTickLength="3" minorTickPlacement="outside">
+											<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>
+											<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
+											<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
+										</mx:AxisRenderer>
+										
+									</mx:horizontalAxisRenderers>
+									
+									<!--<mx:verticalAxisRenderers>
+									<mx:AxisRenderer includeInLayout="false" visible="false" id="vAxisRendMedications" axis="{vAxisMedications}" tickPlacement="outside" tickLength="155" minorTickPlacement="inside" minorTickLength="637" labelGap="-155">--> <!--labelAlign="bottom"-->
+									<!--		<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
+									<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
+									<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>-->
+									<!--http://help.adobe.com/en_US/flex/using/WS02f7d8d4857b1677355f601a126b41ed60e-8000.html-->
+									<!--		<mx:labelRenderer>
+									<fx:Component>
+									<mx:LinkButton click="outerDocument.showMedicationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" paddingLeft="-3" paddingRight="2">
+									<fx:Script><![CDATA[
+									[Bindable] private var myTip:String;
+									[Bindable] private var myColor:uint;
+									[Bindable] private var myWeight:String;
+									[Bindable] private var myStyle:String;
+									
+									override public function set data(value:Object):void{
+									if(value == null)
+									return;
+									myTip = outerDocument.getLabelDataTipMedications(value.value);		//myTip = outerDocument.immunizationsData[value.value].description;		//this is buggy... it should match the immunizationsCategory number... fix...		//value.text;
+									label = value.text;		//text = value.text;
+									//text = value.text.toString().length > 20 ? value.text.toString().substr(0, 20) + "..." : value.text;
+									
+									if(value.text == "Prescription Drugs" || value.text == "Over-The-Counter Drugs" || value.text == "Supplements" || value.text == "Herbal Medicines") {
+									myColor = 0xBED63A;	//0xAEDEE4;
+									//myWeight = "bold";
+									//text = "> " + value.text;
+									//myStyle = "italic";
+									label += ":";
+									}
+									else {
+									myColor = 0xAEDEE4;	//0xFFFFFF;
+									//myWeight = "normal";
+									//text = value.text;
+									//myStyle = "normal";
+									}
+									}
+									]]></fx:Script>
+									</mx:LinkButton>	
+									
+									</fx:Component>
+									</mx:labelRenderer>
+									
+									</mx:AxisRenderer>
+									</mx:verticalAxisRenderers>-->
+									
+									<!--ADDING THIS AXIS RENDERER ONLY SO WE CAN HAVE THE HORIZONTAL LINES IN THE CHART (ie minorTicks)-->
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer id="vAxisRendMedications" axis="{vAxisMedications}" tickPlacement="none" minorTickPlacement="inside" minorTickLength="637"> <!--labelAlign="bottom"-->
+											<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
+											<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".1" /></mx:axisStroke>
+										</mx:AxisRenderer>
+									</mx:verticalAxisRenderers>
+									
+									<mx:horizontalAxis>
+										<mx:DateTimeAxis id="hAxisMedications" labelFunction="ChartLabelFunctions.lblHAxisPlotChartDay" displayLocalTime="true" minorTickInterval="12" minorTickUnits="hours" />
+									</mx:horizontalAxis>
+									
+									<mx:verticalAxis>
+										<!--LINEAR AXIS-->
+										<!--<mx:LinearAxis id="vAxisMedicalRecords" interval="1" maximum="{immunizationsCategories.length}" labelFunction="lblVAxisImmunizations" />-->
+										
+										<!--CATEGORY AXIS-->
+										<mx:CategoryAxis id="vAxisMedications" dataProvider="{model.medicationsCategories}" labelFunction="verticalAxisNullLabelFunction" /><!--we could replace the labelFunction with a simple showLabels='false' on the axis renderer, but that's messing up the alignmnet due the labels' position in the x axis-->
+									</mx:verticalAxis> <!-- categoryField="name" --> <!--dataFunction="catFunc"--> <!--labelFunction="lblVAxisImmunizations"-->
+									
+									<mx:series>
+										<!--<mx:PlotSeries xField="dateP" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
+										<mx:PlotSeries xField="dateO" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
+										<mx:PlotSeries xField="dateS" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
+										<mx:PlotSeries xField="dateH" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="7.5" selectable="true" stroke="{whiteStroke}" />-->
+										<mx:PlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="6" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<mx:PlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<mx:PlotSeries xField="dateX" yField="name" visible="false" />	<!-- this invisible point exists only so we can create the blue stripe -->
+										<!--<mx:PlotSeries xField="datePpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
+										<mx:PlotSeries xField="dateOpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
+										<mx:PlotSeries xField="dateSpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
+										<mx:PlotSeries xField="dateHpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="4" selectable="true" stroke="{grayStroke}" />-->
+									</mx:series>
+								</mx:PlotChart>
+							</s:HGroup>
+							
+							<mx:Legend id="legendMedications" direction="horizontal" color="0xFFFFFF" paddingLeft="155" fontFamily="myMyriadNoCFF">
+								<!--<mx:LegendItem label="Prescription Drugs" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsOutpatient}"  stroke="{whiteStroke}" />
+								<mx:LegendItem label="Over-The-Counter Drugs" legendMarkerRenderer="mx.charts.renderers.TriangleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicationsOverTheCounterDrugs}" stroke="{whiteStroke}" />
+								<mx:LegendItem label="Supplements" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsInpatient}"  stroke="{whiteStroke}" />
+								<mx:LegendItem label="Herbal Medicines" legendMarkerRenderer="mx.charts.renderers.DiamondItemRenderer" markerAspectRatio="1" markerHeight="15" markerWidth="15" fill="{colorMedicationsHerbalMedicines}" stroke="{whiteStroke}" />-->
+								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicalRecordsOutpatient}"  stroke="{chartStyles.whiteStroke}" />
+								<mx:LegendItem label="As needed" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicalRecordsInpatient}"  stroke="{chartStyles.whiteStroke}" />
+								<mx:LegendItem label="Overdose/underdose" legendMarkerRenderer="@Embed(source='images/medIconOverdoseGrayBG.png')" markerAspectRatio="1" markerWidth="16" markerHeight="14" />
+							</mx:Legend>
+							
+							<mx:Legend color="0xFFFFFF" paddingLeft="155" fontFamily="myMyriadNoCFF" paddingTop="-10">
+								<mx:LegendItem label="Not Taken" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicationsPast}" stroke="{chartStyles.whiteStroke}" />
+							</mx:Legend>
+							
+						</s:NavigatorContent>
+						
+						<s:NavigatorContent height="100%">
+							<!--<s:layout>
+							<s:VerticalLayout />
+							</s:layout>
+							
+							<s:HGroup id="hgSearchMedications" visible="false" includeInLayout="false" width="100%" horizontalAlign="center">
+							<s:Label id="lblSearchResultsMedications" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
+							<mx:LinkButton id="btnClearSearchMedications" label="(Clear)" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearchMedications()" rollOver="btnClearSearchMedications.styleName='linkBtnUnderline';" rollOut="btnClearSearchMedications.styleName='linkBtn';" />
+							</s:HGroup>-->
+							
+							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
+							<mx:DataGrid 
+								id="medicationsList" 
+								dataProvider="{model.medicationsDataFiltered}" fontFamily="myMyriad" 
+								width="100%" height="100%"  
+								itemClick="showMedicationDetailsDataGrid(event)"
+								alternatingItemColors="[0x303030,0x3c3c3b]" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"
+								color="0xFFFFFF" fontSize="10" verticalAlign="middle"
+								headerBackgroundSkin="skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="30" paddingTop="6" headerStyleName="dataGridHeaderAlternative"
+								borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--Here I'm using fontFamily="myMyriad" instead of fontFamily="myMyriadNoCFF" because each column has an itemRenderer--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+								
+								<mx:columns>
+									<mx:DataGridColumn dataField="name" headerText="Medication Name / Dosage" width="200" paddingLeft="5" labelFunction="medicationsNameDoseLabelFunction" itemRenderer="ASclasses.CustomRowColorAlternative" />
+									<mx:DataGridColumn dataField="prescription" headerText="Prescription #" width="103" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="type" headerText="Type" width="85" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="directions" headerText="Sig / Directions" width="151" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="refillsLeft" headerText="Refills Left" width="85" paddingLeft="5" >
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="100%" paddingTop="0" toolTip="{data.refillsLeft.substr(0,1) == '0' ? 'No refills left.' : ''}" horizontalScrollPolicy="off">
+													<mx:Label text="{data.refillsLeft}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}">
+														<fx:Script>		
+															<![CDATA[
+																/**
+																 * This function is necessary to be able to display the tooltip, since we're in an itemRenderer and the DataGridColumn's "showDataTips=true" won't do
+																 * http://flexonblog.wordpress.com/2008/07/09/tooltip-for-datagrid-column-elements/
+																 */
+																//REPLACED WITH THE ABOVE TOOLTOP (in HBox), SO I HAVE THE TOOLTIP IN ONE PLACE INSTEAD OF TWO
+																/*override public function set data(value:Object):void {
+																super.data = value;
+																if(data.Warning) this.toolTip = "Abnormal result. Contact your provider for more information.";
+																super.invalidateDisplayList();
+																}*/
+															]]>
+														</fx:Script>
+													</mx:Label>
+													<s:Spacer width="100%" />
+													<s:VGroup paddingTop="-6">
+														<s:Image source="@Embed('images/redMark.png')" visible="{data.refillsLeft.substr(0,1) == '0'}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
+													</s:VGroup>
+													
+												</mx:HBox>
+											</fx:Component>
+											
+										</mx:itemRenderer>
+										
+									</mx:DataGridColumn>
+									
+									<mx:DataGridColumn dataField="renewalStatus" headerText="Renewal Status" width="73" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="lastFilledDate" headerText="Last Filled Date" width="108" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="pharmacy" headerText="Pharmacy" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									
+								</mx:columns> 
+								
+							</mx:DataGrid>
+							
+							<mx:Text 
+								id="lblNoMedications" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
+								htmlText="{'There are no matching search results for the requested search.&lt;br&gt;Please make sure all words are spelled correctly, or try different keywords.'}" />
+							
+						</s:NavigatorContent>
+						
+					</mx:ViewStack>
+					
+				</s:VGroup>
+				
+				<s:Line xFrom="0" yFrom="0" xTo="0" yTo="628">
+					<s:stroke>
+						<s:SolidColorStroke color="#BDBDBC"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:VGroup width="180" height="100%" horizontalAlign="center">
+					<s:Label text="Allergies" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
+					<s:Label text="{'• Aspirin\n• Latex (Do Not Use, Not Screened)\n• Natural Rubber (Do Not Use, Not Screened)'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
+					<s:Label text="Conditions" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+					<s:Label text="{'• Hypertension\n• High cholesterol'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
+					<s:Label text="Pharmacy Alert" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+					<s:Label text="• Medication recall" styleName="smallTextRed" paddingLeft="9" paddingTop="12" width="100%" />
+					<s:Label text="Renewal Reminders" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+					<s:Label text="{'• Request renewal for Lisinopril\n• Request renewal for Coumadin®'}" styleName="smallText" paddingLeft="9" paddingTop="12" paddingBottom="20" width="100%" />
+					<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="{PopUpManager.removePopUp(myChartPopup); controller.requestRenewal(model.medicationsDataFiltered.getItemAt(0));}" />
+				</s:VGroup>
+				
+			</s:NavigatorContent>
+			
+		</mx:ViewStack>
+		
+		<plus:TabBarPlus id="tabsMedications" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackMedications}" />
+	</s:Group>
+	
+</s:VGroup>

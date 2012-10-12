@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="236"
+			   xmlns:net="flash.net.*"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="11" paddingBottom="13" paddingLeft="15" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="Tips for Keeping Track of Your Medications" fontWeight="bold" fontSize="16" />
+	
+	<s:HGroup paddingTop="15" paddingBottom="6" gap="12">
+		<s:Image source="@Embed('images/medicationTips.png')" />
+		<s:VGroup>
+			<s:Label text="Click the icon to record intake!" fontWeight="bold" fontSize="12" paddingBottom="11" />
+			<s:Label text="{'This module is designed to keep track of your\nmedications and their intake history. You can add\nyour intake record by just clicking a medication icon\nin the timeline.'}" lineHeight="16" />
+			<s:HGroup width="100%" paddingTop="8" paddingLeft="-10">
+				<mx:LinkButton id="btnPrev" label="« Previous Tip" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnPrev.styleName='linkBtnUnderline';" rollOut="btnPrev.styleName='linkBtn';" />
+				<s:Spacer width="122" />
+				<mx:LinkButton id="btnNext" label="Next Tip »" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnNext.styleName='linkBtnUnderline';" rollOut="btnNext.styleName='linkBtn';" />
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	
+	<s:Line xFrom="0" xTo="369">
+		<s:stroke>
+			<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" paddingTop="6" gap="9">
+		<s:CheckBox label="Don't show me this again" />
+		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>

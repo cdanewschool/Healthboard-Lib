@@ -21,6 +21,8 @@ package controllers
 	
 	import styles.ChartStyles;
 	
+	import util.ArrayUtil;
+	
 	public class MedicationsController extends BaseModuleController
 	{
 		public function MedicationsController()
@@ -46,13 +48,13 @@ package controllers
 			
 			model.medicationsData = event.result.medications.medication;	
 			model.medicationsDataFiltered = new ArrayCollection(); //	this is set here so when the module is re-opened, it won't be duplicated...
-			model.medicationsCategories = new Array();			 //	this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
+			model.medicationsCategories = new ArrayCollection();			 //	this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
 			
 			for(var i:uint = 0; i < model.medicationsData.length; i++) 
 			{
-				if(model.medicationsCategories.indexOf(model.medicationsData[i].name) == -1) 
+				if(model.medicationsCategories.getItemIndex(model.medicationsData[i].name) == -1) 
 				{
-					model.medicationsCategories.push(model.medicationsData[i].name);
+					model.medicationsCategories.addItem(model.medicationsData[i].name);
 					
 					if(	model.medicationsData[i].name != "Prescription Drugs" 
 						&& model.medicationsData[i].name != "Over-The-Counter Drugs" 
@@ -67,11 +69,120 @@ package controllers
 				}
 			}
 			
+			filterMedsFromStatus();
+			
 			model.medicationsDataWidget = new ArrayCollection( model.medicationsData.source.slice() );
 			
 			filterMedsFromWidget();	//mediFilterStatus();	//we run the filter now, since we want to display only "active" medications when we load the module...
 			
 			super.dataResultHandler(event);
+		}
+		
+		public function filterMedsFromStatus():void 
+		{
+			var model:MedicationsModel = model as MedicationsModel;
+			
+			model.medicationsData.filterFunction = filterMedications;
+			model.medicationsData.refresh();
+			
+			//	this is set here so when the module is re-opened, it won't be duplicated...
+			model.medicationsDataFiltered = new ArrayCollection();
+			model.medicationsCategories = new ArrayCollection();
+			
+			for(var j:uint = 0; j < model.medicationsData.length; j++) 
+			{
+				if( model.medicationsCategories.getItemIndex( model.medicationsData[j].name ) == -1) {
+					model.medicationsCategories.addItem( model.medicationsData[j].name );
+					
+					if( model.medicationsData[j].name != "Prescription Drugs" && model.medicationsData[j].name != "Over-The-Counter Drugs" && model.medicationsData[j].name != "Supplements" && model.medicationsData[j].name != "Herbal Medicines" ) 
+						model.medicationsDataFiltered.addItem( model.medicationsData[j] );
+				}
+			}
+			
+			//	so the order in the datagrid is the same as in the chart.
+			model.medicationsDataFiltered.source.reverse();
+			
+			/**
+			 * this line was added after this whole script was written, when we found that bug regarding inactive medications... 
+			 * Its purpose is to update the tree so that it is consistent with what's on the graph. On load, it forces the tree to 
+			 * show ONLY "active" medications. This line needs to be here so it runs AFTER the filter is executed. Paradogically, 
+			 * it also needs to stay before the filter (see above), because the filter looks for what's open in the tree...
+			 */
+			medicationsCategoriesForTree();	
+		}
+		
+		public function filterMedsFromTreeNew():void 
+		{
+			var model:MedicationsModel = model as MedicationsModel;
+			
+			model.medicationsData.filterFunction = filterMedications2;
+			model.medicationsData.refresh();
+			
+			model.medicationsCategories = new ArrayCollection();
+			
+			for(var l:uint = 0; l < model.medicationsData.length; l++) 
+			{
+				if(model.medicationsCategories.getItemIndex( model.medicationsData[l].name ) == -1) 
+					model.medicationsCategories.addItem( model.medicationsData[l].name );
+			}
+		}
+		
+		private function filterMedications2(item:Object):Boolean 
+		{
+			return MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE ? MedicationsModel(model).openLeaves.indexOf(item.name) != -1 && item.status != "inactive" : MedicationsModel(model).openLeaves.indexOf(item.name) != -1;
+		}
+		
+		public function medicationsCategoriesForTree():void 
+		{
+			var model:MedicationsModel = model as MedicationsModel;
+			
+			//added here when debugging the "inactive" medications bug, so that it's reset when it's run the second time...
+			model.medicationsCategoriesTree = new ArrayCollection
+				(
+					[	
+						{category: "Prescription Drugs", children: []},
+						{category: "Over-The-Counter Drugs", children: []},
+						{category: "Supplements", children: []},
+						{category: "Herbal Medicines", children: []}
+					]
+				);
+			
+			var medicationsCategoriesReversed:Array = ArrayUtil.unique( model.medicationsCategories.source ).reverse();
+			var currentCategory:int = -1;
+			var currentLeaf:uint = 0;
+			
+			for(var i:uint = 0; i < medicationsCategoriesReversed.length; i++) 
+			{
+				if( medicationsCategoriesReversed[i] == "Prescription Drugs" 
+					|| medicationsCategoriesReversed[i] == "Over-The-Counter Drugs" 
+					|| medicationsCategoriesReversed[i] == "Supplements" 
+					|| medicationsCategoriesReversed[i] == "Herbal Medicines" ) 
+				{
+					currentCategory++;
+					currentLeaf = 0;
+				}
+				else 
+				{
+					var newLeaf:Object = new Object();
+					newLeaf = ({category: medicationsCategoriesReversed[i]});
+					model.medicationsCategoriesTree[currentCategory].children[currentLeaf] = newLeaf;
+					currentLeaf++;
+				}
+			}
+			
+			model.medicationsCategoriesTree.refresh();
+		}
+		
+		public function filterMedicationsWidget(item:Object):Boolean 
+		{
+			return item.status != "inactive" && item.name != "Prescription Drugs" && item.name != "Over-The-Counter Drugs" && item.name != "Supplements" && item.name != "Herbal Medicines";
+		}
+		
+		//(this filterFunction was modified to avoid the conflict I was having when changing the status (active/all) and some of the nodes were previously hidden because they were inactive categories... (when going back go "active" they wouldn't show up because of the myOpenLeaves.indexOf(item.name) != -1 criteria...
+		//the original function was left untouched (see below filterMedications2), but it's only used when updating filterMedsFromTreeNew()...
+		private function filterMedications(item:Object):Boolean 
+		{
+			return MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE ? item.status != "inactive" : true;
 		}
 		
 		public function filterMedsFromWidget():void 
@@ -92,78 +203,6 @@ package controllers
 			}
 		}
 		
-		public function filterMedicationsWidget(item:Object):Boolean 
-		{
-			return item.status != "inactive" && item.name != "Prescription Drugs" && item.name != "Over-The-Counter Drugs" && item.name != "Supplements" && item.name != "Herbal Medicines";
-		}
-		
-		public function filterMedsFromStatus():void 
-		{
-			var model:MedicationsModel = model as MedicationsModel;
-			
-			model.medicationsData.filterFunction = filterMedications;
-			model.medicationsData.refresh();
-			
-			model.medicationsDataFiltered = new ArrayCollection(); //this is set here so when the module is re-opened, it won't be duplicated...
-			model.medicationsCategories = new Array();
-			
-			for(var j:uint = 0; j < model.medicationsData.length; j++) 
-			{
-				if( model.medicationsCategories.indexOf( model.medicationsData[j].name ) == -1) {
-					model.medicationsCategories.push( model.medicationsData[j].name );
-					
-					if( model.medicationsData[j].name != "Prescription Drugs" && model.medicationsData[j].name != "Over-The-Counter Drugs" && model.medicationsData[j].name != "Supplements" && model.medicationsData[j].name != "Herbal Medicines" ) 
-						model.medicationsDataFiltered.addItem( model.medicationsData[j] );
-				}
-			}
-			
-			model.medicationsDataFiltered.source.reverse();	//so the order in the datagrid is the same as in the chart.
-		}
-		
-		//(this filterFunction was modified to avoid the conflict I was having when changing the status (active/all) and some of the nodes were previously hidden because they were inactive categories... (when going back go "active" they wouldn't show up because of the myOpenLeaves.indexOf(item.name) != -1 criteria...
-		//the original function was left untouched (see below filterMedications2), but it's only used when updating filterMedsFromTreeNew()...
-		private function filterMedications(item:Object):Boolean 
-		{
-			/*	NOAH: commented this out because it's doing nothing
-			var myOpenLeaves:Array = new Array();
-			var arrMedCategories:Array = new Array("Prescription Drugs","Over-The-Counter Drugs","Supplements","Herbal Medicines");
-			var myOpenCategories:Array = new Array();
-			
-			for(var i:uint = 0; i < myTree.openItems.length; i++) 
-			{
-				myOpenCategories.push(myTree.openItems[i].category);
-			}
-			
-			var count:uint = 0;
-			
-			for(var x:uint = 0; x < arrMedCategories.length; x++) 
-			{
-				myOpenLeaves.push( arrMedCategories[x] );
-				
-				if( myOpenCategories.indexOf(arrMedCategories[x]) == -1 ) 
-				{
-					//myOpenLeaves.push(arrMedCategories[x]);
-					count--;
-				}
-				else 
-				{
-					//myOpenLeaves.push(myTree.openItems[count].category);
-					for( var j:uint = 0; j < myTree.openItems[count].children.length; j++ ) 
-					{
-						myOpenLeaves.push( myTree.openItems[count].children[j].category);
-					}
-				}
-				count++;
-			}
-			
-			*/
-			
-			//return dropMediFilter.selectedIndex == 0 ? myOpenLeaves.indexOf(item.name) != -1 && item.status != "inactive" : myOpenLeaves.indexOf(item.name) != -1;
-			return MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE == 0 ? item.status != "inactive" : true;
-			
-			//var pattern:RegExp = new RegExp("[^]*"+medicationsSearch.text+"[^]*", "i");
-			//return pattern.test(item.name) || pattern.test(item.dose) || pattern.test(item.type) || pattern.test(item.prescription) || pattern.test(item.directions) || pattern.test(item.pharmacy) || pattern.test(item.lastFilledDate);
-		}
 		
 		public function medicationsFillFunction(element:ChartItem, index:Number):IFill 
 		{
