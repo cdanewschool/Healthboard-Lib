@@ -84,14 +84,14 @@
 	
 	<s:Image source="{icon}" buttonMode="true" click="onHeaderClick(event)" />
 	<s:Label id="lblBreadcrumbPatient" text="{title}" color="0xFFFFFF" fontSize="22" fontWeight="bold" paddingTop="2" paddingLeft="13" />
-	<s:Label text="▼" fontSize="10" color="0xFFFFFF" paddingLeft="5" />
+	<s:Label text="▼" fontSize="10" color="0xFFFFFF" paddingTop="4" paddingLeft="5" />
 	
 	<s:VGroup paddingLeft="30" paddingTop="10">
 		
 		<s:HGroup visible="{actionCount>0}" includeInLayout="{actionCount>0}">
 			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
 			<s:Label text="{actionCount}" styleName="moduleSubtitleItalic moduleSubtitleNumber" />
-			<s:Label text="new {actionSuffix?actionSuffix.toLowerCase():''}" styleName="moduleSubtitleItalic" />
+			<s:Label text="{actionSuffix?actionSuffix.toLowerCase():''}" styleName="moduleSubtitleItalic" />
 		</s:HGroup>
 		
 		<s:HGroup visible="{moreText!=null}" includeInLayout="{moreText!=null}" fontSize="11" fontWeight="bold" paddingTop="-8">
@@ -103,7 +103,7 @@
 	<s:Spacer width="100%" />
 
 	<s:HGroup gap="-1" visible="{showSearch}" includeInLayout="{showSearch}" paddingRight="{showBackground?38:0}">
-		<s:TextInput id="search" text="{searchPlaceholder}" fontSize="10" fontStyle="italic" color="0x999999" height="24" width="166" paddingTop="5" click="{if(search.text == searchPlaceholder) search.text=''}" change="{searchFunction()}" />
+		<s:TextInput id="search" text="{searchPlaceholder}" fontSize="10" fontStyle="italic" color="0x999999" height="24" width="166" paddingTop="5" click="{if(search.text == searchPlaceholder) search.text=''}" change="{searchFunction?searchFunction():null}" />
 		<s:Button styleName="searchButtonIcon" width="24" height="24" />
 	</s:HGroup>
 	
