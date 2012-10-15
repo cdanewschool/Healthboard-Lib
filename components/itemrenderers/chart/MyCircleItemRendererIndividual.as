@@ -1,4 +1,4 @@
-package components.itemrenderers
+package components.itemrenderers.chart
 {
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;

@@ -1,4 +1,4 @@
-package ASclasses
+package components.itemrenderers.chart
 {
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;

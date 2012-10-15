@@ -1,23 +1,28 @@
-package ASclasses
+package components.itemrenderers.chart
 {
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
+	
+	import models.modules.ExerciseModel;
+	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
+	import mx.charts.renderers.CircleItemRenderer;
+	import mx.core.Application;
+	import mx.core.FlexGlobals;
 	import mx.core.IDataRenderer;
 	import mx.graphics.IFill;
 	import mx.graphics.IStroke;
-	import mx.skins.ProgrammaticSkin;
 	import mx.graphics.SolidColor;
+	import mx.skins.ProgrammaticSkin;
 	import mx.utils.ColorUtil;
-	import mx.charts.renderers.CircleItemRenderer;
 	
-	public class MyCircleItemRendererOver extends CircleItemRenderer
+	public class MyCircleItemRendererExercise extends CircleItemRenderer
 	{
 		private static var rcFill:Rectangle = new Rectangle();
 		private var _data:Object;
 
-		public function MyCircleItemRendererOver()
+		public function MyCircleItemRendererExercise()
 		{
 			super();
 		}
@@ -107,14 +112,23 @@ package ASclasses
 			if (stroke)	stroke.apply(g,null,null);
 			if (fill) fill.begin(g, rcFill, null);
 			
-			//if(_data.item.date != "02/14/2012") {
-				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0 - 2 * w + adjustedRadius * 2, 0 - 2 * w + adjustedRadius * 2);
-			//}
-			//else {
-			//	g.drawEllipse(w - adjustedRadius,w - adjustedRadius,unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
-			//}
+			var maxDate:String;
+			var model:ExerciseModel = ExerciseModel(AppProperties.getInstance().controller.exerciseController.model);
 			
+			if(_data.item.measure == 'PRTscore') maxDate = model.PRTscoreMax;
+			else if(_data.item.measure == 'mileRun') maxDate = model.mileRunMax;
+			else if(_data.item.measure == 'curlUps') maxDate = model.curlUpsMax;
+			else if(_data.item.measure == 'pushUps') maxDate = model.pushUpsMax;
+			else if(_data.item.measure == 'runWalk') maxDate = model.runWalkMax;
+			else if(_data.item.measure == 'bike') maxDate = model.bikeMax;
+			else if(_data.item.measure == 'comments') maxDate = model.exPAcommentsMax;
 			
+			if(_data.item.date != maxDate) {
+				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
+			}
+			else {
+				g.drawEllipse(w - adjustedRadius,w - adjustedRadius,unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
+			}
 			
 			if (fill)
 				fill.end(g);

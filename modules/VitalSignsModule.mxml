@@ -187,8 +187,8 @@
 				imgSystolicDiffPos.visible = imgSystolicDiffPos.includeInLayout = Number(lblSystolicDiff.text) < 0;
 				imgDiastolicDiffNeg.visible = imgDiastolicDiffNeg.includeInLayout = Number(lblDiastolicDiff.text) > 0;
 				imgDiastolicDiffPos.visible = imgDiastolicDiffPos.includeInLayout = Number(lblDiastolicDiff.text) < 0;
-				myPressureLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererOverIndividual));
-				myPressureLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererOverIndividual));
+				myPressureLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
+				myPressureLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
 			}
 			
 			private function pressureChartRolloutEventHandler(event:ChartItemEvent):void 
@@ -204,8 +204,8 @@
 				imgSystolicDiffPos.visible = imgSystolicDiffPos.includeInLayout = Number(lblSystolicDiff.text) < 0;
 				imgDiastolicDiffNeg.visible = imgDiastolicDiffNeg.includeInLayout = Number(lblDiastolicDiff.text) > 0;
 				imgDiastolicDiffPos.visible = imgDiastolicDiffPos.includeInLayout = Number(lblDiastolicDiff.text) < 0;
-				myPressureLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererIndividual));
-				myPressureLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererIndividual));
+				myPressureLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererIndividual));
+				myPressureLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererIndividual));
 			}
 			
 			private function weightChartRolloverEventHandler(event:ChartItemEvent):void 
@@ -222,7 +222,7 @@
 				lblBMIDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10)*10)/10);
 				imgBMIDiffPos.visible = imgBMIDiffPos.includeInLayout = Number(lblBMIDiff.text) < 0;
 				imgBMIDiffNeg.visible = imgBMIDiffNeg.includeInLayout = Number(lblBMIDiff.text) > 0;
-				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererOverIndividual));
+				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
 			}
 			
 			private function weightChartRolloutEventHandler(event:ChartItemEvent):void 
@@ -238,7 +238,7 @@
 				lblBMIDiff.text = String(int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10);
 				imgBMIDiffPos.visible = imgBMIDiffPos.includeInLayout = Number(lblBMIDiff.text) < 0;
 				imgBMIDiffNeg.visible = imgBMIDiffNeg.includeInLayout = Number(lblBMIDiff.text) > 0;
-				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.MyCircleItemRendererIndividual));
+				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererIndividual));
 			}
 			
 			private function vitalsPressureChangeReference():void 
@@ -451,8 +451,8 @@
 											<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 												<fx:Script>
 													<![CDATA[
-														import ASclasses.MyCircleItemRenderer;
-														import ASclasses.MyCircleItemRendererOver;
+														import components.itemrenderers.chart.MyCircleItemRenderer;
+														import components.itemrenderers.chart.MyCircleItemRendererOver;
 														import ASclasses.MyCustomDataTip;
 														
 														import components.vitalsigns.viewVitalsWindow;
@@ -484,8 +484,8 @@
 															lblHeightFeet.text = String(Math.floor(data.chart[0].data[event.hitData.chartItem.index].value / 12));
 															lblHeightInches.text = String(data.chart[0].data[event.hitData.chartItem.index].value % 12);
 															lblDate.text = DateUtil.formatDateFromString(data.chart[0].data[event.hitData.chartItem.index].date);
-															myLineSeries.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRendererOver));
-															myLineSeries2.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRendererOver));
+															myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
+															myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
 														}
 														
 														private function chartRolloutEventHandler(event:ChartItemEvent):void 
@@ -497,8 +497,8 @@
 															lblHeightFeet.text = String(Math.floor(data.chart[0].data[data.chart[0].data.length - 1].value / 12));
 															lblHeightInches.text = String(data.chart[0].data[data.chart[0].data.length - 1].value % 12);
 															lblDate.text = DateUtil.formatDateFromString(data.chart[0].data[data.chart[0].data.length - 1].date);
-															myLineSeries.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRenderer));
-															myLineSeries2.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRenderer));
+															myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
+															myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
 														}
 														
 														private function chartChange(event:Event):void
@@ -576,7 +576,7 @@
 																</mx:lineStroke>
 															</mx:LineSeries>
 															
-															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="ASclasses.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}" selectedIndex="0"><!--form="curve" -->
+															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}" selectedIndex="0"><!--form="curve" -->
 																<mx:lineStroke>
 																	<s:SolidColorStroke color="0xFFFFFF" weight="3" /><!--4-->
 																</mx:lineStroke>
@@ -591,7 +591,7 @@
 																</mx:lineStroke>
 															</mx:LineSeries>
 															
-															<mx:LineSeries id="myLineSeries2" yField="value2" xField="date" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}" itemRenderer="ASclasses.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}"><!--form="curve" -->
+															<mx:LineSeries id="myLineSeries2" yField="value2" xField="date" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}"><!--form="curve" -->
 																<mx:lineStroke>
 																	<s:SolidColorStroke color="0xFFFFFF" weight="3" />
 																</mx:lineStroke>
@@ -921,7 +921,7 @@
 										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
 									</mx:lineStroke>
 								</mx:LineSeries>
-								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
+								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xFFFFFF" weight="4" /><!--4-->
 									</mx:lineStroke>
@@ -1064,7 +1064,7 @@
 									</mx:lineStroke>
 								</mx:LineSeries>
 								
-								<mx:LineSeries id="myPressureLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
+								<mx:LineSeries id="myPressureLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xFFFFFF" weight="4" />
 									</mx:lineStroke>
@@ -1079,7 +1079,7 @@
 									</mx:lineStroke>
 								</mx:LineSeries>
 								
-								<mx:LineSeries id="myPressureLineSeries2" yField="value2" xField="date" itemRenderer="components.itemrenderers.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}" alpha=".3">
+								<mx:LineSeries id="myPressureLineSeries2" yField="value2" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}" alpha=".3">
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xAEDEE4" weight="4" />
 									</mx:lineStroke>

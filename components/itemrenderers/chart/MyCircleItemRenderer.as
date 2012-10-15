@@ -1,9 +1,9 @@
-package ASclasses
+package components.itemrenderers.chart
 {
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
-	import models.modules.ExerciseModel;
+	import models.modules.VitalSignsModel;
 	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
@@ -17,12 +17,12 @@ package ASclasses
 	import mx.skins.ProgrammaticSkin;
 	import mx.utils.ColorUtil;
 	
-	public class MyCircleItemRendererExercise extends CircleItemRenderer
+	public class MyCircleItemRenderer extends CircleItemRenderer
 	{
 		private static var rcFill:Rectangle = new Rectangle();
 		private var _data:Object;
 
-		public function MyCircleItemRendererExercise()
+		public function MyCircleItemRenderer()
 		{
 			super();
 		}
@@ -113,15 +113,15 @@ package ASclasses
 			if (fill) fill.begin(g, rcFill, null);
 			
 			var maxDate:String;
-			var model:ExerciseModel = ExerciseModel(AppProperties.getInstance().controller.exerciseController.model);
+			var model:VitalSignsModel = VitalSignsModel(AppProperties.getInstance().controller.vitalSignsController.model);
 			
-			if(_data.item.measure == 'PRTscore') maxDate = model.PRTscoreMax;
-			else if(_data.item.measure == 'mileRun') maxDate = model.mileRunMax;
-			else if(_data.item.measure == 'curlUps') maxDate = model.curlUpsMax;
-			else if(_data.item.measure == 'pushUps') maxDate = model.pushUpsMax;
-			else if(_data.item.measure == 'runWalk') maxDate = model.runWalkMax;
-			else if(_data.item.measure == 'bike') maxDate = model.bikeMax;
-			else if(_data.item.measure == 'comments') maxDate = model.exPAcommentsMax;
+			if(_data.item.vital == 'weight') maxDate = model.weightMax;
+			else if(_data.item.vital == 'bloodPressure') maxDate = model.bloodPressureMax;
+			else if(_data.item.vital == 'heartRate') maxDate = model.heartRateMax;
+			else if(_data.item.vital == 'respiratory') maxDate = model.respiratoryMax;
+			else if(_data.item.vital == 'temperature') maxDate = model.temperatureMax;
+			else if(_data.item.vital == 'height') maxDate = model.heightMax;
+			else if(_data.item.vital == 'comments') maxDate = model.commentsMax;
 			
 			if(_data.item.date != maxDate) {
 				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
