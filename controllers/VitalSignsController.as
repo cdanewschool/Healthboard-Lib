@@ -165,7 +165,10 @@ package controllers
 					]
 				);
 			
-			VitalSignsModel(model).vitalSignsForWidget = new ArrayCollection( VitalSignsModel(model).vitalSigns.toArray() );	
+			var vitalSignsForWidgetSource:Array = VitalSignsModel(model).vitalSigns.source.slice();
+			vitalSignsForWidgetSource.splice(-2);
+			
+			VitalSignsModel(model).vitalSignsForWidget = new ArrayCollection( vitalSignsForWidgetSource );
 		}
 		
 		public function updateVitalIndices():void 
