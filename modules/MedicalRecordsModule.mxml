@@ -620,7 +620,7 @@
 								width="130"
 								verticalScrollPolicy="off" horizontalScrollPolicy="off"
 								selectable="false"
-								itemRenderer="components.itemrenderers.MyTreeItemRendererMedRec"
+								itemRenderer="components.itemrenderers.tree.MyTreeItemRendererMedRec"
 								contentBackgroundAlpha="0" color="0xBED63A" fontWeight="bold" alternatingItemColors="[0x4A4A49,0x303030]"
 								rowHeight="28" rowCount="{model.medicalRecordsCategories.length}"
 								defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"

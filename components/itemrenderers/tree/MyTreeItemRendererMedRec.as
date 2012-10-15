@@ -1,4 +1,4 @@
-package components.itemrenderers
+package components.itemrenderers.tree
 {
 	import flash.events.MouseEvent;
 	import flash.text.TextFormat;
