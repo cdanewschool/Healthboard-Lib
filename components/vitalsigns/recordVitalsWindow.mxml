@@ -200,7 +200,7 @@
 				
 				var newChartMaxDummy:Date = new Date(model.dateMax.getFullYear(), model.dateMax.getMonth(), model.dateMax.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting parentApplication.chartMax (in this case to itself)
 				
-				if(new Date(txtDate.text) > model.chartMax) model.dateMax = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
+				if(new Date(txtDate.text) > model.dateMax) model.dateMax = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
 				else model.dateMax = newChartMaxDummy;//.setDate(parentApplication.chartMax.getDate() + 1);// = parentApplication.chartMax;
 				
 				//ADDING TO arrVitalSignsByDate FOR THE LIST VIEW

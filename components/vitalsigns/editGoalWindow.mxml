@@ -30,7 +30,7 @@
 			
 			protected function creationCompleteHandler(event:FlexEvent):void 
 			{
-				if(model.vitalSignsIndex == 3) 
+				if(model.moduleViewIndex == 3) 
 				{
 					dropDownVitalToEdit.selectedIndex = 1;
 					groupWeight.visible = groupWeight.includeInLayout = false;

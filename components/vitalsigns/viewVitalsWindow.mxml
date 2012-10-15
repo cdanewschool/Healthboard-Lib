@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="405" height="395"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000">
+	<fx:Script>
+		<![CDATA[
+			import controllers.VitalSignsController;
+			
+			import models.modules.VitalSignsModel;
+			
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			[Bindable] public var date:String;
+			//[Bindable] private var myEntry:Object = new Object();
+			[Bindable] private var currentWeight:String;
+			[Bindable] private var currentBMI:String;
+			[Bindable] private var currentBloodPressure:String;
+			[Bindable] private var currentHeartRate:String;
+			[Bindable] private var currentRespiratory:String;
+			[Bindable] private var currentTemperature:String;
+			[Bindable] private var currentHeight:String;
+			[Bindable] private var currentComments:String;
+			[Bindable] private var author:String;
+			
+			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
+			[Bindable] public var model:VitalSignsModel = controller.model as VitalSignsModel;
+			
+			public function populateEntry():void 
+			{
+				var count:uint = 0;
+				
+				for(var i:uint = 0; i < model.vitalSignsByDate.length; i++)
+				{
+					/* if(item.WeightBMI != '') currentWeight = item.WeightBMI.substr(0,3);
+					if(item.WeightBMI != '') currentBMI = item.WeightBMI.substr(6);
+					if(item.BloodPressure != '') currentBloodPressure = item.BloodPressure;
+					if(item.HeartRate != '') currentHeartRate = item.HeartRate;
+					if(item.Respiratory != '') currentRespiratory = item.Respiratory;
+					if(item.Temperature != '') currentTemperature = item.Temperature;
+					if(item.Height != '') currentHeight = item.Height;
+						
+					if(item.Date == date) {
+					//	myEntry = item;
+						currentComments = item.Comments;
+						author = item.RecordedBy;
+						break;
+					} */
+					
+					var item:Object = model.vitalSignsByDate.getItemAt(i);
+					
+					if( item.Date == date ) 
+					{
+						if(item.WeightBMI != '') 
+						{
+							hbWeight.visible = hbWeight.includeInLayout = true;
+							currentWeight = item.WeightBMI.substr(0,3);
+							currentBMI = item.WeightBMI.substr(6);
+							count++;
+							
+							if(count%2) hbWeight.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						if(item.BloodPressure != '') 
+						{
+							hbBloodPressure.visible = hbBloodPressure.includeInLayout = true;
+							currentBloodPressure = item.BloodPressure;
+							count++;
+							
+							if(count%2) hbBloodPressure.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						if(item.HeartRate != '')
+						{
+							hbHeartRate.visible = hbHeartRate.includeInLayout = true;
+							currentHeartRate = item.HeartRate;
+							count++;
+							
+							if(count%2) hbHeartRate.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						if(item.Respiratory != '') 
+						{
+							hbRespiratory.visible = hbRespiratory.includeInLayout = true;
+							currentRespiratory = item.Respiratory;
+							count++;
+							
+							if(count%2) hbRespiratory.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						if(item.Temperature != '') 
+						{
+							hbTemperature.visible = hbTemperature.includeInLayout = true;
+							currentTemperature = item.Temperature;
+							count++;
+							
+							if(count%2) hbTemperature.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						if(item.Height != '') 
+						{
+							hbHeight.visible = hbHeight.includeInLayout = true;
+							currentHeight = item.Height;
+							count++;
+							
+							if(count%2) hbHeight.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						currentComments = item.Comments;
+						author = item.RecordedBy;
+						
+						break;
+					}
+				}
+				this.height = 395 - (6-count)*32;
+			}
+			
+			private function addCommentForm():void 
+			{
+				var myAddCommentPopup:addCommentWindow;
+				myAddCommentPopup = addCommentWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, addCommentWindow) as spark.components.TitleWindow);
+				myAddCommentPopup.date = date;
+				myAddCommentPopup.populateEntry();
+				PopUpManager.centerPopUp(myAddCommentPopup);
+				
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="5" paddingRight="13" gap="0" />
+	</s:layout>
+
+	<s:Label text="Vital Records" fontWeight="bold" fontSize="16" color="0x4D4D4D" paddingLeft="8" paddingBottom="16" />
+	
+	<s:HGroup width="100%" paddingLeft="8" paddingBottom="4">
+		<s:Label fontSize="13" fontStyle="italic" color="0x4D4D4D" text="{'Entry for ' + date}" />
+		<s:Spacer width="100%" />
+		<s:HGroup paddingTop="-5" gap="-8" visible="{author == 'You'}" includeInLayout="{author == 'You'}">
+			<mx:LinkButton id="btnEditVital" label="Edit" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnEditVital.styleName='linkBtnUnderline';" rollOut="btnEditVital.styleName='linkBtn';" />
+			<mx:LinkButton id="btnDeleteVital" label="Delete" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnDeleteVital.styleName='linkBtnUnderline';" rollOut="btnDeleteVital.styleName='linkBtn';" />
+		</s:HGroup>
+		<s:Label color="0x4D4D4D" text="View only" visible="{author != 'You'}" includeInLayout="{author != 'You'}" />
+	</s:HGroup>
+	
+<!--	<s:HGroup width="391" height="33" paddingLeft="-8" color="0x000000">
+		<s:Label width="391" height="33" backgroundColor="0xCECECE" paddingLeft="7" verticalAlign="middle" text="{'Height is &lt;b&gt;' + 'cacac' + '&lt;/b&gt;'}" />
+	</s:HGroup>
+	-->
+	<mx:HBox id="hbWeight" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Weight is" paddingLeft="7" />
+		<s:Label text="{currentWeight + ' pounds'}" fontWeight="bold" />
+		<s:Label text="and BMI is" />
+		<s:Label text="{currentBMI + '.'}" fontWeight="bold" />
+	</mx:HBox>
+	<mx:HBox id="hbBloodPressure" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Blood pressure is" paddingLeft="7" />
+		<s:Label text="{currentBloodPressure + ' mmHg.'}" fontWeight="bold" />
+	</mx:HBox>
+	<mx:HBox id="hbHeartRate" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Heart rate is" paddingLeft="7" />
+		<s:Label text="{currentHeartRate + ' beats/minute.'}" fontWeight="bold" />
+	</mx:HBox>
+	<mx:HBox id="hbRespiratory" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Respiratory is" paddingLeft="7" />
+		<s:Label text="{currentRespiratory + ' breaths/minute.'}" fontWeight="bold" />
+	</mx:HBox>
+	<mx:HBox id="hbTemperature" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Temperature is" paddingLeft="7" />
+		<s:Label text="{currentTemperature + '°F.'}" fontWeight="bold" />
+	</mx:HBox>
+	<mx:HBox id="hbHeight" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Height is" paddingLeft="7" />
+		<s:Label text="{currentHeight + '.'}" fontWeight="bold" />
+	</mx:HBox>
+
+	<s:HGroup width="100%" paddingLeft="8" paddingTop="16">
+		<s:Label text="Comments:" />
+		<s:Spacer width="100%" />
+		<s:HGroup paddingTop="-6">
+			<mx:LinkButton id="btnAddComment" label="+ Add comment" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnAddComment.styleName='linkBtnUnderline';" rollOut="btnAddComment.styleName='linkBtn';" click="addCommentForm()" />
+		</s:HGroup>
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="4" paddingBottom="10" paddingLeft="8">
+		<s:Line xFrom="0" xTo="376">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" paddingLeft="8">
+		<s:VGroup>
+			<s:Label width="287" text="{currentComments}" />
+			<s:Label visible="{currentComments != ''}" text="{'– ' + author + ', ' + date}" fontStyle="italic" color="0x4D4D4D" />
+		</s:VGroup>
+
+		<s:HGroup paddingTop="-5" gap="-8" visible="{currentComments != '' &amp;&amp; author == 'You'}" includeInLayout="{currentComments != '' &amp;&amp; author == 'You'}">
+			<mx:LinkButton id="btnEditComment" label="Edit" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnEditComment.styleName='linkBtnUnderline';" rollOut="btnEditComment.styleName='linkBtn';" />
+			<mx:LinkButton id="btnDeleteComment" label="Delete" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnDeleteComment.styleName='linkBtnUnderline';" rollOut="btnDeleteComment.styleName='linkBtn';" />
+		</s:HGroup>
+		<s:Label color="0x4D4D4D" text="View only" visible="{author != 'You'}" includeInLayout="{author != 'You'}" paddingLeft="25" />
+	</s:HGroup>
+	
+
+	<s:HGroup paddingTop="8" paddingBottom="13" paddingLeft="8">
+		<s:Line xFrom="0" xTo="376">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>
