@@ -57,8 +57,8 @@
 				myRadarChart.series = radarChartSeries;
 				myRadarChart.axes = radarChartAxes;
 				
-				exPlotSeriesPatient.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRendererExSliderOver));
-				exPlotSeriesProvider.setStyle("itemRenderer",new ClassFactory(ASclasses.MyBoxItemRendererExSliderOver));
+				exPlotSeriesPatient.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererExSliderOver));
+				exPlotSeriesProvider.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyBoxItemRendererExSliderOver));
 			}
 			
 			private function editRunGoal():void 
@@ -283,7 +283,7 @@
 								
 								<mx:series>
 									<mx:PlotSeries id="exPlotSeriesPatient" xField="datePatient" yField="series" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" fill="{chartStyles.colorExerciseGraySlider}" /><!-- here I didn't set itemRenderer="ASclasses.MyCircleItemRendererExSlider" because the last icon is from the "provider" instead of the "patient", so it's unnecessary to set the last icon's color here... But if users were able to add exercise records dynamically, then I should set this...-->
-									<mx:PlotSeries id="exPlotSeriesProvider" xField="dateProvider" yField="series" itemRenderer="ASclasses.MyBoxItemRendererExSlider" radius="5" fill="{chartStyles.colorExerciseGraySlider}"/>
+									<mx:PlotSeries id="exPlotSeriesProvider" xField="dateProvider" yField="series" itemRenderer="components.itemrenderers.chart.MyBoxItemRendererExSlider" radius="5" fill="{chartStyles.colorExerciseGraySlider}"/>
 									<mx:LineSeries yField="expectation" xField="dateProvider" itemRenderer="{null}" interactive="false">
 										<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 									</mx:LineSeries>
