@@ -29,6 +29,8 @@
 			[Bindable] public var actionPrefix:String = "You have";
 			[Bindable] public var actionSuffix:String = "new messages";
  			
+			[Bindable] public var showActionsIfNone:Boolean = false;
+			
 			private var _showBackground:Boolean = true;
 			
 			override protected function commitProperties():void
@@ -88,9 +90,9 @@
 	
 	<s:VGroup paddingLeft="30" paddingTop="10">
 		
-		<s:HGroup visible="{actionCount>0}" includeInLayout="{actionCount>0}">
+		<s:HGroup visible="{actionCount>0 || showActionsIfNone}" includeInLayout="{actionCount>0 || showActionsIfNone}">
 			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
-			<s:Label text="{actionCount}" styleName="moduleSubtitleItalic moduleSubtitleNumber" />
+			<s:Label text="{actionCount>0?actionCount:'no'}" styleName="moduleSubtitleItalic moduleSubtitleNumber" />
 			<s:Label text="{actionSuffix?actionSuffix.toLowerCase():''}" styleName="moduleSubtitleItalic" />
 		</s:HGroup>
 		

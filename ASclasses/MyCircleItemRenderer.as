@@ -3,6 +3,8 @@ package ASclasses
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
+	import models.modules.VitalSignsModel;
+	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
 	import mx.charts.renderers.CircleItemRenderer;
@@ -111,13 +113,15 @@ package ASclasses
 			if (fill) fill.begin(g, rcFill, null);
 			
 			var maxDate:String;
-			if(_data.item.vital == 'weight') maxDate = FlexGlobals.topLevelApplication.weightMax;
-			else if(_data.item.vital == 'bloodPressure') maxDate = FlexGlobals.topLevelApplication.bloodPressureMax;
-			else if(_data.item.vital == 'heartRate') maxDate = FlexGlobals.topLevelApplication.heartRateMax;
-			else if(_data.item.vital == 'respiratory') maxDate = FlexGlobals.topLevelApplication.respiratoryMax;
-			else if(_data.item.vital == 'temperature') maxDate = FlexGlobals.topLevelApplication.temperatureMax;
-			else if(_data.item.vital == 'height') maxDate = FlexGlobals.topLevelApplication.heightMax;
-			else if(_data.item.vital == 'comments') maxDate = FlexGlobals.topLevelApplication.commentsMax;
+			var model:VitalSignsModel = VitalSignsModel(AppProperties.getInstance().controller.vitalSignsController.model);
+			
+			if(_data.item.vital == 'weight') maxDate = model.weightMax;
+			else if(_data.item.vital == 'bloodPressure') maxDate = model.bloodPressureMax;
+			else if(_data.item.vital == 'heartRate') maxDate = model.heartRateMax;
+			else if(_data.item.vital == 'respiratory') maxDate = model.respiratoryMax;
+			else if(_data.item.vital == 'temperature') maxDate = model.temperatureMax;
+			else if(_data.item.vital == 'height') maxDate = model.heightMax;
+			else if(_data.item.vital == 'comments') maxDate = model.commentsMax;
 			
 			if(_data.item.date != maxDate) {
 				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);

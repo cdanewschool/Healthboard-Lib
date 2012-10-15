@@ -263,7 +263,7 @@
 		id="header"
 		icon="@Embed('images/btnHome.png')"
 		title="Vital Signs" 
-		actionSuffix="new measurements." actionCount="1" showActionsIfNone="true"
+		actionSuffix="new measurements." actionCount="0" showActionsIfNone="true"
 		showSearch="true" searchPlaceholder="Search vital signs" showBackground="false" visible="{showHeader}" includeInLayout="{showHeader}" />
 	
 	<s:Spacer height="10" />
@@ -455,7 +455,7 @@
 														import ASclasses.MyCircleItemRendererOver;
 														import ASclasses.MyCustomDataTip;
 														
-														import components.vitalSigns.viewVitalsWindow;
+														import components.vitalsigns.viewVitalsWindow;
 														import mx.managers.PopUpManager;
 														import mx.charts.HitData;
 														import mx.charts.events.ChartItemEvent;
@@ -501,6 +501,11 @@
 															myLineSeries2.setStyle("itemRenderer",new ClassFactory(ASclasses.MyCircleItemRenderer));
 														}
 														
+														private function chartChange(event:Event):void
+														{
+															event.stopImmediatePropagation();
+														}
+														
 														private function applyCustomDataTipsVitalSigns():void 
 														{
 															chartComments.setStyle("dataTipRenderer",MyCustomDataTip);    
@@ -513,18 +518,18 @@
 														
 														private var myViewVitalsPopup:viewVitalsWindow;
 														
-														private function viewVitals(e:ChartItemEvent):void 
+														public function viewVitals(e:ChartItemEvent):void 
 														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewVitalsWindow) as spark.components.TitleWindow);		//added 'this.parentApplication as DisplayObject' instead of 'this', to make the popup appear in the center of the screen; otherwise it would show off the screen in some cases, making it impossible to close.
+															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this, viewVitalsWindow) as spark.components.TitleWindow);		//added 'this.parentApplication as DisplayObject' instead of 'this', to make the popup appear in the center of the screen; otherwise it would show off the screen in some cases, making it impossible to close.
 															myViewVitalsPopup.date = e.hitData.item.date;
 															myViewVitalsPopup.populateEntry();
 															
 															PopUpManager.centerPopUp(myViewVitalsPopup);
 														}
 														
-														private function viewVitalsComments(e:ChartItemEvent):void 
+														public function viewVitalsComments(e:ChartItemEvent):void 
 														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewVitalsWindow) as spark.components.TitleWindow);
+															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this, viewVitalsWindow) as spark.components.TitleWindow);
 															myViewVitalsPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
 															myViewVitalsPopup.populateEntry();
 															
@@ -561,7 +566,7 @@
 												
 												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" width="460">
 													
-													<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewVitals(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+													<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewVitals(event)" change="chartChange(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
 														
 														<mx:series>
 															
@@ -625,6 +630,7 @@
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="460">
+													
 													<mx:PlotChart 
 														id="chartComments" width="445" height="45" 
 														backgroundElements="{bge}"
