@@ -28,6 +28,11 @@
 		</fx:Array>
 	</fx:Declarations>
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import ASclasses.MyCustomDataTip;
@@ -38,6 +43,8 @@
 			import components.popups.myChartPopupWindow;
 			
 			import controllers.MedicationsController;
+			
+			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
 			
@@ -60,8 +67,6 @@
 			
 			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
-			
-			import enum.DateRanges;
 			
 			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
@@ -174,7 +179,7 @@
 			
 			private function updateDateRange():void 
 			{
-				if( model.dateRange == DateRanges.DAY ) 
+				if( model.dateRange == DateRanges.WEEK ) 
 				{
 					model.minDate = new Date( "Jun 13 2012 12:00:00 AM");
 					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
@@ -331,6 +336,35 @@
 				PopUpManager.centerPopUp(myAddMedication1);
 			}
 			
+			private function onTreeItemClick( event:ListEvent ):void
+			{
+				showMedicationDetailsByName( event.itemRenderer.data.category );
+			}
+			
+			public function showMedicationDetailsByName( med:String ):void 
+			{
+				if( med != "Prescription Drugs" && med != "Over-The-Counter Drugs" && med != "Supplements" && med != "Herbal Medicines" )
+				{
+					var item:Object;
+					
+					for(var i:uint = 0; i < model.medicationsData.length; i++) 
+					{
+						if( model.medicationsData.getItemAt(i).name == med ) 
+						{
+							item = model.medicationsData.getItemAt(i);
+							
+							break;
+						}
+					}
+					
+					if( item )
+					{
+						//uncomment>> PopUpManager.removePopUp(myChartPopup);		//remove existing popup (if any).
+						viewMedicationDetails( item );
+					}
+				}
+			}
+			
 			private function showMedicationDetailsDataGrid(e:ListEvent):void 
 			{
 				viewMedicationDetails(e.itemRenderer.data);
@@ -353,12 +387,19 @@
 				if( !isServiceAlreadyOpen ) 
 				{
 					var medicationDetails:MedicationDetails = new MedicationDetails();
+					medicationDetails.currentState = currentState;
 					medicationDetails.medicationData = service;
 					viewStackMedications.addChild(medicationDetails);
+					
 					tabsMedications.selectedIndex = viewStackMedications.length - 1;
 					
 					model.openTabs.push(service.name);
 				}
+			}
+			
+			private function showRequests():void
+			{
+				//	TODO: show popup
 			}
 			
 			private function showTip():void 
@@ -405,7 +446,8 @@
 					onDataLoaded();
 				}
 				
-				showTip();
+				if( currentState != 'provider' )
+					showTip();
 			}
 		]]>
 	</fx:Script>
@@ -442,35 +484,35 @@
 						<s:HGroup gap="3">
 							
 							<s:Button label="+ Add Medication" height="24" styleName="buttonText" click="addMedication()" />
-							<!--<s:Button label="+ Record Intake" height="24" styleName="buttonText"/>-->
+							<s:Button label="Show All Requests" height="24" styleName="buttonText" />
 							<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 							<s:Button label="Export" height="24" width="51" styleName="buttonText" />	
 							
 						</s:HGroup>
 						
-						<s:HGroup paddingLeft="100" paddingRight="5">
+						<s:HGroup width="100%" horizontalAlign="right" paddingRight="5">
 							
 							<s:Label text="Status:" paddingTop="7" color="#FFFFFF" />
 							
 							<s:DropDownList 
 								id="dropMediFilter" 
-								height="24" width="74" 
+								height="24" width="70" 
 								styleName="buttonText" selectedItem="{model.type}" 
 								dataProvider="{MedicationsModel.TYPES}"
 								change="model.type = dropMediFilter.selectedItem;controller.filterMedsFromStatus(); updateHeightAndColors();" />
 						</s:HGroup>
 						
-						<s:HGroup color="0xFFFFFF" gap="2">
+						<s:HGroup color="0xFFFFFF" gap="5">
 							
 							<s:Label text="Time Range:" paddingTop="6" />
 							
-							<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+							<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}" />
+							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
+							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
+							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
+							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0"/>
+							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
+							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
 							<general:customLinkButton id="btnMedCustom" label="Custom" />
 							
 						</s:HGroup>
@@ -518,7 +560,7 @@
 								
 							</s:HGroup>
 							
-							<s:HGroup width="100%">
+							<s:HGroup id="container" width="100%">
 								
 								<mx:Tree
 									id="myTree" 
@@ -531,7 +573,8 @@
 									contentBackgroundAlpha="0" color="0xBED63A" fontWeight="bold" alternatingItemColors="[0x4A4A49,0x303030]"
 									rowHeight="34"
 									defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"
-									itemOpen="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" itemClose="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" />
+									itemOpen="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" 
+									itemClose="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" itemClick="onTreeItemClick(event)" />
 								
 								<mx:PlotChart 
 									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
@@ -729,15 +772,21 @@
 				</s:Line>
 				
 				<s:VGroup width="180" height="100%" horizontalAlign="center">
+					
+					<!--	TODO: pull these values from selected provider	-->
 					<s:Label text="Allergies" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
 					<s:Label text="{'• Aspirin\n• Latex (Do Not Use, Not Screened)\n• Natural Rubber (Do Not Use, Not Screened)'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
 					<s:Label text="Conditions" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
 					<s:Label text="{'• Hypertension\n• High cholesterol'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
-					<s:Label text="Pharmacy Alert" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
-					<s:Label text="• Medication recall" styleName="smallTextRed" paddingLeft="9" paddingTop="12" width="100%" />
-					<s:Label text="Renewal Reminders" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
-					<s:Label text="{'• Request renewal for Lisinopril\n• Request renewal for Coumadin®'}" styleName="smallText" paddingLeft="9" paddingTop="12" paddingBottom="20" width="100%" />
-					<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="{PopUpManager.removePopUp(myChartPopup); controller.requestRenewal(model.medicationsDataFiltered.getItemAt(0));}" />
+					
+					<s:VGroup width="100%" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}">
+						<s:Label text="Pharmacy Alert" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+						<s:Label text="• Medication recall" styleName="smallTextRed" paddingLeft="9" paddingTop="12" width="100%" />
+						<s:Label text="Renewal Reminders" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+						<s:Label text="{'• Request renewal for Lisinopril\n• Request renewal for Coumadin®'}" styleName="smallText" paddingLeft="9" paddingTop="12" paddingBottom="20" width="100%" />
+						<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="{PopUpManager.removePopUp(myChartPopup); controller.requestRenewal(model.medicationsDataFiltered.getItemAt(0));}" />
+					</s:VGroup>
+					
 				</s:VGroup>
 				
 			</s:NavigatorContent>

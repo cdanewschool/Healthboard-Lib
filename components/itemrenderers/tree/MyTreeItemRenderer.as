@@ -31,7 +31,6 @@ package components.itemrenderers.tree
 			btnLink.setStyle("skin", null);
 			btnLink.addEventListener(MouseEvent.ROLL_OVER,manageMouseOver);
 			btnLink.addEventListener(MouseEvent.ROLL_OUT,manageMouseOut);
-			btnLink.addEventListener(MouseEvent.CLICK, handleBtnClick);
 			addChild(btnLink);
 			
 			imgRedMark = new Image();
@@ -51,10 +50,6 @@ package components.itemrenderers.tree
 		
 		private function manageMouseOut(event:MouseEvent):void{
 			btnLink.setStyle("rollOut",btnLink.styleName='linkBtn');
-		}
-		
-		private function handleBtnClick(evt:MouseEvent):void{
-			parentApplication.showMedicationDetailsAxis(btnLink.label);
 		}
 		
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void{
