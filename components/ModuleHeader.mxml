@@ -25,9 +25,12 @@
 			[Bindable] public var searchFunction:Function;
 			
 			[Bindable] public var actionCount:int = 0;
-			
 			[Bindable] public var actionPrefix:String = "You have";
 			[Bindable] public var actionSuffix:String = "new messages";
+			
+			[Bindable] public var secondaryActionCount:int = 0;
+			[Bindable] public var secondaryActionPrefix:String = "You have";
+			[Bindable] public var secondaryActionSuffix:String = "new messages";
  			
 			[Bindable] public var showActionsIfNone:Boolean = false;
 			
@@ -94,6 +97,13 @@
 			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
 			<s:Label text="{actionCount>0?actionCount:'no'}" styleName="moduleSubtitleItalic moduleSubtitleNumber" />
 			<s:Label text="{actionSuffix?actionSuffix.toLowerCase():''}" styleName="moduleSubtitleItalic" />
+			
+			<s:HGroup visible="{secondaryActionCount>0 || showActionsIfNone}" includeInLayout="{secondaryActionCount>0 || showActionsIfNone}">
+				<s:Label text="{secondaryActionPrefix}" styleName="moduleSubtitleItalic" />
+				<s:Label text="{secondaryActionCount>0?secondaryActionCount:'no'}" styleName="moduleSubtitleItalic moduleSubtitleNumber" />
+				<s:Label text="{secondaryActionSuffix?secondaryActionSuffix.toLowerCase():''}" styleName="moduleSubtitleItalic" />
+			</s:HGroup>
+			
 		</s:HGroup>
 		
 		<s:HGroup visible="{moreText!=null}" includeInLayout="{moreText!=null}" fontSize="11" fontWeight="bold" paddingTop="-8">
