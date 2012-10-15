@@ -527,7 +527,7 @@
 									width="156"
 									verticalScrollPolicy="off" horizontalScrollPolicy="off"
 									selectable="false"
-									itemRenderer="ASclasses.MyTreeItemRenderer"
+									itemRenderer="components.itemrenderers.tree.MyTreeItemRenderer"
 									contentBackgroundAlpha="0" color="0xBED63A" fontWeight="bold" alternatingItemColors="[0x4A4A49,0x303030]"
 									rowHeight="34"
 									defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"
@@ -668,10 +668,10 @@
 								borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--Here I'm using fontFamily="myMyriad" instead of fontFamily="myMyriadNoCFF" because each column has an itemRenderer--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
 								
 								<mx:columns>
-									<mx:DataGridColumn dataField="name" headerText="Medication Name / Dosage" width="200" paddingLeft="5" labelFunction="medicationsNameDoseLabelFunction" itemRenderer="ASclasses.CustomRowColorAlternative" />
-									<mx:DataGridColumn dataField="prescription" headerText="Prescription #" width="103" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
-									<mx:DataGridColumn dataField="type" headerText="Type" width="85" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
-									<mx:DataGridColumn dataField="directions" headerText="Sig / Directions" width="151" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="name" headerText="Medication Name / Dosage" width="200" paddingLeft="5" labelFunction="medicationsNameDoseLabelFunction" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColorAlternative" />
+									<mx:DataGridColumn dataField="prescription" headerText="Prescription #" width="103" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
+									<mx:DataGridColumn dataField="type" headerText="Type" width="85" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
+									<mx:DataGridColumn dataField="directions" headerText="Sig / Directions" width="151" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
 									<mx:DataGridColumn dataField="refillsLeft" headerText="Refills Left" width="85" paddingLeft="5" >
 										<mx:itemRenderer>
 											<fx:Component>
@@ -704,9 +704,9 @@
 										
 									</mx:DataGridColumn>
 									
-									<mx:DataGridColumn dataField="renewalStatus" headerText="Renewal Status" width="73" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
-									<mx:DataGridColumn dataField="lastFilledDate" headerText="Last Filled Date" width="108" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
-									<mx:DataGridColumn dataField="pharmacy" headerText="Pharmacy" paddingLeft="5" itemRenderer="ASclasses.CustomRowColor" />
+									<mx:DataGridColumn dataField="renewalStatus" headerText="Renewal Status" width="73" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
+									<mx:DataGridColumn dataField="lastFilledDate" headerText="Last Filled Date" width="108" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
+									<mx:DataGridColumn dataField="pharmacy" headerText="Pharmacy" paddingLeft="5" itemRenderer="components.itemrenderers.datagridcolumn.CustomRowColor" />
 									
 								</mx:columns> 
 								
