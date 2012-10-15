@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="409"
+			   xmlns:net="flash.net.*"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000">
+	<fx:Script>
+		<![CDATA[
+			import controllers.ExerciseController;
+			
+			import models.modules.ExerciseModel;
+			
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.SliderEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
+			[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
+			
+			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
+			protected function dropDownCalendar_openHandler(event:DropDownEvent):void 
+			{
+				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
+			}
+			
+			protected function stopPropagation(event:Event):void 
+			{
+				event.stopImmediatePropagation();
+			}
+			
+			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void 
+			{
+				txtDate.text = dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear;
+				dropDownCalendar.closeDropDown(true);
+				goalDate.selected = true;
+			}
+			
+			private function updateGoal():void 
+			{
+				for(var i:uint = 0; i < model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data.length; i++) 
+				{
+					model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data[i].target = sliderGoalPoints.value;
+				}
+				
+				model.exerciseDataByMeasure.refresh();
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function getGoalMinutes(points:uint):uint 
+			{
+				return points <= 58 ? 15 : 14;
+			}
+			
+			private function getGoalSeconds(points:uint):String 
+			{
+				return ((70-points)*5)%60 < 10 ? '0'+((70-points)*5)%60 : String(((70-points)*5)%60);
+			}
+			
+			private function getTimeFromGoal(min:uint,sec:uint):uint
+			{
+				var points:uint = (min == 14) ? 70 : 58;
+				points -= (sec/5);
+				return points;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="12" paddingBottom="12" paddingLeft="12" paddingRight="12" />
+	</s:layout>
+
+	<s:Label text="Edit Goal" fontWeight="bold" fontSize="16" color="0x4D4D4D" paddingBottom="6" />
+	
+	<s:CheckBox label="Use the standard goal" />
+	
+	<s:HGroup verticalAlign="middle" paddingTop="13" paddingBottom="-3">
+		<s:Label text="Please set a points target for your 1.5 Mile Run:" />
+		<s:TextInput id="txtGoalPoints" height="24" width="37" maxChars="2" text="{sliderGoalPoints.value}" change="{if(int(txtGoalPoints.text) >= 54 &amp;&amp; int(txtGoalPoints.text) &lt;= 70) sliderGoalPoints.value = int(txtGoalPoints.text)}" />
+		<s:Label text="points" />
+	</s:HGroup>
+	
+	<s:HGroup paddingLeft="-2">
+		<mx:HSlider id="sliderGoalPoints"
+					snapInterval="1"
+					labels="{[54,70]}" labelOffset="30"
+					minimum="54" maximum="70" value="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].target}"
+					showTrackHighlight="true" showDataTip="false" tickInterval="1" tickOffset="12" tickLength="2"
+					width="357"
+					liveDragging="true" /><!--dataTipFormatFunction="getSliderLabel"change="rangeUpdateMixed();" -->
+	</s:HGroup>
+	
+	<s:Label text="OR" paddingTop="4"/>
+	
+	<s:HGroup verticalAlign="middle" paddingTop="13" paddingBottom="-3">
+		<s:Label text="Please set a time target for your 1.5 Mile Run:" />
+		<s:TextInput id="txtGoalMin" height="24" width="32" maxChars="2" text="{getGoalMinutes(sliderGoalPoints.value)}" change="{if(int(txtGoalMin.text) >= 14 &amp;&amp; int(txtGoalMin.text) &lt;= 15 &amp;&amp; int(txtGoalSec.text) >= 0 &amp;&amp; int(txtGoalSec.text) &lt; 60 &amp;&amp; txtGoalSec.text.length > 1) sliderGoalPoints.value = getTimeFromGoal(int(txtGoalMin.text),int(txtGoalSec.text))}" />
+		<s:Label text="min." />
+		<s:TextInput id="txtGoalSec" height="24" width="32" maxChars="2" text="{getGoalSeconds(sliderGoalPoints.value)}" change="{if(int(txtGoalMin.text) >= 14 &amp;&amp; int(txtGoalMin.text) &lt;= 15 &amp;&amp; int(txtGoalSec.text) >= 0 &amp;&amp; int(txtGoalSec.text) &lt; 60 &amp;&amp; txtGoalSec.text.length > 1) sliderGoalPoints.value = getTimeFromGoal(int(txtGoalMin.text),int(txtGoalSec.text))}" />
+		<s:Label text="sec." />
+	</s:HGroup>
+	
+	<s:HGroup paddingLeft="-2" paddingBottom="-2">
+		<mx:HSlider id="sliderGoalMin"
+					snapInterval="1"
+					labels="{['15:20','14:00']}" labelOffset="30"
+					minimum="54" maximum="70" value="{sliderGoalPoints.value}"
+					showTrackHighlight="true" showDataTip="false" tickInterval="1" tickOffset="12" tickLength="2"
+					width="357"
+					liveDragging="true" change="{sliderGoalPoints.value = sliderGoalMin.value;}" />
+	</s:HGroup>
+	
+	<s:Label text="Achieve the goal by:" />
+	
+	<s:HGroup verticalAlign="middle">
+		<s:RadioButton groupName="goal" id="goalNext" selected="true" />
+		<s:Label text="Next PRT" />
+	</s:HGroup>
+	<s:HGroup verticalAlign="middle">
+		<s:RadioButton groupName="goal" id="goalDate" />
+		<s:TextInput id="txtDate" width="88" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" change="{goalDate.selected = true}" />		
+		<s:HGroup paddingTop="-2" paddingLeft="-3">
+			<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
+				<s:dataProvider>
+					<s:ArrayList>
+						<mx:DateChooser id="dateChooser" showToday="true"
+										contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+										fontSize="11" change="dateChooser_changeHandler(event)" />
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+		</s:HGroup>	
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="10" paddingBottom="6">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Update" styleName="buttonText" height="24" click="updateGoal()" /><!--click="update()" -->
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>

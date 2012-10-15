@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="441" height="265"
+			   xmlns:net="flash.net.*"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
+	<fx:Script>
+		<![CDATA[
+			import controllers.ExerciseController;
+			
+			import models.modules.ExerciseModel;
+			
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
+			[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
+			
+			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
+			protected function dropDownCalendar_openHandler(event:DropDownEvent):void 
+			{
+				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
+			}
+			protected function stopPropagation(event:Event):void {
+				event.stopImmediatePropagation();
+			}
+			
+			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void 
+			{
+				txtDate.text = dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear;
+				dropDownCalendar.closeDropDown(true);					
+			}
+						
+			private function addTrackableExercise(type:String):void 
+			{
+				var myAddPersonalExerciseTrackable:addPersonalExerciseTrackable = addPersonalExerciseTrackable(PopUpManager.createPopUp(this.parent, addPersonalExerciseTrackable) as spark.components.TitleWindow);
+				myAddPersonalExerciseTrackable.type = type;
+				PopUpManager.centerPopUp(myAddPersonalExerciseTrackable);
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function addUntrackableExercise():void 
+			{
+				model.exerciseDataByMeasurePersonal.addItemAt({measure: txtName.text, chartMin:15, chartMax:45, chartType: 'untrackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 1);
+				model.exerciseDataByMeasurePersonal.refresh();
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="What would you like to add?" fontWeight="bold" fontSize="16" />
+	
+	<s:HGroup paddingTop="10" paddingBottom="8">
+		<s:VGroup paddingRight="6">
+			<s:HGroup verticalAlign="middle">
+				<s:RadioButton groupName="type" id="radioTrackable" selected="true" />
+				<s:Label text="Trackable Exercise" width="110" />
+				<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" toolTip="Trackable Exercise is exercise that you can enter various types of information such as duration, distance, and speed. You can review the line graph of the records." />
+			</s:HGroup>
+			<s:HGroup verticalAlign="middle">
+				<s:RadioButton groupName="type" id="radioUntrackable" />
+				<s:Label text="Untrackable Exercise" width="110" />
+				<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" toolTip="Untrackable Exercise is exercise that you can record in text format." />
+			</s:HGroup>
+		</s:VGroup>
+		<s:Line yFrom="0" yTo="135">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+		<s:VGroup visible="{radioTrackable.selected}" includeInLayout="{radioTrackable.selected}" paddingLeft="6" gap="0" paddingTop="-2">
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIcon.png')" />
+				<mx:LinkButton id="btnRunWalk" label="+ Run/Walk" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnRunWalk.styleName='linkBtnUnderline';" rollOut="btnRunWalk.styleName='linkBtn';" click="addTrackableExercise('Run / Walk')" />
+			</s:HGroup>
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIconBike.png')" />
+				<mx:LinkButton id="btnBike" label="+ Bike" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnBike.styleName='linkBtnUnderline';" rollOut="btnBike.styleName='linkBtn';" click="addTrackableExercise('Bike')" />
+			</s:HGroup>
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIconSwim.png')" />
+				<mx:LinkButton id="btnSwim" label="+ Swim" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnSwim.styleName='linkBtnUnderline';" rollOut="btnSwim.styleName='linkBtn';" click="addTrackableExercise('Swim')" />
+			</s:HGroup>
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIconElliptical.png')" />
+				<mx:LinkButton id="btnElliptical" label="+ Elliptical Machine" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnElliptical.styleName='linkBtnUnderline';" rollOut="btnElliptical.styleName='linkBtn';" click="addTrackableExercise('Elliptical Machine')" />
+			</s:HGroup>
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIconYoga.png')" />
+				<mx:LinkButton id="btnYoga" label="+ Yoga" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnYoga.styleName='linkBtnUnderline';" rollOut="btnYoga.styleName='linkBtn';" click="addTrackableExercise('Yoga')"/>
+			</s:HGroup>
+			<s:HGroup gap="-4" verticalAlign="middle">
+				<s:Image source="@Embed('images/exPersonalIconWeight.png')" />
+				<mx:LinkButton id="btnWeight" label="+ Weight Training" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnWeight.styleName='linkBtnUnderline';" rollOut="btnWeight.styleName='linkBtn';" click="addTrackableExercise('Weight Training')" />
+			</s:HGroup>
+		</s:VGroup>
+		<s:VGroup visible="{radioUntrackable.selected}" includeInLayout="{radioUntrackable.selected}" paddingLeft="6">
+			<s:TextInput id="txtName" width="165" text="Name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Name'}" />
+			<s:HGroup verticalAlign="middle" gap="5">
+				<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
+				<s:HGroup paddingTop="-2" paddingLeft="-3">
+					<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
+						<s:dataProvider>
+							<s:ArrayList>
+								<mx:DateChooser id="dateChooser" showToday="true"
+												contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+												fontSize="11" change="dateChooser_changeHandler(event)" />
+							</s:ArrayList>
+						</s:dataProvider>
+					</s:DropDownList>
+				</s:HGroup>	
+			</s:HGroup>
+			<s:TextArea id="txtComments" width="225" height="71" text="Comments" fontStyle="italic" color="0x999999" focusIn="{if(txtComments.text == 'Comments') txtComments.text = '';}" focusOut="{if(txtComments.text == '') txtComments.text = 'Comments'}" />
+		</s:VGroup>
+	</s:HGroup>
+	
+	<s:Line xFrom="0" xTo="410">
+		<s:stroke>
+			<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="17">
+		<s:Button label="Save" includeInLayout="{radioUntrackable.selected}" visible="{radioUntrackable.selected}" click="addUntrackableExercise()" styleName="buttonText" height="24" width="55" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>

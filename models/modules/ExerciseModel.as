@@ -4,11 +4,12 @@ package models.modules
 	
 	import mx.collections.ArrayCollection;
 	
+	[Bindable]
 	public class ExerciseModel extends ModuleModel
 	{
 		public var fullName:String;	//	temp, should be replaced for a user object
-		
-		[Bindable] public var exerciseData:ArrayCollection = new ArrayCollection
+
+		public var exerciseData:ArrayCollection = new ArrayCollection
 			(
 				[
 					{dateProvider: '07/24/2011', date: '07/24/2011', series:"PRTresults", PRTscore: 60, mileRun: 62, curlUps: 80, pushUps: 92, weight: 203, min:14, sec:40, curlTimes:40, pushTimes:20, type: "provider", expectation:'expectation', comments:'', index:0},
@@ -20,7 +21,7 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var exerciseDataByMeasure:ArrayCollection = new ArrayCollection
+		public var exerciseDataByMeasure:ArrayCollection = new ArrayCollection
 			(
 				[
 					{
@@ -97,7 +98,7 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var exerciseDataPhysicianAssigned:ArrayCollection = new ArrayCollection
+		public var exerciseDataPhysicianAssigned:ArrayCollection = new ArrayCollection
 			(
 				[
 					{date: '10/11/2011', runWalk: 30, runWalkMiles: 3.0, bike: 30, expectation:'expectation', index:0, comments:'I was feeling fine and enjoying exercising.', type: "patient"},
@@ -108,7 +109,7 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var exerciseDataByMeasurePhysicianAssigned:ArrayCollection = new ArrayCollection
+		public var exerciseDataByMeasurePhysicianAssigned:ArrayCollection = new ArrayCollection
 			(
 				[
 					{ 
@@ -165,7 +166,7 @@ package models.modules
 			);
 		
 		//	for list view
-		[Bindable] public var exerciseDataPersonal:ArrayCollection = new ArrayCollection
+		public var exerciseDataPersonal:ArrayCollection = new ArrayCollection
 			(
 				[
 					{date: '10/11/2011', activity: 'Bike', comments:'I was feeling fine and enjoying exercising.'},
@@ -181,7 +182,7 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var exerciseDataByMeasurePersonal:ArrayCollection = new ArrayCollection
+		public var exerciseDataByMeasurePersonal:ArrayCollection = new ArrayCollection
 			(
 				[
 					{ 
@@ -237,29 +238,31 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var chartMinExPRT:Date = new Date(2011,5,8);
-		[Bindable] public var chartMaxExPRT:Date = new Date(2012,9,31);
-		[Bindable] public var chartMinExPA:Date = new Date(2011,7,26);
-		[Bindable] public var chartMaxExPA:Date = new Date(2012,7,11);
-		[Bindable] public var chartMinExPER:Date = new Date(2011,7,26);
-		[Bindable] public var chartMaxExPER:Date = new Date(2012,7,11);
+		public var chartMinExPRT:Date = new Date(2011,5,8);
+		public var chartMaxExPRT:Date = new Date(2012,9,31);
+		public var chartMinExPA:Date = new Date(2011,7,26);
+		public var chartMaxExPA:Date = new Date(2012,7,11);
+		public var chartMinExPER:Date = new Date(2011,7,26);
+		public var chartMaxExPER:Date = new Date(2012,7,11);
 		
-		[Bindable] public var PRTscoreMax:String = "09/24/2012";
-		[Bindable] public var mileRunMax:String = "09/24/2012";
-		[Bindable] public var curlUpsMax:String = "09/24/2012";
-		[Bindable] public var pushUpsMax:String = "09/24/2012";
-		[Bindable] public var runWalkChartMin:Date = new Date(2011,8,1);
-		[Bindable] public var runWalkChartMax:Date = new Date(2012,8,15);
-		[Bindable] public var runWalkMax:String = "08/03/2012";
-		[Bindable] public var bikeChartMin:Date = new Date(2011,6,7);
-		[Bindable] public var bikeChartMax:Date = new Date(2012,10,22);
-		[Bindable] public var bikeMax:String = "08/03/2012";
-		[Bindable] public var exPAcommentsMax:String = "08/03/2012";
+		public var bikeChartMin:Date = new Date(2011,6,7);
+		public var bikeChartMax:Date = new Date(2012,10,22);
+		public var bikeMax:String = "08/03/2012";
+		public var commentsMax:String = "09/14/2012";	//	TODO:
+		public var curlUpsMax:String = "09/24/2012";
+		public var exPAcommentsMax:String = "08/03/2012";
+		public var mileRunMax:String = "09/24/2012";
+		public var PRTscoreMax:String = "09/24/2012";
+		public var pushUpsMax:String = "09/24/2012";
+		public var runWalkChartMin:Date = new Date(2011,8,1);
+		public var runWalkChartMax:Date = new Date(2012,8,15);
+		public var runWalkMax:String = "08/03/2012";
+		public var weightChartMin:Date = new Date(2011,06,7);
+		public var weightChartMax:Date = new Date(2012,10,22);
 		
-		
-		[Bindable] public var PAproviderCopy:ArrayCollection = new ArrayCollection(exerciseDataByMeasurePhysicianAssigned.toArray());
-		[Bindable] public var PERproviderCopy:ArrayCollection = new ArrayCollection(exerciseDataByMeasurePersonal.toArray());
-		[Bindable] public var arrExerciseForWidget:ArrayCollection = new ArrayCollection
+		public var PAproviderCopy:ArrayCollection = new ArrayCollection(exerciseDataByMeasurePhysicianAssigned.toArray());
+		public var PERproviderCopy:ArrayCollection = new ArrayCollection(exerciseDataByMeasurePersonal.toArray());
+		public var exerciseForWidget:ArrayCollection = new ArrayCollection
 			(
 				[
 					{ exerciseType: "Most Recent PRT", lastDate: exerciseData.getItemAt(3).date, chartType: "normal", chartMin: 155, chartMax: 190, chart: exerciseData.getItemAt(3) },
@@ -268,7 +271,8 @@ package models.modules
 				]
 			);
 		
-		[Bindable] public var collapsedExercisesPixels:uint = 0;	//used for recalculating widget's height
-		[Bindable] public var exercisePAIndices:Array = new Array();
+		public var exerciseIndices:Array = new Array();
+		public var exercisePAIndices:Array = new Array();
+		public var exercisePERIndices:Array = new Array();
 	}
 }

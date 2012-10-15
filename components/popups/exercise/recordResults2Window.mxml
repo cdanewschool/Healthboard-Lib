@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="476"
+			   xmlns:net="flash.net.*"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
+	<fx:Script>
+		<![CDATA[
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			import spark.components.TextInput;
+						
+			private function addRecord():void {
+/*				parentApplication.updateVitalIndices();
+				if(txtWeight.text != "") {
+					var weightStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
+					var newWeight:Object = new Object();
+					newWeight = ({value:txtWeight.text, expectation:parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation, date:txtDate.text, type:'patient', vital:'weight'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.splice(weightStartIndex,0,newWeight);
+					
+					if(Number(txtWeight.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax = Number(txtWeight.text) + 10;
+					else if(Number(txtWeight.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin = Number(txtWeight.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.weightMax)) parentApplication.weightMax = txtDate.text;
+					if(new Date(txtDate.text) > parentApplication.weightChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+						var myNewDate:Date = new Date(txtDate.text);
+						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						myNewDate.setMonth(myNewDate.getMonth() + 1);
+						parentApplication.weightChartMax = myNewDate;
+					}
+				}
+				if(txtBloodPressure1.text != "" && txtBloodPressure2.text != "") {
+					var bloodPressureStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newBloodPressure:Object = new Object();
+					newBloodPressure = ({value:txtBloodPressure1.text, expectation:parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation, value2:txtBloodPressure2.text, expectation2:parentApplication.arrVitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2, date:txtDate.text, type:'patient', vital:'bloodPressure'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chart[0].data.splice(bloodPressureStartIndex,0,newBloodPressure);
+					
+					if(Number(txtBloodPressure1.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMax - 20)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMax = Number(txtBloodPressure1.text) + 20;
+					else if(Number(txtBloodPressure2.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMin + 20)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Blood pressure')].chartMin = Number(txtBloodPressure2.text) - 20;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.bloodPressureMax)) parentApplication.bloodPressureMax = txtDate.text;
+					if(new Date(txtDate.text) > parentApplication.bloodPressureChartMax) {
+						var myNewDate2:Date = new Date(txtDate.text);
+						if(myNewDate2.getDate() < 22) myNewDate2.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						myNewDate2.setMonth(myNewDate2.getMonth() + 1);
+						parentApplication.bloodPressureChartMax = myNewDate2;
+					}
+				}
+				if(txtHeartRate.text != "") {
+					var heartRateStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newHeartRate:Object = new Object();
+					newHeartRate = ({value:txtHeartRate.text, expectation:65, date:txtDate.text, type:'patient', vital:'heartRate'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chart[0].data.splice(heartRateStartIndex,0,newHeartRate);
+					
+					if(Number(txtHeartRate.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chartMax = Number(txtHeartRate.text) + 10;
+					else if(Number(txtHeartRate.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Heart rate')].chartMin = Number(txtHeartRate.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.heartRateMax)) parentApplication.heartRateMax = txtDate.text;
+				}
+				if(txtRespiratory.text != "") {
+					var respiratoryStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newRespiratory:Object = new Object();
+					newRespiratory = ({value:txtRespiratory.text, expectation:18, date:txtDate.text, type:'patient', vital:'respiratory'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chart[0].data.splice(respiratoryStartIndex,0,newRespiratory);
+					
+					if(Number(txtRespiratory.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chartMax = Number(txtRespiratory.text) + 10;
+					else if(Number(txtRespiratory.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Respiratory')].chartMin = Number(txtRespiratory.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.respiratoryMax)) parentApplication.respiratoryMax = txtDate.text;
+				}
+				if(txtTemperature.text != "") {
+					var temperatureStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newTemperature:Object = new Object();
+					newTemperature = ({value:txtTemperature.text, expectation:98, date:txtDate.text, type:'patient', vital:'temperature'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chart[0].data.splice(temperatureStartIndex,0,newTemperature);
+					
+					if(Number(txtTemperature.text) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chartMax = Number(txtTemperature.text) + 10;
+					else if(Number(txtTemperature.text) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Temperature')].chartMin = Number(txtTemperature.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.temperatureMax)) parentApplication.temperatureMax = txtDate.text;
+				}
+				if(txtHeightFeet.text != "" && txtHeightInches.text != "") {
+					var heightStartIndex:int = (new Date(txtDate.text) >= new Date(parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.length - 1].date)) ? parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newHeight:Object = new Object();
+					newHeight = ({value:(Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)), expectation:71, date:txtDate.text, type:'patient', vital:'height'});
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.splice(heightStartIndex,0,newHeight);
+					
+					if((Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) > (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chartMax - 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chartMax = (Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) + 10;
+					else if((Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) < (parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chartMin + 10)) parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chartMin = (Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) - 10;
+					
+					if(new Date(txtDate.text) > new Date(parentApplication.heightMax)) parentApplication.heightMax = txtDate.text;
+				}
+				if(txtComments.text != "") {
+					var newComment:Object = new Object();
+					newComment = ({type:'patient',expectation:'expectation',author:parentApplication.fullname,datePatient:txtDate.text,comments:txtComments.text, vital:'comments'});
+					//var newCommentOP:ObjectProxy = new ObjectProxy(newComment);
+					parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Comments')].chart[0].data.push(newComment);
+					//parentApplication.arrVitalSigns.refresh();
+					if(new Date(txtDate.text) > new Date(parentApplication.commentsMax)) parentApplication.commentsMax = txtDate.text;
+				}
+
+				var newChartMax:Date = new Date(txtDate.text);
+				newChartMax.setDate(newChartMax.getDate() + 8);			
+				var newChartMaxDummy:Date = new Date(parentApplication.chartMax.getFullYear(), parentApplication.chartMax.getMonth(), parentApplication.chartMax.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting parentApplication.chartMax (in this case to itself)
+				
+				if(new Date(txtDate.text) > parentApplication.chartMax) parentApplication.chartMax = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
+				else parentApplication.chartMax = newChartMaxDummy;//.setDate(parentApplication.chartMax.getDate() + 1);// = parentApplication.chartMax;
+				
+				//ADDING TO arrVitalSignsByDate FOR THE LIST VIEW
+				//if any field is entered?
+				var entryByDate:Object = new Object();
+				var myNewHeight:String = txtHeightFeet.text != "" ? txtHeightFeet.text + "'" + txtHeightInches.text + "''" : "";
+				var myNewHeightInInches:uint = txtHeightFeet.text != "" ? int(txtHeightFeet.text) * 12 + int(txtHeightInches.text) : parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data[parentApplication.arrVitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value;
+				var myNewWeightBMI:String = txtWeight.text == '' ? '' : txtWeight.text + ' / ' + String(int(((int(txtWeight.text) * 703) / Math.pow(myNewHeightInInches, 2))*10)/10);
+				var myNewBloodPressure:String = txtBloodPressure1.text == '' ? '' : txtBloodPressure1.text + '/' + txtBloodPressure2.text;
+				entryByDate = {Date: parentApplication.get10digitDate(txtDate.text), WeightBMI: myNewWeightBMI, BloodPressure: myNewBloodPressure, HeartRate: txtHeartRate.text, Respiratory: txtRespiratory.text, Temperature: txtTemperature.text, Height: myNewHeight, Comments: txtComments.text, RecordedBy: 'You'};
+				parentApplication.arrVitalSignsByDate.addItem(entryByDate);
+				
+				parentApplication.arrVitalSigns.refresh();
+				parentApplication.arrVitalSignsByDate.refresh();
+				
+				//parentApplication.chartMax = new Date(2012,5,5);*/
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="Download Data" fontWeight="bold" fontSize="16" />
+	<s:Label text="This data is for:"  paddingTop="8" paddingBottom="6" />
+	
+	<s:HGroup verticalAlign="middle" paddingLeft="20">
+		<s:RadioButton groupName="type" id="runWalk" selected="true" />
+		<s:Label text="Run / Walk" />
+	</s:HGroup>
+	<s:HGroup verticalAlign="middle" paddingLeft="20">
+		<s:RadioButton groupName="type" id="bike" />
+		<s:Label text="Bike" />
+	</s:HGroup>
+	
+	<s:Label text="{'Data available to download for ' + (runWalk.selected ? 'Run / Walk' : 'Bike') + ':'}" paddingTop="17" paddingBottom="6" />
+	
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkDistance" label="Distance" />
+	</s:HGroup>
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkDuration" label="Duration" />
+	</s:HGroup>
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkMaxSpeed" label="Max Speed" />
+	</s:HGroup>
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkMinSpeed" label="Min Speed" />
+	</s:HGroup>
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkCalories" label="Calories Burned" />
+	</s:HGroup>
+	<s:HGroup paddingLeft="20">
+		<s:CheckBox id="checkWeight" label="Weight" />
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="7">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="18" gap="12" verticalAlign="top">
+		<s:Label text="Comments:" paddingLeft="20" paddingTop="8" />
+		<s:TextArea id="txtComments" width="225" height="71" />
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="14" paddingBottom="6">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Import" styleName="buttonText" height="24" click="addRecord()" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>
