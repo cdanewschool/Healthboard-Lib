@@ -20,12 +20,12 @@ import mx.collections.ArrayCollection;
 			  } ]
 	},
 	{ measure: "1.5 Mile Run", chartMin: 35, chartMax: 100,
-		chart:[ { data:[{value:62, expectation:45, target:62, targetMin:14, targetSec:40, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:40},
-						{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:35},
-						{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:14, sec:30},
-						{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:50},
-						{value:60, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
-						{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:40}]
+		chart:[ { data:[{value:62, expectation:45, target:62, targetMin:14, targetSec:15, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:15},
+						{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:05},
+						{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:13, sec:55},
+						{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
+						{value:56, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:42},
+						{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:05}]
 			  } ]
 	},
 	{ measure: "Curl Ups", chartMin: 35, chartMax: 100,
