@@ -4,6 +4,12 @@ package controllers
 	
 	import models.modules.ExerciseModel;
 	
+	import mx.charts.ChartItem;
+	import mx.charts.series.items.LineSeriesItem;
+	import mx.graphics.IFill;
+	
+	import styles.ChartStyles;
+	
 	public class ExerciseController extends BaseModuleController
 	{
 		public function ExerciseController()
@@ -12,7 +18,7 @@ package controllers
 			
 			model = new ExerciseModel();
 			
-			updateExercisePAIndices();
+			updatePAIndices();
 			filterProvidersForWidget();
 		}
 		
@@ -25,7 +31,20 @@ package controllers
 			model.PERproviderCopy.source.splice(-2);
 		}
 		
-		public function updateExercisePAIndices():void 
+		public function updateExerciseIndices():void
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			var exerciseIndicesTemp:Array = new Array();
+			
+			for(var i:uint = 0; i < model.exerciseDataByMeasure.length; i++) {
+				exerciseIndicesTemp.push( model.exerciseDataByMeasure.getItemAt(i).measure );
+			}
+			
+			model.exerciseIndices = exerciseIndicesTemp;
+		}
+		
+		public function updatePAIndices():void 
 		{
 			var model:ExerciseModel = model as ExerciseModel;
 			
@@ -37,6 +56,28 @@ package controllers
 			}
 			
 			model.exercisePAIndices = exercisePAIndicesTemp;
+		}
+		
+		public function updateExercisePERIndices():void
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			var exercisePERIndicesTemp:Array = new Array();
+			
+			for(var i:uint = 0; i < model.exerciseDataByMeasurePersonal.length; i++) 
+			{
+				exercisePERIndicesTemp.push( model.exerciseDataByMeasurePersonal.getItemAt(i).measure );
+			}
+			
+			model.exercisePERIndices = exercisePERIndicesTemp;
+		}
+		
+		public function fillFunction(element:ChartItem, index:Number):IFill 
+		{
+			var item:LineSeriesItem = LineSeriesItem(element);
+			var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			return (item.item.type == 'provider') ? chartStyles.colorVitalSignsProvider : chartStyles.colorVitalSignsPatient;
 		}
 	}
 }

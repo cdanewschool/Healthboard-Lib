@@ -69,6 +69,11 @@ package controllers
 		{
 			application.removeEventListener( AuthenticationEvent.SUCCESS, onAuthenticated );
 			
+			appointmentsController.init();
+			exerciseController.init();
+			immunizationsController.init();
+			medicalRecordsController.init();
+			nutritionController.init();
 			vitalSignsController.init();
 			
 			setState( Constants.STATE_LOGGED_IN );

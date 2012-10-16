@@ -15,7 +15,7 @@ package controllers
 			model = new VitalSignsModel();
 		}
 		
-		public function init():void
+		override public function init():void
 		{
 			var fullname:String = AppProperties.getInstance().controller.model.fullname;
 			

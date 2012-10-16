@@ -18,6 +18,8 @@ package controllers
 			super();
 		}
 		
+		public function init():void{}
+		
 		public function dataResultHandler(event:ResultEvent):void 
 		{
 			model.dataLoaded = true;
