@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="462" height="354"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.myLinkButton {
+			color: #064E71;
+			paddingTop: -2;
+			skin: ClassReference(null);
+			disabledColor: #A0A0A0;
+		}
+	</fx:Style>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="17" paddingBottom="14" paddingLeft="17" paddingRight="14" />
+	</s:layout>
+	
+	<s:HGroup>
+		<s:VGroup>
+			<s:Label text="Help" fontWeight="bold" fontSize="16" color="0x4E4D4D" />
+			
+			<mx:LinkBar paddingTop="11" paddingLeft="-10" direction="vertical" styleName="myLinkButton" dataProvider="{viewStackHelp}" contentBackgroundAlpha="0" separatorWidth="0" verticalGap="5" linkButtonStyleName="myLinkButton" />
+		</s:VGroup>
+		
+		<s:VGroup paddingTop="-17" paddingLeft="-2" paddingRight="15">
+			<s:Line yFrom="0" yTo="314">
+				<s:stroke>
+					<s:SolidColorStroke color="0xB0B0B0" weight="1"/>
+				</s:stroke>
+			</s:Line>
+		</s:VGroup>
+		
+		<mx:ViewStack id="viewStackHelp" color="0x4D4D4D">
+			<s:NavigatorContent label="Record a Meal">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Record a Meal" fontWeight="bold" />
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Save a Meal">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Save a Meal" fontWeight="bold" />
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Find a Food Portion">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Find a Food Portion" fontWeight="bold" />
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Write a Comment">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Write a Comment" fontWeight="bold" />
+				<s:Label text="{'When you record a meal, also write when, where, and\nwhy you had the meal. This will keep your food journal\naccurate, and help both you and your health care\nproviders to understand your eating habits.'}" paddingTop="18" lineHeight="18" />
+				<s:HGroup paddingLeft="45" paddingTop="8">
+					<s:Image source="@Embed('images/nutritionHelpMeal.png')" />
+				</s:HGroup>
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Record Water Intake">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Record Water Intake" fontWeight="bold" />
+			</s:NavigatorContent>
+			<s:NavigatorContent label="Check My Health Focus">
+				<s:layout>
+					<s:VerticalLayout />
+				</s:layout>
+				<s:Label text="Check My Health Focus" fontWeight="bold" />
+			</s:NavigatorContent>
+		</mx:ViewStack>
+		
+	</s:HGroup>
+	
+	<s:HGroup paddingLeft="-17" paddingTop="-9">
+		<s:BorderContainer backgroundColor="0xB3B3B3" width="460" height="40" borderAlpha="0">
+			<s:layout>
+				<s:HorizontalLayout horizontalAlign="right" paddingTop="7" paddingRight="13" />
+			</s:layout>
+			<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+		</s:BorderContainer>
+	</s:HGroup>
+</s:TitleWindow>

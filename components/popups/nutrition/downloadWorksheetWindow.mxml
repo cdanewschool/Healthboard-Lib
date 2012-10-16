@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="168"
+			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="11" paddingLeft="5" paddingRight="13" gap="0" />
+	</s:layout>
+
+	<s:Label text="Download Worksheet" fontWeight="bold" fontSize="16" paddingBottom="11" paddingLeft="8" />
+	
+	<s:VGroup paddingLeft="24" paddingTop="9">
+		<s:Label text="Do you want to download your food plan worksheet?" fontWeight="bold" />
+		<s:Label text="{'Name: My Food Plan Worksheet\nType: Adobe Acrobat 7.0 Document, 100KB'}" paddingTop="14" />
+	</s:VGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="23">
+		<s:Button label="Download" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+</s:TitleWindow>
