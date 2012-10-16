@@ -17,7 +17,6 @@ package models
 		public var fullname:String;
 		
 		public var patientAlerts:ArrayCollection;
-		public var patientVitalSigns:ArrayCollection;
 		
 		public var chartStyles:ChartStyles;
 		
@@ -32,7 +31,6 @@ package models
 			super();
 			
 			patientAlerts = new ArrayCollection();
-			patientVitalSigns = new ArrayCollection();
 			
 			today = new Date();
 		}
