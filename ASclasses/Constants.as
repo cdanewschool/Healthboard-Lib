@@ -10,10 +10,12 @@ package ASclasses
 		
 		public static const MODULE_APPOINTMENTS:String = "modCalendar";
 		public static const MODULE_EDUCATIONAL_RESOURCES:String = "modEducationalResources";
+		public static const MODULE_EXERCISE:String = "modExercise";
 		public static const MODULE_IMMUNIZATIONS:String = "modImmunizations";
 		public static const MODULE_MESSAGES:String = "modMessages";
 		public static const MODULE_MEDICATIONS:String = "modMedications";
 		public static const MODULE_MEDICAL_RECORDS:String = "modMedicalRecords";
+		public static const MODULE_NUTRITION:String = "modNutrition";
 		public static const MODULE_VITAL_SIGNS:String = "modVitalSigns";
 		
 		public static const IMMUNIZATIONS:String = "immunizations";
