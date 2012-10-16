@@ -398,6 +398,23 @@ s|TextArea {
 	fontWeight: bold;
 }
 
+.standardDataGrid {
+	fontFamily: "myMyriadNoCFF";
+	alternatingItemColors: #303030,#3C3C3B;
+	selectionColor: "0x31535E";
+	rollOverColor: "0x31535E";
+	color: "0xFFFFFF";
+	textRollOverColor: "0xFFFFFF";
+	textSelectedColor: "0xFFFFFF";
+	fontSize: 10;
+	verticalAlign: middle;
+	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	headerHeight: 30;
+	borderVisible: false;
+	horizontalGridLines: false;	
+}
+
 /*For the date chooser's header text, on appoitments module*/
 .dateChooserGrayHeader {
 	color: "0x4A4A49";	
