@@ -29,8 +29,8 @@ in accordance with the terms of the license agreement accompanying it.
 	<fx:Script fb:purpose="styling">
 		
 		<![CDATA[
-			
 			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
 		
 			/* Define the skin elements that should not be colorized. 
 			For panel, border and title background are skinned, but the content area and title text are not. */
@@ -123,8 +123,16 @@ in accordance with the terms of the license agreement accompanying it.
 			[Bindable] [Embed("images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
 			//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
 			
+			
 			private function handleHeaderClick():void {
 				
+				if( !hostComponent.module ) return;
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				event.data = hostComponent.module;
+				hostComponent.dispatchEvent( event );
+				
+				/*
 				if(parentApplication.currentState == 'providerHome') {
 					if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
 				}
@@ -155,7 +163,9 @@ in accordance with the terms of the license agreement accompanying it.
 						if(!parentApplication.wasMedicationDataLoaded) parentApplication.medicationsXMLdata.send();
 					}
 				}
+				*/
 			}
+			
 		]]>
 		
 	</fx:Script>
