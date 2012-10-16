@@ -6,7 +6,7 @@ import mx.collections.ArrayCollection;
 	{datePatient: '11/03/2011', date: '11/03/2011', series:"PRTresults", PRTscore: 74, mileRun: 46, curlUps: 60, pushUps: 56, weight: 205, min:14, sec:10, curlTimes:30, pushTimes:20, type: "patient", expectation:'expectation', comments:'', index:2},
 	{datePatient: '01/03/2012', date: '01/03/2012', series:"PRTresults", PRTscore: 81, mileRun: 56, curlUps: 50, pushUps: 70, weight: 210, min:15, sec:0, curlTimes:35, pushTimes:25, type: "patient", expectation:'expectation', comments:'', index:3},
 	{datePatient: '05/03/2012', date: '05/03/2012', series:"PRTresults", PRTscore: 86, mileRun: 60, curlUps: 52, pushUps: 65, weight: 208, min:14, sec:30, curlTimes:35, pushTimes:25, type: "patient", expectation:'expectation', comments:'', index:4},
-	{dateProvider: '09/24/2012', date: '09/24/2012', series:"PRTresults", PRTscore: 92, mileRun: 64, curlUps: 55, pushUps: 50, weight: 205, min:13, sec:50, curlTimes:40, pushTimes:24, type: "provider", expectation:'expectation', comments:'', index:5}
+	{dateProvider: '09/24/2012', date: '09/24/2012', series:"PRTresults", PRTscore: 92, mileRun: 64, curlUps: 55, pushUps: 50, weight: 175, min:13, sec:50, curlTimes:40, pushTimes:24, type: "provider", expectation:'expectation', comments:'', index:5}
 ]);
 
 [Bindable] public var exerciseDataByMeasure:ArrayCollection = new ArrayCollection([
@@ -20,12 +20,12 @@ import mx.collections.ArrayCollection;
 			  } ]
 	},
 	{ measure: "1.5 Mile Run", chartMin: 35, chartMax: 100,
-		chart:[ { data:[{value:62, expectation:45, target:62, targetMin:14, targetSec:40, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:40},
-						{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:35},
-						{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:14, sec:30},
-						{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:50},
-						{value:60, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
-						{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:40}]
+		chart:[ { data:[{value:62, expectation:45, target:62, targetMin:14, targetSec:15, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:15},
+						{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:05},
+						{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:13, sec:55},
+						{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
+						{value:56, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:42},
+						{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:05}]
 			  } ]
 	},
 	{ measure: "Curl Ups", chartMin: 35, chartMax: 100,
@@ -58,7 +58,13 @@ import mx.collections.ArrayCollection;
 
 [Bindable] public var exerciseDataByMeasurePhysicianAssigned:ArrayCollection = new ArrayCollection([
 	{ measure: "Run / Walk", chartMin:15, chartMax:45,
-		chart:[ {data:[{value:30, expectation:30, date:'10/11/2011',miles:3.0, measure:'runWalk'},{value:32, expectation:30, date:'11/11/2011',miles:3.0, measure:'runWalk'},{value:34, expectation:30, date:'12/11/2011',miles:3.0, measure:'runWalk'},{value:27, expectation:30, date:'01/11/2012',miles:3.0, measure:'runWalk'},{value:30, expectation:30, date:'08/03/2012',miles:3.0, measure:'runWalk'}]}]},
+		chart:[ {data:[{value:30, expectation:30, date:'10/11/2011',miles:3.0, measure:'runWalk'},
+					   {value:32, expectation:30, date:'11/11/2011',miles:3.0, measure:'runWalk'},
+					   {value:34, expectation:30, date:'12/11/2011',miles:3.0, measure:'runWalk'},
+					   {value:27, expectation:30, date:'01/11/2012',miles:3.0, measure:'runWalk'},
+					   {value:30, expectation:30, date:'08/03/2012',miles:3.0, measure:'runWalk'}]
+				}]
+	},
 	{ measure: "Bike", chartMin:15, chartMax:45,
 		chart:[ {data:[{value:30, expectation:30, date:'10/11/2011', measure:'bike'},{value:29, expectation:30, date:'11/11/2011', measure:'bike'},{value:28, expectation:30, date:'12/11/2011', measure:'bike'},{value:31, expectation:30, date:'01/11/2012', measure:'bike'},{value:34, expectation:30, date:'08/03/2012', measure:'bike'}]}]},
 	{ measure: "Comments", chartType: "comments",
