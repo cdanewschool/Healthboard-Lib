@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	height="40" width="100%" >
+	
+	<fx:Metadata>
+		[Event(name="navigate", type="events.ApplicationEvent")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ApplicationEvent;
+			
+			[Bindable] public var title:String;
+			[Bindable] public var icon:Class;
+			
+			[Bindable] public var showSearch:Boolean;
+			[Bindable] public var searchPlaceholder:String;
+			[Bindable] public var searchFunction:Function;
+			
+			[Bindable] public var actionCount:int = 0;
+			[Bindable] public var actionPrefix:String = "You have";
+			[Bindable] public var actionSuffix:String = "new messages";
+			
+			[Bindable] public var secondaryActionCount:int = 0;
+			[Bindable] public var secondaryActionPrefix:String = "You have";
+			[Bindable] public var secondaryActionSuffix:String = "new messages";
+ 			
+			[Bindable] public var showActionsIfNone:Boolean = false;
+			[Bindable] public var showSecondaryActionsIfNone:Boolean = false;
+			
+			private var _showBackground:Boolean = true;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				setStyle( 'borderAlpha', showBackground ? 1 : 0 );
+			}
+			
+			private function onHeaderClick(event:MouseEvent):void
+			{
+				search.text = searchPlaceholder;
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.NAVIGATE, true );
+				evt.data = 0;
+				dispatchEvent( evt );
+			}
+			
+			public function get searchText():String
+			{
+				return search.text;
+			}
+
+			[Bindable]
+			public function get showBackground():Boolean
+			{
+				return _showBackground;
+			}
+
+			public function set showBackground(value:Boolean):void
+			{
+				_showBackground = value;
+				
+				invalidateProperties();
+			}
+
+			[Bindable] public var moreText:String;
+			[Bindable] public var moreLinkText:String;
+			[Bindable] public var moreLinkClickFunction:Function;
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:HorizontalLayout verticalAlign="middle" paddingLeft="{showBackground?16:0}" />
+	</s:layout>
+	
+	<s:backgroundFill>
+		<s:LinearGradient rotation="270">
+			<s:GradientEntry color="0xA3A3A3" alpha="{showBackground?1:0}" ratio=".38" />
+			<s:GradientEntry color="0x706F6F" alpha="{showBackground?1:0}" ratio="1" />
+		</s:LinearGradient>
+	</s:backgroundFill>
+	
+	<s:Image source="{icon}" buttonMode="true" click="onHeaderClick(event)" />
+	<s:Label id="lblBreadcrumbPatient" text="{title}" color="0xFFFFFF" fontSize="22" fontWeight="bold" paddingTop="2" paddingLeft="13" />
+	<s:Label text="▼" fontSize="10" color="0xFFFFFF" paddingTop="4" paddingLeft="5" />
+	
+	<s:VGroup paddingLeft="30" paddingTop="10">
+		
+		<s:HGroup visible="{actionCount>0 || showActionsIfNone}" includeInLayout="{actionCount>0 || showActionsIfNone}">
+			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
+			<s:Label text="{actionCount>0?actionCount:'no'}" styleName="moduleSubtitleItalic {actionCount>0?'moduleSubtitleNumber':null}" />
+			<s:Label text="{actionSuffix?actionSuffix:''}" styleName="moduleSubtitleItalic" />
+			
+			<s:HGroup visible="{secondaryActionCount>0 || showSecondaryActionsIfNone}" includeInLayout="{secondaryActionCount>0 || showActionsIfNone}">
+				<s:Label text="{secondaryActionPrefix}" styleName="moduleSubtitleItalic" />
+				<s:Label text="{secondaryActionCount>0?secondaryActionCount:'no'}" styleName="moduleSubtitleItalic {secondaryActionCount>0?'secondaryActionCount':null}" />
+				<s:Label text="{secondaryActionSuffix?secondaryActionSuffix:''}" styleName="moduleSubtitleItalic" />
+			</s:HGroup>
+			
+		</s:HGroup>
+		
+		<s:HGroup visible="{moreText!=null}" includeInLayout="{moreText!=null}" fontSize="11" fontWeight="bold" paddingTop="-8">
+			<s:Label color="0xFFFFFF" text="{moreText}" paddingTop="6" />
+			<mx:LinkButton id="moreLink" label="{moreLinkText}" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" fontStyle="italic" skin="{null}" paddingLeft="-5" rollOver="{moreLink.styleName='linkBtnUnderline';}" rollOut="moreLink.styleName='linkBtn';" click="moreLinkClickFunction(event)" />
+		</s:HGroup>
+	</s:VGroup>
+	
+	<s:Spacer width="100%" />
+
+	<s:HGroup gap="-1" visible="{showSearch}" includeInLayout="{showSearch}" paddingRight="{showBackground?38:0}">
+		<s:TextInput id="search" text="{searchPlaceholder}" fontSize="10" fontStyle="italic" color="0x999999" height="24" width="166" paddingTop="5" click="{if(search.text == searchPlaceholder) search.text=''}" change="{searchFunction?searchFunction():null}" />
+		<s:Button styleName="searchButtonIcon" width="24" height="24" />
+	</s:HGroup>
+	
+</s:BorderContainer>

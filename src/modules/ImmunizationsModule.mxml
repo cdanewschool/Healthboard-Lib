@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:components="components.*" 
+	xmlns:general="components.general.*" 
+	xmlns:plus="external.TabBarPlus.plus.*"
+	creationComplete="init()" >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import ASclasses.Constants;
+			import ASclasses.MyCustomDataTip;
+			
+			import components.popups.ImmunizationDetails;
+			
+			import controllers.ImmunizationsController;
+			
+			import enum.DateRanges;
+			
+			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
+			
+			import models.modules.ImmunizationsModel;
+			
+			import mx.charts.ChartItem;
+			import mx.charts.HitData;
+			import mx.charts.events.ChartItemEvent;
+			import mx.charts.series.items.PlotSeriesItem;
+			import mx.collections.ArrayCollection;
+			import mx.graphics.IFill;
+			import mx.graphics.SolidColor;
+			import mx.managers.PopUpManager;
+			
+			import spark.events.IndexChangeEvent;
+			
+			import styles.ChartStyles;
+			
+			import util.ChartLabelFunctions;
+			import util.DateFormatters;
+			
+			[Bindable] public var controller:ImmunizationsController = AppProperties.getInstance().controller.immunizationsController;
+			[Bindable] private var model:ImmunizationsModel = controller.model as ImmunizationsModel;
+			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] public var showHeader:Boolean = true;
+			
+			private function checkImmunizationsRequired_clickHandler(event:IndexChangeEvent):void 
+			{
+				model.immunizationsData.refresh();
+				
+				model.immunizationsCategories = new Array();
+				
+				for(var j:uint = 0; j < model.immunizationsData.length; j++) 
+				{
+					if(model.immunizationsCategories.indexOf( model.immunizationsData[j].name ) == -1) model.immunizationsCategories.push( model.immunizationsData[j].name );
+				}
+			}
+			
+			private function switchImmunizationsView(index:uint):void 
+			{
+				viewsImmunization.selectedIndex = index;
+				
+				if(index == 0) 
+				{
+					btnImmunizationsChart.setStyle("chromeColor", 0xFF931E);
+					btnImmunizationsList.setStyle("chromeColor", 0xB3B3B3);
+				}
+				else 
+				{
+					btnImmunizationsChart.setStyle("chromeColor", 0xB3B3B3);
+					btnImmunizationsList.setStyle("chromeColor", 0xFF931E);
+				}
+			}
+		
+			private function immunizationsSetMinMax():void 
+			{
+				hAxisImmunizations.minimum = model.minDate;	//new Date( "Oct 1 2010 01:03:54 AM");
+				hAxisImmunizations.maximum = model.maxDate;	//new Date( "Oct 1 2011 01:03:54 AM");
+				
+				chartStyles.canvas.lineStyle(3,0x00ADEE,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
+				chartStyles.canvas.moveTo( DateFormatters.dateFormatterToday.format(new Date()),'Anthrax');		//canvas.moveTo(dateFormatterToday.format(new Date()),immunizationsCategories.length);
+				chartStyles.canvas.lineTo( DateFormatters.dateFormatterToday.format(new Date()),'Yellow Fever');	//canvas.lineTo(dateFormatterToday.format(new Date()),0.05);
+				
+				/*canvas.lineStyle(1,0xFFFFFF,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
+				//canvas.moveTo(dateFormatterToday.format(new Date("Sep 30 2010 01:03:54 AM")),'Influenza');
+				//canvas.lineTo(dateFormatterToday.format(new Date()),'Influenza');
+				for(var i:uint = 0; i < immunizationsCategories.length; i++) {
+				var minDatePlus1:Date = minDate;
+				minDatePlus1.setDate(minDate.getDate() + 1);
+				canvas.moveTo(this.dateFormatterToday.format(minDatePlus1),this.immunizationsCategories[i]);
+				canvas.lineTo(this.dateFormatterToday.format(maxDate),this.immunizationsCategories[i]);
+				}*/
+			}
+			
+			private function applyCustomDataTipsImm():void 
+			{
+				plotImmunizations.setStyle("dataTipRenderer",MyCustomDataTip);
+			}
+			
+			private function dataTipsImmunizations(hd:HitData):String 
+			{
+				/*var completed:String = hd.item.completed == true ? "Completed" : "Not completed";
+				return "<b>" + hd.item.name + " immunization: " + hd.item.date + "</b><br><i>" + completed + ".</i><br><br>" + hd.item.description;*/
+				var immunizationDate:Date = new Date(hd.item.date);
+				var todayWithTime:Date = new Date();
+				
+				var today:Date = new Date(todayWithTime.getFullYear(),todayWithTime.getMonth(),todayWithTime.getDate());
+				var status:String = hd.item.completed == true ? "Completed" : (immunizationDate.getTime() < today.getTime()) ? "Overdue" : "Due";
+				
+				return "<b>" + hd.item.name + "</b><br><i>Status: " + status + "<br>Due by: " + hd.item.date + "<br><br>Click to view immunization details</i>";
+			}
+			
+			private function showImmunizationDetails(e:ChartItemEvent):void
+			{
+				viewImmunizationDetails( e.hitData.item );
+				//this.immunizationItemDrillDown.source = e.hitData.item.details.source;
+				//immunizationsDetails.visible = true;
+			}
+			
+			private function viewImmunizationDetails(immunization:Object):void 
+			{
+				var isImmunizationAlreadyOpen:Boolean = false;
+				
+				for(var j:uint = 0; j < model.openTabs.length; j++) 
+				{
+					if( model.openTabs[j] == immunization ) 
+					{
+						isImmunizationAlreadyOpen = true;
+						viewStackImmunizations.selectedIndex = j + 1;		//+1 because in model.openTabs we don't include the first tab
+						break;
+					}
+				}
+				
+				if(!isImmunizationAlreadyOpen) 
+				{
+					var immunizationDetails:ImmunizationDetails = new ImmunizationDetails();
+					immunizationDetails.immunizationData = immunization;
+					viewStackImmunizations.addChild(immunizationDetails);
+					tabsImmunizations.selectedIndex = viewStackImmunizations.length - 1;
+					model.openTabs.push(immunization);
+				}
+			}
+			
+			private function immunizationsFillFunction(element:ChartItem, index:Number):IFill 
+			{
+				var c:SolidColor = chartStyles.colorImmunizationsDue1Month	//yellow
+				var item:PlotSeriesItem = PlotSeriesItem(element);
+				var immunizationDate:Date = new Date(item.xValue);		//new Date(item.xValue.substr(6),item.xValue.substr(0,2)-1,item.xValue.substr(3,2));
+				var todayWithTime:Date = new Date();
+				var today:Date = new Date(todayWithTime.getFullYear(),todayWithTime.getMonth(),todayWithTime.getDate());
+				
+				if(item.item.completed == true) 
+				{
+					c = chartStyles.colorImmunizationsCompleted;		//gray
+				}
+				else if(immunizationDate.getTime() == today.getTime()) 
+				{
+					c = chartStyles.colorImmunizationsToday;		//green
+				}
+				else if(immunizationDate.getTime() < today.getTime()) 
+				{
+					c = chartStyles.colorImmunizationsDue;		//red
+				}
+				
+				return c;
+			}
+
+			private function setDateRange(range:String=null):void
+			{
+				model.dateRange = range;
+				
+				updateDateRange();
+			}
+			
+			private function updateDateRange():void 
+			{
+				//	TODO: update min/max dates based on current date, not a hard-coded one
+				
+				if( model.dateRange == DateRanges.MONTH ) 
+				{
+					model.minDate = new Date( "Jun 28 2012 01:03:54 AM");		//"Feb 28 2012 01:03:54 AM"
+					model.maxDate = new Date( "Aug 4 2012 01:03:54 AM");		//"Apr 4 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					chartStyles.immVerticalGridLine.alpha = 0;
+				}
+				else if( model.dateRange == DateRanges.MONTH_THREE ) 
+				{
+					model.minDate = new Date( "Apr 28 2012 01:03:54 AM");		//"Jan 31 2012 01:03:54 AM"
+					model.maxDate = new Date( "Aug 7 2012 01:03:54 AM");		//"May 31 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					chartStyles.immVerticalGridLine.alpha = 0;
+				}
+				else if( model.dateRange == DateRanges.YEAR ) 
+				{
+					model.minDate = new Date( "Dec 14 2011 01:03:54 AM");		//"Jul 14 2011 01:03:54 AM"
+					model.maxDate = new Date( "Dec 14 2012 01:03:54 AM");		//"Jul 14 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					chartStyles.immVerticalGridLine.alpha = 0;
+				}
+				else if( model.dateRange == DateRanges.YEAR_THREE ) 
+				{
+					model.minDate = new Date( "Dec 4 2009 01:03:54 AM");		//"Sep 4 2009 01:03:54 AM"
+					model.maxDate = new Date( "Feb 4 2013 01:03:54 AM");		//"Sep 4 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					chartStyles.immVerticalGridLine.alpha = 0.3;
+				}
+				else if( model.dateRange == DateRanges.YEAR_FIVE ) 
+				{
+					model.minDate = new Date( "Dec 4 2007 01:03:54 AM");		//"Jul 1 2007 01:03:54 AM"
+					model.maxDate = new Date( "Mar 4 2013 01:03:54 AM");		//"Jul 1 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					chartStyles.immVerticalGridLine.alpha = 0.3;
+				}
+				else if( model.dateRange == DateRanges.YEAR_TEN ) 
+				{
+					model.minDate = new Date( "Nov 4 2002 01:03:54 AM");		//"Aug 1 2002 01:03:54 AM"
+					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");		//"Aug 1 2012 01:03:54 AM"
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					chartStyles.immVerticalGridLine.alpha = 0.3;
+				}
+				else
+				{
+					model.minDate = new Date( "Nov 4 2002 01:03:54 AM");
+					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");
+					
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
+					chartStyles.immVerticalGridLine.alpha = 0.3;
+				}
+				
+				hAxisImmunizations.minimum = model.minDate;
+				hAxisImmunizations.maximum = model.maxDate;
+				
+				/*for(var i:uint = 0; i < immunizationsCategories.length; i++) {
+				var minDatePlus1:Date = minDate;
+				minDatePlus1.setDate(minDate.getDate() + 1);
+				canvas.moveTo(this.dateFormatterToday.format(minDatePlus1),this.immunizationsCategories[i]);
+				canvas.lineTo(this.dateFormatterToday.format(maxDate),this.immunizationsCategories[i]);
+				}*/
+			}
+			
+			private function lblImmunizationDetailsAge(item:Object, column:DataGridColumn):String 
+			{
+				return item.lastGiven == '-' ? '-' : String(int(item.lastGiven.substr(6)) - 1965);
+			}
+			
+			/**This function is basically identical to the preceding one.
+			 * It is used, however, by the itemRenderer component in the Data Grid showing the immunizations list.
+			 * The preceding one couldn't be used in this case, since the required parameters for that function weren't available in the itemRenderer component.
+			 */
+			public function myImmunizationsFillFunction(completed:Boolean, immunizationDateString:String):SolidColor 
+			{
+				var c:SolidColor = chartStyles.colorImmunizationsDue1Month	//yellow
+				var immunizationDate:Date = new Date(immunizationDateString);		//new Date(immunizationDateString.substr(6),Number(immunizationDateString.substr(0,2))-1,immunizationDateString.substr(3,2));
+				var todayWithTime:Date = new Date();
+				var today:Date = new Date(todayWithTime.getFullYear(),todayWithTime.getMonth(),todayWithTime.getDate());
+				
+				if(completed == true) 
+				{
+					c = chartStyles.colorImmunizationsCompleted;		//gray
+				}
+				else if(immunizationDate.getTime() == today.getTime()) 
+				{
+					c = chartStyles.colorImmunizationsToday;		//green
+				}
+				else if(immunizationDate.getTime() < today.getTime()) 
+				{
+					c = chartStyles.colorImmunizationsDue;		//red
+				}
+				
+				return c;
+			}
+			
+			public function getLabelDataTip(name:String):String 
+			{
+				for(var i:uint = 0; i < model.immunizationsData.length; i++) 
+				{
+					if( model.immunizationsData[i].name == name) return model.immunizationsData[i].description;
+				}
+				
+				return '';
+			}
+
+			public function showImmunizationDetailsAxis(imm:String):void 
+			{
+				for(var i:uint = 0; i < model.immunizationsData.length; i++) 
+				{
+					if(model.immunizationsData.getItemAt(i).name == imm) break;
+				}
+				
+				//TODO: implement (NOAH)
+				//PopUpManager.removePopUp(myChartPopup);		//remove existing popup (if any).
+				
+				viewImmunizationDetails( model.immunizationsData.getItemAt(i) );
+			}
+			
+			private function onLearnMoreClick(event:MouseEvent):void
+			{
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				evt.data = Constants.MODULE_EDUCATIONAL_RESOURCES;
+				dispatchEvent( evt );
+			}
+			
+			private function filterFunction(item:Object):Boolean
+			{
+				if( dropImmunizationsFilter.selectedIndex == 0 ) return true;
+				
+				return item.required == true;
+			}
+			
+			private function onDataLoaded():void
+			{
+				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
+				
+				model.immunizationsData.filterFunction = filterFunction;
+				model.immunizationsData.refresh();
+			}
+			
+			private function init():void
+			{
+				if( !model.dataLoaded ) 
+				{
+					model.addEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
+					
+					var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
+					evt.data = ImmunizationsModel.ID;
+					dispatchEvent( evt );
+				}
+				else
+				{
+					onDataLoaded();
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<components:ModuleHeader
+		width="100%" 
+		visible="{showHeader}" includeInLayout="{showHeader}"
+		icon="@Embed('images/btnHome.png')" title="Immunizations"
+		showBackground="false" 
+		actionPrefix="You have" actionCount="{model.immunizationsDueNumber}" actionSuffix="immunizations due or due soon." 
+		showSearch="true" searchPlaceholder="Search immunizations"
+		moreText="Learn more about Immunizations:" moreLinkText="Educational Resources" moreLinkClickFunction="onLearnMoreClick" />
+	
+	<s:Spacer height="10" />
+	
+	<s:Group creationComplete="{tabsImmunizations.setTabClosePolicy(0, false);}">
+		
+		<mx:ViewStack id="viewStackImmunizations" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" borderVisible="true" borderStyle="solid" x="0" y="22">
+			
+			<s:NavigatorContent label="Immunization History">
+				
+				<s:layout>
+					<s:HorizontalLayout gap="0" />
+				</s:layout>
+				
+				<s:VGroup gap="0" height="100%">
+					
+					<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+						<s:layout>
+							<s:HorizontalLayout verticalAlign="middle" horizontalAlign="right" paddingRight="6" paddingLeft="8" gap="7"/>
+						</s:layout>
+						
+						<!--<s:VGroup paddingTop="3">
+						<s:CheckBox id="checkImmunizationsRequired" label="Required Only" color="0xFFFFFF" fontSize="11" click="checkImmunizationsRequired_clickHandler(event)" />
+						</s:VGroup>-->
+						
+						<s:HGroup paddingLeft="100" paddingRight="5">
+							<s:Label text="View:" paddingTop="7" color="#FFFFFF" />
+							<s:DropDownList id="dropImmunizationsFilter" height="24" width="79" styleName="buttonText" selectedIndex="0" change="checkImmunizationsRequired_clickHandler(event)">
+								<s:dataProvider>
+									<s:ArrayList>
+										<fx:Object label="All" />
+										<fx:Object label="Required" />
+									</s:ArrayList>							
+								</s:dataProvider>
+							</s:DropDownList>
+						</s:HGroup>
+						
+						<s:HGroup color="0xFFFFFF" gap="4" paddingTop="1">
+							
+							<s:Label text="Time Range:" paddingTop="6" />
+							
+							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_FIVE}" click="setDateRange(DateRanges.YEAR_FIVE)" selected="{model.dateRange==DateRanges.YEAR_FIVE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_TEN}" click="setDateRange(DateRanges.YEAR_TEN)" selected="{model.dateRange==DateRanges.YEAR_TEN}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton id="btnMedCustom" label="Custom" />
+							
+						</s:HGroup>
+						
+						<s:HGroup gap="0">
+							<s:Button id="btnImmunizationsChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" click="switchImmunizationsView(0)" chromeColor="0xFF931E" />
+							<s:Button id="btnImmunizationsList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" click="switchImmunizationsView(1)" styleName="buttonText" />
+						</s:HGroup>
+						
+					</s:BorderContainer>
+					
+					<s:Line xFrom="0" xTo="792">
+						<s:stroke>
+							<s:SolidColorStroke color="#3F3E3D"/>
+						</s:stroke>
+					</s:Line>
+					
+					<mx:ViewStack id="viewsImmunization" width="100%" height="100%" creationPolicy="all">
+						
+						<s:NavigatorContent width="100%">
+							
+							<s:layout>
+								<s:VerticalLayout />
+							</s:layout>
+							
+							<s:HGroup styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingLeft="36">
+								<s:Label text="Immunization" paddingTop="1" />
+								<s:Line yFrom="0" yTo="31">
+									<s:stroke>
+										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3"/>
+									</s:stroke>
+								</s:Line>
+								<s:Label text="Date" paddingTop="1" />
+							</s:HGroup>
+							
+							<s:HGroup paddingLeft="117" paddingTop="-7" paddingBottom="-7">
+								<s:Line xFrom="0" xTo="678">
+									<s:stroke>
+										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".6" />
+									</s:stroke>
+								</s:Line>
+							</s:HGroup>
+							
+							<mx:PlotChart 
+								id="plotImmunizations" width="100%" height="456" dataProvider="{model.immunizationsData}" showDataTips="true" backgroundElements="{chartStyles.bgeImmunizations}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
+								creationComplete="immunizationsSetMinMax(); applyCustomDataTipsImm();" itemClick="showImmunizationDetails(event)" dataTipFunction="dataTipsImmunizations" paddingLeft="7">
+								
+								<mx:horizontalAxisRenderers>
+									
+									<mx:AxisRenderer id="hAxisRendImmunizations" axis="{hAxisImmunizations}" tickPlacement="cross" tickLength="4">
+										<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>
+										<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
+									</mx:AxisRenderer>
+									
+								</mx:horizontalAxisRenderers>
+								
+								<mx:verticalAxisRenderers>
+									
+									<mx:AxisRenderer id="vAxisRendImmunizations" axis="{vAxisImmunizations}" tickPlacement="outside" tickLength="117" minorTickPlacement="inside" minorTickLength="678" labelGap="-117">
+										<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
+										<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
+										<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>
+										
+										<!--http://help.adobe.com/en_US/flex/using/WS02f7d8d4857b1677355f601a126b41ed60e-8000.html-->
+										<mx:labelRenderer>
+											<fx:Component>
+												<mx:LinkButton click="outerDocument.showImmunizationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" paddingLeft="-3" paddingRight="2">
+													<fx:Script>
+														<![CDATA[
+															[Bindable] private var myTip:String;
+															[Bindable] private var myColor:uint;
+															[Bindable] private var myWeight:String;
+															[Bindable] private var myStyle:String;
+															
+															override public function set data(value:Object):void
+															{
+																if(value == null) return;
+																
+																myTip = outerDocument.getLabelDataTip(value.value);		//myTip = outerDocument.immunizationsData[value.value].description;		//this is buggy... it should match the immunizationsCategory number... fix...		//value.text;
+																label = value.text;		//text = value.text;
+																//text = value.text.toString().length > 20 ? value.text.toString().substr(0, 20) + "..." : value.text;
+																
+																myColor = 0xAEDEE4;
+															}
+														]]>
+													</fx:Script>
+												</mx:LinkButton>	
+												
+											</fx:Component>
+										</mx:labelRenderer>
+										
+									</mx:AxisRenderer>
+								</mx:verticalAxisRenderers>
+								
+								<!--<mx:verticalAxisRenderers>
+								<mx:AxisRenderer id="vAxisRendImmunizations" axis="{vAxisImmunizations}" tickPlacement="none" minorTickPlacement="none" labelGap="0">
+								<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>
+								<mx:labelRenderer>
+								<fx:Component>
+								<mx:Label toolTip="{this.myTip}">
+								<fx:Script><![CDATA[
+								[Bindable] private var myTip:String;
+								
+								override public function set data(value:Object):void{
+								myTip = outerDocument.getLabelDataTip(value.value);		//myTip = outerDocument.immunizationsData[value.value].description;		//this is buggy... it should match the immunizationsCategory number... fix...
+								text = value.text;
+								}
+								]]></fx:Script>
+								</mx:Label>
+								</fx:Component>
+								</mx:labelRenderer>
+								
+								</mx:AxisRenderer>
+								</mx:verticalAxisRenderers>-->
+								
+								<mx:horizontalAxis>
+									<mx:DateTimeAxis id="hAxisImmunizations" labelFunction="ChartLabelFunctions.lblHAxisPlotChartMonth" />
+								</mx:horizontalAxis>
+								
+								<mx:verticalAxis>
+									<!--LINEAR AXIS-->
+									<!--<mx:LinearAxis id="vAxisImmunizations" interval="1" maximum="{model.immunizationsCategories.length}" labelFunction="lblVAxisImmunizations" />-->
+									
+									<!--CATEGORY AXIS-->
+									<mx:CategoryAxis id="vAxisImmunizations" dataProvider="{model.immunizationsCategories}" />
+								</mx:verticalAxis> <!-- categoryField="name" --> <!--dataFunction="catFunc"--> <!--labelFunction="lblVAxisImmunizations"-->
+								
+								<mx:series>
+									<mx:PlotSeries xField="date" yField="name" displayName="Immunization" itemRenderer="mx.charts.renderers.CircleItemRenderer" fillFunction="immunizationsFillFunction" selectable="true" /> <!--yField="order"-->
+								</mx:series>
+							</mx:PlotChart>
+							
+							<mx:Legend direction="horizontal" color="0xFFFFFF" paddingLeft="118" fontFamily="myMyriadNoCFF">
+								<mx:LegendItem label="Due" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{chartStyles.colorImmunizationsDue}" />
+								<mx:LegendItem label="Due within 1 month" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{chartStyles.colorImmunizationsDue1Month}" />
+								<mx:LegendItem label="Addressed Today for Immunizations Have Been Given" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{chartStyles.colorImmunizationsToday}" />
+								<mx:LegendItem label="Completed" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{chartStyles.colorImmunizationsCompleted}" />
+							</mx:Legend>
+							
+							<!--<s:VGroup paddingLeft="118" paddingTop="15">-->
+							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
+							<!--Replaced the above with a "NoCFF" embedded font, cause otherwise it's freezing (only this chart when it's fed by the PlotChart)-->
+							<!--<mx:DataGrid id="immunizationsDetails" visible="false" dataProvider="{immunizationItemDrillDown}" fontFamily="myMyriadNoCFF"
+							width="537" rowCount="8" sortableColumns="false"
+							alternatingItemColors="[0x303030,0x3c3c3b]" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"
+							color="0xFFFFFF" fontSize="11" verticalAlign="middle"
+							headerBackgroundSkin="skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="28" headerStyleName="dataGridHeader"
+							rowHeight="27" horizontalGridLines="false" selectable="false" showEffect="WipeDown">--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+							<!--<mx:columns> 
+							<mx:DataGridColumn dataField="label1" headerText="Details" paddingLeft="5" /> 
+							<mx:DataGridColumn dataField="data1" headerText="" paddingLeft="5" /> 
+							<mx:DataGridColumn headerText="" width="3" /> 
+							<mx:DataGridColumn dataField="label2" headerText="Details" paddingLeft="5" /> 
+							<mx:DataGridColumn dataField="data2" headerText="" paddingLeft="5" /> 
+							</mx:columns> 
+							</mx:DataGrid>
+							</s:VGroup>-->
+							
+						</s:NavigatorContent>
+						
+						<s:NavigatorContent height="100%">
+							
+							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
+							<mx:DataGrid
+								id="immunizationsList" dataProvider="{model.immunizationsDataFiltered}" fontFamily="myMyriadNoCFF"
+								width="100%" height="100%"
+								alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false"
+								color="0xFFFFFF" fontSize="10" verticalAlign="middle"
+								headerBackgroundSkin="skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerStyleName="dataGridHeaderAlternative" headerHeight="30" paddingTop="6"
+								borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"-->
+								
+								<mx:columns> 
+									
+									<mx:DataGridColumn dataField="name" headerText="" width="39">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="100%" paddingLeft="11" horizontalScrollPolicy="off">
+													<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{outerDocument.myImmunizationsFillFunction(data.completed,data.date)}">
+														<fx:Script>
+															<![CDATA[
+																override public function set data(value:Object):void 
+																{
+																	super.data = value;
+																	
+																	this.toolTip = outerDocument.controller.getStatus(data.completed,data.date);
+																	
+																	super.invalidateDisplayList();
+																}
+															]]>
+														</fx:Script>
+													</mx:LegendItem>
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									
+									<mx:DataGridColumn 
+										dataField="name" headerText="Immunization" width="145" paddingLeft="13">
+										
+										<mx:itemRenderer>
+											<fx:Component>
+												<!--<mx:HBox width="100%" horizontalGap="0">
+												<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" fill="{outerDocument.myImmunizationsFillFunction(data.completed,data.date)}" />
+												<mx:Label text="{data.name}">
+												<fx:Script>		
+												<![CDATA[
+												/**
+												* This function is necessary to be able to display the tooltip, since we're in an itemRenderer and the DataGridColumn's "showDataTips=true" won't do
+												* http://flexonblog.wordpress.com/2008/07/09/tooltip-for-datagrid-column-elements/
+												*/
+												override public function set data(value:Object):void {
+												super.data = value;
+												this.toolTip = data.description;
+												super.invalidateDisplayList();
+												}
+												]]>
+												</fx:Script>
+												</mx:Label>
+												</mx:HBox>-->
+												<mx:LinkButton click="outerDocument.showImmunizationDetailsAxis(label)" textAlign="left" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" fontFamily="myMyriad">
+													<fx:Script>
+														<![CDATA[
+															[Bindable] private var myTip:String;
+															[Bindable] private var myColor:uint;
+															[Bindable] private var myWeight:String;
+															[Bindable] private var myStyle:String;
+															
+															override public function set data(value:Object):void
+															{
+																if(value == null) return;
+																
+																myTip = value.description;		//myTip = outerDocument.immunizationsData[value.value].description;		//this is buggy... it should match the immunizationsCategory number... fix...		//value.text;
+																label = value.name;		//text = value.text;
+																//text = value.text.toString().length > 20 ? value.text.toString().substr(0, 20) + "..." : value.text;
+																
+																myColor = 0xAEDEE4;
+															}
+														]]>
+													</fx:Script>
+												</mx:LinkButton>
+											</fx:Component>
+										</mx:itemRenderer>
+										
+									</mx:DataGridColumn> 
+									
+									<mx:DataGridColumn dataField="lastGiven" headerText="Date Given" paddingLeft="5" /> 
+									<mx:DataGridColumn dataField="lastGiven" labelFunction="lblImmunizationDetailsAge" headerText="Age" paddingLeft="5" width="58" /> 
+									<mx:DataGridColumn dataField="nextDue" headerText="Next Due" paddingLeft="5" /> 
+									<mx:DataGridColumn dataField="series" headerText="Series" paddingLeft="5" width="58" /> 
+									<mx:DataGridColumn dataField="expires" headerText="Expires" paddingLeft="5" /> 
+									<mx:DataGridColumn dataField="lastEdit" headerText="Last Edit" paddingLeft="5" />
+									<mx:DataGridColumn dataField="occupationalStatus" headerText="Occupational Status" paddingLeft="5" />
+									
+								</mx:columns> 
+							</mx:DataGrid>
+							
+						</s:NavigatorContent>
+						
+					</mx:ViewStack>
+					
+				</s:VGroup>
+				
+				<s:Line xFrom="0" yFrom="0" xTo="0" yTo="628">
+					<s:stroke>
+						<s:SolidColorStroke color="#BDBDBC"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:VGroup width="180" height="100%">
+					<s:Label text="Allergies" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
+					<s:Label text="{'• Aspirin\n• Latex (Do Not Use, Not Screened)\n• Natural Rubber (Do Not Use, Not Screened)'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
+					<s:Label text="Exemption" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
+					<s:Label text="There is no exemption from immunization for Reasons of Conscience" fontSize="11" fontStyle="italic" color="0x999999" paddingLeft="9" paddingTop="12" width="100%" />
+				</s:VGroup>
+				
+			</s:NavigatorContent>
+			
+		</mx:ViewStack>
+		
+		<plus:TabBarPlus id="tabsImmunizations" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackImmunizations}" />
+		
+	</s:Group>
+	
+</s:VGroup>
