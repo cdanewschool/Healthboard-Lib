@@ -9,6 +9,7 @@ package controllers
 	import models.modules.AppointmentsModel;
 	
 	import mx.collections.ArrayCollection;
+	import mx.collections.Sort;
 	import mx.utils.ObjectUtil;
 	
 	import util.DateUtil;
@@ -187,8 +188,31 @@ package controllers
 				appointment.date = new Date( appointment.date.fullYear, appointment.date.month, appointment.date.date );
 			}
 			
+			today = AppProperties.getInstance().controller.model.today;
+			
+			var defaultAppointment:Object;
+			
+			var sort:Sort = new Sort();
+			sort.compareFunction = DateUtil.compareByDate;
+			appointments.sort = sort;
+			appointments.refresh();
+			
+			for(var i:int=0;i<appointments.length;i++)
+			{
+				var appointment:Object = appointments[i];
+				
+				if( appointment.date.time >= today.time )
+				{
+					defaultAppointment = appointment;
+					break;
+				}
+			}
+			
+			appointments.sort = null;
+			appointments.refresh();
+			
 			model.appointments = appointments;
-			model.currentAppointmentIndex = 10;
+			model.currentAppointmentIndex = defaultAppointment ? model.appointments.getItemIndex(defaultAppointment) : 0;
 		}
 		
 		public function setAvailable(set:String, reason:String):void

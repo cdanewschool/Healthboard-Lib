@@ -26,5 +26,13 @@ package util
 			if(date.charAt(4) == '/') date = date.substr(0,3) + '0' + date.substr(-6);		// 03/4/2012
 			return date;
 		}
+		
+		public static function compareByDate( item:Object, item2:Object, fields:Array = null):int
+		{
+			if( item.date.time > item2.date.time ) return 1;
+			else if( item.date.time < item2.date.time ) return-1;
+			
+			return 0;
+		}
 	}
 }
