@@ -8,7 +8,7 @@ package ASclasses
 		public static const STATE_LOGGED_IN:String = "loggedIn";
 		public static const STATE_WIDGET_VIEW:String = "widgetView";
 		
-		public static const MODULE_APPOINTMENTS:String = "modCalendar";
+		public static const MODULE_APPOINTMENTS:String = "modAppointments";
 		public static const MODULE_EDUCATIONAL_RESOURCES:String = "modEducationalResources";
 		public static const MODULE_EXERCISE:String = "modExercise";
 		public static const MODULE_IMMUNIZATIONS:String = "modImmunizations";
@@ -16,6 +16,7 @@ package ASclasses
 		public static const MODULE_MEDICATIONS:String = "modMedications";
 		public static const MODULE_MEDICAL_RECORDS:String = "modMedicalRecords";
 		public static const MODULE_NUTRITION:String = "modNutrition";
+		public static const MODULE_RECENT_ACTIVITIES:String = "modRecentActivities";
 		public static const MODULE_VITAL_SIGNS:String = "modVitalSigns";
 		
 		public static const IMMUNIZATIONS:String = "immunizations";

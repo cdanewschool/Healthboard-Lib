@@ -204,5 +204,20 @@ package controllers
 			
 			return false;
 		}
+		
+		public function getModuleTitle(module:String):String
+		{
+			if( module == Constants.MODULE_APPOINTMENTS ) return "Appointments";
+			if( module == Constants.MODULE_EXERCISE ) return "Exercise";
+			if( module == Constants.MODULE_IMMUNIZATIONS ) return "Immunizations";
+			if( module == Constants.MODULE_MEDICATIONS ) return "Medications";
+			if( module == Constants.MODULE_MEDICAL_RECORDS ) return "Medical Records";
+			if( module == Constants.MODULE_MESSAGES ) return "Messages";
+			if( module == Constants.MODULE_NUTRITION ) return "Nutrition";
+			if( module == Constants.MODULE_RECENT_ACTIVITIES ) return "Recent Activities";
+			if( module == Constants.MODULE_VITAL_SIGNS ) return "Vital Signs";
+			
+			return null;
+		}
 	}
 }
