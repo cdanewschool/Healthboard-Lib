@@ -319,7 +319,7 @@
 				return item.required == true;
 			}
 			
-			private function onDataLoaded():void
+			private function onDataLoaded( event:ApplicationDataEvent = null ):void
 			{
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
