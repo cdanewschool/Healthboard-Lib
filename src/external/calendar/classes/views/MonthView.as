@@ -26,7 +26,7 @@ package external.calendar.classes.views
 	import mx.managers.PopUpManager;
 	import mx.utils.ObjectUtil;
 	
-	import skins.appointments.MyLinkButtonSkin;
+	import skins.appointments.ToggleableLinkButtonSkin;
 	
 	import spark.components.TitleWindow;
 	
