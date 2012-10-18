@@ -35,7 +35,8 @@ in accordance with the terms of the license agreement accompanying it.
 			/* Define the skin elements that should not be colorized. 
 			For panel, border and title background are skinned, but the content area and title text are not. */
 			static private const exclusions:Array = ["background", "titleDisplay", "subTitleDisplay", "contentGroup"];
-			[Bindable] private var isWidgetClickable:Boolean;		//added (Damian)
+			
+ 			private var _isWidgetClickable:Boolean;		//added (Damian)
 			
 			/**
 			 * @private
@@ -47,11 +48,16 @@ in accordance with the terms of the license agreement accompanying it.
 			 */
 			override protected function initializationComplete():void
 			{
-				isWidgetClickable = (hostComponent.module != null);
 				useChromeColor = true;
 				super.initializationComplete();
 			}
 			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				isWidgetClickable = hostComponent && hostComponent.module != null;
+			}
 			/**
 			 * @private
 			 */
@@ -165,6 +171,20 @@ in accordance with the terms of the license agreement accompanying it.
 				}
 				*/
 			}
+
+			[Bindable]
+			public function get isWidgetClickable():Boolean
+			{
+				return _isWidgetClickable;
+			}
+
+			public function set isWidgetClickable(value:Boolean):void
+			{
+				_isWidgetClickable = value;
+				
+				invalidateProperties();
+			}
+
 			
 		]]>
 		
