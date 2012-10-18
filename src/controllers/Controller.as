@@ -16,6 +16,7 @@ package controllers
 	import flash.display.DisplayObject;
 	
 	import models.ApplicationModel;
+	import models.modules.AppointmentsModel;
 	import models.modules.ImmunizationsModel;
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
@@ -140,6 +141,8 @@ package controllers
 				{
 					classID = 'hLifeWeight';
 				}
+				
+				AppointmentsModel(appointmentsController.model).isRecommending = true;
 				
 				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
 				evt.data = Constants.MODULE_APPOINTMENTS;

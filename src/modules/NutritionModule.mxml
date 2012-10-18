@@ -120,7 +120,7 @@
 			
 			private function showNutritionHelp():void 
 			{
-				var myHelpWindow:help = help(PopUpManager.createPopUp(this, help) as spark.components.TitleWindow);
+				var myHelpWindow:help = help(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, help) as spark.components.TitleWindow);
 				myHelpWindow.viewStackHelp.selectedIndex = 3;
 				
 				PopUpManager.centerPopUp(myHelpWindow);
@@ -321,14 +321,14 @@
 			private function showCurrentDay():void 
 			{
 				currentDay = new Date( today.getTime() + currentDayDiff * DateUtil.DAY );
-				nutJournalDate.text = DateUtil.formatDateFromString((currentDay.getMonth()+1)+'/'+currentDay.DateUtil.formatDateFromString()+'/'+currentDay.getFullYear());
+				nutJournalDate.text = DateUtil.formatDateFromString((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear());
 			}
 			
 			private function showCurrentWeek():void 
 			{
 				currentSunday = new Date( thisSunday.getTime() + currentWeekDiff * DateUtil.WEEK );
 				currentSaturday = new Date( thisSaturday.getTime() + currentWeekDiff * DateUtil.WEEK );
-				nutJournalDate.text = DateUtil.formatDateFromString((currentSunday.getMonth()+1)+'/'+currentSunday.DateUtil.formatDateFromString()+'/'+currentSunday.getFullYear()) + ' - ' + DateUtil.formatDateFromString((currentSaturday.getMonth()+1)+'/'+currentSaturday.DateUtil.formatDateFromString()+'/'+currentSaturday.getFullYear());
+				nutJournalDate.text = DateUtil.formatDateFromString((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear()) + ' - ' + DateUtil.formatDateFromString((currentSaturday.getMonth()+1)+'/'+currentSaturday.getDate()+'/'+currentSaturday.getFullYear());
 			}
 			
 			private function showCurrentMonth():void 
@@ -352,7 +352,7 @@
 			
 			private function downloadWorksheet():void 
 			{
-				var myDownloadWorksheet:downloadWorksheetWindow = downloadWorksheetWindow( PopUpManager.createPopUp(this, downloadWorksheetWindow) as spark.components.TitleWindow );
+				var myDownloadWorksheet:downloadWorksheetWindow = downloadWorksheetWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, downloadWorksheetWindow) as spark.components.TitleWindow );
 				
 				PopUpManager.centerPopUp(myDownloadWorksheet);
 			}
@@ -555,7 +555,7 @@
 			
 			private function showTip():void 
 			{
-				var myTipWindow:tips = tips(PopUpManager.createPopUp(this, tips) as spark.components.TitleWindow);
+				var myTipWindow:tips = tips(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, tips) as spark.components.TitleWindow);
 				PopUpManager.centerPopUp(myTipWindow);
 			}
 			

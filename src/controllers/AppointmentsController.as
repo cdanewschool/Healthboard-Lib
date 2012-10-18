@@ -208,9 +208,6 @@ package controllers
 				}
 			}
 			
-			appointments.sort = null;
-			appointments.refresh();
-			
 			model.appointments = appointments;
 			model.currentAppointmentIndex = defaultAppointment ? model.appointments.getItemIndex(defaultAppointment) : 0;
 		}

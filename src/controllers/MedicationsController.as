@@ -71,6 +71,9 @@ package controllers
 			
 			filterMedsFromStatus();
 			
+			/**
+			 * TODO: do we really need two separate dataproviders for the widget (filterMedsFromWidget() populates a dedicated categories array)?
+ 			*/
 			model.medicationsDataWidget = new ArrayCollection( model.medicationsData.source.slice() );
 			
 			filterMedsFromWidget();	//mediFilterStatus();	//we run the filter now, since we want to display only "active" medications when we load the module...

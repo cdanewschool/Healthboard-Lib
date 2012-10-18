@@ -135,7 +135,7 @@
 				
 				if(e.hitData.item.taken) 
 				{
-					myChartPopup = myChartPopupWindow( PopUpManager.createPopUp(this, myChartPopupWindow) as TitleWindow );
+					myChartPopup = myChartPopupWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myChartPopupWindow) as TitleWindow );
 					myChartPopup.med = e.hitData.item;
 					myChartPopup.medName = e.hitData.item.name;
 					
@@ -332,7 +332,7 @@
 			
 			private function addMedication():void 
 			{
-				var myAddMedication1:myAddMedication1Window = myAddMedication1Window( PopUpManager.createPopUp(this, myAddMedication1Window ) as TitleWindow);
+				var myAddMedication1:myAddMedication1Window = myAddMedication1Window( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myAddMedication1Window ) as TitleWindow);
 				PopUpManager.centerPopUp(myAddMedication1);
 			}
 			
@@ -404,7 +404,7 @@
 			
 			private function showTip():void 
 			{
-				var myTipWindow:medTips = medTips(PopUpManager.createPopUp(this, medTips) as spark.components.TitleWindow);
+				var myTipWindow:medTips = medTips( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, medTips ) as spark.components.TitleWindow );
 				
 				myTipWindow.x = stage.stageWidth/2 - myTipWindow.width/2;
 				myTipWindow.y = height/2 + 50;
@@ -422,12 +422,13 @@
 				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				
-				onCategoriesChange();
+				onShow();
 			}
 			
 			private function onShow():void
 			{
 				controller.filterMedsFromStatus();
+				
 				updateHeightAndColors();
 			}
 			
@@ -484,7 +485,7 @@
 						<s:HGroup gap="3">
 							
 							<s:Button label="+ Add Medication" height="24" styleName="buttonText" click="addMedication()" />
-							<s:Button label="Show All Requests" height="24" styleName="buttonText" />
+							<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}" />
 							<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 							<s:Button label="Export" height="24" width="51" styleName="buttonText" />	
 							
@@ -506,7 +507,6 @@
 							
 							<s:Label text="Time Range:" paddingTop="6" />
 							
-							<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}" />
 							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
 							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
 							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
@@ -779,7 +779,7 @@
 					<s:Label text="Conditions" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
 					<s:Label text="{'• Hypertension\n• High cholesterol'}" styleName="smallText" paddingLeft="9" paddingTop="12" width="100%" />
 					
-					<s:VGroup width="100%" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}">
+					<s:VGroup width="100%" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}" horizontalAlign="center">
 						<s:Label text="Pharmacy Alert" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
 						<s:Label text="• Medication recall" styleName="smallTextRed" paddingLeft="9" paddingTop="12" width="100%" />
 						<s:Label text="Renewal Reminders" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />

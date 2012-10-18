@@ -70,8 +70,6 @@
 			private var minDate:Date;
 			private var maxDate:Date;
 			
-			private var currentAppointmentIndex:int = 0;
-			
 			override public function set currentState(value:String):void
 			{
 				super.currentState = value;
@@ -100,7 +98,7 @@
 			
 			private function showAppointment():void
 			{
-				selectedAppointment = DataHolder.getInstance().dataProvider && DataHolder.getInstance().dataProvider.length ? DataHolder.getInstance().dataProvider[ currentAppointmentIndex ] : null;
+				selectedAppointment = DataHolder.getInstance().dataProvider && DataHolder.getInstance().dataProvider.length ? DataHolder.getInstance().dataProvider[ model.currentAppointmentIndex ] : null;
 			}
 			
 			private function setApplicationState( state:String ):void
@@ -196,7 +194,7 @@
 			{
 				onCancelAppointmentClose();
 				
-				cancelAppointmentPopup = myConfirmCancelWindow( PopUpManager.createPopUp(this, myConfirmCancelWindow) as spark.components.TitleWindow );
+				cancelAppointmentPopup = myConfirmCancelWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, myConfirmCancelWindow) as spark.components.TitleWindow );
 				cancelAppointmentPopup.apptToCancel = myObj;
 				cancelAppointmentPopup.addEventListener( CloseEvent.CLOSE, onCancelAppointmentClose );
 				cancelAppointmentPopup.addEventListener( AppointmentEvent.CANCEL_APPOINTMENT, onCancelAppointment );
@@ -437,11 +435,11 @@
 			{
 				if( event.keyCode == 39 )
 				{
-					currentAppointmentIndex = Math.max( currentAppointmentIndex + 1, DataHolder.getInstance().dataProvider.length - 1 );
+					model.currentAppointmentIndex = Math.max( model.currentAppointmentIndex + 1, DataHolder.getInstance().dataProvider.length - 1 );
 				}
 				else if( event.keyCode == 37 )
 				{
-					currentAppointmentIndex = Math.max( currentAppointmentIndex - 1, 0 );
+					model.currentAppointmentIndex = Math.min( model.currentAppointmentIndex - 1, 0 );
 				}
 				
 				showAppointment();
@@ -477,6 +475,15 @@
 				showAppointment();
 
 				onDateChange();
+				
+				if( model.isRecommending )
+				{
+					if( currentState == STATE_DEFAULT ) stackViews.selectedIndex = 1;
+					
+					activateButton( btnCalendarWeek );
+					
+					model.isRecommending = false;
+				}
 			}
 		]]>
 	</fx:Script>

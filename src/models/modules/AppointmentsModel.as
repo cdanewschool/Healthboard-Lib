@@ -35,6 +35,8 @@ package models.modules
 		public var dateRange:String = DateRanges.YEAR;
 		public var status:String = AppointmentStatus.ALL;
 		
+		public var isRecommending:Boolean;
+		
 		public function AppointmentsModel()
 		{
 			super();
