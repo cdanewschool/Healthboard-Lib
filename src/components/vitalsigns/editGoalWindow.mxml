@@ -9,24 +9,51 @@
 	close="PopUpManager.removePopUp(this);" 
 	creationComplete="creationCompleteHandler(event)">
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="add" />
+		<s:State name="edit" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import controllers.VitalSignsController;
 			
 			import models.modules.VitalSignsModel;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.events.FlexEvent;
+			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			
 			import spark.components.TextInput;
+			import spark.components.List;
+			
 			import spark.events.DropDownEvent;
 			import spark.events.IndexChangeEvent;
 			
+			public static const STATE_DEFAULT:String = "default";
+			public static const STATE_ADD:String = "add";
+			public static const STATE_EDIT:String = "edit";
+			
 			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
 			[Bindable] public var model:VitalSignsModel = controller.model as VitalSignsModel;
+			
+			public var goal:Object;
+			
+			private var dirty:Boolean;
+			
+			private var tempGoals:ArrayCollection = new ArrayCollection
+				(
+					[
+						{ vital: "Weight", comments: "Goal: Weight 150 pounds by 6/6/2011. The first of three stepping stones is to lose 10 pounds in the first month. Follow your food plan and do exercise." },
+						{ vital: "Blood Pressure", comments: "Goal: 140/90 mmHg by 6/6/2011. Change diet (e.g avoiding sodium, hydrogenated oils) and get BP down." },
+						{ vital: "Heart Rate", comments: "Start doing aerobic exercise." }
+					]
+				);
 			
 			protected function creationCompleteHandler(event:FlexEvent):void 
 			{
@@ -39,6 +66,42 @@
 					
 					this.height = 373;
 				}				
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( dirty )
+				{
+					if( currentState == STATE_DEFAULT )
+					{
+						header.text = "Add or Edit Goals";
+						views.selectedIndex = 0;
+					}
+					else if( currentState == STATE_ADD )
+					{
+						header.text = "Add Goal";
+						views.selectedIndex = 1;
+					}
+					else if( currentState == STATE_EDIT )
+					{
+						header.text = "Edit Goal";
+						views.selectedIndex = 1;
+						
+						if( txtComments )
+							txtComments.text = goal.comments;
+					}
+				}
+			}
+			
+			override public function set currentState(value:String):void
+			{
+				super.currentState = value;
+				
+				dirty = true;
+				
+				invalidateProperties();
 			}
 			
 			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
@@ -115,6 +178,18 @@
 				PopUpManager.removePopUp(this);
 			}
 			
+			private function onGoalClick(event:IndexChangeEvent):void
+			{
+				goal = List(event.currentTarget).dataProvider.getItemAt( event.newIndex );
+				
+				currentState = STATE_EDIT;
+			}
+			
+			private function onAddGoalClick():void
+			{
+				currentState = STATE_ADD;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -126,80 +201,117 @@
 		<s:VerticalLayout paddingTop="11" paddingBottom="11" paddingLeft="11" paddingRight="11" />
 	</s:layout>
 
-	<s:Label text="Edit Goal" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
-	
-	<s:BorderContainer id="borderContainer" width="233" height="247" borderColor="0x4E4E4E" borderAlpha=".5" backgroundAlpha="0">
+	<s:Group width="100%" height="18">
+		
 		<s:layout>
-			<s:VerticalLayout paddingBottom="12" paddingLeft="14" paddingRight="12" paddingTop="13" />
+			<s:BasicLayout  />
 		</s:layout>
 		
-		<s:Label text="Please select a category" fontStyle="italic" color="0x4E4E4E" />
+		<s:Label id="header" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
 		
-		<s:DropDownList id="dropDownVitalToEdit" selectedIndex="0" styleName="buttonText" height="24" width="206" change="dropDownVitalToEdit_changeHandler(event)">
-			<s:dataProvider>
-				<s:ArrayList>
-					<fx:Object label="Weight" />
-					<fx:Object label="Blood pressure" />
-					<fx:Object label="Heart Rate" />
-					<fx:Object label="Respiratory" />
-					<fx:Object label="Temperature" />
-					<fx:Object label="Height" />
-				</s:ArrayList>							
-			</s:dataProvider>
-		</s:DropDownList>
+		<mx:LinkButton label="+ Add Goal" click="onAddGoalClick()" fontSize="12" right="0" styleName="linkBtnDarkBlue" visible="{currentState == STATE_DEFAULT}" />
 		
-		<s:HGroup id="groupWeight" verticalAlign="middle" paddingTop="3">
-			<s:TextInput id="txtWeight" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation}" change="{txtBMI.text = String(Math.round(((Number(txtWeight.text) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" />
-			<s:Label color="0x666666" text="pounds    OR" paddingRight="5" paddingTop="1" />
-			<s:TextInput id="txtBMI" width="39" height="24" maxChars="4" text="{String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" change="{txtWeight.text = String(Math.round((Number(txtBMI.text) * Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)) / 703))}" />
-			<s:Label color="0x666666" text="BMI" paddingTop="1" />
-		</s:HGroup>
+	</s:Group>
+	
+	<s:BorderContainer id="borderContainer" width="100%" height="247" borderColor="0x4E4E4E" borderAlpha=".5" backgroundAlpha="0">
 		
-		<s:VGroup id="groupBloodPressure" paddingTop="7" paddingBottom="3" gap="10" visible="false" includeInLayout="false">
+		<mx:ViewStack id="views" width="100%" height="100%">
 			
-			<s:HGroup verticalAlign="middle">
-				<s:Label width="74" textAlign="right" color="0x000000" text="Systolic:" />
-				<s:TextInput id="txtSystolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation}" />
-				<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
-			</s:HGroup>
+			<!--	default	-->
+			<s:NavigatorContent width="100%" height="100%">
+				
+				<s:List id="pastGoals" width="100%" height="100%" itemRenderer="components.itemrenderers.list.GoalListItemRenderer" change="onGoalClick(event)" rollOverColor="0xFFFFFF" creationComplete="pastGoals.dataProvider = tempGoals" horizontalScrollPolicy="off" />
+				
+			</s:NavigatorContent>
 			
-			<s:HGroup verticalAlign="middle">
-				<s:Label width="74" textAlign="right" color="0x000000" text="Diastolic:" />
-				<s:TextInput id="txtDiastolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2}" />
-				<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
-			</s:HGroup>
-			
-		</s:VGroup>
-		
-		<s:HGroup paddingTop="4" paddingBottom="5" verticalAlign="middle" gap="5">
-			
-			<s:HGroup paddingRight="3">
-				<s:CheckBox id="checkAchieveBy" label="Achieve by:" color="0x000000" fontSize="12" /><!--click="checkImmunizationsRequired_clickHandler(event)" -->	
-			</s:HGroup>
-			
-			<s:TextInput id="txtDateAchieveBy" width="88" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
-			
-			<s:HGroup paddingTop="-2" paddingLeft="-3">
-				<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
-					<s:dataProvider>
-						<s:ArrayList>
-							<mx:DateChooser id="dateChooser" showToday="true"
+			<!--	add/edit	-->
+			<s:NavigatorContent>
+				
+				<s:VGroup paddingBottom="12" paddingLeft="14" paddingRight="12" paddingTop="13">
+					
+					<s:Label text="Please select a category" fontStyle="italic" color="0x4E4E4E" />
+					
+					<s:DropDownList id="dropDownVitalToEdit" selectedIndex="0" styleName="buttonText" height="24" width="206" change="dropDownVitalToEdit_changeHandler(event)">
+						<s:dataProvider>
+							<s:ArrayList>
+								<fx:Object label="Weight" />
+								<fx:Object label="Blood pressure" />
+								<fx:Object label="Heart Rate" />
+								<fx:Object label="Respiratory" />
+								<fx:Object label="Temperature" />
+								<fx:Object label="Height" />
+							</s:ArrayList>							
+						</s:dataProvider>
+					</s:DropDownList>
+					
+					<s:HGroup id="groupWeight" verticalAlign="middle" paddingTop="3">
+						<s:TextInput id="txtWeight" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation}" change="{txtBMI.text = String(Math.round(((Number(txtWeight.text) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" />
+						<s:Label color="0x666666" text="pounds    OR" paddingRight="5" paddingTop="1" />
+						<s:TextInput id="txtBMI" width="39" height="24" maxChars="4" text="{String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" change="{txtWeight.text = String(Math.round((Number(txtBMI.text) * Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)) / 703))}" />
+						<s:Label color="0x666666" text="BMI" paddingTop="1" />
+					</s:HGroup>
+					
+					<s:VGroup id="groupBloodPressure" paddingTop="7" paddingBottom="3" gap="10" visible="false" includeInLayout="false">
+						
+						<s:HGroup verticalAlign="middle">
+							<s:Label width="74" textAlign="right" color="0x000000" text="Systolic:" />
+							<s:TextInput id="txtSystolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation}" />
+							<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
+						</s:HGroup>
+						
+						<s:HGroup verticalAlign="middle">
+							<s:Label width="74" textAlign="right" color="0x000000" text="Diastolic:" />
+							<s:TextInput id="txtDiastolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2}" />
+							<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
+						</s:HGroup>
+						
+					</s:VGroup>
+					
+					<s:HGroup paddingTop="4" paddingBottom="5" verticalAlign="middle" gap="5">
+						
+						<s:HGroup paddingRight="3">
+							<s:CheckBox id="checkAchieveBy" label="Achieve by:" color="0x000000" fontSize="12" /><!--click="checkImmunizationsRequired_clickHandler(event)" -->	
+						</s:HGroup>
+						
+						<s:TextInput id="txtDateAchieveBy" width="88" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
+						
+						<s:HGroup paddingTop="-2" paddingLeft="-3">
+							
+							<s:DropDownList 
+								id="dropDownCalendar" 
+								dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" 
+								itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" 
+								requireSelection="false" 
+								open="dropDownCalendar_openHandler(event)" click="event.stopImmediatePropagation()"> 
+								
+								<s:dataProvider>
+									<s:ArrayList>
+										<mx:DateChooser 
+											id="dateChooser" showToday="true"
 											contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
 											fontSize="11" change="dateChooser_changeHandler(event)" />
-						</s:ArrayList>
-					</s:dataProvider>
-				</s:DropDownList>
-			</s:HGroup>	
+									</s:ArrayList>
+								</s:dataProvider>
+								
+							</s:DropDownList>
+							
+						</s:HGroup>	
+						
+					</s:HGroup>
+					
+					<s:TextArea id="txtComments" width="206" height="98" text="Comments" fontStyle="italic" color="0x706F6F" borderColor="0x4E4E4E" borderAlpha=".5" paddingLeft="7" paddingTop="6" creationComplete="{if(goal) txtComments.text = goal.comments}" />
+					
+				</s:VGroup>
+				
+			</s:NavigatorContent>
 			
-		</s:HGroup>
-		
-		<s:TextArea id="txtComments" width="206" height="98" text="Comments" fontStyle="italic" color="0x706F6F" borderColor="0x4E4E4E" borderAlpha=".5" paddingLeft="7" paddingTop="6" />
+		</mx:ViewStack>
 		
 	</s:BorderContainer>
 	
-	<s:HGroup width="100%" horizontalAlign="right" paddingTop="7">
-		<s:Button label="Save" styleName="buttonText" height="24" width="55" click="saveGoal()" /><!--click="addRecord()"-->
-		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	<s:HGroup width="100%" horizontalAlign="right" paddingBottom="5">
+		<s:Button label="Save" styleName="buttonText" height="24" width="55" click="saveGoal()" visible="{currentState!=STATE_DEFAULT}" />
+		<s:Button label="{currentState==STATE_DEFAULT?'Close':'Cancel'}" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
 	
 </s:TitleWindow>

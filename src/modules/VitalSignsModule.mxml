@@ -22,6 +22,11 @@
 		</fx:Array>
 	</fx:Declarations>
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import components.vitalsigns.addTrackerWindow;
@@ -95,15 +100,29 @@
 				PopUpManager.centerPopUp(myRecordVitals);
 			}
 			
+			private function onSetGoalsClick():void
+			{
+				var myEditGoal:editGoalWindow = editGoalWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, editGoalWindow ) as spark.components.TitleWindow );
+				myEditGoal.currentState = editGoalWindow.STATE_DEFAULT;
+				
+				PopUpManager.centerPopUp(myEditGoal);
+			}
+			
+			private function onAddCommentClick():void
+			{
+			}
+			
 			private function editGoal():void
 			{
-				var myEditGoal:editGoalWindow = editGoalWindow(PopUpManager.createPopUp( AppProperties.getInstance().controller.application, editGoalWindow ) as spark.components.TitleWindow);
+				var myEditGoal:editGoalWindow = editGoalWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, editGoalWindow ) as spark.components.TitleWindow );
+				myEditGoal.currentState = editGoalWindow.STATE_EDIT;
+				
 				PopUpManager.centerPopUp(myEditGoal);
 			}
 			
 			private function addTracker():void 
 			{
-				var myAddTracker:addTrackerWindow = addTrackerWindow(PopUpManager.createPopUp( AppProperties.getInstance().controller.application, addTrackerWindow ) as spark.components.TitleWindow);
+				var myAddTracker:addTrackerWindow = addTrackerWindow(PopUpManager.createPopUp( AppProperties.getInstance().controller.application, addTrackerWindow ) as spark.components.TitleWindow );
 				myAddTracker.addEventListener( VitalsEvent.ADD, onAddVital );
 				
 				PopUpManager.centerPopUp(myAddTracker);
@@ -305,8 +324,10 @@
 						<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="9"/>
 					</s:layout>
 					
-					<s:Button label="+ Record Vitals" styleName="buttonText" height="24" click="recordVitals()" /><!--click="deleteMultiple()"-->
-					<s:Button label="Edit Goal" styleName="buttonText" height="24" visible="{viewsVitalSigns.selectedIndex > 1}" click="editGoal()" /><!--click="markUnread()" -->
+					<s:Button label="+ Record Vitals" styleName="buttonText" height="24" visible="{currentState == 'default'}" includeInLayout="{currentState == 'default'}" click="recordVitals()" /><!--click="deleteMultiple()"-->
+					<s:Button label="Edit Goal" styleName="buttonText" height="24" visible="{viewsVitalSigns.selectedIndex > 1 &amp;&amp; currentState == 'default'}" includeInLayout="{viewsVitalSigns.selectedIndex > 1 &amp;&amp; currentState == 'default'}" click="editGoal()" /><!--click="markUnread()" -->
+					<s:Button label="+ Set Goals" styleName="buttonText" height="24" visible="{currentState == 'provider'}" click="onSetGoalsClick()" />
+					<s:Button label="+ Add Comments" styleName="buttonText" height="24" visible="{currentState == 'provider'}" click="onAddCommentClick()" />
 					
 					<s:Spacer width="100%" />
 					
