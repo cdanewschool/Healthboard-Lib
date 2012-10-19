@@ -12,6 +12,11 @@
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import ASclasses.Constants;
@@ -141,8 +146,11 @@
 				{
 					var immunizationDetails:ImmunizationDetails = new ImmunizationDetails();
 					immunizationDetails.immunizationData = immunization;
+					immunizationDetails.currentState = currentState;
+					
 					viewStackImmunizations.addChild(immunizationDetails);
 					tabsImmunizations.selectedIndex = viewStackImmunizations.length - 1;
+					
 					model.openTabs.push(immunization);
 				}
 			}
