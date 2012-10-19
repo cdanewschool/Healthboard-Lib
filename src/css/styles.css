@@ -701,12 +701,13 @@ paddingLeft:30;
 	font-size: 22;
 	color: "0xAEDEE4";
 }
-.white2Bold {
+.white22Bold {
 	font-family: "myMyriad";
 	font-size: 22;
 	color: "0xFFFFFF";
 	font-weight: bold;
 }
+
 /*	context menu	*/
 
 .chatModes {
