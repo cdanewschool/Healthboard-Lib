@@ -22,7 +22,7 @@
 			import ASclasses.Constants;
 			import ASclasses.MyCustomDataTip;
 			
-			import components.popups.ImmunizationDetails;
+			import components.tabs.ImmunizationDetails;
 			
 			import controllers.ImmunizationsController;
 			
