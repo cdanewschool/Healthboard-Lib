@@ -37,7 +37,7 @@
 		<![CDATA[
 			import ASclasses.MyCustomDataTip;
 			
-			import components.medications.MedicationDetails;
+			import components.tabs.MedicationDetails;
 			import components.medications.medTips;
 			import components.medications.myAddMedication1Window;
 			import components.popups.myChartPopupWindow;

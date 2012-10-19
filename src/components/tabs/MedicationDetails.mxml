@@ -20,6 +20,7 @@
 			
 	<fx:Script>
 		<![CDATA[
+			import components.medications.myRequestRenewalWindow;
 			import controllers.MedicationsController;
 			
 			import models.modules.MedicationsModel;
