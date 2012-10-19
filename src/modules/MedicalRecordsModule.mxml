@@ -36,7 +36,7 @@
 			
 			import components.popups.medicalrecords.SetNextStepsPopup;
 			import components.popups.medicalrecords.MyNextStepsHistoryWindow;
-			import components.medicalRecords.ServiceDetails;
+			import components.tabs.ServiceDetails;
 			
 			import controllers.MedicalRecordsController;
 			
