@@ -34,8 +34,9 @@
 			import ASclasses.Constants;
 			import ASclasses.MyCustomDataTip;
 			
+			import components.popups.medicalrecords.SetNextStepsPopup;
+			import components.popups.medicalrecords.MyNextStepsHistoryWindow;
 			import components.medicalRecords.ServiceDetails;
-			import components.popups.MyNextStepsHistoryWindow;
 			
 			import controllers.MedicalRecordsController;
 			
@@ -507,6 +508,15 @@
 			private function onSetNextSteps():void
 			{
 				//	TODO: launch set next steps popup
+				var nextStepsPopup:SetNextStepsPopup = SetNextStepsPopup( PopUpManager.createPopUp(this, SetNextStepsPopup) as spark.components.TitleWindow );
+				PopUpManager.centerPopUp(nextStepsPopup);
+			}
+			
+			[Bindable] public var nextStepsRollOverRowIndex:int = -2;
+			
+			private function onNextStepsRollOver(event:ListEvent):void
+			{
+				nextStepsRollOverRowIndex = event.rowIndex;
 			}
 			
 			private function init():void
@@ -711,9 +721,9 @@
 		<plus:TabBarPlus id="tabsMedicalRecords" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackMedicalRecords}" change="tabsMedicalRecordsChangeHandler(event)" />
 	</s:Group>
 	
-	<s:HGroup id="medicalRecordsBottomBoxes" paddingTop="17" gap="23">
+	<s:HGroup id="medicalRecordsBottomBoxes" paddingTop="17" gap="22">
 		
-		<s:BorderContainer width="294" height="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" fontSize="13">
+		<s:BorderContainer width="{currentState=='provider'?223:294}" height="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" fontSize="13">
 			
 			<s:layout>
 				<s:VerticalLayout paddingLeft="23" paddingTop="17" gap="18" />
@@ -752,15 +762,23 @@
 				<mx:LinkButton id="btnNextStepsHistory" label="History" click="showNextStepsHistory()" fontSize="11" paddingTop="-6" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsHistory.styleName='linkBtnUnderline';}" rollOut="btnNextStepsHistory.styleName='linkBtn';" />
 			</s:HGroup>
 			
-			<mx:DataGrid id="dgMedRecNextSteps" dataProvider="{model.medicalRecordsNextSteps}" width="100%" height="100%" fontSize="12" color="0xEDEDED" selectable="false" headerHeight="0" borderVisible="false" rowHeight="64" verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0x303030,0x3C3C3B]">
+			<mx:DataGrid 
+				id="dgMedRecNextSteps" dataProvider="{model.medicalRecordsNextSteps}" 
+				width="100%" height="100%" 
+				fontSize="12" color="0xEDEDED" selectable="false" headerHeight="0" borderVisible="false" rowHeight="64" 
+				verticalGridLines="false" horizontalGridLines="false" variableRowHeight="true"
+				alternatingItemColors="[0x303030,0x3C3C3B]" 
+				itemRollOver="onNextStepsRollOver(event)" itemRollOut="nextStepsRollOverRowIndex=-2">
+				
 				<mx:columns>
-					<mx:DataGridColumn dataField="task" paddingLeft="23" width="{currentState=='provider'?241:530}">
+					
+					<mx:DataGridColumn dataField="task" paddingLeft="23" width="{currentState=='provider'?270:530}">
 						<mx:itemRenderer>
 							<fx:Component>		
-								<mx:HBox paddingTop="8">
+								<mx:HBox paddingTop="8" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 									<s:Label text="•" fontSize="6" paddingTop="2" />
 									<mx:VBox verticalGap="3"><!--no vgap when fontFamily="myMyriadNoCFF"-->
-										<s:Label text="{data.task}" width="420" lineHeight="16" />
+										<s:Label text="{data.task}" width="{outerDocument.currentState=='provider'?160:420}" lineHeight="16" />
 										<mx:HBox visible="{data.recommendation != ''}" includeInLayout="{data.recommendation != ''}">
 											<s:Label text="Recommendation:" paddingTop="4" /><!--paddingTop was 2 when fontFamily="myMyriadNoCFF"-->
 											<mx:LinkButton id="btnNextStepsRecommendation" label="{data.recommendation}" paddingTop="-5" paddingLeft="-7" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsRecommendation.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation.styleName='linkBtn';" click="{outerDocument.requestClass(data.recommendation)}" />
@@ -770,9 +788,10 @@
 							</fx:Component>
 						</mx:itemRenderer>
 					</mx:DataGridColumn>
-					<mx:DataGridColumn dataField="completed">
+					
+					<mx:DataGridColumn dataField="completed" visible="{currentState == 'default'}">
 						<mx:itemRenderer>
-							<fx:Component>		
+							<fx:Component>
 								<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 									<mx:VBox paddingTop="2">
 										<s:Image source="@Embed('images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
@@ -785,8 +804,28 @@
 							</fx:Component>
 						</mx:itemRenderer>
 					</mx:DataGridColumn>
+					
+					<mx:DataGridColumn dataField="completed" visible="{currentState == 'provider'}">
+						<mx:itemRenderer>
+							<fx:Component>
+								<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+									<mx:VBox paddingTop="2">
+										<mx:Label text="{data.completed ? 'Completed' : 'In progress'}" color="0xFFFFFF" />
+										<mx:LinkButton 
+											label="X" color="0xffffff" textSelectedColor="0xffffff" textRollOverColor="0xffffff" 
+											click="{outerDocument.model.medicalRecordsNextSteps.removeItemAt(outerDocument.model.medicalRecordsNextSteps.getItemIndex(data))}" 
+											visible="{outerDocument.dgMedRecNextSteps.dataProvider.getItemIndex(data) == outerDocument.nextStepsRollOverRowIndex}"
+											skin="{null}" toolTip="Click to cancel next step" />
+									</mx:VBox>
+								</mx:HBox>
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+					
 				</mx:columns>
+				
 			</mx:DataGrid>
+			
 		</s:BorderContainer>
 		
 		<s:BorderContainer 
@@ -801,13 +840,34 @@
 			<s:HGroup width="100%" paddingRight="7" paddingTop="-1" paddingLeft="23" paddingBottom="6">
 				<s:Label text="Problem List" styleName="greenBoldText" paddingTop="1" />
 				<s:Spacer width="100%" />
-				<mx:LinkButton label="History" fontSize="11" paddingTop="-6" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsHistory.styleName='linkBtnUnderline';}" rollOut="btnNextStepsHistory.styleName='linkBtn';" />
+				<mx:LinkButton id="problemListHistory" label="History" fontSize="11" paddingTop="-6" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{problemListHistory.styleName='linkBtnUnderline';}" rollOut="problemListHistory.styleName='linkBtn';" />
 			</s:HGroup>
 			
 			<mx:DataGrid 
-				width="100%" height="100%" 
+				width="100%" height="100%" dataProvider="{model.medicalRecordsProblemList}"
 				fontSize="12" color="0xEDEDED" selectable="false" headerHeight="0" borderVisible="false" rowHeight="64" 
-				verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0x303030,0x3C3C3B]" />
+				verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0x303030,0x3C3C3B]">
+				<mx:columns>
+					<mx:DataGridColumn dataField="problem" paddingLeft="23" width="270">
+						<mx:itemRenderer>
+							<fx:Component>		
+								<mx:VBox paddingTop="8" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+									<fx:Script>
+										<![CDATA[
+											import ASclasses.Constants;
+										]]>
+									</fx:Script>
+									<mx:HBox paddingTop="2">
+										<s:Label text="•" fontSize="6" paddingTop="2" />
+										<s:Label text="{data.problem}" width="160" lineHeight="16" />
+									</mx:HBox>
+									<s:Label text="Entered on {Constants.MONTHS[ data.date.month ] + ' ' + data.date.date + ', ' + data.date.year + ' by ' + data.provider}"  fontSize="6" paddingTop="2" styleName="darkGray12Italic" />
+								</mx:VBox>
+							</fx:Component>
+						</mx:itemRenderer>
+					</mx:DataGridColumn>
+				</mx:columns>
+			</mx:DataGrid>
 			
 		</s:BorderContainer>
 		

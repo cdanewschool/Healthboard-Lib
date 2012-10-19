@@ -707,7 +707,13 @@ paddingLeft:30;
 	color: "0xFFFFFF";
 	font-weight: bold;
 }
-
+.darkGray12Italic {
+	font-family: "myMyriad";
+	font-style:italic;
+	fontSize: 11;
+	font-weight:normal;
+	color: "0x999999";
+}
 /*	context menu	*/
 
 .chatModes {
