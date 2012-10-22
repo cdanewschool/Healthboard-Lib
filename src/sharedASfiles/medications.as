@@ -13,7 +13,7 @@ import spark.events.IndexChangeEvent;
 
 import ASclasses.MyCustomDataTip;
 
-import components.medications.MedicationDetails;
+import components.tabs.MedicationDetails;
 import components.medications.myAddMedication1Window;
 import components.medications.myAddMedication2Window;
 

@@ -11,8 +11,16 @@
 		<s:State name="provider" />
 	</s:states>
 	
+	<fx:Declarations>
+		<s:LinearGradient id="gradientFill" rotation="0">
+			<s:GradientEntry color="0xFFFFFF" alpha=".3" ratio="0" />
+			<s:GradientEntry color="0xDA2925" alpha=".3" ratio="1" />
+		</s:LinearGradient>
+	</fx:Declarations>
+			
 	<fx:Script>
 		<![CDATA[
+			import components.medications.myRequestRenewalWindow;
 			import controllers.MedicationsController;
 			
 			import models.modules.MedicationsModel;
@@ -24,7 +32,19 @@
 			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
 			
-			[Bindable] public var medicationData:Object;
+ 			private var _medicationData:Object;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( medicationData
+					&& currentState == "provider" )
+				{
+					var isPending:Boolean = medicationData.renewalStatus == "Pending";
+					container.backgroundFill = isPending ? gradientFill : null;
+				}
+			}
 			
 			private function truncateComments(item:Object, column:DataGridColumn):String 
 			{
@@ -55,6 +75,20 @@
 				}
 			}
 
+			[Bindable]
+			public function get medicationData():Object
+			{
+				return _medicationData;
+			}
+
+			public function set medicationData(value:Object):void
+			{
+				_medicationData = value;
+				
+				invalidateProperties();
+			}
+
+
 		]]>
 	</fx:Script>
 	
@@ -62,7 +96,7 @@
 		<s:VerticalLayout gap="0" />
 	</s:layout>
 	
-	<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+	<s:BorderContainer id="container" height="37" width="100%" backgroundColor="0x706F6F">
 		
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" />

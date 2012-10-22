@@ -6,6 +6,11 @@
 	label="{immunizationData.name}"
 	creationComplete="init()">
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import controllers.ImmunizationsController;
@@ -65,8 +70,8 @@
 			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="22" />
 		</s:layout>
 
-		<s:Button label="Print Vaccination Information Statement" height="24" styleName="buttonText" />
-		<s:CheckBox label="I have read and acknowledged the Vaccination Information Statement" color="0xFFFFFF" />
+		<s:Button label="Print Vaccination Information Statement" height="24" styleName="buttonText" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
+		<s:CheckBox label="I have read and acknowledged the Vaccination Information Statement" color="0xFFFFFF" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
 		
 	</s:BorderContainer>
 	

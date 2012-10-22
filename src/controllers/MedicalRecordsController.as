@@ -24,6 +24,20 @@ package controllers
 			model.dataService.addEventListener( ResultEvent.RESULT, dataResultHandler );
 		}
 		
+		override public function init():void
+		{
+			super.init();
+			
+			var model:MedicalRecordsModel = model as MedicalRecordsModel;
+			
+			model.medicalRecordsProblemList = new ArrayCollection
+				(
+					[
+						{ problem: "The patient is experiencing high levels of stress in the past few months.", dateEntered: new Date( 2011, 2, 11 ), provider: "Dr. Berg" }
+					]
+				);
+		}
+		
 		override public function dataResultHandler(event:ResultEvent):void 
 		{
 			var model:MedicalRecordsModel = model as MedicalRecordsModel;
