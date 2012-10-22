@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enhancedtitlewindow:EnhancedTitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:enhancedtitlewindow="external.collapsibleTitleWindow.components.enhancedtitlewindow.*" 
+	creationComplete="init()">
+	
+	<fx:Script>
+		<![CDATA[
+			import ASclasses.Constants;
+			
+			import controllers.AppointmentsController;
+			
+			import events.ApplicationEvent;
+			
+			import models.modules.AppointmentsModel;
+			
+			import spark.filters.DropShadowFilter;
+			
+			import util.StringUtil;
+			
+			[Bindable] public var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController;
+			[Bindable] private var model:AppointmentsModel = controller.model as AppointmentsModel;
+			
+			[Bindable] private var selectedAppointment:Object;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( selectedAppointment )
+				{
+					month.text = Constants.MONTHS[ selectedAppointment.date.month ].toUpperCase();
+					date.text = selectedAppointment.date.date;
+					
+					appointmentTime.label = Constants.DAYS[ selectedAppointment.date.day ].toUpperCase() + ' ' + StringUtil.leftPad(selectedAppointment.hour) + ':' + StringUtil.leftPad(selectedAppointment.mins.toString()) + ' ' + selectedAppointment.meridiem.toUpperCase();
+					
+					details.text = selectedAppointment.desc + '\n' + selectedAppointment.provider + '\n(999) 999-9999';
+				}
+			}
+			
+			private function navigate( direction:int = 0 ):void
+			{
+				model.currentAppointmentIndex += direction;
+				
+				selectedAppointment = model.appointments[model.currentAppointmentIndex];
+				
+				invalidateProperties();
+			}
+			
+			private function showModule():void
+			{
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				event.data = Constants.MODULE_APPOINTMENTS;
+				dispatchEvent( event );
+			}
+			
+			private function init():void
+			{
+				navigate();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<enhancedtitlewindow:layout>
+		<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+	</enhancedtitlewindow:layout>
+	
+	<s:HGroup paddingLeft="14" paddingTop="2" paddingBottom="6">
+		
+		<s:BorderContainer backgroundImage="@Embed('images/widgetCalendarBG.png')" width="90" height="87" borderVisible="false" color="0xFBB03B" fontWeight="bold" buttonMode="true" click="showModule()">
+			
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center" paddingTop="7" gap="1" />
+			</s:layout>
+			
+			<s:Label id="month" fontSize="16" filters="{[new DropShadowFilter(4,45,0,0.4)]}" />	<!--text="{String(arrMonths[today.getMonth()]).toUpperCase()}"-->
+			<s:Label id="date" fontSize="72" filters="{[new DropShadowFilter(4,45,0,0.4)]}" />	<!-- text="{today.getDate()}"-->
+			
+		</s:BorderContainer>
+		
+		<s:VGroup paddingLeft="9">
+			
+			<mx:LinkButton 
+				id="appointmentTime" 
+				color="0xFBB03B" fontSize="16" fontWeight="bold" paddingLeft="-3" 
+				textRollOverColor="0xFBB03B" textSelectedColor="0xFBB03B" skin="{null}" 
+				rollOver="appointmentTime.styleName='linkBtnUnderline';" rollOut="appointmentTime.styleName='linkBtn';" 
+				click="showModule()" />	
+			
+			<s:Label id="details" color="0x868686" fontSize="12"  paddingBottom="-9" paddingTop="-3" />		<!--text="{'Physical Examination\nDr. Berg\n(999) 999-9999'}"-->
+			
+			<mx:LinkButton 
+				id="viewMap" label="View Map »" 
+				fontSize="12" paddingLeft="-2" 
+				color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" 
+				rollOver="viewMap.styleName='linkBtnUnderline';" rollOut="viewMap.styleName='linkBtn';" />
+			
+		</s:VGroup>
+		
+	</s:HGroup>
+	
+	<s:Line xFrom="0" xTo="280">
+		<s:stroke>
+			<s:SolidColorStroke color="0xB3B3B3" alpha="0.1" weight="1"/>
+		</s:stroke>
+	</s:Line>
+	
+	<s:HGroup width="100%">
+		
+		<mx:LinkButton 
+			id="previous" label="Previous Appt." 
+			icon="{model.blueArrowLeft}" disabledIcon="{model.grayArrowLeft}" 
+			horizontalGap="9" fontSize="12" 
+			color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" 
+			rollOver="{if(previous.enabled) previous.styleName='linkBtnUnderline';}" rollOut="previous.styleName='linkBtn';" 
+			click="navigate(-1)" 
+			enabled="{model.currentAppointmentIndex != 0}" />
+		
+		<s:Spacer width="100%" />
+		
+		<mx:LinkButton 
+			id="next" label="Next Appt." 
+			icon="{model.blueArrowRight}" disabledIcon="{model.grayArrowRight}" 
+			horizontalGap="9" labelPlacement="left" fontSize="12" 
+			color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" 
+			rollOver="{if(next.enabled) next.styleName='linkBtnUnderline';}" rollOut="next.styleName='linkBtn';" 
+			click="navigate(1)" 
+			enabled="{model.currentAppointmentIndex != model.appointments.length-1}" />
+		
+	</s:HGroup>
+	
+</enhancedtitlewindow:EnhancedTitleWindow>
