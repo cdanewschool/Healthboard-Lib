@@ -29,6 +29,7 @@ package controllers
 	
 	import spark.components.Application;
 	import spark.components.TitleWindow;
+	import spark.events.IndexChangeEvent;
 	
 	public class Controller
 	{
@@ -206,6 +207,10 @@ package controllers
 			}
 			
 			return false;
+		}
+		
+		public function selectPreference( event:IndexChangeEvent ):void
+		{
 		}
 		
 		public function getModuleTitle(module:String):String
