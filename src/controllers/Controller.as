@@ -21,6 +21,7 @@ package controllers
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
 	
+	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
@@ -29,6 +30,7 @@ package controllers
 	
 	import spark.components.Application;
 	import spark.components.TitleWindow;
+	import spark.events.IndexChangeEvent;
 	
 	public class Controller
 	{
@@ -206,6 +208,10 @@ package controllers
 			}
 			
 			return false;
+		}
+		
+		public function selectPreference( event:IndexChangeEvent ):void
+		{
 		}
 		
 		public function getModuleTitle(module:String):String

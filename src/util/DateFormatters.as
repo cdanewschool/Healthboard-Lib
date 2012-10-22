@@ -26,5 +26,8 @@ package util
 		
 		public static var dateFormatterTimeOnly:DateFormatter = new DateFormatter();
 		dateFormatterTimeOnly.formatString = "J:NN";
+		
+		public static var syncTime:DateFormatter = new DateFormatter();
+		syncTime.formatString = "L:NNA MM/DD/YYYY";
 	}
 }

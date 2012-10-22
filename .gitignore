@@ -4,7 +4,6 @@
 .fxpProperties
 .project
 .settings
-/bin-debug
-/bin-release
-/html-template
-/src
+bin-debug/
+bin-release/
+html-template/

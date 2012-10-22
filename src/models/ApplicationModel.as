@@ -26,6 +26,8 @@ package models
 		
 		public var viewMode:String = Constants.STATE_LOGGED_IN;
 		
+		public var preferences:ArrayCollection;
+		
 		public function ApplicationModel()
 		{
 			super();
