@@ -861,7 +861,7 @@
 										<s:Label text="•" fontSize="6" paddingTop="2" />
 										<s:Label text="{data.problem}" width="160" lineHeight="16" />
 									</mx:HBox>
-									<s:Label text="Entered on {Constants.MONTHS[ data.date.month ] + ' ' + data.date.date + ', ' + data.date.year + ' by ' + data.provider}"  fontSize="6" paddingTop="2" styleName="darkGray12Italic" />
+									<s:Label text="Entered on {Constants.MONTHS[ data.date.month ] + ' ' + data.date.date + ', ' + data.date.year + ' by ' + data.provider}"  fontSize="6" paddingTop="2" styleName="mediumGray12Italic" />
 								</mx:VBox>
 							</fx:Component>
 						</mx:itemRenderer>

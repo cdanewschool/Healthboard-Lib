@@ -707,7 +707,7 @@ paddingLeft:30;
 	color: "0xFFFFFF";
 	font-weight: bold;
 }
-.darkGray12Italic {
+.mediumGray12Italic {
 	font-family: "myMyriad";
 	font-style:italic;
 	fontSize: 11;
@@ -740,4 +740,27 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	todayColor: "0xD6D6D6";
 	headerStyleName: "dateChooserVitalGrayHeader";
 	fontSize: 11;
+}
+
+/*	preferences	*/
+.preferencesTab {
+	fillColors: #F2F2F2,#F2F2F2;
+	fillAlphas: 1,1;
+	cornerRadius: 0;
+	color: #4D4D4D;
+	textAlign: "left";
+}
+.preferencesTabSelected {
+	fillColors: #FFFFFF,#FFFFFF;
+	fillAlphas: 1,1;
+	cornerRadius: 0;
+	color: #4D4D4D;
+	textAlign: "left";
+}
+.darkGray12Italic {
+	font-family: "myMyriad";
+	font-style:italic;
+	fontSize: 11;
+	font-weight:normal;
+	color: "0x999999";
 }

@@ -123,12 +123,12 @@
 	<s:HGroup paddingLeft="90">
 		
 		<s:HGroup verticalAlign="middle">
-			<s:Label text="from" styleName="darkGray12Italic" />
+			<s:Label text="from" styleName="mediumGray12Italic" />
 			<mx:DateField id="dateFrom" textFieldClass="mx.core.UIFTETextField" textInputClass="mx.controls.MXFTETextInput" width="100" height="24" dateChooserStyleName="dateChooserDark" />
 		</s:HGroup>
 		
 		<s:HGroup visible="{dateGroup.selectedValue == 1}" verticalAlign="middle">
-			<s:Label text="to" styleName="darkGray12Italic" />
+			<s:Label text="to" styleName="mediumGray12Italic" />
 			<mx:DateField id="dateTo" textFieldClass="mx.core.UIFTETextField" textInputClass="mx.controls.MXFTETextInput" width="100" height="24" dateChooserStyleName="dateChooserDark" />
 		</s:HGroup>
 		
