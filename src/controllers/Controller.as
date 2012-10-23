@@ -52,7 +52,7 @@ package controllers
 		
 		public var application:Application;
 		
-		private var initialized:Boolean;
+		protected var initialized:Boolean;
 		
 		protected var lastActivity:int;
 		private var sessionTimer:Timer;
@@ -83,7 +83,7 @@ package controllers
 			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
 		}
 		
-		private function onAuthenticated(event:AuthenticationEvent):void
+		protected function onAuthenticated(event:AuthenticationEvent):void
 		{
 			if( !initialized )
 			{
@@ -202,6 +202,8 @@ package controllers
 		
 		protected function onCheckSession( event:TimerEvent ):void
 		{
+			if( !model.preferences ) return;
+			
 			if( getTimer() - lastActivity > model.preferences.autoLockIntervalMinutes * DateUtil.MINUTE )
 			{
 				showInactivityTimeout();

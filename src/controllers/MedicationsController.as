@@ -34,6 +34,21 @@ package controllers
 			model.dataService.addEventListener( ResultEvent.RESULT, dataResultHandler );
 		}
 		
+		override public function init():void
+		{
+			var model:MedicationsModel = model as MedicationsModel;
+			
+			model.medicationsCategoriesTree = new ArrayCollection
+				(
+					[	
+						{category: "Prescription Drugs", children: []},
+						{category: "Over-The-Counter Drugs", children: []},
+						{category: "Supplements", children: []},
+						{category: "Herbal Medicines", children: []}
+					]
+				);
+		}
+		
 		public function requestRenewal( medicationData:Object ):void 
 		{
 			var myRequestRenewal:myRequestRenewalWindow = myRequestRenewalWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myRequestRenewalWindow ) as TitleWindow );
@@ -89,8 +104,8 @@ package controllers
 			model.medicationsData.refresh();
 			
 			//	this is set here so when the module is re-opened, it won't be duplicated...
-			model.medicationsDataFiltered = new ArrayCollection();
-			model.medicationsCategories = new ArrayCollection();
+			model.medicationsDataFiltered.removeAll();
+			model.medicationsCategories.removeAll();
 			
 			for(var j:uint = 0; j < model.medicationsData.length; j++) 
 			{
@@ -104,14 +119,6 @@ package controllers
 			
 			//	so the order in the datagrid is the same as in the chart.
 			model.medicationsDataFiltered.source.reverse();
-			
-			/**
-			 * this line was added after this whole script was written, when we found that bug regarding inactive medications... 
-			 * Its purpose is to update the tree so that it is consistent with what's on the graph. On load, it forces the tree to 
-			 * show ONLY "active" medications. This line needs to be here so it runs AFTER the filter is executed. Paradogically, 
-			 * it also needs to stay before the filter (see above), because the filter looks for what's open in the tree...
-			 */
-			medicationsCategoriesForTree();	
 		}
 		
 		public function filterMedsFromTreeNew():void 
@@ -138,18 +145,6 @@ package controllers
 		public function medicationsCategoriesForTree():void 
 		{
 			var model:MedicationsModel = model as MedicationsModel;
-			
-			//added here when debugging the "inactive" medications bug, so that it's reset when it's run the second time...
-			model.medicationsCategoriesTree = new ArrayCollection
-				(
-					[	
-						{category: "Prescription Drugs", children: []},
-						{category: "Over-The-Counter Drugs", children: []},
-						{category: "Supplements", children: []},
-						{category: "Herbal Medicines", children: []}
-					]
-				);
-			
 			var medicationsCategoriesReversed:Array = ArrayUtil.unique( model.medicationsCategories.source ).reverse();
 			var currentCategory:int = -1;
 			var currentLeaf:uint = 0;

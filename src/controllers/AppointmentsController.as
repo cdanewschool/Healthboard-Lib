@@ -43,7 +43,6 @@ package controllers
 			obj.date = new Date( today.fullYear, today.month, today.date, 11 );
 			obj.desc = "Physical Examination";
 			obj.type = "Appointment";
-			obj.selected = true;
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.SCHEDULED;
 			appointments.addItem( obj );
@@ -52,7 +51,6 @@ package controllers
 			obj.date = new Date( today.fullYear, today.month, today.date + daysToAddToReachFriday[today.day], 9, 30 );;
 			obj.desc = "Allergies";
 			obj.type = "Appointment";
-			obj.selected = false;
 			obj.provider = "Dr. Greenfield";
 			obj.status = AppointmentStatus.SCHEDULED;
 			appointments.addItem( obj );
@@ -61,7 +59,6 @@ package controllers
 			obj.date = new Date( today.fullYear, today.month, today.date + nextWeekButNotWednesday, 11, 30 );	//aka "next week" (Anthony requested to make sure this doesn't happen on Wednesday, to avoid a usability test conflict with the other existing appointment on Wednesday).
 			obj.desc = "Flu Vaccination";
 			obj.type = "Appointment";
-			obj.selected = false;
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.SCHEDULED;
 			appointments.addItem( obj );
@@ -76,7 +73,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 8, 16, 11 );
+			obj.date = new Date( Date.parse( "09/16/2011 11:00" ) );
 			obj.desc = "Physician Examination";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -88,7 +85,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 7, 11, 11 );
+			obj.date = new Date( Date.parse( "08/11/2012 11:00" ) );
 			obj.desc = "Consultation";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -98,9 +95,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			today = new Date("08/11/2012");
-			today.setHours(0,0,0,0);
-			obj.date = new Date( today.fullYear, 7, 11, 13 );
+			obj.date = new Date( Date.parse( "08/11/2012 13:00" ) );
 			obj.desc = "Surgery";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -110,7 +105,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 9, 16, 11 );
+			obj.date = new Date( Date.parse( "10/16/2012 11:00" ) );
 			obj.desc = "MRI";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -120,7 +115,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 9, 16, 13 );
+			obj.date = new Date( Date.parse( "09/16/2012 13:00" ) );
 			obj.desc = "MRI";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -130,7 +125,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 7, 11, 16 );
+			obj.date = new Date( Date.parse( "08/11/2012 16:00" ) );
 			obj.desc = "Blood Test";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -140,7 +135,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 7, 11, 19 );
+			obj.date = new Date( Date.parse( "08/11/2012 19:00" ) );
 			obj.desc = "Cardiac Stress Test";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -150,7 +145,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 9, 7, 11 );
+			obj.date = new Date( Date.parse( "10/07/2012 11:00" ) );
 			obj.desc = "Appendectomy";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -160,7 +155,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 6, 7, 11 );
+			obj.date = new Date( Date.parse( "07/07/2012 11:00" ) );
 			obj.desc = "Nasal Procedure";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -170,7 +165,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( today.fullYear, 9, 7, 14 );
+			obj.date = new Date( Date.parse( "10/07/2012 14:00" ) );
 			obj.desc = "Colonscopy";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -178,15 +173,6 @@ package controllers
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 0;
 			appointments.addItem( obj );
-			
-			for each(var appointment in appointments)
-			{
-				appointment.hour = (appointment.date.hours % 12 ).toString();
-				appointment.meridiem = appointment.date.hours<12?"am":"pm";
-				appointment.mins = appointment.date.minutes;
-				
-				appointment.date = new Date( appointment.date.fullYear, appointment.date.month, appointment.date.date );
-			}
 			
 			today = AppProperties.getInstance().controller.model.today;
 			
@@ -208,8 +194,19 @@ package controllers
 				}
 			}
 			
+			model.currentAppointmentIndex = defaultAppointment ? appointments.getItemIndex(defaultAppointment) : 0;
+			
+			for each(var appointment in appointments)
+			{
+				appointment.hour = (appointment.date.hours % 12 ).toString();
+				appointment.meridiem = appointment.date.hours<12?"am":"pm";
+				appointment.mins = appointment.date.minutes;
+				
+				appointment.date = new Date( appointment.date.fullYear, appointment.date.month, appointment.date.date );
+			}
+			
 			model.appointments = appointments;
-			model.currentAppointmentIndex = defaultAppointment ? model.appointments.getItemIndex(defaultAppointment) : 0;
+			
 		}
 		
 		public function setAvailable(set:String, reason:String):void

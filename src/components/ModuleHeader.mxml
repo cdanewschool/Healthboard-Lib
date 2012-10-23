@@ -92,7 +92,7 @@
 	<s:Label id="lblBreadcrumbPatient" text="{title}" color="0xFFFFFF" fontSize="22" fontWeight="bold" paddingTop="2" paddingLeft="13" />
 	<s:Label text="▼" fontSize="10" color="0xFFFFFF" paddingTop="4" paddingLeft="5" />
 	
-	<s:VGroup paddingLeft="30" paddingTop="10">
+	<s:VGroup paddingLeft="30" verticalAlign="middle">
 		
 		<s:HGroup visible="{actionCount>0 || showActionsIfNone}" includeInLayout="{actionCount>0 || showActionsIfNone}">
 			
