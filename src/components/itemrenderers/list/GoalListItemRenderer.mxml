@@ -2,10 +2,20 @@
 <s:ItemRenderer 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx">
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="100%">
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+	
+	<s:Label text="{data.vital}" styleName="darkGrayBold12" left="5" top="5" />
+	<mx:LinkButton label="Edit" styleName="linkBtnDarkBlue" right="5" top="-5" skin="{null}" />
+	
+	<mx:Text text="{data.comments}" top="20" width="100%" paddingLeft="5" paddingRight="5" />
 	
 </s:ItemRenderer>

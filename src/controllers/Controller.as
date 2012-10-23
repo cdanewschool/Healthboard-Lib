@@ -14,6 +14,10 @@ package controllers
 	import external.TabBarPlus.plus.TabPlus;
 	
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	import models.ApplicationModel;
 	import models.modules.AppointmentsModel;
@@ -21,6 +25,7 @@ package controllers
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
 	
+	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
@@ -30,6 +35,8 @@ package controllers
 	import spark.components.Application;
 	import spark.components.TitleWindow;
 	import spark.events.IndexChangeEvent;
+	
+	import util.DateUtil;
 	
 	public class Controller
 	{
@@ -46,6 +53,9 @@ package controllers
 		public var application:Application;
 		
 		private var initialized:Boolean;
+		
+		protected var lastActivity:int;
+		private var sessionTimer:Timer;
 		
 		public function Controller()
 		{
@@ -67,6 +77,10 @@ package controllers
 			application.addEventListener( AppointmentEvent.REQUEST_CLASS, onHandleAppointmentRequest );
 			application.addEventListener( TabPlus.CLOSE_TAB_EVENT, onTabClose );
 			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
+			application.addEventListener( MouseEvent.CLICK, onActivity );
+			
+			sessionTimer = new Timer( 5000 );
+			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
 		}
 		
 		private function onAuthenticated(event:AuthenticationEvent):void
@@ -82,6 +96,11 @@ package controllers
 				
 				initialized = true;
 			}
+			
+			lastActivity = getTimer();
+			
+			sessionTimer.reset();
+			sessionTimer.start();
 			
 			setState( Constants.STATE_LOGGED_IN );
 		}
@@ -176,6 +195,32 @@ package controllers
 			}
 		}
 		
+		private function onActivity( event:MouseEvent ):void
+		{
+			lastActivity = getTimer();
+		}
+		
+		protected function onCheckSession( event:TimerEvent ):void
+		{
+			if( getTimer() - lastActivity > model.preferences.autoLockIntervalMinutes * DateUtil.MINUTE )
+			{
+				showInactivityTimeout();
+			}
+		}
+		
+		protected function showInactivityTimeout():void
+		{
+		}
+		
+		public function logout():void
+		{
+			sessionTimer.stop();
+			
+			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
+			evt.data = Constants.STATE_DEFAULT;
+			application.dispatchEvent( evt );
+		}
+		
 		public function loadData( id:String ):Boolean
 		{
 			if( id == ImmunizationsModel.ID )
@@ -209,7 +254,7 @@ package controllers
 			return false;
 		}
 		
-		public function selectPreference( event:IndexChangeEvent ):void
+		public function selectSetting( event:IndexChangeEvent ):void
 		{
 		}
 		

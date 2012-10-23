@@ -28,6 +28,6 @@ package util
 		dateFormatterTimeOnly.formatString = "J:NN";
 		
 		public static var syncTime:DateFormatter = new DateFormatter();
-		syncTime.formatString = "J:NN";
+		syncTime.formatString = "L:NNA MM/DD/YYYY";
 	}
 }

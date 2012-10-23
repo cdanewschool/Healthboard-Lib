@@ -26,7 +26,11 @@ package models
 		
 		public var viewMode:String = Constants.STATE_LOGGED_IN;
 		
-		public var preferences:ArrayCollection;
+		public var settings:ArrayCollection;
+		
+		public var preferences:UserPreferences;
+		
+		public var supportedLanguages:ArrayCollection;
 		
 		public function ApplicationModel()
 		{
@@ -35,6 +39,8 @@ package models
 			patientAlerts = new ArrayCollection();
 			
 			today = new Date();
+			
+			supportedLanguages = new ArrayCollection( [ { id:"en_US", label:"English" } ] );
 		}
 
 		private function dispatchDataLoad( data:* ):void
