@@ -14,27 +14,33 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
+			import mx.events.CollectionEvent;
 			
 			import util.ArrayUtil;
 			import util.StringUtil;
+			
 			[Bindable] public var medTypeLabel:String;
 			[Bindable] public var medTypeData:String;
 			[Bindable] public var medName:String;
 			
 			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			
-			private function goBack():void {
-				var myAddMedication1:myAddMedication1Window = myAddMedication1Window(PopUpManager.createPopUp(this, myAddMedication1Window) as spark.components.TitleWindow);
+			private function goBack():void 
+			{
+				var myAddMedication1:myAddMedication1Window = myAddMedication1Window( PopUpManager.createPopUp(this, myAddMedication1Window) as spark.components.TitleWindow );
+				
 				PopUpManager.centerPopUp(myAddMedication1);
 				PopUpManager.removePopUp(this);
 			}
 			
-			private function displayWarning():void {
+			private function displayWarning():void
+			{
 				var myAddMedWarning:myAddMedicationWarning = myAddMedicationWarning(PopUpManager.createPopUp(this, myAddMedicationWarning) as spark.components.TitleWindow);
 				PopUpManager.centerPopUp(myAddMedWarning);
 			}
 			
-			private function addRecord():void {
+			private function addRecord():void 
+			{
 				if(txtName.text == "ZOCOR") displayWarning();
 				
 				var strFrequency:String = (asNeeded.selected) ? "as needed" : (numFrequency.value == 1) ? "every day" : (numFrequency.value == 2) ? "twice a day" : numFrequency.value + " times a day";
@@ -42,19 +48,26 @@
 				
 				var temp:Array = new Array();		//we create this temp array because the y-axis is not updating unless we medicationsCategories is set to "new Array" and reset...
 				temp = ArrayUtil.unique( MedicationsModel(controller.model).medicationsCategories.source );
+				
 				var indexToAddNewMedCategories:int;
 				var indexToAddNewMedData:int;
 				var indexToAddNewMedDataOriginal:int;
 				var indexToAddNewMedTree:int;
-				if(txtType.text == "Over-The-Counter Drugs") {
+				
+				if(txtType.text == "Over-The-Counter Drugs") 
+				{
 					indexToAddNewMedCategories = temp.indexOf("Supplements") + 1;
 					indexToAddNewMedTree = 1;
-					for(var k:uint = 0; k < MedicationsModel(controller.model).medicationsData.length; k++) {
-						if(MedicationsModel(controller.model).medicationsData.getItemAt(k).name == "Supplements") {
+					
+					for(var k:uint = 0; k < MedicationsModel(controller.model).medicationsData.length; k++) 
+					{
+						if(MedicationsModel(controller.model).medicationsData.getItemAt(k).name == "Supplements") 
+						{
 							indexToAddNewMedData = k + 1;
 							break;
 						}
 					}
+					
 					/*for(var l:uint = 0; l < parentApplication.medicationsDataOriginal.length; l++) {
 						if(parentApplication.medicationsDataOriginal.getItemAt(l).name == "Supplements") {
 							indexToAddNewMedDataOriginal = l + 1;
@@ -62,11 +75,15 @@
 						}
 					}*/
 				}
-				else if(txtType.text == "Supplements") {
+				else if(txtType.text == "Supplements") 
+				{
 					indexToAddNewMedCategories = temp.indexOf("Herbal Medicines") + 1;
 					indexToAddNewMedTree = 2;
-					for(var m:uint = 0; m < MedicationsModel(controller.model).medicationsData.length; m++) {
-						if(MedicationsModel(controller.model).medicationsData.getItemAt(m).name == "Herbal Medicines") {
+					
+					for(var m:uint = 0; m < MedicationsModel(controller.model).medicationsData.length; m++) 
+					{
+						if(MedicationsModel(controller.model).medicationsData.getItemAt(m).name == "Herbal Medicines") 
+						{
 							indexToAddNewMedData = m + 1;
 							break;
 						}
@@ -78,17 +95,22 @@
 						}
 					}*/
 				}
-				else if(txtType.text == "Herbal Medicines") {
+				else if(txtType.text == "Herbal Medicines") 
+				{
 					indexToAddNewMedCategories = indexToAddNewMedData = indexToAddNewMedDataOriginal = 0;
 					indexToAddNewMedTree = 3;
 				}
+				
 				temp.splice(indexToAddNewMedCategories,0,StringUtil.titleCase(txtName.text.toLowerCase()));
-				MedicationsModel(controller.model).medicationsCategories = new ArrayCollection();		//reset medicationsCategories so the y-axis is updated
-				MedicationsModel(controller.model).medicationsCategories = new ArrayCollection( temp );
+				
+				//	update medicationsCategories
+				MedicationsModel(controller.model).medicationsCategories.source = temp;
 				
 				var newLeaf:Object = new Object();
 				newLeaf = {category: newMedication.name};
-				MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children[MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children.length] = newLeaf;
+				
+				MedicationsModel(controller.model).medicationsCategoriesTree.getItemAt( indexToAddNewMedTree ).children[ MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children.length ] = newLeaf;
+				MedicationsModel(controller.model).medicationsCategoriesTree.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
 				
 				MedicationsModel(controller.model).medicationsDataFiltered.addItem(newMedication);
 				
@@ -102,19 +124,24 @@
 				var myMeridiem:String;
 				var myFrequency:uint; //= asNeeded.selected ? 1 : numFrequency.value;
 				var myRecurrence:String;
-				if(asNeeded.selected) {
+				
+				if(asNeeded.selected) 
+				{
 					myFrequency = 1;
 					myRecurrence = "day"
 				}
-				else {
+				else 
+				{
 					myFrequency = numFrequency.value;
 					myRecurrence = dropRecurrence.selectedItem;
 				}
 				
-				
 				var newMedicationOP:ObjectProxy;
-				for(var i:uint = 0; i < 365; i++){
-					for(var j:uint = 0; j < myFrequency; j++) {
+				
+				for(var i:uint = 0; i < 365; i++)
+				{
+					for(var j:uint = 0; j < myFrequency; j++) 
+					{
 						newMedication = new Object();
 						newMedication = {name: StringUtil.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, directedIntake: numRoute.value, intake: numRoute.value, directedFrequency: myFrequency, refillsLeft: '---', taken: false, status: 'active', reason: txtReason.text, asNeeded: asNeeded.selected};
 						myDate = new Date("06/16/2012");
@@ -122,6 +149,7 @@
 						myMeridiem = (arrTimesBasedOnFrequency[myFrequency-1][j] < 12) ? "AM" : "PM";
 						//myDate.setHours(myHours,0,0,0);
 						myDate.setDate(myDate.date+i);
+						
 						twoDigitMonth = (myDate.getMonth() + 1 < 10) ? "0" + (myDate.getMonth() + 1) + "/" : (myDate.getMonth() + 1) + "/";
 						twoDigitHours = (myHours < 10) ? "0" + myHours + ":" : myHours + ":";		//adding the extra colon to ensure it's a string
 						

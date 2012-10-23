@@ -103,7 +103,7 @@
 		</s:layout>
 
 		<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="requestRenewal()" />
-		<s:Button label="Show All Reauests" height="24" styleName="buttonText" />
+		<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
 		<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 		<s:Button label="Export" height="24" width="51" styleName="buttonText" />
 		

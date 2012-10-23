@@ -428,6 +428,7 @@
 			private function onShow():void
 			{
 				controller.filterMedsFromStatus();
+				controller.medicationsCategoriesForTree();
 				
 				updateHeightAndColors();
 			}
