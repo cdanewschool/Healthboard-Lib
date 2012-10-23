@@ -90,7 +90,7 @@
 						views.selectedIndex = 1;
 						
 						if( txtComments )
-							txtComments.text = goal.comments;
+							txtComments.text = goal ? goal.comments : '';
 					}
 				}
 			}
