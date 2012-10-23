@@ -100,7 +100,7 @@
 			<s:Label text="{actionCount>0?actionCount:'no'}" styleName="moduleSubtitleItalic {actionCount>0?'moduleSubtitleNumber':null}" />
 			<s:Label text="{actionSuffix?actionSuffix:''}" styleName="moduleSubtitleItalic" />
 			
-			<s:HGroup visible="{secondaryActionCount>0 || showSecondaryActionsIfNone}" includeInLayout="{secondaryActionCount>0 || showActionsIfNone}">
+			<s:HGroup visible="{secondaryActionCount>0 || showSecondaryActionsIfNone}" includeInLayout="{secondaryActionCount>0 || showSecondaryActionsIfNone}">
 				<s:Label text="{secondaryActionPrefix}" styleName="moduleSubtitleItalic" />
 				<s:Label text="{secondaryActionCount>0?secondaryActionCount:'no'}" styleName="moduleSubtitleItalic {secondaryActionCount>0?'moduleSubtitleNumber':null}" />
 				<s:Label text="{secondaryActionSuffix?secondaryActionSuffix:''}" styleName="moduleSubtitleItalic" />

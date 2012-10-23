@@ -223,6 +223,8 @@ package external.calendar.classes.views
 		public function set currentMonth(_intCurrentMonth:int):void
 		{
 			m_intCurrentMonth = _intCurrentMonth;
+			
+			redraw();
 		}
 		
 		public function get currentMonth():int
