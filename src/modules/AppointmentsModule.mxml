@@ -337,17 +337,16 @@
 					
 					var obj:Object = selectedAppointment;
 					
-					appointmentDateStart.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins);
-					appointmentDateEnd.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.mins == 0 ? (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) : (obj.meridiem != "pm" ? int(obj.hour) : int(obj.hour) + 12) + 1) + ":" + (obj.mins == 0 ? '30' : '00');
-					
-					appointmentsList.selectedItem = selectedAppointment;
+					if( appointmentDateStart ) appointmentDateStart.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins);
+					if( appointmentDateEnd ) appointmentDateEnd.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.mins == 0 ? (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) : (obj.meridiem != "pm" ? int(obj.hour) : int(obj.hour) + 12) + 1) + ":" + (obj.mins == 0 ? '30' : '00');
+					if( appointmentsList ) appointmentsList.selectedItem = selectedAppointment;
 					
 					model.currentDate = selectedAppointment.date;
 					
 					cancelledAppointment = null;
 				}
 				
-				monthView.redraw();
+				if( monthView ) monthView.redraw();
 			}
 
 			[Bindable] public var cancelledAppointment:Object;
