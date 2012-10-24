@@ -473,16 +473,17 @@
 											<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 												<fx:Script>
 													<![CDATA[
-														import components.itemrenderers.chart.MyCircleItemRenderer;
-														import components.itemrenderers.chart.MyCircleItemRendererOver;
 														import ASclasses.MyCustomDataTip;
 														
+														import components.itemrenderers.chart.MyCircleItemRenderer;
+														import components.itemrenderers.chart.MyCircleItemRendererOver;
 														import components.vitalsigns.viewVitalsWindow;
-														import mx.managers.PopUpManager;
+														
 														import mx.charts.HitData;
 														import mx.charts.events.ChartItemEvent;
 														import mx.controls.Alert;
 														import mx.events.FlexEvent;
+														import mx.managers.PopUpManager;
 														
 														import util.DateUtil;
 														
@@ -542,7 +543,7 @@
 														
 														public function viewVitals(e:ChartItemEvent):void 
 														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this, viewVitalsWindow) as spark.components.TitleWindow);		//added 'this.parentApplication as DisplayObject' instead of 'this', to make the popup appear in the center of the screen; otherwise it would show off the screen in some cases, making it impossible to close.
+															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);		//added 'this.parentApplication as DisplayObject' instead of 'this', to make the popup appear in the center of the screen; otherwise it would show off the screen in some cases, making it impossible to close.
 															myViewVitalsPopup.date = e.hitData.item.date;
 															myViewVitalsPopup.populateEntry();
 															
@@ -551,7 +552,7 @@
 														
 														public function viewVitalsComments(e:ChartItemEvent):void 
 														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this, viewVitalsWindow) as spark.components.TitleWindow);
+															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);
 															myViewVitalsPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
 															myViewVitalsPopup.populateEntry();
 															

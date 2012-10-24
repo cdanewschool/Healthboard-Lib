@@ -10,7 +10,7 @@
 		</fx:Array>
 		
 		<fx:Array id="exerciseMileRunBackground">
-			<s:Image source="@Embed('images/exerciseMileRunBG.png')" width="817" height="352" />
+			<s:Image source="@Embed('images/exerciseMileRunBGnew.jpg')" width="817" height="35" />
 		</fx:Array>
 		
 	</fx:Declarations>
@@ -61,13 +61,13 @@
 			
 			private function editRunGoal():void 
 			{
-				var myRunEditGoal:runEditGoal = runEditGoal( PopUpManager.createPopUp(this, runEditGoal) as spark.components.TitleWindow );
+				var myRunEditGoal:runEditGoal = runEditGoal( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, runEditGoal) as spark.components.TitleWindow );
 				PopUpManager.centerPopUp(myRunEditGoal);
 			}
 			
 			private function recordExResults():void 
 			{
-				var myRecordResults:recordResultsWindow = recordResultsWindow( PopUpManager.createPopUp(this, recordResultsWindow) as spark.components.TitleWindow );
+				var myRecordResults:recordResultsWindow = recordResultsWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, recordResultsWindow) as spark.components.TitleWindow );
 				PopUpManager.centerPopUp(myRecordResults);
 			}
 			
@@ -195,7 +195,7 @@
 			
 			private function addPerExercise():void 
 			{
-				var myAddPersonalExercise:addPersonalExercise = addPersonalExercise(PopUpManager.createPopUp(this, addPersonalExercise) as spark.components.TitleWindow);
+				var myAddPersonalExercise:addPersonalExercise = addPersonalExercise(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, addPersonalExercise) as spark.components.TitleWindow);
 				PopUpManager.centerPopUp(myAddPersonalExercise);
 			}
 		]]>
@@ -810,7 +810,7 @@
 								<s:VerticalLayout />
 							</s:layout>
 							
-							<s:VGroup paddingTop="23" paddingLeft="23" paddingBottom="43" gap="15">
+							<s:VGroup paddingTop="23" paddingLeft="23" paddingBottom="37" gap="15">
 								
 								<s:Label text="My 1.5 Mile Run" styleName="greenBoldText" />
 								
@@ -897,11 +897,11 @@
 										<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xAEDEE4">
 											<s:Label fontWeight="bold" text="14" />
 											<s:Label text="min." />
-											<s:Label fontWeight="bold" text="53" />
+											<s:Label fontWeight="bold" text="30" />
 											<s:Label text="sec." />
 										</s:HGroup>
 										
-										<s:Label text="{'Median Points and Time\nfor Age 45-49 Years Male'}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+										<s:Label text="{'Median Points and Time\nfor Age 40-44 Years Male'}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 										
 									</s:VGroup>
 									
@@ -925,6 +925,7 @@
 								
 								<s:Label text="Goal" paddingRight="10" />
 								
+								<!--
 								<s:Line xFrom="0" xTo="24">
 									<s:stroke>
 										<s:SolidColorStroke color="0xFF0000" weight="2" alpha=".8" />
@@ -932,6 +933,7 @@
 								</s:Line>
 								
 								<s:Label text="Passing Score" />
+								-->
 								
 								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
@@ -963,7 +965,7 @@
 							<mx:LineChart 
 								id="exerciseMileRunLineChart"
 								dataProvider="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data}"
-								paddingLeft="-3" paddingTop="-6" width="817" height="336"
+								paddingLeft="-3" paddingTop="-6" width="817" height="342"
 								backgroundElements="{exerciseMileRunBackground}" seriesFilters="[]" selectionMode="single" itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
@@ -991,7 +993,7 @@
 								</mx:horizontalAxisRenderers>
 								
 								<mx:verticalAxis>
-									<mx:LinearAxis id="vitalYaxisRun" minimum="53.2" maximum="71.5" /><!--minimum="60" maximum="140"-->
+									<mx:LinearAxis id="vitalYaxisRun" minimum="35" maximum="100" /><!--minimum="60" maximum="140"-->
 								</mx:verticalAxis>
 								
 								<mx:verticalAxisRenderers>
