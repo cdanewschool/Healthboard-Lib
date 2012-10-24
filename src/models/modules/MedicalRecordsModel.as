@@ -1,5 +1,7 @@
 package models.modules
 {
+	import enum.DateRanges;
+	
 	import mx.collections.ArrayCollection;
 	
 	[Bindable] 
@@ -24,6 +26,8 @@ package models.modules
 			);
 		
 		public var pendingIndex:int = -1;
+		
+		public var dateRange:String = DateRanges.YEAR;
 		
 		public function MedicalRecordsModel()
 		{

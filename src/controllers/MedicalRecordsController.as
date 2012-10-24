@@ -49,6 +49,12 @@ package controllers
 			
 			for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
 			{
+				if( model.medicalRecordsData[i].hasOwnProperty('date') ) model.medicalRecordsData[i].date = modernizeDate( model.medicalRecordsData[i].date );
+				if( model.medicalRecordsData[i].hasOwnProperty('inpdate') ) model.medicalRecordsData[i].inpdate = modernizeDate( model.medicalRecordsData[i].inpdate );
+				
+				if( model.medicalRecordsDataGrid[i].hasOwnProperty('date') ) model.medicalRecordsDataGrid[i].date = modernizeDate( model.medicalRecordsDataGrid[i].date );
+				if( model.medicalRecordsDataGrid[i].hasOwnProperty('inpdate') ) model.medicalRecordsDataGrid[i].inpdate = modernizeDate( model.medicalRecordsDataGrid[i].inpdate );
+				
 				if( model.medicalRecordsCategories.getItemIndex( model.medicalRecordsData[i].name ) == -1) model.medicalRecordsCategories.addItem( model.medicalRecordsData[i].name );
 				
 				if( model.medicalRecordsData[i].nextSteps is ArrayCollection) 
@@ -67,5 +73,7 @@ package controllers
 			
 			super.dataResultHandler(event);
 		}
+		
+		
 	}
 }

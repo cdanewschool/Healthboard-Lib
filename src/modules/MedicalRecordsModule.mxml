@@ -34,11 +34,13 @@
 			import ASclasses.Constants;
 			import ASclasses.MyCustomDataTip;
 			
-			import components.popups.medicalrecords.SetNextStepsPopup;
 			import components.popups.medicalrecords.MyNextStepsHistoryWindow;
+			import components.popups.medicalrecords.SetNextStepsPopup;
 			import components.tabs.ServiceDetails;
 			
 			import controllers.MedicalRecordsController;
+			
+			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
 			import events.AppointmentEvent;
@@ -73,6 +75,7 @@
 			
 			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
+			import util.DateUtil;
 			
 			[Bindable] public var showHeader:Boolean = true;
 			
@@ -80,8 +83,8 @@
 			[Bindable] public var model:MedicalRecordsModel = controller.model as MedicalRecordsModel;
 			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
 			
-			[Bindable] private var minDateMedRec:Date = new Date( "Nov 20 2010 01:03:54 AM");
-			[Bindable] private var maxDateMedRec:Date = new Date( "Nov 20 2011 01:03:54 AM");
+			[Bindable] private var minDateMedRec:Date;
+			[Bindable] private var maxDateMedRec:Date;
 			
 			[Bindable] private var myMedRecHorizontalAlternateFill:uint = 0x303030;
 			[Bindable] private var myMedRecHorizontalFill:uint = 0x4A4A49;
@@ -319,68 +322,72 @@
 				hAxisMedicalRecords.maximum = maxDateMedRec;	//new Date( "Oct 1 2011 01:03:54 AM");
 			}
 			
-			private function handleMedRecDateRange(range:String):void 
+			private function setDateRange(range:String=null):void
 			{
-				if(range == '1d') 
+				model.dateRange = range;
+				
+				updateDateRange();
+			}
+			
+			private function updateDateRange():void 
+			{
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				
+				minDateMedRec = new Date( today.fullYear, today.month, today.date );
+				maxDateMedRec = new Date( today.fullYear, today.month, today.date );
+				
+				minDateMedRec.time += DateUtil.DAY;
+				maxDateMedRec.time += DateUtil.DAY;
+				
+				if( model.dateRange == DateRanges.DAY ) 
 				{
-					minDateMedRec = new Date( "Oct 6 2011 01:03:54 AM");
-					maxDateMedRec = new Date( "Oct 8 2011 01:03:54 AM");
+					minDateMedRec.time -= DateUtil.DAY;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == '1w') {
-					minDateMedRec = new Date( "Oct 1 2011 01:03:54 AM");
-					maxDateMedRec = new Date( "Oct 8 2011 01:03:54 AM");
+				else if( model.dateRange == DateRanges.WEEK )
+				{
+					minDateMedRec.time -= DateUtil.WEEK;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					btnMed1d.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == '1m')
+				else if( model.dateRange == DateRanges.MONTH )
 				{
-					minDateMedRec = new Date("Sep 20 2011 01:03:54 AM");
-					maxDateMedRec = new Date("Oct 20 2011 01:03:54 AM");
+					minDateMedRec.time -= DateUtil.MONTH;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					btnMed1d.selected = btnMed1w.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == '3m') 
+				else if( model.dateRange == DateRanges.MONTH_THREE ) 
 				{
-					minDateMedRec = new Date( "Jul 20 2011 01:03:54 AM");
-					maxDateMedRec = new Date( "Oct 20 2011 01:03:54 AM");
+					minDateMedRec.time -= DateUtil.MONTH * 3;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medRecVerticalGridLine.alpha = 0
-					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed1y.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == '1y') 
+				else if( model.dateRange == DateRanges.YEAR ) 
 				{
-					minDateMedRec = new Date( "Nov 20 2010 01:03:54 AM");
-					maxDateMedRec = new Date( "Nov 20 2011 01:03:54 AM");
+					minDateMedRec.time -= DateUtil.YEAR;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medRecVerticalGridLine.alpha = 0;
-					
-					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed3y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == '3y') 
+				else if( model.dateRange == DateRanges.YEAR_THREE ) 
 				{
-					minDateMedRec = new Date("Nov 20 2008 01:03:54 AM");
-					maxDateMedRec = new Date("Nov 20 2011 01:03:54 AM");
+					minDateMedRec.time -= DateUtil.YEAR * 3;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
-					
-					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMedAll.selected = btnMedCustom.selected = false;
 				}
-				else if(range == 'all') 
+				else
 				{
-					minDateMedRec = new Date("Nov 20 2008 01:03:54 AM");
-					maxDateMedRec = new Date("Nov 20 2011 01:03:54 AM");
+					//	TODO: set minDateMedRec/maxDateMedRec based on actual data
+					minDateMedRec.time -= DateUtil.YEAR * 3;
+					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
-					
-					btnMed1d.selected = btnMed1w.selected = btnMed1m.selected = btnMed3m.selected = btnMed1y.selected = btnMed3y.selected = btnMedCustom.selected = false;
 				}
 				
 				hAxisMedicalRecords.minimum = minDateMedRec;
@@ -534,6 +541,8 @@
 					onDataLoaded();
 				}
 				
+				updateDateRange();
+				
 				header.searchPlaceholder = SEARCH_PLACEHOLDER;
 				
 				tabsMedicalRecords.addEventListener( TabPlus.CLOSE_TAB_EVENT, onCloseTab );
@@ -578,13 +587,13 @@
 						
 						<s:Label text="Time Range:" paddingTop="6" />
 						
-						<general:customLinkButton id="btnMed1d" label="1d" click="handleMedRecDateRange('1d')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMed1w" label="1w" click="handleMedRecDateRange('1w')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMed1m" label="1m" click="handleMedRecDateRange('1m')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMed3m" label="3m" click="handleMedRecDateRange('3m')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMed1y" label="1y" click="handleMedRecDateRange('1y')" toggle="true" selected="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMed3y" label="3y" click="handleMedRecDateRange('3y')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
-						<general:customLinkButton id="btnMedAll" label="All" click="handleMedRecDateRange('all')" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
+						<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
 						<general:customLinkButton id="btnMedCustom" label="Custom" />
 						
 					</s:HGroup>

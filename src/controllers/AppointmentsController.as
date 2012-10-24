@@ -73,7 +73,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "09/16/2011 11:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-1}}/16/{{YEAR}}" ) + " 11:00" ) );
 			obj.desc = "Physician Examination";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -85,7 +85,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "08/11/2012 11:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-2}}/11/{{YEAR}}" ) + " 11:00" ) );
 			obj.desc = "Consultation";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -95,7 +95,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "08/11/2012 13:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-2}}/11/{{YEAR}}" ) + " 13:00" ) );
 			obj.desc = "Surgery";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -105,7 +105,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "10/16/2012 11:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH}}/16/{{YEAR}}" ) + " 11:00" ) );
 			obj.desc = "MRI";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -115,7 +115,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "09/16/2012 13:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-1}}/16/{{YEAR}}" ) + " 13:00" ) );
 			obj.desc = "MRI";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -125,7 +125,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "08/11/2012 16:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-2}}/11/{{YEAR}}" ) + " 16:00" ) );
 			obj.desc = "Blood Test";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -135,7 +135,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "08/11/2012 19:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-2}}/11/{{YEAR}}" ) + " 19:00" ) );
 			obj.desc = "Cardiac Stress Test";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -145,7 +145,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "10/07/2012 11:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH}}/07/{{YEAR}}" ) + " 11:00" ) );
 			obj.desc = "Appendectomy";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -155,7 +155,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "07/07/2012 11:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH-3}}/07/{{YEAR}}" ) + " 11:00" ) );
 			obj.desc = "Nasal Procedure";
 			obj.type = "Appointment";
 			obj.selected = false;
@@ -165,7 +165,7 @@ package controllers
 			appointments.addItem( obj );
 			
 			obj = new Object();
-			obj.date = new Date( Date.parse( "10/07/2012 14:00" ) );
+			obj.date = new Date( Date.parse( modernizeDate( "{{MONTH}}/07/{{YEAR}}" ) + " 14:00" ) );
 			obj.desc = "Colonscopy";
 			obj.type = "Appointment";
 			obj.selected = false;
