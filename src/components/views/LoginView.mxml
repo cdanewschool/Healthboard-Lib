@@ -51,6 +51,8 @@
 			
 			public var adminUsername:String = 'pipi';
 			
+			public var allowAccountCreation:Boolean = true;
+			
 			private function clearValidationErrors():void 
 			{
 				hgLoginFail.visible = hgLoginFail.includeInLayout = false; 
@@ -290,7 +292,7 @@
 			
 			<s:Label text="Login" text.createAccount="Create Account" text.forgotPassword="Forgot Password" text.passwordSent="Temporary Password Sent" styleName="loginBoxGreenBoldTitle" paddingTop="26" paddingLeft="44" />
 			
-			<s:HGroup paddingLeft="44" paddingTop="26" styleName="loginBoxWhiteText">
+			<s:HGroup paddingLeft="44" paddingTop="26" styleName="loginBoxWhiteText" visible="{allowAccountCreation}">
 				
 				<s:Label text="If you don't have one already, please" text.createAccount="Already have an account? Click here to" text.forgotPassword="{'Please enter the email address you used to register.\nYou will receive a temporary password via email.'}" text.passwordSent="{'A temporary password has been sent to your email address.\nPlease check your email.'}" />
 				
