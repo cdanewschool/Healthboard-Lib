@@ -91,6 +91,7 @@ package controllers
 				exerciseController.init();
 				immunizationsController.init();
 				medicalRecordsController.init();
+				medicationsController.init();
 				nutritionController.init();
 				vitalSignsController.init();
 				
