@@ -11,6 +11,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import models.FileUpload;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CloseEvent;
@@ -131,15 +133,15 @@
 			[Bindable] public var arrNonImageAttachments:ArrayCollection = new ArrayCollection();
 				
 			private function fileReference_complete(evt:Event):void {
-				var myAttachment:Object;
-				if(isImage(fileReference.name)) {
-					myAttachment = {image: fileReference.data, filename: fileReference.name};
+				var myAttachment:FileUpload = new FileUpload( fileReference.name, fileReference.size, fileReference.data );;
+				
+				if(myAttachment.isImage()) {
 					arrImageAttachments.addItem(myAttachment);
 					dgAttachments.visible = true;
 					dgAttachments.includeInLayout = true;
 				}
 				else {
-					myAttachment = {file: fileReference.data, filename: fileReference.name, filesize: fileSize(fileReference.size)};
+					//myAttachment = {file: fileReference.data, filename: fileReference.name, filesize: fileSize(fileReference.size)};
 					arrNonImageAttachments.addItem(myAttachment);
 					listAttachments.visible = true;
 					listAttachments.includeInLayout = true;
@@ -148,18 +150,6 @@
 				//Alert.show(ObjectUtil.toString(fileReference));
 				btnAttachment.label = "Attach another file";
 			}
-			
-			//using "type" wasn't working on this OS
-			private function isImage(filename:String):Boolean {
-				if(filename.substr(-4) == ".jpg" || filename.substr(-5) == ".jpeg" || filename.substr(-4) == ".gif" || filename.substr(-4) == ".png" || filename.substr(-4) == ".JPG" || filename.substr(-5) == ".JPEG" || filename.substr(-4) == ".GIF" || filename.substr(-4) == ".PNG") return true;
-				return false;
-			}
-			
-			private function fileSize(bytes:int):String {
-				if(bytes < 1024*1024) return '(' + Math.round(bytes/1024) + 'KB)';
-				else return '(' + int((bytes/(1024*1024))*10)/10 + 'MB)';
-			}
-			
 		]]>
 	</fx:Script>
 	
@@ -224,7 +214,7 @@
 												}
 											]]>
 										</fx:Script>
-										<mx:Image id="imgAttachment" source="{data.image}" maxWidth="430" maxHeight="430" horizontalAlign="center" horizontalCenter="0" /> <!--visible="false" includeInLayout="false"-->
+										<mx:Image id="imgAttachment" source="{data.data}" maxWidth="430" maxHeight="430" horizontalAlign="center" horizontalCenter="0" /> <!--visible="false" includeInLayout="false"-->
 										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete image attachment" buttonMode="true" right="5" top="5" click="delete_clickHandler(event)" />
 									</mx:Canvas>
 								</fx:Component>
@@ -253,8 +243,8 @@
 												}
 											]]>
 										</fx:Script>
-										<mx:Label text="{data.filename}" color="0xAEDEE4" />
-										<mx:Label text="{data.filesize}" color="0xFFFFFF" />
+										<mx:Label text="{data.name}" color="0xAEDEE4" />
+										<mx:Label text="{data.fileSize}" color="0xFFFFFF" />
 										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete attachment" buttonMode="true" click="delete_clickHandler(event)" />
 									</mx:HBox>
 								</fx:Component>
