@@ -112,7 +112,7 @@
 				MedicationsModel(controller.model).medicationsCategoriesTree.getItemAt( indexToAddNewMedTree ).children[ MedicationsModel(controller.model).medicationsCategoriesTree[indexToAddNewMedTree].children.length ] = newLeaf;
 				MedicationsModel(controller.model).medicationsCategoriesTree.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
 				
-				MedicationsModel(controller.model).medicationsDataFiltered.addItem(newMedication);
+				MedicationsModel(controller.model).medicationsDataList.addItem(newMedication);
 				
 				var myDate:Date;
 				var myDateString:String;

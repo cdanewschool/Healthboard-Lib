@@ -271,10 +271,10 @@
 				switchMedicationsView(1);
 				viewStackMedications.selectedIndex = 0;
 				
-				model.medicationsDataFiltered.filterFunction = filterSearchMedications;
-				model.medicationsDataFiltered.refresh();
+				model.medicationsDataList.filterFunction = filterSearchMedications;
+				model.medicationsDataList.refresh();
 				
-				if( model.medicationsDataFiltered.length == 0 ) 
+				if( model.medicationsDataList.length == 0 ) 
 				{
 					medicationsList.visible = medicationsList.includeInLayout = false;
 					lblNoMedications.visible = lblNoMedications.includeInLayout = true;
@@ -302,8 +302,8 @@
 			private function clearSearchMedications():void 
 			{
 				header.search.text = 'Search medications';
-				model.medicationsDataFiltered.filterFunction = null;
-				model.medicationsDataFiltered.refresh();
+				model.medicationsDataList.filterFunction = null;
+				model.medicationsDataList.refresh();
 				
 				medicationsList.visible = medicationsList.includeInLayout = true;
 				lblNoMedications.visible = lblNoMedications.includeInLayout = false;
@@ -420,7 +420,7 @@
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
 				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
-				model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
+				//model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				
 				onShow();
 			}
@@ -428,7 +428,6 @@
 			private function onShow():void
 			{
 				controller.filterMedsFromStatus();
-				controller.medicationsCategoriesForTree();
 				
 				updateHeightAndColors();
 			}
@@ -501,7 +500,7 @@
 								height="24" width="70" 
 								styleName="buttonText" selectedItem="{model.type}" 
 								dataProvider="{MedicationsModel.TYPES}"
-								change="model.type = dropMediFilter.selectedItem;controller.filterMedsFromStatus(); updateHeightAndColors();" />
+								change="model.type = dropMediFilter.selectedItem; controller.filterMedsFromStatus(); " />
 						</s:HGroup>
 						
 						<s:HGroup color="0xFFFFFF" gap="5">
@@ -575,7 +574,8 @@
 									rowHeight="34"
 									defaultLeafIcon="{null}" folderClosedIcon="{null}" folderOpenIcon="{null}"
 									itemOpen="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" 
-									itemClose="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" itemClick="onTreeItemClick(event)" />
+									itemClose="updateOpenLeaves(); controller.filterMedsFromTreeNew(); updateHeightAndColors()" 
+									itemClick="onTreeItemClick(event)" creationComplete="updateOpenLeaves()" />
 								
 								<mx:PlotChart 
 									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
@@ -703,7 +703,7 @@
 							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 							<mx:DataGrid 
 								id="medicationsList" 
-								dataProvider="{model.medicationsDataFiltered}" fontFamily="myMyriad" 
+								dataProvider="{model.medicationsDataList}" fontFamily="myMyriad" 
 								width="100%" height="100%"  
 								itemClick="showMedicationDetailsDataGrid(event)"
 								alternatingItemColors="[0x303030,0x3c3c3b]" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"
@@ -785,7 +785,7 @@
 						<s:Label text="• Medication recall" styleName="smallTextRed" paddingLeft="9" paddingTop="12" width="100%" />
 						<s:Label text="Renewal Reminders" styleName="subtitles" textAlign="center" width="100%" paddingTop="20" />
 						<s:Label text="{'• Request renewal for Lisinopril\n• Request renewal for Coumadin®'}" styleName="smallText" paddingLeft="9" paddingTop="12" paddingBottom="20" width="100%" />
-						<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="{PopUpManager.removePopUp(myChartPopup); controller.requestRenewal(model.medicationsDataFiltered.getItemAt(0));}" />
+						<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="{PopUpManager.removePopUp(myChartPopup); controller.requestRenewal(model.medicationsDataList.getItemAt(0));}" />
 					</s:VGroup>
 					
 				</s:VGroup>

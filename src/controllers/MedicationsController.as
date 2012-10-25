@@ -62,7 +62,7 @@ package controllers
 			var model:MedicationsModel = model as MedicationsModel;
 			
 			model.medicationsData = event.result.medications.medication;	
-			model.medicationsDataFiltered = new ArrayCollection(); //	this is set here so when the module is re-opened, it won't be duplicated...
+			model.medicationsDataList = new ArrayCollection(); //	this is set here so when the module is re-opened, it won't be duplicated...
 			model.medicationsCategories = new ArrayCollection();			 //	this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
 			
 			for(var i:uint = 0; i < model.medicationsData.length; i++) 
@@ -76,7 +76,7 @@ package controllers
 						&& model.medicationsData[i].name != "Supplements" 
 						&& model.medicationsData[i].name != "Herbal Medicines") 
 					{
-						model.medicationsDataFiltered.addItem(model.medicationsData[i]);
+						model.medicationsDataList.addItem(model.medicationsData[i]);
 						
 						if(model.medicationsData[i].status == "active") 
 							createNonTakenMeds(model.medicationsData[i]);
@@ -84,14 +84,10 @@ package controllers
 				}
 			}
 			
-			filterMedsFromStatus();
-			
 			/**
 			 * TODO: do we really need two separate dataproviders for the widget (filterMedsFromWidget() populates a dedicated categories array)?
  			*/
 			model.medicationsDataWidget = new ArrayCollection( model.medicationsData.source.slice() );
-			
-			filterMedsFromWidget();	//mediFilterStatus();	//we run the filter now, since we want to display only "active" medications when we load the module...
 			
 			super.dataResultHandler(event);
 		}
@@ -104,7 +100,7 @@ package controllers
 			model.medicationsData.refresh();
 			
 			//	this is set here so when the module is re-opened, it won't be duplicated...
-			model.medicationsDataFiltered.removeAll();
+			model.medicationsDataList.removeAll();
 			model.medicationsCategories.removeAll();
 			
 			for(var j:uint = 0; j < model.medicationsData.length; j++) 
@@ -113,12 +109,14 @@ package controllers
 					model.medicationsCategories.addItem( model.medicationsData[j].name );
 					
 					if( model.medicationsData[j].name != "Prescription Drugs" && model.medicationsData[j].name != "Over-The-Counter Drugs" && model.medicationsData[j].name != "Supplements" && model.medicationsData[j].name != "Herbal Medicines" ) 
-						model.medicationsDataFiltered.addItem( model.medicationsData[j] );
+						model.medicationsDataList.addItem( model.medicationsData[j] );
 				}
 			}
 			
 			//	so the order in the datagrid is the same as in the chart.
-			model.medicationsDataFiltered.source.reverse();
+			model.medicationsDataList.source.reverse();
+			
+			medicationsCategoriesForTree();
 		}
 		
 		public function filterMedsFromTreeNew():void 
@@ -128,7 +126,7 @@ package controllers
 			model.medicationsData.filterFunction = filterMedications2;
 			model.medicationsData.refresh();
 			
-			model.medicationsCategories = new ArrayCollection();
+			model.medicationsCategories.removeAll();
 			
 			for(var l:uint = 0; l < model.medicationsData.length; l++) 
 			{
@@ -145,6 +143,17 @@ package controllers
 		public function medicationsCategoriesForTree():void 
 		{
 			var model:MedicationsModel = model as MedicationsModel;
+			
+			model.medicationsCategoriesTree = new ArrayCollection
+				(
+					[
+						{category: "Prescription Drugs", children: []},
+						{category: "Over-The-Counter Drugs", children: []},
+						{category: "Supplements", children: []},
+						{category: "Herbal Medicines", children: []}
+					]
+				);
+			
 			var medicationsCategoriesReversed:Array = ArrayUtil.unique( model.medicationsCategories.source ).reverse();
 			var currentCategory:int = -1;
 			var currentLeaf:uint = 0;
@@ -200,7 +209,6 @@ package controllers
 				}
 			}
 		}
-		
 		
 		public function medicationsFillFunction(element:ChartItem, index:Number):IFill 
 		{
