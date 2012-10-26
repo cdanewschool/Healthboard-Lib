@@ -12,6 +12,8 @@ package events
 		
 		public static const VIEW_FILE:String = "viewFile";
 		
+		public static const SHOW_STATUS:String = "showStatus";
+		
 		public var data:*;
 		
 		public var message:Message;
