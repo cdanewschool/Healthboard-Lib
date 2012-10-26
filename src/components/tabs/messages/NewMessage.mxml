@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					xmlns:s="library://ns.adobe.com/flex/spark" 
-					xmlns:mx="library://ns.adobe.com/flex/mx"
-					xmlns:net="flash.net.*"
-					fontSize="11" label="New message" creationComplete="populateIfDraft()">
+<s:NavigatorContent 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:net="flash.net.*"
+	fontSize="11" label="New message" creationComplete="populateIfDraft()">
+	
 	<s:layout>
 		<s:VerticalLayout/>
 	</s:layout>
 	
-	
 	<fx:Script>
 		<![CDATA[
+			import controllers.MessagesController;
+			
+			import events.ApplicationEvent;
+			
 			import models.FileUpload;
+			import models.modules.MessagesModel;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
@@ -19,39 +25,45 @@
 			
 			[Bindable] public var draftMessage:Object;
 			
-			protected function handleClose():void {
-				if(messageText.text == "" || draftMessage != null) {
-					parent.removeChild(this);
-					//parentApplication.viewStackMessages.removeChild(this);
-					parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
-					parentApplication.arrNewMessages.splice(parentApplication.arrNewMessages.indexOf(this),1);
-					parentApplication.viewStackMessages.selectedIndex--;
+			[Bindable] public var controller:MessagesController = AppProperties.getInstance().controller.messagesController as MessagesController;
+			[Bindable] public var model:MessagesModel = controller.model as MessagesModel;
+			
+			protected function handleClose():void 
+			{
+				if( messageText.text == "" || draftMessage != null ) 
+				{
+					dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 				}
-				else {
+				else 
+				{
 					Alert.show("Are you sure you want to discard your message?","Message will be deleted permanently",Alert.YES | Alert.CANCEL,this,alertListener);
 				}
 			}
 			
-			private function alertListener(eventObj:CloseEvent):void {
+			private function alertListener(eventObj:CloseEvent):void 
+			{
 				// Check to see if the YES button was pressed.
-				if (eventObj.detail==Alert.YES) {
-					parent.removeChild(this);
-					parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
-					parentApplication.arrNewMessages.splice(parentApplication.arrNewMessages.indexOf(this),1);
-					parentApplication.viewStackMessages.selectedIndex--;
+				if (eventObj.detail==Alert.YES) 
+				{
+					dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 				}
 			}
 
-			protected function btnSend_clickHandler():void {
-				if(draftMessage == null) {
+			protected function btnSend_clickHandler():void 
+			{
+				if(draftMessage == null) 
+				{
 					var newMessage:Object = new Object();
+					
 					newMessage = ({status: "read", correspondent: cbRecipients.selectedItem, prefix: "", date: new Date(), subject: cbSubjects.selectedItem, isDraft: false, messages: [
 						{sender: "You", date: new Date(), text: messageText.text, imageAttachments: arrImageAttachments, nonImageAttachments: arrNonImageAttachments, urgency: dropUrgency.selectedItem.label}
 					]
 					});
-					parentApplication.acMessages.addItemAt(newMessage,0);
+					
+					model.messages.addItemAt( newMessage, 0 );
 				}
-				else {
+				else 
+				{
 					draftMessage.correspondent = cbRecipients.selectedItem;
 					draftMessage.date = new Date();
 					draftMessage.subject = cbSubjects.selectedItem;
@@ -61,26 +73,35 @@
 					draftMessage.messages[0].imageAttachments = arrImageAttachments;
 					draftMessage.messages[0].nonImageAttachments = arrNonImageAttachments;
 					draftMessage.messages[0].urgency = dropUrgency.selectedItem.label;
-					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
 				}
-				parent.removeChild(this);
-				parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
-				parentApplication.arrNewMessages.splice(parentApplication.arrNewMessages.indexOf(this),1);
-				if(parentApplication.currentMainBox == "Sent" || parentApplication.currentMainBox == "Drafts") parentApplication.showSentMessages();
-				else parentApplication.viewStackMessages.selectedIndex--;
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your message has been sent";
+				dispatchEvent( evt );
+				
+				dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 			}
 			
-			protected function btnSaveDraft_clickHandler(event:MouseEvent):void {
-				if(draftMessage == null) {
+			protected function btnSaveDraft_clickHandler(event:MouseEvent):void 
+			{
+				if(draftMessage == null) 
+				{
 					var newMessage:Object = new Object();
-					newMessage = ({status: "read", correspondent: cbRecipients.selectedItem, prefix: "", date: new Date(), subject: cbSubjects.selectedItem, isDraft: true, messages: [
-						{sender: "You", date: new Date(), text: messageText.text, imageAttachments: arrImageAttachments, nonImageAttachments: arrNonImageAttachments, urgency: dropUrgency.selectedItem.label}
-					]
-					});
-					parentApplication.acMessages.addItemAt(newMessage,0);
-					parentApplication.btnDrafts.label = 'Drafts'+parentApplication.getDraftMessagesCount();
+					newMessage = 
+						(
+							{
+								status: "read", correspondent: cbRecipients.selectedItem, prefix: "", date: new Date(), subject: cbSubjects.selectedItem, isDraft: true, 
+								messages: 
+								[
+									{sender: "You", date: new Date(), text: messageText.text, imageAttachments: arrImageAttachments, nonImageAttachments: arrNonImageAttachments, urgency: dropUrgency.selectedItem.label}
+								]
+							}
+						);
+					
+					model.messages.addItemAt(newMessage,0);
 				}
-				else {
+				else 
+				{
 					draftMessage.correspondent = cbRecipients.selectedItem;
 					draftMessage.date = new Date();
 					draftMessage.subject = cbSubjects.selectedItem;
@@ -91,25 +112,33 @@
 					draftMessage.messages[0].urgency = dropUrgency.selectedItem.label;
 				}
 				
-				parent.removeChild(this);
-				parentApplication.arrOpenTabs.splice(parentApplication.viewStackMessages.selectedIndex-1,1);
-				parentApplication.arrNewMessages.splice(parentApplication.arrNewMessages.indexOf(this),1);
-				if(parentApplication.currentMainBox == "Drafts") parentApplication.showDraftMessages();
-				else parentApplication.viewStackMessages.selectedIndex--;
+				model.currentMainBox = MessagesModel.DRAFT;
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your message has been saved";
+				dispatchEvent( evt );
+				
+				dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 			}
 			
-			private function populateIfDraft():void {
-				if(draftMessage != null) {
+			private function populateIfDraft():void 
+			{
+				if(draftMessage != null)
+				{
 					messageText.text = draftMessage.messages[0].text;
 					cbSubjects.selectedItem = draftMessage.subject;
 					cbRecipients.selectedItem = draftMessage.correspondent;
-					if(draftMessage.messages[0].imageAttachments.length > 0 && draftMessage.messages[0].imageAttachments != null) {
+					
+					if(draftMessage.messages[0].imageAttachments.length > 0 && draftMessage.messages[0].imageAttachments != null)
+					{
 						arrImageAttachments.addAll(draftMessage.messages[0].imageAttachments);
 						dgAttachments.visible = true;
 						dgAttachments.includeInLayout = true;
 						btnAttachment.label = "Attach another file";
 					}
-					if(draftMessage.messages[0].nonImageAttachments.length > 0 && draftMessage.messages[0].nonImageAttachments != null) {
+					
+					if(draftMessage.messages[0].nonImageAttachments.length > 0 && draftMessage.messages[0].nonImageAttachments != null) 
+					{
 						arrNonImageAttachments.addAll(draftMessage.messages[0].nonImageAttachments);
 						listAttachments.visible = true;
 						listAttachments.includeInLayout = true;
@@ -133,15 +162,17 @@
 			[Bindable] public var arrNonImageAttachments:ArrayCollection = new ArrayCollection();
 				
 			private function fileReference_complete(evt:Event):void {
+				
 				var myAttachment:FileUpload = new FileUpload( fileReference.name, fileReference.size, fileReference.data );;
 				
-				if(myAttachment.isImage()) {
+				if(myAttachment.isImage()) 
+				{
 					arrImageAttachments.addItem(myAttachment);
 					dgAttachments.visible = true;
 					dgAttachments.includeInLayout = true;
 				}
-				else {
-					//myAttachment = {file: fileReference.data, filename: fileReference.name, filesize: fileSize(fileReference.size)};
+				else 
+				{
 					arrNonImageAttachments.addItem(myAttachment);
 					listAttachments.visible = true;
 					listAttachments.includeInLayout = true;
@@ -185,16 +216,7 @@
 			</s:ComboBox>
 		</s:FormItem>
 		<s:FormItem label="To:" color="0xFFFFFF">
-			<s:ComboBox id="cbRecipients" prompt="Select a recipient" width="454" color="0x4D4D4D">
-				<s:dataProvider>
-					<mx:ArrayList>
-						<fx:String>a Physician</fx:String>
-						<fx:String>a Nurse</fx:String>
-						<fx:String>an Administrator</fx:String>
-						<fx:String>Front Desk</fx:String>
-					</mx:ArrayList>
-				</s:dataProvider>
-			</s:ComboBox>
+			<s:ComboBox id="cbRecipients" prompt="Select a recipient" width="454" color="0x4D4D4D" dataProvider="{model.recipientTypes}" labelField="label" />
 		</s:FormItem>
 		<s:FormItem>
 			<s:VGroup paddingLeft="24" width="430">

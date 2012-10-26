@@ -15,9 +15,10 @@ package models.modules
 		public static const TYPES:ArrayCollection = new ArrayCollection( [ TYPE_ALL, TYPE_ACTIVE ] );
 	
 		public var medicationsData:ArrayCollection;
-		public var medicationsDataFiltered:ArrayCollection;
-		public var medicationsCategories:ArrayCollection;
+		public var medicationsDataList:ArrayCollection;
 		public var medicationsDataWidget:ArrayCollection;
+		
+		public var medicationsCategories:ArrayCollection;
 		public var medicationsCategoriesWidget:Array;
 		public var medicationsCategoriesTree:ArrayCollection;
 		

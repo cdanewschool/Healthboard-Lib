@@ -8,7 +8,7 @@ package models
 		
 		public var recipientAlias:String;
 		public var recipients:Array;
-		public var recipientType:int;
+		public var recipientType:String;
 		
 		public var urgency:String;
 		public var body:String;

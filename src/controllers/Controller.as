@@ -45,6 +45,7 @@ package controllers
 		[Bindable] public var immunizationsController:ImmunizationsController;
 		[Bindable] public var medicalRecordsController:MedicalRecordsController;
 		[Bindable] public var medicationsController:MedicationsController;
+		[Bindable] public var messagesController:MessagesController;
 		[Bindable] public var nutritionController:NutritionController;
 		[Bindable] public var vitalSignsController:VitalSignsController;
 		
@@ -64,6 +65,7 @@ package controllers
 			immunizationsController = new ImmunizationsController();
 			medicalRecordsController = new MedicalRecordsController();
 			medicationsController = new MedicationsController();
+			messagesController = new MessagesController();
 			nutritionController = new NutritionController();
 			vitalSignsController = new VitalSignsController();
 			
@@ -92,6 +94,7 @@ package controllers
 				immunizationsController.init();
 				medicalRecordsController.init();
 				medicationsController.init();
+				messagesController.init();
 				nutritionController.init();
 				vitalSignsController.init();
 				

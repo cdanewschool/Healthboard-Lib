@@ -29,6 +29,7 @@
 			
 			import enum.AppointmentStatus;
 			import enum.DateRanges;
+			import enum.RecipientType;
 			
 			import events.ApplicationEvent;
 			import events.AppointmentEvent;
@@ -226,6 +227,10 @@
 				cancelAppointmentPopup.removeEventListener( AppointmentEvent.CANCEL_APPOINTMENT, onCancelAppointment );
 				
 				cancelAppointmentPopup = null;
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your appointment has been cancelled";
+				dispatchEvent( evt );
 			}
 			
 			private function onDateScroll():void
@@ -359,7 +364,7 @@
 			private function sendMessage(type:String):void 
 			{
 				var message:Message = new Message();
-				message.recipientType = "appointment" ? 1 : 2;
+				message.recipientType = type == "appointment" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
 				event.data = Constants.MODULE_MESSAGES;
