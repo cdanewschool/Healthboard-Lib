@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup 
+<s:NavigatorContent 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:plus="external.TabBarPlus.plus.*" 
 	xmlns:components="components.*" 
 	xmlns:ASclasses="ASclasses.*" 
-	creationComplete="init()" show="show()" >
+	width="100%" height="100%"
+	show="show()">
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
 	
 	<fx:Script>
 		<![CDATA[
@@ -23,6 +29,7 @@
 			
 			import external.TabBarPlus.plus.TabPlus;
 			
+			import models.UserModel;
 			import models.modules.MessagesModel;
 			
 			import mx.collections.ArrayCollection;
@@ -38,6 +45,8 @@
 			import spark.events.IndexChangeEvent;
 			
 			[Embed(source="images/bloodyNose.jpg")] private static var myPic:Class;
+			[Embed('images/btnHome.png')] private var btnHome:Class;
+			[Embed('images/patientHome.png')] private var btnPatient:Class;
 			
 			[Bindable] public var controller:MessagesController = AppProperties.getInstance().controller.messagesController as MessagesController;
 			[Bindable] public var model:MessagesModel = controller.model as MessagesModel;
@@ -198,7 +207,7 @@
 				return returnArray;
 			}
 			
-			public function createNewMessage(selectedRecipient:uint = 0):void 
+			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null ):void 
 			{
 				//	selectedRecipient is only != 0 when called from the appointments module
 				newMessage = new NewMessage();
@@ -209,11 +218,31 @@
 				
 				model.openTabs.push("NEW");
 				
-				if(selectedRecipient != 0) 
+				if( recipients )
 				{
-					newMessage.cbRecipients.selectedIndex = selectedRecipient - 1;
-					newMessage.cbSubjects.selectedIndex = selectedRecipient - 1;
-					newMessage.label = newMessage.cbSubjects.selectedItem;
+					var emails:Array = [];
+					
+					for each(var recipient:UserModel in recipients)
+					{
+						emails.push( recipient.email );
+					}
+					
+					newMessage.cbRecipients.selectedIndex = -1;
+					//newMessage.cbRecipients.label = emails.join(", ");
+				}
+				else if( selectedRecipientType ) 
+				{
+					var index:int;
+					
+					for(var i:int=0;i<model.recipientTypes.length;i++)
+					{
+						if( model.recipientTypes.getItemAt(i).data == selectedRecipientType )
+						{
+							newMessage.cbRecipients.selectedIndex = i;
+							newMessage.cbSubjects.selectedIndex = i;
+							newMessage.label = newMessage.cbSubjects.selectedItem;
+						}
+					}
 				}
 			}
 			
@@ -905,13 +934,22 @@
 					
 					model.pendingMessage = null;
 				}
-				else if( model.pendingRecipientType > -1 )
+				else if( model.pendingRecipientType != null )
 				{
-					createNewMessage(  model.pendingRecipientType );
+					createNewMessage( null, model.pendingRecipientType );
 					
 					tabsMessages.selectedIndex = viewStackMessages.length - 2;
 					
-					model.pendingRecipientType = -1;
+					model.pendingRecipientType = null;
+				}
+				else if( model.pendingRecipients
+							&& model.pendingRecipients.length )
+				{
+					createNewMessage( model.pendingRecipients );
+					
+					tabsMessages.selectedIndex = viewStackMessages.length - 2;
+					
+					model.pendingRecipients = null;
 				}
 				else
 				{
@@ -938,229 +976,236 @@
 			}
 		]]>
 	</fx:Script>
-	<components:ModuleHeader 
-		id="messagesHeader"
-		icon="@Embed('images/btnHome.png')" title="Messages" actionPrefix="You have" actionSuffix="new messages." actionCount="{controller.getUnreadMessagesCount()}"
-		searchPlaceholder="Search messages" searchFunction="searchFilter" 
-		showBackground="false" />
 	
-	<s:Spacer height="10" />
-	
-	<s:HGroup width="100%">
+	<s:VGroup creationComplete="init()" width="100%">
 		
-		<s:VGroup width="100%" paddingTop="15" paddingLeft="7" gap="7" styleName="whiteText13">
-			<s:Label text="MAILBOXES" styleName="greenBoldText" paddingLeft="-4" paddingBottom="3" />
-			<mx:LinkButton id="btnInbox" label="{'Inbox '+controller.getUnreadMessageCountString()}" click="showMessages( MessagesModel.INBOX )" styleName="messageFolderSelected" />
-			<mx:LinkButton id="btnDrafts" label="{'Drafts '+controller.getDraftMessagesCount()}" click="showMessages( MessagesModel.DRAFT )" />
-			<mx:LinkButton id="btnSent" label="Sent" click="showMessages( MessagesModel.SENT )" />
-			<mx:LinkButton id="btnTrash" label="Trash" click="showMessages( MessagesModel.TRASH )" />
-		</s:VGroup>
+		<components:ModuleHeader 
+			id="messagesHeader"
+			title="Messages" actionPrefix="You have" actionSuffix="new messages." actionCount="{controller.getUnreadMessagesCount()}"
+			searchPlaceholder="Search messages" searchFunction="searchFilter" showSearch="true" 
+			showBackground="false" creationComplete="{messagesHeader.showBackground = currentState == 'provider';messagesHeader.icon = (currentState=='provider'?btnPatient:btnHome)}" />
 		
-		<s:Group>
+		<s:Spacer height="10" />
+		
+		<s:HGroup width="100%">
 			
-			<mx:ViewStack 
-				id="viewStackMessages" 
-				borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" width="825" height="606" borderVisible="true" borderStyle="solid" x="0" y="22" creationPolicy="all"><!--change="updateBreadcrumb('messages')" -->
+			<s:VGroup width="100%" paddingTop="15" paddingLeft="7" gap="7" styleName="whiteText13">
+				<s:Label text="MAILBOXES" styleName="greenBoldText" paddingLeft="-4" paddingBottom="3" />
+				<mx:LinkButton id="btnInbox" label="{'Inbox '+controller.getUnreadMessageCountString()}" click="showMessages( MessagesModel.INBOX )" styleName="messageFolderSelected" />
+				<mx:LinkButton id="btnDrafts" label="{'Drafts '+controller.getDraftMessagesCount()}" click="showMessages( MessagesModel.DRAFT )" />
+				<mx:LinkButton id="btnSent" label="Sent" click="showMessages( MessagesModel.SENT )" />
+				<mx:LinkButton id="btnTrash" label="Trash" click="showMessages( MessagesModel.TRASH )" />
+			</s:VGroup>
+			
+			<s:Group>
 				
-				<s:NavigatorContent id="mainBox" label="Inbox">
+				<mx:ViewStack 
+					id="viewStackMessages" 
+					borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" width="825" height="606" borderVisible="true" borderStyle="solid" x="0" y="22" creationPolicy="all"><!--change="updateBreadcrumb('messages')" -->
 					
-					<s:layout>
-						<s:VerticalLayout gap="0" />
-					</s:layout>
-					
-					<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+					<s:NavigatorContent id="mainBox" label="Inbox">
 						
 						<s:layout>
-							<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="9"/>
+							<s:VerticalLayout gap="0" />
 						</s:layout>
 						
-						<s:Button label="Delete" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="deleteMultiple()" />
-						<s:Button label="Mark Unread" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="markUnread()" />
-						
-						<s:Spacer width="100%" />
-						
-						<s:Label text="{(dgMessages.dataProvider.length &lt;= 1 ? dgMessages.dataProvider.length : '1 - ' + dgMessages.dataProvider.length) + ' of ' + dgMessages.dataProvider.length}" color="0xFFFFFF" fontSize="11" />						
-						
-					</s:BorderContainer>
-					
-					<s:Line xFrom="0" xTo="822">
-						<s:stroke>
-							<s:SolidColorStroke color="#3F3E3D"/>
-						</s:stroke>
-					</s:Line>
-					
-					<s:HGroup width="100%" color="0xFFFFFF" fontSize="11" height="31" verticalAlign="middle" paddingLeft="13" paddingRight="19" paddingTop="-1">
-						
-						<s:Label text="Select:" paddingTop="2" />
-						<mx:LinkButton id="btnSelectAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="{select('all')}" rollOver="{if(areOptionsEnabled) btnSelectAll.styleName='linkBtnUnderline';}" rollOut="btnSelectAll.styleName='linkBtn';" />
-						<s:Label text="," paddingTop="2" />
-						<mx:LinkButton id="btnSelectRead" label="Read" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('read')}" rollOver="{if(areOptionsEnabled) btnSelectRead.styleName='linkBtnUnderline';}" rollOut="btnSelectRead.styleName='linkBtn';" />
-						<s:Label text="," paddingTop="2" />
-						<mx:LinkButton id="btnSelectNone" label="None" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('none')}" rollOver="{if(areOptionsEnabled) btnSelectNone.styleName='linkBtnUnderline';}" rollOut="btnSelectNone.styleName='linkBtn';" />
-						<s:Spacer width="100%" />
-						<s:Label id="lblSearchResults" visible="false" paddingTop="2" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
-						<mx:LinkButton id="btnClearSearch" label="(Clear)" visible="false" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearch()" rollOver="btnClearSearch.styleName='linkBtnUnderline';" rollOut="btnClearSearch.styleName='linkBtn';" />
-						<s:Spacer width="100%" />
-						<s:Label text="Show:" paddingTop="2" />
-						<mx:LinkButton id="btnShowAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="showAll()" rollOver="{if(areOptionsEnabled) btnShowAll.styleName='linkBtnUnderline';}" rollOut="btnShowAll.styleName='linkBtn';" />
-						<s:Label text="," paddingTop="2" />
-						<mx:LinkButton id="btnShowUnread" label="Unread" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="showUnread()" rollOver="{if(areOptionsEnabled) btnShowUnread.styleName='linkBtnUnderline';}" rollOut="btnShowUnread.styleName='linkBtn';" />
-						<s:Label text="Sort by:" paddingLeft="18" paddingTop="2" paddingRight="-9" />
-						
-						<s:DropDownList id="dropDownMessageSort" enabled="{areOptionsEnabled}" selectedIndex="0" width="105" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkin" color="0xAEDBE2" change="messageSort()"> 
-							<mx:ArrayCollection>
-								<fx:String>Date Received</fx:String>
-								<fx:String>Sender</fx:String>
-								<fx:String>Urgency Level</fx:String>
-							</mx:ArrayCollection>
-						</s:DropDownList>
-						
-					</s:HGroup>
-					
-					<s:Line xFrom="0" xTo="822">
-						<s:stroke>
-							<s:SolidColorStroke color="#7C7C7C"/>
-						</s:stroke>
-					</s:Line>
-					
-					<ASclasses:RowColorDataGrid 
-						id="dgMessages" rowColorFunction="calcRowColor" 
-						dataProvider="{model.messagesToDisplay}" 
-						buttonMode="true"
-						itemClick="dgMessages_itemClickHandler(event)" 
-						visible="{model.messagesToDisplay}" includeInLayout="{model.messagesToDisplay}"
-						width="100%" height="100%"
-						color="0xFFFFFF" verticalAlign="middle"
-						selectable="false"
-						headerHeight="0"
-						borderVisible="false" rowHeight="59" verticalGridLines="false" horizontalGridLines="true" horizontalGridLineColor="0x7C7C7C" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x4A4A49,0x4A4A49]" rowCount="3"><!--itemClick="dgMessages_itemClickHandler(event)" selectionColor="0x4A4A49" rollOverColor="0x4A4A49" selectionColor="0x00ADEE" rollOverColor="0x286982"-->
-						
-						<!--INITIALLY KEPT THE DATAGRID SELECTABLE, ONLY SO I COULD CALL dgMessages.selectedItem WHEN DELETING A MESSAGE-->
-						<ASclasses:columns> 
+						<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
 							
-							<mx:DataGridColumn dataField="status" width="46">
-								<mx:itemRenderer>
-									<fx:Component>
-										<mx:HBox horizontalAlign="center"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
-											<s:Image source="@Embed('images/messagesEnvelope.png')" toolTip="Unread" visible="{data.status == 'unread'}" includeInLayout="{data.status == 'unread'}" />
-											<!--<s:Image source="@Embed('images/messagesRead.png')" toolTip="Read" visible="{data.status == 'read'}" includeInLayout="{data.status == 'read'}" />-->
-											<s:Image source="@Embed('images/messagesReplied.png')" toolTip="Replied" visible="{data.status == 'replied'}" includeInLayout="{data.status == 'replied'}" />
-										</mx:HBox>
-									</fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
+							<s:layout>
+								<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="9"/>
+							</s:layout>
 							
-							<mx:DataGridColumn width="26">
-								<mx:itemRenderer>
-									<fx:Component>
-										<mx:HBox paddingTop="-1"><!--buttonMode="true"-->		
-											<!--<fx:Script>
-											<![CDATA[
-											protected function messageCheckbox_clickHandler(event:MouseEvent):void {
-											var item:Object = outerDocument.dgMessages.selectedItem;
-											var index:int = outerDocument.messages.getItemIndex(item);
-											outerDocument.messages.removeItemAt(index);
-											}															
-											]]>
-											</fx:Script>-->
-											<s:CheckBox id="messageCheckbox" change="outerDocument.selectMultiple(data,messageCheckbox.selected)" selected="{outerDocument.areCheckboxesSelected || data.checkboxSelection}" /><!--click="outerDocument.messageCheckbox_clickHandler(event)"-->
-										</mx:HBox>
-									</fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
+							<s:Button label="Delete" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="deleteMultiple()" />
+							<s:Button label="Mark Unread" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="markUnread()" />
 							
-							<mx:DataGridColumn dataField="correspondent" width="132">
-								<mx:itemRenderer>
-									<fx:Component>		
-										<mx:VBox height="59" verticalAlign="middle" verticalGap="3" paddingTop="6"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
-											<s:Label text="{data.correspondent}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
-											<s:Label text="{outerDocument.controller.displayTime(data.date)}" fontSize="11" />
-										</mx:VBox>
-									</fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
+							<s:Spacer width="100%" />
 							
-							<mx:DataGridColumn dataField="subject" width="588">
-								<mx:itemRenderer>
-									<fx:Component>
-										<mx:HBox verticalAlign="middle" height="59" paddingTop="7"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
-											<fx:Script>
-												<![CDATA[
-													//import mx.controls.Alert;
-													
-													private function showNumberOfMessages():String {
-														return (!data.isDraft) ? (data.messages.length == 1) ? '' : '(' + data.messages.length + ') ' : '(DRAFT SAVED) ';
-													}
-													//this function was added to ensure that the (nevermind :)
-													/*private function showInitialTextWithoutLineBreaks(myData:Object):String {
-													for(var i:uint = 0; i < 75; i++) {
-													if(myData.messages[myData.messages.length - 1].text.charAt(i) == "\n") {
-													break;
-													}
-													}
-													return myData.messages[myData.messages.length - 1].text.substr(0,i) + ' ';
-													}*/
-													private function showEllipsis():String {
-														return (data.messages[data.messages.length - 1].text.length <= 75) ? '' : '...';
-													}
-												]]>
-											</fx:Script>
-											
-											<mx:HBox width="17" >
-												<s:Image source="@Embed('images/messagesUrgent.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
-												<s:Image source="@Embed('images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
+							<s:Label text="{(dgMessages.dataProvider.length &lt;= 1 ? dgMessages.dataProvider.length : '1 - ' + dgMessages.dataProvider.length) + ' of ' + dgMessages.dataProvider.length}" color="0xFFFFFF" fontSize="11" />						
+							
+						</s:BorderContainer>
+						
+						<s:Line xFrom="0" xTo="822">
+							<s:stroke>
+								<s:SolidColorStroke color="#3F3E3D"/>
+							</s:stroke>
+						</s:Line>
+						
+						<s:HGroup width="100%" color="0xFFFFFF" fontSize="11" height="31" verticalAlign="middle" paddingLeft="13" paddingRight="19" paddingTop="-1">
+							
+							<s:Label text="Select:" paddingTop="2" />
+							<mx:LinkButton id="btnSelectAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="{select('all')}" rollOver="{if(areOptionsEnabled) btnSelectAll.styleName='linkBtnUnderline';}" rollOut="btnSelectAll.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnSelectRead" label="Read" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('read')}" rollOver="{if(areOptionsEnabled) btnSelectRead.styleName='linkBtnUnderline';}" rollOut="btnSelectRead.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnSelectNone" label="None" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('none')}" rollOver="{if(areOptionsEnabled) btnSelectNone.styleName='linkBtnUnderline';}" rollOut="btnSelectNone.styleName='linkBtn';" />
+							<s:Spacer width="100%" />
+							<s:Label id="lblSearchResults" visible="false" paddingTop="2" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
+							<mx:LinkButton id="btnClearSearch" label="(Clear)" visible="false" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearch()" rollOver="btnClearSearch.styleName='linkBtnUnderline';" rollOut="btnClearSearch.styleName='linkBtn';" />
+							<s:Spacer width="100%" />
+							<s:Label text="Show:" paddingTop="2" />
+							<mx:LinkButton id="btnShowAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="showAll()" rollOver="{if(areOptionsEnabled) btnShowAll.styleName='linkBtnUnderline';}" rollOut="btnShowAll.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnShowUnread" label="Unread" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="showUnread()" rollOver="{if(areOptionsEnabled) btnShowUnread.styleName='linkBtnUnderline';}" rollOut="btnShowUnread.styleName='linkBtn';" />
+							<s:Label text="Sort by:" paddingLeft="18" paddingTop="2" paddingRight="-9" />
+							
+							<s:DropDownList id="dropDownMessageSort" enabled="{areOptionsEnabled}" selectedIndex="0" width="105" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkin" color="0xAEDBE2" change="messageSort()"> 
+								<mx:ArrayCollection>
+									<fx:String>Date Received</fx:String>
+									<fx:String>Sender</fx:String>
+									<fx:String>Urgency Level</fx:String>
+								</mx:ArrayCollection>
+							</s:DropDownList>
+							
+						</s:HGroup>
+						
+						<s:Line xFrom="0" xTo="822">
+							<s:stroke>
+								<s:SolidColorStroke color="#7C7C7C"/>
+							</s:stroke>
+						</s:Line>
+						
+						<ASclasses:RowColorDataGrid 
+							id="dgMessages" rowColorFunction="calcRowColor" 
+							dataProvider="{model.messagesToDisplay}" 
+							buttonMode="true"
+							itemClick="dgMessages_itemClickHandler(event)" 
+							visible="{model.messagesToDisplay}" includeInLayout="{model.messagesToDisplay}"
+							width="100%" height="100%"
+							color="0xFFFFFF" verticalAlign="middle"
+							selectable="false"
+							headerHeight="0"
+							borderVisible="false" rowHeight="59" verticalGridLines="false" horizontalGridLines="true" horizontalGridLineColor="0x7C7C7C" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x4A4A49,0x4A4A49]" rowCount="3"><!--itemClick="dgMessages_itemClickHandler(event)" selectionColor="0x4A4A49" rollOverColor="0x4A4A49" selectionColor="0x00ADEE" rollOverColor="0x286982"-->
+							
+							<!--INITIALLY KEPT THE DATAGRID SELECTABLE, ONLY SO I COULD CALL dgMessages.selectedItem WHEN DELETING A MESSAGE-->
+							<ASclasses:columns> 
+								
+								<mx:DataGridColumn dataField="status" width="46">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox horizontalAlign="center"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<s:Image source="@Embed('images/messagesEnvelope.png')" toolTip="Unread" visible="{data.status == 'unread'}" includeInLayout="{data.status == 'unread'}" />
+												<!--<s:Image source="@Embed('images/messagesRead.png')" toolTip="Read" visible="{data.status == 'read'}" includeInLayout="{data.status == 'read'}" />-->
+												<s:Image source="@Embed('images/messagesReplied.png')" toolTip="Replied" visible="{data.status == 'replied'}" includeInLayout="{data.status == 'replied'}" />
 											</mx:HBox>
-											
-											<mx:VBox verticalGap="3">
-												<s:Label text="{showNumberOfMessages() + data.subject}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
-												<s:Label text="{data.messages[data.messages.length - 1].text.substr(0,75) + showEllipsis()}" maxDisplayedLines="1" />
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn width="26">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox paddingTop="-1"><!--buttonMode="true"-->		
+												<!--<fx:Script>
+												<![CDATA[
+												protected function messageCheckbox_clickHandler(event:MouseEvent):void {
+												var item:Object = outerDocument.dgMessages.selectedItem;
+												var index:int = outerDocument.messages.getItemIndex(item);
+												outerDocument.messages.removeItemAt(index);
+												}															
+												]]>
+												</fx:Script>-->
+												<s:CheckBox id="messageCheckbox" change="outerDocument.selectMultiple(data,messageCheckbox.selected)" selected="{outerDocument.areCheckboxesSelected || data.checkboxSelection}" /><!--click="outerDocument.messageCheckbox_clickHandler(event)"-->
+											</mx:HBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn dataField="correspondent" width="132">
+									<mx:itemRenderer>
+										<fx:Component>		
+											<mx:VBox height="59" verticalAlign="middle" verticalGap="3" paddingTop="6"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<s:Label text="{data.correspondent}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
+												<s:Label text="{outerDocument.controller.displayTime(data.date)}" fontSize="11" />
 											</mx:VBox>
-											
-										</mx:HBox>
-									</fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
-							
-							<mx:DataGridColumn>
-								<mx:itemRenderer>
-									<fx:Component>
-										<mx:VBox>
-											<!--<fx:Script>
-											<![CDATA[
-											protected function image1_clickHandler(event:MouseEvent):void {
-											var item:Object = outerDocument.dgMessages.selectedItem;
-											//outerDocument.acTrash.addItem(item);
-											var index:int = outerDocument.messages.getItemIndex(item);
-											outerDocument.messages.removeItemAt(index);
-											}
-											]]>
-											</fx:Script>-->
-											<s:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete" /><!--buttonMode="true" click="image1_clickHandler(event)"-->
-										</mx:VBox>
-									</fx:Component>
-								</mx:itemRenderer>
-							</mx:DataGridColumn>
-						</ASclasses:columns> 
-					</ASclasses:RowColorDataGrid>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn dataField="subject" width="588">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox verticalAlign="middle" height="59" paddingTop="7"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<fx:Script>
+													<![CDATA[
+														//import mx.controls.Alert;
+														
+														private function showNumberOfMessages():String {
+															return (!data.isDraft) ? (data.messages.length == 1) ? '' : '(' + data.messages.length + ') ' : '(DRAFT SAVED) ';
+														}
+														//this function was added to ensure that the (nevermind :)
+														/*private function showInitialTextWithoutLineBreaks(myData:Object):String {
+														for(var i:uint = 0; i < 75; i++) {
+														if(myData.messages[myData.messages.length - 1].text.charAt(i) == "\n") {
+														break;
+														}
+														}
+														return myData.messages[myData.messages.length - 1].text.substr(0,i) + ' ';
+														}*/
+														private function showEllipsis():String {
+															return (data.messages[data.messages.length - 1].text.length <= 75) ? '' : '...';
+														}
+													]]>
+												</fx:Script>
+												
+												<mx:HBox width="17" >
+													<s:Image source="@Embed('images/messagesUrgent.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
+													<s:Image source="@Embed('images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
+												</mx:HBox>
+												
+												<mx:VBox verticalGap="3">
+													<s:Label text="{showNumberOfMessages() + data.subject}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
+													<s:Label text="{data.messages[data.messages.length - 1].text.substr(0,75) + showEllipsis()}" maxDisplayedLines="1" />
+												</mx:VBox>
+												
+											</mx:HBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn>
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:VBox>
+												<!--<fx:Script>
+												<![CDATA[
+												protected function image1_clickHandler(event:MouseEvent):void {
+												var item:Object = outerDocument.dgMessages.selectedItem;
+												//outerDocument.acTrash.addItem(item);
+												var index:int = outerDocument.messages.getItemIndex(item);
+												outerDocument.messages.removeItemAt(index);
+												}
+												]]>
+												</fx:Script>-->
+												<s:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete" /><!--buttonMode="true" click="image1_clickHandler(event)"-->
+											</mx:VBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+							</ASclasses:columns> 
+						</ASclasses:RowColorDataGrid>
+						
+						<mx:Text id="lblNoMessages" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
+								 htmlText="{'There are no matching search results for the requested search.&lt;br&gt;Please make sure all words are spelled correctly, or try different keywords.'}" />
+						
+						<mx:Text id="lblNoMessagesFolder" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
+								 text="There are no messages in this folder." />
+						
+					</s:NavigatorContent>
 					
-					<mx:Text id="lblNoMessages" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
-							 htmlText="{'There are no matching search results for the requested search.&lt;br&gt;Please make sure all words are spelled correctly, or try different keywords.'}" />
+					<s:NavigatorContent icon="@Embed('images/messagesNew.png')">
+						
+					</s:NavigatorContent>
 					
-					<mx:Text id="lblNoMessagesFolder" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
-							 text="There are no messages in this folder." />
-					
-				</s:NavigatorContent>
+				</mx:ViewStack>
 				
-				<s:NavigatorContent icon="@Embed('images/messagesNew.png')">
-					
-				</s:NavigatorContent>
+				<plus:TabBarPlus id="tabsMessages" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackMessages}" change="onTabChange(event)" />
 				
-			</mx:ViewStack>
+			</s:Group>
 			
-			<plus:TabBarPlus id="tabsMessages" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackMessages}" change="onTabChange(event)" />
-			
-		</s:Group>
+		</s:HGroup>
 		
-	</s:HGroup>
+	</s:VGroup>
 	
-</s:VGroup>
+	
+	
+</s:NavigatorContent>

@@ -216,16 +216,7 @@
 			</s:ComboBox>
 		</s:FormItem>
 		<s:FormItem label="To:" color="0xFFFFFF">
-			<s:ComboBox id="cbRecipients" prompt="Select a recipient" width="454" color="0x4D4D4D">
-				<s:dataProvider>
-					<mx:ArrayList>
-						<fx:String>a Physician</fx:String>
-						<fx:String>a Nurse</fx:String>
-						<fx:String>an Administrator</fx:String>
-						<fx:String>Front Desk</fx:String>
-					</mx:ArrayList>
-				</s:dataProvider>
-			</s:ComboBox>
+			<s:ComboBox id="cbRecipients" prompt="Select a recipient" width="454" color="0x4D4D4D" dataProvider="{model.recipientTypes}" labelField="label" />
 		</s:FormItem>
 		<s:FormItem>
 			<s:VGroup paddingLeft="24" width="430">

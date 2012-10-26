@@ -2,6 +2,8 @@ package controllers
 {
 	import controllers.BaseModuleController;
 	
+	import enum.RecipientType;
+	
 	import models.modules.MessagesModel;
 	
 	import mx.collections.ArrayCollection;
@@ -22,6 +24,16 @@ package controllers
 			super.init();
 			
 			var model:MessagesModel = model as MessagesModel;
+			
+			model.recipientTypes = new ArrayCollection
+				(
+					[
+						{label: "a Physician", data: RecipientType.PROVIDER},
+						{label:	"a Nurse", data: RecipientType.NURSE},
+						{label:	"an Administrator", data: RecipientType.ADMINISTRATOR},
+						{label:	"Front Desk", data: RecipientType.DESK}
+					]
+				);
 			
 			model.messages = new ArrayCollection
 				(

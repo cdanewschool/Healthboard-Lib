@@ -178,7 +178,7 @@
 	<s:Spacer width="100%" />
 
 	<s:HGroup gap="-1" visible="{showSearch}" includeInLayout="{showSearch}" paddingRight="{showBackground?38:0}">
-		<s:TextInput id="search" text="{searchPlaceholder}" fontSize="10" fontStyle="italic" color="0x999999" height="24" width="166" paddingTop="5" click="{if(search.text == searchPlaceholder) search.text=''}" change="{searchFunction!=null?searchFunction(search.text):null}" />
+		<s:TextInput id="search" text="{searchPlaceholder}" fontSize="10" fontStyle="italic" color="0x999999" height="24" width="166" paddingTop="5" click="{if(search.text == searchPlaceholder) search.text=''}" change="{searchFunction!=null?searchFunction():null}" />
 		<s:Button styleName="searchButtonIcon" width="24" height="24" />
 	</s:HGroup>
 	
