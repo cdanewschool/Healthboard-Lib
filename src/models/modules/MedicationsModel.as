@@ -9,10 +9,11 @@ package models.modules
 	{
 		public static const ID:String = "medications";
 		
-		public static const TYPE_ALL:String = "All";
-		public static const TYPE_ACTIVE:String = "Active";
+		public static const TYPE_ALL:String = "All Meds";
+		public static const TYPE_ACTIVE:String = "Current Meds";
+		public static const TYPE_DISCONTINUED:String = "Discontinued Meds";
 		
-		public static const TYPES:ArrayCollection = new ArrayCollection( [ TYPE_ALL, TYPE_ACTIVE ] );
+		public static const TYPES:ArrayCollection = new ArrayCollection( [ TYPE_ALL, TYPE_ACTIVE, TYPE_DISCONTINUED ] );
 	
 		public var medicationsData:ArrayCollection;
 		public var medicationsDataList:ArrayCollection;

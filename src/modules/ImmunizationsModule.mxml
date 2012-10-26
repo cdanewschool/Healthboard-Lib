@@ -443,10 +443,10 @@
 								<s:Label text="Date" paddingTop="1" />
 							</s:HGroup>
 							
-							<s:HGroup paddingLeft="117" paddingTop="-7" paddingBottom="-7">
-								<s:Line xFrom="0" xTo="678">
+							<s:HGroup paddingTop="-7" paddingBottom="-6"><!--paddingLeft="117"-->
+								<s:Line xFrom="0" xTo="795"><!--xTo="678"-->
 									<s:stroke>
-										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".6" />
+										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" />
 									</s:stroke>
 								</s:Line>
 							</s:HGroup>
@@ -466,7 +466,7 @@
 								
 								<mx:verticalAxisRenderers>
 									
-									<mx:AxisRenderer id="vAxisRendImmunizations" axis="{vAxisImmunizations}" tickPlacement="outside" tickLength="117" minorTickPlacement="inside" minorTickLength="678" labelGap="-117">
+									<mx:AxisRenderer id="vAxisRendImmunizations" axis="{vAxisImmunizations}" tickPlacement="none" minorTickPlacement="none"><!--tickPlacement="outside" tickLength="117" labelGap="-117" minorTickPlacement="inside" minorTickLength="678"-->
 										<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
 										<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
 										<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>
@@ -474,7 +474,7 @@
 										<!--http://help.adobe.com/en_US/flex/using/WS02f7d8d4857b1677355f601a126b41ed60e-8000.html-->
 										<mx:labelRenderer>
 											<fx:Component>
-												<mx:LinkButton click="outerDocument.showImmunizationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" paddingLeft="-3" paddingRight="2">
+												<mx:LinkButton click="outerDocument.showImmunizationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" paddingLeft="-3" paddingRight="-1">
 													<fx:Script>
 														<![CDATA[
 															[Bindable] private var myTip:String;
