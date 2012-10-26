@@ -22,5 +22,8 @@ package models.modules
 		public var pendingRecipients:Array;
 		
 		public var currentMainBox:String = INBOX;
+		
+		public var draftMessageCount:int;
+		public var unreadMessageCount:int;
 	}
 }

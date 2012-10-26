@@ -7,6 +7,7 @@ package controllers
 	import models.modules.MessagesModel;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.CollectionEvent;
 	
 	public class MessagesController extends BaseModuleController
 	{
@@ -113,6 +114,10 @@ package controllers
 			
 			model.messagesToDisplay = new ArrayCollection();
 			model.messagesTrash = new ArrayCollection();
+			
+			model.messages.addEventListener( CollectionEvent.COLLECTION_CHANGE, onMessagesChange );
+			
+			updateMessageCounts();
 		}
 		
 		public function showMessages( type:String ):void 
@@ -193,11 +198,17 @@ package controllers
 			else return (format == "normal") ? monthLabels[givenDate.getMonth()] + ' ' + givenDate.getDate() + ', ' + givenDate.getFullYear() : monthLabelsShort[givenDate.getMonth()] + ' ' + givenDate.getDate();
 		}
 		
-		public function getUnreadMessagesCount():int
+		private function onMessagesChange(event:CollectionEvent=null):void
+		{
+			updateMessageCounts();
+		}
+		
+		public function updateMessageCounts():void
 		{
 			var model:MessagesModel = model as MessagesModel;
 			
 			var unreadMessages:uint = 0;
+			var draftMessages:uint = 0;
 			
 			for(var i:uint = 0; i < model.messages.length; i++) 
 			{
@@ -218,29 +229,14 @@ package controllers
 				}
 			}
 			
-			return unreadMessages;
-		}
-		
-		public function getUnreadMessageCountString():String
-		{
-			var count:int = getUnreadMessagesCount();
-			
-			return count > 0 ? '(' + count + ')' : '';
-		}
-		
-		public function getDraftMessagesCount():String 
-		{
-			var model:MessagesModel = model as MessagesModel;
-			
-			var draftMessages:uint = 0;
-			
-			for(var i:uint = 0; i < model.messages.length; i++) {
+			for(var i:uint = 0; i < model.messages.length; i++) 
+			{
 				if(model.messages[i].isDraft) draftMessages++;
 			}
 			
-			return (draftMessages == 0) ? '' : ' (' + draftMessages + ')';
+			model.draftMessageCount = draftMessages;
+			model.unreadMessageCount = unreadMessages;
 		}
-		
 		
 		/**The following two functions were copied from the Adobe documentation:
 		 * http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/Date.html?filter_flash=cs5&filter_flashplayer=10.2&filter_air=2.6#getHours()

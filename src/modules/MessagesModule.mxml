@@ -280,9 +280,6 @@
 				//	refresh this message's datagrid so the msg we just replied is displayed
 				dgMessages.invalidateList();
 				dgMessages.percentHeight = 100;
-				
-				btnInbox.label = "Inbox " + controller.getUnreadMessageCountString();
-				btnDrafts.label = "Drafts " + controller.getDraftMessagesCount();
 			}
 			
 			private function openDraftMessage(myData:Object):void 
@@ -317,7 +314,6 @@
 			public function openMessage(myData:Object):void
 			{
 				var isMessageAlreadyOpen:Boolean = false;
-				var messageCount:String = controller.getUnreadMessageCountString();
 				
 				for(var j:uint = 0; j < model.openTabs.length; j++) 
 				{
@@ -343,7 +339,8 @@
 						viewStackMessages.addChildAt(viewMessage,viewStackMessages.length - 1);
 						tabsMessages.selectedIndex = viewStackMessages.length - 2;
 						
-						model.openTabs.push(myData);	
+						model.openTabs.push(myData);
+						
 						myData.status = "read";
 						
 						for(var i:uint = 0; i < myData.messages.length; i++) 
@@ -351,7 +348,7 @@
 							myData.messages[i].status = "read";
 						}
 						
-						btnInbox.label = "Inbox " + messageCount;
+						controller.updateMessageCounts();
 						
 						/*
 						if(messageCount == '') {
@@ -381,8 +378,6 @@
 			
 			protected function dgMessages_itemClickHandler(event:ListEvent):void 
 			{
-				var messageCount:String = controller.getUnreadMessageCountString();
-				
 				//	column with checkbox
 				if(event.columnIndex == 1) 
 				{		
@@ -394,10 +389,8 @@
 					if(model.currentMainBox != MessagesModel.TRASH) 
 					{
 						model.messagesTrash.addItem( model.messages.removeItemAt(model.messages.getItemIndex(event.itemRenderer.data) ) );
-						//messages.removeItemAt(event.rowIndex);
 						
-						btnInbox.label = "Inbox " + controller.getUnreadMessageCountString();
-						btnDrafts.label = "Drafts " + controller.getDraftMessagesCount();
+						controller.updateMessageCounts();
 						
 						/*
 						if(messageCount == '') {
@@ -605,8 +598,6 @@
 			
 			private function deleteMultiple():void 
 			{
-				var messageCount:String = controller.getUnreadMessageCountString();
-				
 				if( model.currentMainBox != MessagesModel.TRASH ) 
 				{
 					for(var i:uint = 0; i < selectedMessages.length; i++) 
@@ -614,8 +605,7 @@
 						model.messagesTrash.addItem(model.messages.removeItemAt(model.messages.getItemIndex(selectedMessages[i])));
 					}
 					
-					btnInbox.label = "Inbox " + messageCount;
-					btnDrafts.label = "Drafts " + controller.getDraftMessagesCount();
+					controller.updateMessageCounts();
 					
 					/*
 					if(messageCount == '') {
@@ -645,8 +635,6 @@
 			
 			private function markUnread():void 
 			{
-				var messageCount:String = controller.getUnreadMessageCountString();
-				
 				if(model.currentMainBox != "Trash") 
 				{
 					for(var i:uint = 0; i < selectedMessages.length; i++) 
@@ -659,16 +647,7 @@
 						}
 					}
 					
-					if(messageCount != '') 
-					{
-						btnInbox.label = "Inbox " + messageCount;
-						
-						/*
-						lblMessagesNumber.text = messageCount.substr(2,1);
-						lblMessagesNumber.setStyle("color","0xFF931E");
-						lblMessagesNumber.setStyle("fontWeight","bold");
-						*/
-					}		
+					controller.updateMessageCounts();
 					
 					refreshDisplayedMessages();
 				}
@@ -977,11 +956,11 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup creationComplete="init()" width="100%">
+	<s:VGroup creationComplete="init()" width="100%" paddingTop="10">
 		
 		<components:ModuleHeader 
 			id="messagesHeader"
-			title="Messages" actionPrefix="You have" actionSuffix="new messages." actionCount="{controller.getUnreadMessagesCount()}"
+			title="Messages" actionPrefix="You have" actionSuffix="new messages." actionCount="{model.unreadMessageCount}"
 			searchPlaceholder="Search messages" searchFunction="searchFilter" showSearch="true" 
 			showBackground="false" creationComplete="{messagesHeader.showBackground = currentState == 'provider';messagesHeader.icon = (currentState=='provider'?btnPatient:btnHome)}" />
 		
@@ -991,8 +970,8 @@
 			
 			<s:VGroup width="100%" paddingTop="15" paddingLeft="7" gap="7" styleName="whiteText13">
 				<s:Label text="MAILBOXES" styleName="greenBoldText" paddingLeft="-4" paddingBottom="3" />
-				<mx:LinkButton id="btnInbox" label="{'Inbox '+controller.getUnreadMessageCountString()}" click="showMessages( MessagesModel.INBOX )" styleName="messageFolderSelected" />
-				<mx:LinkButton id="btnDrafts" label="{'Drafts '+controller.getDraftMessagesCount()}" click="showMessages( MessagesModel.DRAFT )" />
+				<mx:LinkButton id="btnInbox" label="Inbox{model.unreadMessageCount ? ' (' + model.unreadMessageCount + ')' : ''}" click="showMessages( MessagesModel.INBOX )" styleName="messageFolderSelected" />
+				<mx:LinkButton id="btnDrafts" label="Drafts{model.draftMessageCount ? ' (' + model.draftMessageCount + ')' : ''}" click="showMessages( MessagesModel.DRAFT )" />
 				<mx:LinkButton id="btnSent" label="Sent" click="showMessages( MessagesModel.SENT )" />
 				<mx:LinkButton id="btnTrash" label="Trash" click="showMessages( MessagesModel.TRASH )" />
 			</s:VGroup>

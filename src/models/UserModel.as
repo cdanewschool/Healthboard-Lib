@@ -36,13 +36,6 @@ package models
 			this.userType = type;
 		}
 		
-		
-		public function addChat( chat:Chat ):void
-		{
-			if( !chatHistory ) chatHistory = new ArrayCollection();
-			chatHistory.addItem( chat );
-		}
-		
 		public function get fullName():String
 		{
 			return firstName + ' ' + lastName;
