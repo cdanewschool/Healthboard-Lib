@@ -24,8 +24,8 @@
 		<s:fill>
 			<s:SolidColor color.overStates="{getStyle('rollOverColor')}"
 						  alpha.overStates="0"
-						  color.downStates="0x00ADEE"
-						  color.selectedStates="0x00ADEE"
+						  color.downStates="0xEDA006"
+						  color.selectedStates="0xEDA006"
 						  alpha="1.0" />
 		</s:fill>
 	</s:Rect>

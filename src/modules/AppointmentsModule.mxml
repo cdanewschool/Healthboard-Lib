@@ -609,7 +609,7 @@
 							id="appointmentsList" dataProvider="{DataHolder.getInstance().dataProvider}" styleName="standardDataGrid"
 							width="100%" height="100%"
 							change="appointmentsListSelection()"
-							selectionColor="0x00ADEE" rollOverColor="0x00ADEE" 
+							selectionColor="0xEDA006" 
 							headerHeight="28" headerStyleName="dataGridHeader"
 							rowHeight="27" verticalGridLines="false" creationComplete="appointmentsList.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE, false, true, 0, null, 0, null, null, 0));"><!--http://www.hsharma.com/air/auto-sort-datagrid-column-in-flex-3/-->	<!--originally rollOverColor="0x286982"--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
 							

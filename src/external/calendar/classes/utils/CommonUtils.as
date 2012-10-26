@@ -197,14 +197,14 @@ package external.calendar.classes.utils
 							if(obj.mins == 0){
 								objHourCell.btnFirstHalf.label = obj.desc;	//timeSlots[CommonUtils.formatHourCellDate(objHourCell)].reason;
 								objHourCell.btnFirstHalf.visible = true;
-								objHourCell.btnFirstHalf.styleName = "btnRequestedAppointments";
+								objHourCell.btnFirstHalf.styleName = obj.selected ? "btnSelectedAppointments" : "btnRequestedAppointments";
 								objHourCell.btnFirstHalf.buttonMode = false;
 								objHourCell.btnFirstHalf.id = currentDate + '1';		//added
 								objHourCell.btnFirstHalf.addEventListener(MouseEvent.CLICK, func(obj));		//see original below
 							}else{
 								objHourCell.btnSecondHalf.label = obj.desc;		//timeSlots[CommonUtils.formatHourCellDate(objHourCell)].reason;
 								objHourCell.btnSecondHalf.visible = true;
-								objHourCell.btnSecondHalf.styleName = "btnRequestedAppointments";
+								objHourCell.btnSecondHalf.styleName = obj.selected ? "btnSelectedAppointments" : "btnRequestedAppointments";
 								objHourCell.btnSecondHalf.buttonMode = false;
 								objHourCell.btnSecondHalf.id = currentDate + '2';		//added
 								objHourCell.btnSecondHalf.addEventListener(MouseEvent.CLICK, func(obj));	//see original below

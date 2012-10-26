@@ -494,11 +494,11 @@
 						
 						<s:HGroup width="100%" horizontalAlign="right" paddingRight="5">
 							
-							<s:Label text="Status:" paddingTop="7" color="#FFFFFF" />
+							<s:Label text="View:" paddingTop="7" color="#FFFFFF" />
 							
 							<s:DropDownList 
 								id="dropMediFilter" 
-								height="24" width="70" 
+								height="24" width="110" 
 								styleName="buttonText" selectedItem="{model.type}" 
 								dataProvider="{MedicationsModel.TYPES}"
 								change="model.type = dropMediFilter.selectedItem;controller.filterMedsFromStatus(); updateHeightAndColors();" />

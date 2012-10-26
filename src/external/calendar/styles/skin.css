@@ -41,6 +41,19 @@ mx|Button.btnRequestedAppointments
 	paddingBottom: 0;
 }
 
+mx|Button.btnSelectedAppointments
+{
+	upSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	overSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	downSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	disabledSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	selectedUpSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	selectedOverSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	selectedDownSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	selectedDisabledSkin:ClassReference('external.calendar.classes.skins.ButtonSelectedAppointments');
+	textAlign: left;
+	paddingBottom: 0;
+}
 
 /* title for showing date used in day and week view */
 s|Label.lblViewTitle
