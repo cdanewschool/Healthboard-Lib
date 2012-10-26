@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enhancedtitlewindow:EnhancedTitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:enhancedtitlewindow="external.collapsibleTitleWindow.components.enhancedtitlewindow.*" title="{'Messages ' + controller.getUnreadMessageCountString() }" >
+	<fx:Script>
+		<![CDATA[
+			import ASclasses.Constants;
+			
+			import events.ApplicationEvent;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import controllers.MessagesController;
+			
+			import models.modules.MessagesModel;
+			
+			[Bindable] public var controller:MessagesController = AppProperties.getInstance().controller.messagesController as MessagesController;
+			[Bindable] public var model:MessagesModel = controller.model as MessagesModel;
+		]]>
+	</fx:Script>
+	
+	<enhancedtitlewindow:layout>
+		<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+	</enhancedtitlewindow:layout>
+	
+	<mx:DataGrid 
+		id="datagrid"
+		dataProvider="{model.messagesToDisplay}" creationComplete="controller.showMessages( MessagesModel.INBOX )" buttonMode="true"
+		width="100%" itemClick="model.pendingMessage = event.itemRenderer.data; dispatchEvent( new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, Constants.MODULE_MESSAGES ) );"
+		color="0xFFFFFF" verticalAlign="middle"
+		selectable="false"
+		headerHeight="0"
+		borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x3C3C3B]"
+		horizontalScrollPolicy="off" verticalScrollPolicy="off" rowCount="4" rowHeight="18">
+		
+		<mx:columns>
+			<mx:DataGridColumn dataField="correspondent">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:HBox horizontalScrollPolicy="off" paddingTop="-3">
+							<fx:Script>
+								<![CDATA[
+									private function showEllipsis():String 
+									{
+										return (data.subject.length <= 13) ? '' : '...';
+									}
+								]]>
+							</fx:Script>
+							
+							<mx:HBox width="11" paddingTop="6">
+								<s:Image source="@Embed('images/messagesUrgentSmall.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
+								<s:Image source="@Embed('images/messagesSomewhatUrgentSmall.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
+							</mx:HBox>
+							
+							<s:Label text="{outerDocument.controller.displayTime(data.date, 'short')}" fontSize="12" width="62" color="0x868686" paddingTop="6" />
+							<s:Label text="{data.correspondent}" color="0xFFFFFF" fontSize="12" width="90" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" paddingTop="6" />
+							<mx:LinkButton id="btnWidgetMessage" label="{data.subject.substr(0,13) + showEllipsis()}" fontSize="12" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnWidgetMessage.styleName='linkBtnUnderline';}" rollOut="btnWidgetMessage.styleName='linkBtn';" paddingLeft="-3" />
+						</mx:HBox>
+					</fx:Component>
+				</mx:itemRenderer>
+			</mx:DataGridColumn>
+		</mx:columns>
+	</mx:DataGrid>
+	
+	<s:HGroup paddingLeft="20" paddingTop="-6" gap="2">
+		<s:Label fontSize="12" color="0x868686" text="{'...plus ' + (model.messagesToDisplay.length - datagrid.rowCount) + ' more ' + (model.messagesToDisplay.length - datagrid.rowCount == 1 ? 'message.' : 'messages.')}" visible="{model.messagesToDisplay.length > datagrid.rowCount}" includeInLayout="{model.messagesToDisplay.length > 4}" paddingTop="6" />
+		<mx:LinkButton id="btnWidgetAllMessages" label="View All »" fontSize="12" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnWidgetAllMessages.styleName='linkBtnUnderline';}" rollOut="btnWidgetAllMessages.styleName='linkBtn';" click="dispatchEvent( new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, Constants.MODULE_MESSAGES ) );" paddingLeft="-3" />
+	</s:HGroup>
+	
+</enhancedtitlewindow:EnhancedTitleWindow>
