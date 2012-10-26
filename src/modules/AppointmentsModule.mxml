@@ -227,6 +227,10 @@
 				cancelAppointmentPopup.removeEventListener( AppointmentEvent.CANCEL_APPOINTMENT, onCancelAppointment );
 				
 				cancelAppointmentPopup = null;
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your appointment has been cancelled";
+				dispatchEvent( evt );
 			}
 			
 			private function onDateScroll():void
