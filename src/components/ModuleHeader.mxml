@@ -81,7 +81,7 @@
 			{
 				if( timer == null )
 				{
-					timer = new Timer( DateUtil.SECOND * 2, 1 );
+					timer = new Timer( DateUtil.SECOND * 4, 1 );
 					timer.addEventListener( TimerEvent.TIMER_COMPLETE, onStatusDelay );
 				}
 				
@@ -163,13 +163,13 @@
 	
 	<s:HGroup id="status" paddingLeft="30" visible="false" includeInLayout="{statusMessage!=null}" hideEffect="fade">
 		
-		<s:BorderContainer backgroundColor="0xFFFFFF">
+		<s:BorderContainer backgroundColor="0xF7F4E9" borderVisible="false" height="28">
 			
 			<s:layout>
-				<s:HorizontalLayout paddingLeft="10" paddingTop="5" paddingRight="10" paddingBottom="5" verticalAlign="middle" />
+				<s:HorizontalLayout paddingLeft="10" paddingTop="7" paddingRight="10" paddingBottom="6" verticalAlign="middle" />
 			</s:layout>
 			
-			<s:Label text="{statusMessage}" />
+			<s:Label text="{statusMessage}" fontStyle="italic" fontSize="16" />
 			
 		</s:BorderContainer>
 		
