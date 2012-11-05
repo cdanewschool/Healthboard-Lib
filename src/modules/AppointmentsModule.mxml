@@ -519,7 +519,7 @@
 					
 				</s:VGroup>
 				
-				<s:Label text="Recommended" styleName="subtitles" textAlign="center" width="100%" paddingTop="23" />
+				<s:Label text="Next Steps" styleName="subtitles" textAlign="center" width="100%" paddingTop="23" />
 				
 				<!--	TODO: populate recommendations dynamically	-->
 				<s:Label text="Tetanus Vaccination" styleName="smallText" paddingLeft="9" paddingTop="15" />
