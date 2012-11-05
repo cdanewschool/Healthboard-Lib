@@ -18,10 +18,10 @@ package models.modules
 		public var medicalRecordsCategoriesTree:ArrayCollection = new ArrayCollection
 			(
 				[
-					{category: "Visits", children: []},
-					{category: "Diagnostic Studies", children: []},
-					{category: "Surgeries"},
-					{category: "Procedures"}
+					{category: "Doctor Visits", children: []},
+					{category: "Tests", children: []},
+					{category: "Procedures"},
+					{category: "Surgeries"}
 				]
 			);
 		

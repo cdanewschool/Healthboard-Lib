@@ -110,7 +110,7 @@
 			private function filterMedRec(item:Object):Boolean 
 			{
 				var myOpenLeaves:Array = new Array();
-				var arrMedRecCategories:Array = new Array("Visits","Diagnostic Studies","Surgeries","Procedures");
+				var arrMedRecCategories:Array = new Array("Doctor Visits","Tests","Procedures","Surgeries");
 				var myOpenCategories:Array = new Array();
 				
 				for(var i:uint = 0; i < myTreeMedRec.openItems.length; i++)
@@ -185,7 +185,7 @@
 				
 				for(var i:uint = 0; i < medicalRecordsCategoriesReversed.length; i++) 
 				{
-					if(medicalRecordsCategoriesReversed[i] == "Visits" || medicalRecordsCategoriesReversed[i] == "Diagnostic Studies" || medicalRecordsCategoriesReversed[i] == "Surgeries" || medicalRecordsCategoriesReversed[i] == "Procedures") {
+					if(medicalRecordsCategoriesReversed[i] == "Doctor Visits" || medicalRecordsCategoriesReversed[i] == "Tests" || medicalRecordsCategoriesReversed[i] == "Surgeries" || medicalRecordsCategoriesReversed[i] == "Procedures") {
 						currentCategory++;
 						currentLeaf = 0;
 					}
