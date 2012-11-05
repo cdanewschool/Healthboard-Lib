@@ -8,6 +8,8 @@
 		<![CDATA[
 			import controllers.ExerciseController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.ExerciseModel;
 			
 			import mx.controls.Alert;
@@ -27,7 +29,9 @@
 			{
 				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
 			}
-			protected function stopPropagation(event:Event):void {
+			
+			protected function stopPropagation(event:Event):void 
+			{
 				event.stopImmediatePropagation();
 			}
 			
@@ -47,6 +51,10 @@
 			
 			private function addUntrackableExercise():void 
 			{
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your exercise has been recorded";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
+				
 				model.exerciseDataByMeasurePersonal.addItemAt({measure: txtName.text, chartMin:15, chartMax:45, chartType: 'untrackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 1);
 				model.exerciseDataByMeasurePersonal.refresh();
 				PopUpManager.removePopUp(this);

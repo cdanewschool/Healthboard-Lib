@@ -228,9 +228,12 @@
 				
 				cancelAppointmentPopup = null;
 				
-				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-				evt.data = "Your appointment has been cancelled";
-				dispatchEvent( evt );
+				if( event )
+				{
+					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					evt.data = "Your appointment has been cancelled";
+					dispatchEvent( evt );
+				}
 			}
 			
 			private function onDateScroll():void
@@ -248,8 +251,6 @@
 			{
 				model.currentDate = _event.object.date;
 				
-				onDateChange();
-				
 				stackViews.selectedIndex = 0;
 				
 				//	TODO: make this a button bar, so we don't have to manually set colors
@@ -258,6 +259,10 @@
 			
 			private function onMonthViewAddClass( event:AppointmentEvent ):void
 			{
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your appointment has been added";
+				dispatchEvent( evt );
+				
 				selectedAppointment = event.data;
 				populateLeftColumn();
 			}

@@ -19,6 +19,8 @@
 		<![CDATA[
 			import controllers.VitalSignsController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.VitalSignsModel;
 			
 			import mx.collections.ArrayCollection;
@@ -29,9 +31,8 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			
-			import spark.components.TextInput;
 			import spark.components.List;
-			
+			import spark.components.TextInput;
 			import spark.events.DropDownEvent;
 			import spark.events.IndexChangeEvent;
 			
@@ -172,6 +173,10 @@
 					else if(Number(txtDiastolic.text) < (model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMin + 20)) model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMin = Number(txtDiastolic.text) - 20;
 					
 				}
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = goal ? "Your goal has been edited" : "Your goal has been saved";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
 				
 				model.vitalSigns.refresh();
 				

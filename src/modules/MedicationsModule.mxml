@@ -37,16 +37,17 @@
 		<![CDATA[
 			import ASclasses.MyCustomDataTip;
 			
-			import components.tabs.MedicationDetails;
 			import components.medications.medTips;
 			import components.medications.myAddMedication1Window;
 			import components.popups.myChartPopupWindow;
+			import components.tabs.MedicationDetails;
 			
 			import controllers.MedicationsController;
 			
 			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
 			
 			import models.modules.MedicationsModel;
 			
@@ -152,6 +153,10 @@
 					myChartPopup.medMeridiem = myDate.substr(-2);
 					myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
 				}
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your intake has been updated";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
 			}
 			
 			private function medicationsSetMinMax():void 

@@ -98,7 +98,7 @@
 			private var thisSunday:Date = new Date(today.getTime() - today.getDay() * DateUtil.DAY);
 			private var thisSaturday:Date = new Date(thisSunday.getTime() + 6 * DateUtil.DAY);
 			
-			[Bindable] private var glassesTaken:uint = 0;
+ 			private var _glassesTaken:uint = 0;
 			
 			private var arrMonthlyCalories1:Array = new Array(1900,1970,2000,1900,2150,1800,2000,1900,2050,1750,2000,1900,1750,1800,2100,2000,1900,2000,1800,1800,1900,2150,1600,1900,1700,2000,1650,1800,2200,475);
 			private var arrMonthlyCalories2:Array = new Array(2000,1800,1900,1600,1700,1700,2100,1800,1900,2000,2000,2050,1750,1900,2100,2150,2000,2100,1800,1600,1800,1900,2000,1900,2150,1800,1600,2000,2150,1900);
@@ -106,6 +106,26 @@
 			
 			[Bindable] public var nutritionRollOverRowIndex:int = -2;
 			
+			[Bindable]
+			public function get glassesTaken():uint
+			{
+				return _glassesTaken;
+			}
+			
+			public function set glassesTaken(value:uint):void
+			{
+				var dirty:Boolean = _glassesTaken != value;
+				
+				_glassesTaken = value;
+				
+				if( dirty )
+				{
+					var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					event.data = "Your water intake has been recorded";
+					dispatchEvent( event );
+				}
+			}
+
 			private function onNutritionRollOver(event:ListEvent):void
 			{
 				nutritionRollOverRowIndex = event.rowIndex;
@@ -175,6 +195,10 @@
 				
 				nutritionJournal.rowCount++;
 				nutritionJournal.rowCount--;		//this is a quick trick to get nutritionJournal.rowCount to refresh
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your meal has been recorded";
+				dispatchEvent( event );
 				
 				clearForm();
 			}
@@ -1695,6 +1719,9 @@
 														<fx:Script>
 															<![CDATA[
 																import components.popups.nutrition.saveMealWindow;
+																
+																import events.ApplicationEvent;
+																
 																import mx.managers.PopUpManager;
 																
 																protected function nutDeleteHandler(event:MouseEvent):void 
@@ -1703,6 +1730,10 @@
 																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
 																	
 																	outerDocument.model.foodJournal.removeItemAt(index);
+																	
+																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																	evt.data = "Your meal has been deleted";
+																	dispatchEvent( evt );
 																}
 																
 																protected function saveMealPrompt(event:MouseEvent):void 
@@ -1714,6 +1745,10 @@
 																	
 																	mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
 																	mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
+																	
+																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																	evt.data = "Your meal has been added";
+																	AppProperties.getInstance().controller.application.dispatchEvent( evt );
 																	
 																	PopUpManager.centerPopUp(mySaveMealWindow);
 																}

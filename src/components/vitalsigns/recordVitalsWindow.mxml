@@ -7,6 +7,8 @@
 		<![CDATA[
 			import controllers.VitalSignsController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.VitalSignsModel;
 			
 			import mx.controls.Alert;
@@ -216,6 +218,10 @@
 				
 				model.vitalSigns.refresh();
 				model.vitalSignsByDate.refresh();
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your vital has been recorded";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
 				
 				//parentApplication.chartMax = new Date(2012,5,5);
 				PopUpManager.removePopUp(this);

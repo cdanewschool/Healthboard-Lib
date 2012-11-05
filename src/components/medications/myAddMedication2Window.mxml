@@ -8,6 +8,8 @@
 		<![CDATA[
 			import controllers.MedicationsController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.MedicationsModel;
 			
 			import mx.collections.ArrayCollection;
@@ -175,6 +177,10 @@
 						
 						takenFirstDay = false;	//first day is over, so we set this to false as we loop through the rest of the days
 					}
+					
+					var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					event.data = "Your intake has been added";
+					AppProperties.getInstance().controller.application.dispatchEvent( event );
 					
 					PopUpManager.removePopUp(this);
 				}

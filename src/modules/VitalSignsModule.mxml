@@ -37,6 +37,7 @@
 			
 			import enum.DateRanges;
 			
+			import events.ApplicationEvent;
 			import events.VitalsEvent;
 			
 			import models.modules.VitalSignsModel;
@@ -123,18 +124,20 @@
 			private function addTracker():void 
 			{
 				var myAddTracker:addTrackerWindow = addTrackerWindow(PopUpManager.createPopUp( AppProperties.getInstance().controller.application, addTrackerWindow ) as spark.components.TitleWindow );
-				myAddTracker.addEventListener( VitalsEvent.ADD, onAddVital );
-				
+				myAddTracker.addEventListener( VitalsEvent.ADD_TRACKER, onAddTracker );
 				PopUpManager.centerPopUp(myAddTracker);
 			}
 			
-			private function onAddVital( event:VitalsEvent ):void
+			private function onAddTracker( event:VitalsEvent ):void
 			{
 				var myNewLinkButton:LinkButton = new LinkButton();
 				myNewLinkButton.label = event.data.vital;
 				
 				vgVitalsButtons.addElement( myNewLinkButton );			
 				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your tracker has been added";
+				AppProperties.getInstance().controller.application.dispatchEvent( evt );
 			}
 			
 			private function setDateRange(range:String=null):void

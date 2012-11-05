@@ -43,6 +43,7 @@
 			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
 			import events.AppointmentEvent;
 			
 			import external.TabBarPlus.plus.TabPlus;
@@ -576,7 +577,7 @@
 					
 					<s:Button label="Set Next Steps" height="24" styleName="buttonText" click="onSetNextSteps()" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" />
 					<s:Button label="Print" height="24" styleName="buttonText" />
-					<s:Button label="Export" height="24" styleName="buttonText" />
+					<s:Button label="Export" height="24" styleName="buttonText" click="dispatchEvent( new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true, false, 'Your file has been exported') )" />
 					
 					<s:Spacer width="100%" />
 					<s:Label id="lblSearchResultsMedRec" visible="false" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="260" maxDisplayedLines="1" />
