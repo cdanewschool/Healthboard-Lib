@@ -160,16 +160,12 @@ package controllers
 			
 			for(var i:uint = 0; i < medicationsCategoriesReversed.length; i++) 
 			{
-				if( medicationsCategoriesReversed[i] == "Prescription Drugs" 
-					|| medicationsCategoriesReversed[i] == "Over-The-Counter Drugs" 
-					|| medicationsCategoriesReversed[i] == "Supplements" 
-					|| medicationsCategoriesReversed[i] == "Herbal Medicines" ) 
-				{
+				if(medicationsCategoriesReversed[i] == "Prescription Drugs" || medicationsCategoriesReversed[i] == "Over-The-Counter Drugs" || medicationsCategoriesReversed[i] == "Supplements" || medicationsCategoriesReversed[i] == "Herbal Medicines") {
 					currentCategory++;
 					currentLeaf = 0;
 				}
-				else 
-				{
+				else {
+					if(currentCategory == -1) currentCategory = 0;	//THIS LINE PREVENTS AN ERROR WHEN FILTERING ONLY DISCONTINUED MEDS, IT SHOULDN'T BE HERE, PLEASE REVISE LATER.
 					var newLeaf:Object = new Object();
 					newLeaf = ({category: medicationsCategoriesReversed[i]});
 					model.medicationsCategoriesTree[currentCategory].children[currentLeaf] = newLeaf;
@@ -189,7 +185,9 @@ package controllers
 		//the original function was left untouched (see below filterMedications2), but it's only used when updating filterMedsFromTreeNew()...
 		private function filterMedications(item:Object):Boolean 
 		{
-			return MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE ? item.status != "inactive" : true;
+			if(MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE) return item.status != "inactive";
+			else if(MedicationsModel(model).type == MedicationsModel.TYPE_DISCONTINUED) return item.status == "inactive";
+			else return true;
 		}
 		
 		public function filterMedsFromWidget():void 
