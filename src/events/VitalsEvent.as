@@ -4,7 +4,7 @@ package events
 	
 	public class VitalsEvent extends Event
 	{
-		public static const ADD:String = "VitalsEvent.ADD";
+		public static const ADD_TRACKER:String = "VitalsEvent.ADD_TRACKER";
 		
 		public var data:*;
 		
