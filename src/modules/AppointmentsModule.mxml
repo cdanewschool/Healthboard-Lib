@@ -21,6 +21,7 @@
 		<![CDATA[
 			import ASclasses.Constants;
 			
+			import components.general.MultilineLinkButton;
 			import components.popups.myAppointmentsWindow;
 			import components.popups.myClassesWindow;
 			import components.popups.myConfirmCancelWindow;
@@ -169,21 +170,34 @@
 				
 				for(var i:uint = 0; i < appointments.length; i++) 
 				{
-					var myUpcomingApptLabel:Label = new Label();
+					var myUpcomingApptLabel:LinkButton = new MultilineLinkButton();
+					myUpcomingApptLabel.styleName = "linkBtnBlue";
+					myUpcomingApptLabel.setStyle('textAlign', "left");
+					myUpcomingApptLabel.addEventListener(MouseEvent.CLICK,onUpcomingAppointmentClick);
+					
 					var obj:Object = appointments[i];
 					
 					if( obj.status != AppointmentStatus.COMPLETED ) 
 					{
+						myUpcomingApptLabel.data = obj;
+						
 						var label:String = obj.provider + " - " + obj.desc + "\n";
 						label += String(obj.date).substr(0,3) + ", " + String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " hrs";
 						
-						myUpcomingApptLabel.text = label;
+						myUpcomingApptLabel.label = label;
 						
 						upcomingAppts.addElement( myUpcomingApptLabel );
 					}
 					
 					if( obj.date.time > today.time ) upcomingAppointmentCount++;
 				}
+			}
+			
+			private function onUpcomingAppointmentClick(event:MouseEvent):void
+			{
+				var link:LinkButton = LinkButton(event.currentTarget);
+				
+				selectedAppointment = link.data;
 			}
 			
 			private function onCancelAppointmentClick():void 
@@ -514,13 +528,13 @@
 		
 		<s:HGroup>
 			
-			<s:VGroup width="150" height="100%" gap="3">
+			<s:VGroup width="160" height="100%" gap="3">
 				
-				<s:VGroup width="150" height="100%" gap="3" visible="{currentState == STATE_DEFAULT}" includeInLayout="{currentState == STATE_DEFAULT}">
+				<s:VGroup width="160" height="100%" gap="3" visible="{currentState == STATE_DEFAULT}" includeInLayout="{currentState == STATE_DEFAULT}">
 					
 					<s:Label text="Upcoming" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
 				
-					<s:VGroup id="upcomingAppts" styleName="smallText" paddingLeft="9" paddingTop="15" width="100%" gap="14" />
+					<s:VGroup id="upcomingAppts" styleName="smallText" paddingLeft="9" paddingTop="15" width="160" gap="14" />
 					
 				</s:VGroup>
 				
