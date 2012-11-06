@@ -68,6 +68,8 @@
 			
 			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
+			import util.DateFormatters;
+			import util.DateUtil;
 			
 			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
@@ -161,13 +163,15 @@
 			
 			private function medicationsSetMinMax():void 
 			{
-				hAxisMedications.minimum = model.minDate;	//new Date( "Oct 1 2010 12:00:00 PM");
-				hAxisMedications.maximum = model.maxDate;	//new Date( "Oct 1 2011 12:00:00 PM");
+				updateDateRange();
 				
 				canvasMed.lineStyle(100,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
 				
-				canvasMed.moveTo('06/16/2012 12:00:00 PM','Prescription Drugs');
-				canvasMed.lineTo('06/16/2012 12:00:00 PM','Herbal Medicines');
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				var date:Date = new Date( today.fullYear, today.month, today.date, 12 );
+				
+				canvasMed.moveTo( DateFormatters.dateTimeShort.format(date),'Prescription Drugs');
+				canvasMed.lineTo( DateFormatters.dateTimeShort.format(date),'Herbal Medicines');
 			}
 			
 			private function applyCustomDataTips():void 
@@ -184,10 +188,17 @@
 			
 			private function updateDateRange():void 
 			{
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				
+				model.minDate = new Date( today.fullYear, today.month, today.date );
+				model.maxDate = new Date( today.fullYear, today.month, today.date );
+				
+				model.minDate.time += DateUtil.DAY;
+				model.maxDate.time += DateUtil.DAY;
+				
 				if( model.dateRange == DateRanges.WEEK ) 
 				{
-					model.minDate = new Date( "Jun 13 2012 12:00:00 AM");
-					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
+					model.minDate.time -= DateUtil.WEEK;
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medicationsVerticalGridLine.alpha = 0;
@@ -197,8 +208,7 @@
 				}
 				else if(model.dateRange == DateRanges.MONTH) 
 				{
-					model.minDate = new Date("May 19 2012 12:00:00 PM");
-					model.maxDate = new Date("Jun 19 2012 12:00:00 PM");
+					model.minDate.time -= DateUtil.MONTH;
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medicationsVerticalGridLine.alpha = 0;
@@ -208,8 +218,7 @@
 				}
 				else if(model.dateRange == DateRanges.MONTH_THREE) 
 				{
-					model.minDate = new Date( "Mar 19 2012 12:00:00 PM");
-					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.MONTH * 3);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medicationsVerticalGridLine.alpha = 0;
@@ -219,8 +228,7 @@
 				}
 				else if(model.dateRange == DateRanges.YEAR) 
 				{
-					model.minDate = new Date( "Aug 20 2011 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medicationsVerticalGridLine.alpha = 0;
@@ -230,8 +238,7 @@
 				}
 				else if(model.dateRange == DateRanges.YEAR_THREE) 
 				{
-					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR * 3);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medicationsVerticalGridLine.alpha = 0.3;
@@ -241,8 +248,7 @@
 				}
 				else
 				{
-					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR * 3);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medicationsVerticalGridLine.alpha = 0.3;
@@ -424,6 +430,7 @@
 			{
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
+				model.medicationsData.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				//model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				
@@ -435,6 +442,11 @@
 				controller.filterMedsFromStatus();
 				
 				updateHeightAndColors();
+			}
+			
+			protected function onRecordIntakeClick(event:MouseEvent):void
+			{
+				
 			}
 			
 			private function init():void
@@ -489,6 +501,7 @@
 						
 						<s:HGroup gap="3">
 							
+							<s:Button label="Record Intake" height="24" styleName="buttonText" visible = "{currentState=='default'}" includeInLayout = "{currentState=='default'}" click="onRecordIntakeClick(event)" />
 							<s:Button label="+ Add Medication" height="24" styleName="buttonText" click="addMedication()" />
 							<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}" />
 							<s:Button label="Print" height="24" width="51" styleName="buttonText" />
