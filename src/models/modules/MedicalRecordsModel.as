@@ -11,9 +11,10 @@ package models.modules
 		
 		public var medicalRecordsData:ArrayCollection = new ArrayCollection();
 		public var medicalRecordsDataGrid:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsCategories:ArrayCollection;
-		public var medicalRecordsNextSteps:ArrayCollection;
-		public var medicalRecordsProblemList:ArrayCollection;
+		public var medicalRecordsCategories:ArrayCollection = new ArrayCollection();
+		public var medicalRecordsNextSteps:ArrayCollection = new ArrayCollection();
+		public var medicalRecordsNextStepsActive:ArrayCollection = new ArrayCollection();
+		public var medicalRecordsProblemList:ArrayCollection = new ArrayCollection();
 		
 		public var medicalRecordsCategoriesTree:ArrayCollection = new ArrayCollection
 			(
