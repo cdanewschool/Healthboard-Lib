@@ -8,6 +8,8 @@
 		<![CDATA[
 			import controllers.ExerciseController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.ExerciseModel;
 			
 			import mx.controls.Alert;
@@ -112,6 +114,10 @@
 				
 				model.exerciseDataByMeasurePhysicianAssigned.refresh();
 				model.exerciseDataPhysicianAssigned.refresh();
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your exercise has been recorded";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
 				
 				//model.chartMax = new Date(2012,5,5);*/
 				PopUpManager.removePopUp(this);

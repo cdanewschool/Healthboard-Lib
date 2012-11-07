@@ -112,7 +112,7 @@
 				
 				//parentApplication.chartMax = new Date(2012,5,5);*/
 				
-				var event:VitalsEvent = new VitalsEvent( VitalsEvent.ADD, true );
+				var event:VitalsEvent = new VitalsEvent( VitalsEvent.ADD_TRACKER, true );
 				event.data = vital
 				dispatchEvent( event );
 				

@@ -29,5 +29,11 @@ package util
 		
 		public static var syncTime:DateFormatter = new DateFormatter();
 		syncTime.formatString = "L:NNA MM/DD/YYYY";
+		
+		public static var dateOnlyBackslashDelimited:DateFormatter = new DateFormatter();
+		dateOnlyBackslashDelimited.formatString = "MM/DD/YYYY";
+		
+		public static var dateTimeShort:DateFormatter = new DateFormatter();
+		dateTimeShort.formatString = "MM/DD/YYYY J:NN:SS A";
 	}
 }

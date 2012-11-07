@@ -87,8 +87,7 @@
 				
 				invalidateProperties();
 			}
-
-
+			
 		]]>
 	</fx:Script>
 	
@@ -102,6 +101,7 @@
 			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" />
 		</s:layout>
 
+		<s:Button label="Record Intake" height="24" styleName="buttonText" visible = "{currentState=='default'}" includeInLayout = "{currentState=='default'}" click="controller.onRecordIntakeClick()" />
 		<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="requestRenewal()" />
 		<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
 		<s:Button label="Print" height="24" width="51" styleName="buttonText" />

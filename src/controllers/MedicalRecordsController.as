@@ -1,10 +1,12 @@
 package controllers
 {
 	import models.ApplicationModel;
+	import models.NextStep;
 	import models.modules.MedicalRecordsModel;
 	
 	import mx.charts.DateTimeAxis;
 	import mx.collections.ArrayCollection;
+	import mx.events.CollectionEvent;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.mxml.HTTPService;
 	import mx.utils.ObjectProxy;
@@ -49,31 +51,57 @@ package controllers
 			
 			for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
 			{
-				if( model.medicalRecordsData[i].hasOwnProperty('date') ) model.medicalRecordsData[i].date = modernizeDate( model.medicalRecordsData[i].date );
-				if( model.medicalRecordsData[i].hasOwnProperty('inpdate') ) model.medicalRecordsData[i].inpdate = modernizeDate( model.medicalRecordsData[i].inpdate );
+				var medicalRecordObj:Object = model.medicalRecordsData.getItemAt(i);
+				var medicalRecordGridObj:Object = model.medicalRecordsDataGrid.getItemAt(i);
 				
-				if( model.medicalRecordsDataGrid[i].hasOwnProperty('date') ) model.medicalRecordsDataGrid[i].date = modernizeDate( model.medicalRecordsDataGrid[i].date );
-				if( model.medicalRecordsDataGrid[i].hasOwnProperty('inpdate') ) model.medicalRecordsDataGrid[i].inpdate = modernizeDate( model.medicalRecordsDataGrid[i].inpdate );
+				if( medicalRecordObj.hasOwnProperty('date') ) medicalRecordObj.date = modernizeDate( medicalRecordObj.date );
+				if( medicalRecordObj.hasOwnProperty('inpdate') ) medicalRecordObj.inpdate = modernizeDate( medicalRecordObj.inpdate );
 				
-				if( model.medicalRecordsCategories.getItemIndex( model.medicalRecordsData[i].name ) == -1) model.medicalRecordsCategories.addItem( model.medicalRecordsData[i].name );
+				if( medicalRecordGridObj.hasOwnProperty('date') ) medicalRecordGridObj.date = modernizeDate( medicalRecordGridObj.date );
+				if( medicalRecordGridObj.hasOwnProperty('inpdate') ) medicalRecordGridObj.inpdate = modernizeDate( medicalRecordGridObj.inpdate );
 				
-				if( model.medicalRecordsData[i].nextSteps is ArrayCollection) 
+				if( model.medicalRecordsCategories.getItemIndex( medicalRecordObj.name ) == -1) model.medicalRecordsCategories.addItem( medicalRecordObj.name );
+				
+				if( medicalRecordObj.nextSteps is ArrayCollection) 
 				{
-					for(var j:uint = 0; j < model.medicalRecordsData[i].nextSteps.length; j++) {
-						model.medicalRecordsData[i].nextSteps[j].provider = model.medicalRecordsData[i].provider;		//should I do the same thing with "date", so there wouldn't be a need to create a duplicate? element under <medicalRecord>?
-						model.medicalRecordsNextSteps.addItem( model.medicalRecordsData[i].nextSteps[j] );
+					for(var j:uint = 0; j < medicalRecordObj.nextSteps.length; j++) 
+					{
+						var nextStepObj:Object = medicalRecordObj.nextSteps[j];
+						
+						medicalRecordObj.nextSteps[j].provider = medicalRecordObj.provider;		//should I do the same thing with "date", so there wouldn't be a need to create a duplicate? element under <medicalRecord>?
+						
+						var nextStep:NextStep = NextStep.fromObj( nextStepObj );
+						nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
+						nextStep.assignee = medicalRecordObj.provider;
+						
+						model.medicalRecordsNextSteps.addItem( nextStep );
 					}
 				}
-				else if( model.medicalRecordsData[i].nextSteps is ObjectProxy ) 
+				else if( medicalRecordObj.nextSteps is ObjectProxy ) 
 				{
-					model.medicalRecordsData[i].nextSteps.provider = model.medicalRecordsData[i].provider;
-					model.medicalRecordsNextSteps.addItem( model.medicalRecordsData[i].nextSteps );
+					medicalRecordObj.nextSteps.provider = medicalRecordObj.provider;
+					model.medicalRecordsNextSteps.addItem( medicalRecordObj.nextSteps );
 				}
 			}
+			
+			model.medicalRecordsNextSteps.addEventListener( CollectionEvent.COLLECTION_CHANGE, onNextStepsChange );
+			onNextStepsChange();
 			
 			super.dataResultHandler(event);
 		}
 		
+		private function onNextStepsChange(event:CollectionEvent=null):void
+		{
+			var model:MedicalRecordsModel = model as MedicalRecordsModel;
+			
+			model.medicalRecordsNextStepsActive = new ArrayCollection( model.medicalRecordsNextSteps.source.slice() );
+			model.medicalRecordsNextStepsActive.filterFunction = filterByCompleted;
+			model.medicalRecordsNextStepsActive.refresh();
+		}
 		
+		private function filterByCompleted( item:NextStep ):Boolean
+		{
+			return !item.completed;
+		}
 	}
 }

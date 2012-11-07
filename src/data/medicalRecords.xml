@@ -3,8 +3,15 @@
 	<medicalRecord inpdate="{{MONTH}}/07/{{YEAR}}" name="Surgeries" order="1.5" classification="Inpatient" reason="Appendectomy" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord inpdate="{{MONTH}}/07/{{YEAR}}" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord inpdate="{{MONTH-3}}/07/{{YEAR}}" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond"></medicalRecord>
-	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein"></medicalRecord>
+	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond">
+		<nextSteps task="" completed="true" removed="true" recommendation="Exercise for 40 minutes a day with running" urgency="0" />
+		<nextSteps task="" completed="true" removed="true" recommendation="Limit alcohol intake; 2 drinks a week maximum" urgency="0" />
+		<nextSteps task="" completed="true" removed="true" recommendation="Take Healthy Diet 101 Class" urgency="0" />
+	</medicalRecord>
+	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein">
+		<nextSteps task="" completed="true" removed="true" recommendation="Make an appointment for MRI" urgency="2" />
+		<nextSteps task="" completed="true" removed="true" recommendation="Start a new food plan to lower cholesterol" urgency="2" />
+	</medicalRecord>
 	<medicalRecord date="{{MONTH-1}}/16/{{YEAR}}" name="Radiology" order="3.5" classification="Outpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord inpdate="{{MONTH}}/16/{{YEAR}}" name="Radiology" order="3.5" classification="Inpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord date="{{MONTH}}/16/{{YEAR}}" name="Tests" order="4.5" classification="Outpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>

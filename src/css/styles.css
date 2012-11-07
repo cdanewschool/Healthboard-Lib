@@ -759,3 +759,11 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	font-weight:normal;
 	color: "0x4D4D4D";
 }
+
+/*	medications	*/
+.red11 {
+	font-family: "myMyriad";
+	fontSize: 11;
+	font-weight: normal;
+	color: "0xDA2925";	
+}

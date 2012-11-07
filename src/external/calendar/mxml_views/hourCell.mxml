@@ -7,6 +7,7 @@
 		   xmlns:ns="calendar.mxml_views.*">
 	<mx:Script>
 		<![CDATA[
+			import events.ApplicationEvent;
 			import events.AppointmentEvent;
 			
 			import external.calendar.classes.model.DataHolder;
@@ -141,6 +142,10 @@
 				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_APPOINTMENT, true );
 				evt.data = obj;
 				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your appointment has been added";
+				dispatchEvent( event );
 			}
 			
 			private function addClass(half:String, reason:String):void {
@@ -158,6 +163,10 @@
 				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_CLASS, true );
 				evt.data = obj;
 				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your class has been added";
+				dispatchEvent( event );
 			}
 		]]>
 	</mx:Script>

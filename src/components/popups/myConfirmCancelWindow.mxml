@@ -11,6 +11,7 @@
 			
 			import external.calendar.classes.model.DataHolder;
 			
+			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
 			public var apptToCancel:Object;
@@ -21,7 +22,7 @@
 				event.data = apptToCancel;
 				dispatchEvent( event );
 				
-				PopUpManager.removePopUp(this);
+				dispatchEvent( new CloseEvent( CloseEvent.CLOSE ) );
 			}
 		]]>
 	</fx:Script>

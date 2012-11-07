@@ -3,15 +3,11 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	height="40" width="100%" show="onShow()" hide="onHide()" creationComplete="onShow()">
+	height="40" width="100%" xmlns:components="components.*">
 	
 	<fx:Metadata>
 		[Event(name="navigate", type="events.ApplicationEvent")]
 	</fx:Metadata>
-	
-	<fx:Declarations>
-		<s:Fade id="fade" target="status" duration="450" alphaFrom="1" alphaTo="0" effectEnd="{statusMessage=null}"  />
-	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
@@ -72,49 +68,6 @@
 				
 				invalidateProperties();
 			}
-
-			[Bindable] public var statusMessage:String;
-			
-			private var timer:Timer;
-			
-			private function onShow():void
-			{
-				if( timer == null )
-				{
-					timer = new Timer( DateUtil.SECOND * 4, 1 );
-					timer.addEventListener( TimerEvent.TIMER_COMPLETE, onStatusDelay );
-				}
-				
-				AppProperties.getInstance().controller.application.addEventListener( ApplicationEvent.SHOW_STATUS, onShowStatus );
-			}
-			
-			private function onHide():void
-			{
-				timer.reset();
-				
-				AppProperties.getInstance().controller.application.removeEventListener( ApplicationEvent.SHOW_STATUS, onShowStatus );
-			}
-			
-			private function onShowStatus( event:ApplicationEvent ):void
-			{
-				timer.stop();
-				
-				statusMessage = event.data;
-				
-				if( statusMessage != null ) 
-				{
-					timer.reset();
-					timer.start();
-				}
-				
-				status.alpha = 1;
-				status.visible = true;
-			}
-			
-			private function onStatusDelay( event:TimerEvent ):void
-			{
-				status.visible = false;
-			}
 			
 			[Bindable] public var moreText:String;
 			[Bindable] public var moreLinkText:String;
@@ -137,7 +90,7 @@
 	<s:Label id="lblBreadcrumbPatient" text="{title}" color="0xFFFFFF" fontSize="22" fontWeight="bold" paddingTop="2" paddingLeft="13" />
 	<s:Label text="▼" fontSize="10" color="0xFFFFFF" paddingTop="4" paddingLeft="5" />
 	
-	<s:VGroup paddingLeft="30" verticalAlign="middle" visible="{statusMessage==null}" includeInLayout="{statusMessage==null}">
+	<s:VGroup paddingLeft="30" verticalAlign="middle" visible="{status.statusMessage==null}" includeInLayout="{status.statusMessage==null}">
 		
 		<s:HGroup visible="{actionCount>0 || showActionsIfNone}" includeInLayout="{actionCount>0 || showActionsIfNone}">
 			
@@ -160,20 +113,8 @@
 			<mx:LinkButton id="moreLink" label="{moreLinkText}" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" fontStyle="italic" skin="{null}" paddingLeft="-5" rollOver="{moreLink.styleName='linkBtnUnderline';}" rollOut="moreLink.styleName='linkBtn';" click="moreLinkClickFunction(event)" />
 		</s:HGroup>
 	</s:VGroup>
-	
-	<s:HGroup id="status" paddingLeft="30" visible="false" includeInLayout="{statusMessage!=null}" hideEffect="fade">
-		
-		<s:BorderContainer backgroundColor="0xF7F4E9" borderVisible="false" height="28">
-			
-			<s:layout>
-				<s:HorizontalLayout paddingLeft="10" paddingTop="7" paddingRight="10" paddingBottom="6" verticalAlign="middle" />
-			</s:layout>
-			
-			<s:Label text="{statusMessage}" fontStyle="italic" fontSize="16" />
-			
-		</s:BorderContainer>
-		
-	</s:HGroup>
+
+	<components:StatusDisplay id="status" height="40" />
 	
 	<s:Spacer width="100%" />
 

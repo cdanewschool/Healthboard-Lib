@@ -13,12 +13,12 @@ package util
 		
 		public static function lblHAxisPlotChartMonth(cat:Object, pcat:Object, ax:DateTimeAxis):String 
 		{
-			return DateFormatters.dateFormatter.format(new Date(cat.fullYear, cat.month + 1, cat.dateUTC));				
+			return DateFormatters.dateFormatter.format(new Date(cat.fullYear, cat.month, cat.dateUTC));				
 		}
 		
 		public static function lblHAxisPlotChartYear(cat:Object, pcat:Object, ax:DateTimeAxis):String 
 		{
-			return DateFormatters.dateFormatterYear.format(new Date(cat.fullYear, cat.month + 1, cat.dateUTC));				
+			return DateFormatters.dateFormatterYear.format(new Date(cat.fullYear, cat.month, cat.dateUTC));				
 		}
 		
 		public static function lblHAxisPlotChartDayOnly(cat:Object, pcat:Object, ax:DateTimeAxis):String 

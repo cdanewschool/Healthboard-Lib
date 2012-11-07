@@ -21,6 +21,7 @@
 					<s:SolidColor color="{myMedRecHorizontalFill}" />
 				</mx:horizontalFill>
 			</mx:GridLines>
+			<mx:CartesianDataCanvas id="cartesianCanvas" />
 		</fx:Array>
 	</fx:Declarations>
 	
@@ -43,6 +44,7 @@
 			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
 			import events.AppointmentEvent;
 			
 			import external.TabBarPlus.plus.TabPlus;
@@ -59,6 +61,7 @@
 			import mx.controls.Alert;
 			import mx.controls.dataGridClasses.DataGridColumn;
 			import mx.events.ListEvent;
+			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.FocusManager;
@@ -75,6 +78,7 @@
 			
 			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
+			import util.DateFormatters;
 			import util.DateUtil;
 			
 			[Bindable] public var showHeader:Boolean = true;
@@ -90,6 +94,9 @@
 			[Bindable] private var myMedRecHorizontalFill:uint = 0x4A4A49;
 
 			private const SEARCH_PLACEHOLDER:String = "Search medical records";
+			
+			private var today:Date = AppProperties.getInstance().controller.model.today;
+			private var dateFormatter:DateFormatter = DateFormatters.dateFormatter;
 			
 			override protected function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
 			{
@@ -141,11 +148,6 @@
 				}
 				
 				return myOpenLeaves.indexOf(item.name) != -1;
-				
-				//return dropMediFilter.selectedIndex == 0 ? myOpenLeaves.indexOf(item.name) != -1 && item.status != "inactive" : myOpenLeaves.indexOf(item.name) != -1;
-				
-				//var pattern:RegExp = new RegExp("[^]*"+medicationsSearch.text+"[^]*", "i");
-				//return pattern.test(item.name) || pattern.test(item.dose) || pattern.test(item.type) || pattern.test(item.prescription) || pattern.test(item.directions) || pattern.test(item.pharmacy) || pattern.test(item.lastFilledDate);
 			}
 			
 			private function filterMedRecFromTree():void 
@@ -211,6 +213,8 @@
 				
 				myMedRecHorizontalAlternateFill = model.medicalRecordsCategories.length % 2 == 1 ? 0x303030 : 0x4A4A49;
 				myMedRecHorizontalFill = model.medicalRecordsCategories.length % 2 == 1 ? 0x4A4A49 : 0x303030;
+				
+				updateToday();
 			}
 			
 			private function medicalRecordsFillFunction(element:ChartItem, index:Number):IFill 
@@ -311,6 +315,7 @@
 			{
 				dispatchEvent( event );
 			}
+			
 			protected function tabsMedicalRecordsChangeHandler(event:IndexChangeEvent):void 
 			{
 				invalidateDisplayList();
@@ -320,6 +325,8 @@
 			{
 				hAxisMedicalRecords.minimum = minDateMedRec;	//new Date( "Oct 1 2010 01:03:54 AM");
 				hAxisMedicalRecords.maximum = maxDateMedRec;	//new Date( "Oct 1 2011 01:03:54 AM");
+				
+				updateToday();
 			}
 			
 			private function setDateRange(range:String=null):void
@@ -331,8 +338,6 @@
 			
 			private function updateDateRange():void 
 			{
-				var today:Date = AppProperties.getInstance().controller.model.today;
-				
 				minDateMedRec = new Date( today.fullYear, today.month, today.date );
 				maxDateMedRec = new Date( today.fullYear, today.month, today.date );
 				
@@ -345,6 +350,8 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
+					
+					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.WEEK )
 				{
@@ -352,6 +359,8 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
+					
+					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.MONTH )
 				{
@@ -359,13 +368,17 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
+					
+					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.MONTH_THREE ) 
 				{
 					minDateMedRec.time -= DateUtil.MONTH * 3;
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					medRecVerticalGridLine.alpha = 0
+					medRecVerticalGridLine.alpha = 0;
+					
+					dateFormatter = DateFormatters.dateFormatter;
 				}
 				else if( model.dateRange == DateRanges.YEAR ) 
 				{
@@ -373,6 +386,8 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medRecVerticalGridLine.alpha = 0;
+					
+					dateFormatter = DateFormatters.dateFormatter;
 				}
 				else if( model.dateRange == DateRanges.YEAR_THREE ) 
 				{
@@ -380,6 +395,8 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
+					
+					dateFormatter = DateFormatters.dateFormatterYear;
 				}
 				else
 				{
@@ -388,17 +405,28 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
+					
+					dateFormatter = DateFormatters.dateFormatterYear;
 				}
 				
 				hAxisMedicalRecords.minimum = minDateMedRec;
 				hAxisMedicalRecords.maximum = maxDateMedRec;
 				
-				/*for(var i:uint = 0; i < immunizationsCategories.length; i++) {
-				var minDatePlus1:Date = minDate;
-				minDatePlus1.setDate(minDate.getDate() + 1);
-				canvas.moveTo(this.dateFormatterToday.format(minDatePlus1),this.immunizationsCategories[i]);
-				canvas.lineTo(this.dateFormatterToday.format(maxDate),this.immunizationsCategories[i]);
-				}*/
+				updateToday();
+			}
+			
+			private function updateToday():void
+			{
+				var date:Date = new Date( today.fullYear, today.month, today.date );
+				var dateValue = DateFormatters.dateFormatterToday.format( date );
+				
+				cartesianCanvas.clear();
+				cartesianCanvas.lineStyle(3,0x00ADEE,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
+				cartesianCanvas.moveTo( dateValue, model.medicalRecordsCategories.getItemAt(0) );
+				cartesianCanvas.lineTo( dateValue, model.medicalRecordsCategories.getItemAt(model.medicalRecordsCategories.length-1) );
+				
+				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
+				todayLabel.x = coords.x - todayLabel.width/2 - 10;
 			}
 			
 			private function filterSearchMedRed(item:Object):Boolean
@@ -576,7 +604,7 @@
 					
 					<s:Button label="Set Next Steps" height="24" styleName="buttonText" click="onSetNextSteps()" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" />
 					<s:Button label="Print" height="24" styleName="buttonText" />
-					<s:Button label="Export" height="24" styleName="buttonText" />
+					<s:Button label="Export" height="24" styleName="buttonText" click="dispatchEvent( new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true, false, 'Your file has been exported') )" />
 					
 					<s:Spacer width="100%" />
 					<s:Label id="lblSearchResultsMedRec" visible="false" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="260" maxDisplayedLines="1" />
@@ -587,13 +615,13 @@
 						
 						<s:Label text="Time Range:" paddingTop="6" />
 						
-						<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-						<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+						<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
 						<general:customLinkButton id="btnMedCustom" label="Custom" />
 						
 					</s:HGroup>
@@ -620,13 +648,21 @@
 						</s:layout>
 						
 						<s:HGroup id="medRecDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="42">
+							
 							<s:Label text="Type of Service" paddingTop="1" />
+							
 							<s:Line yFrom="0" yTo="31">
 								<s:stroke>
 									<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3"/>
 								</s:stroke>
 							</s:Line>
-							<s:Label text="Date" paddingTop="1" />
+							
+							<s:Group>
+								
+								<s:Label text="Date" paddingTop="1" />
+								<s:Label id="todayLabel" text="Today" paddingTop="1" textAlign="center" />
+							</s:Group>
+							
 						</s:HGroup>
 						
 						<s:HGroup id="medRecDGLine" paddingLeft="104" paddingTop="-7" paddingBottom="-7"><!--bottom = -6, left = -2 (without ticks)-->

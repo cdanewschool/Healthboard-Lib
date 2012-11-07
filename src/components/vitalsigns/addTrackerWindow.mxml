@@ -9,7 +9,7 @@
 			
 			import mx.managers.PopUpManager;
 			
-			private function onAddVital( event:VitalsEvent ):void
+			private function onAddTracker( event:VitalsEvent ):void
 			{
 				dispatchEvent( event );
 			}
@@ -18,7 +18,7 @@
 			{
 				var myAddTracker2:addTracker2Window = addTracker2Window(PopUpManager.createPopUp(this.parent, addTracker2Window) as spark.components.TitleWindow);
 				myAddTracker2.trackerName = tracker;
-				myAddTracker2.addEventListener( VitalsEvent.ADD, onAddVital );
+				myAddTracker2.addEventListener( VitalsEvent.ADD_TRACKER, onAddTracker );
 				
 				PopUpManager.centerPopUp(myAddTracker2);
 				PopUpManager.removePopUp(this);

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup paddingLeft="30" 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	visible="false" includeInLayout="{statusMessage!=null}"
+	removedFromStage="onRemoved()" addedToStage="onAdded()">
+	
+	<fx:Declarations>
+		<s:Fade id="fade" target="status" duration="450" alphaFrom="1" alphaTo="0" effectEnd="{statusMessage=null}"  />
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import events.ApplicationEvent;
+			
+			import util.DateUtil;
+			
+			[Bindable] public var statusMessage:String;
+			
+			private var timer:Timer;
+
+			private function onShowStatus( event:ApplicationEvent ):void
+			{
+				timer.reset();
+				timer.stop();
+				
+				statusMessage = event.data;
+				
+				if( statusMessage != null ) 
+				{
+					timer.reset();
+					timer.start();
+				}
+				
+				this.alpha = 1;
+				this.visible = true;
+			}
+			
+			private function onStatusDelay( event:TimerEvent ):void
+			{
+				this.visible = false;
+				this.statusMessage = null;
+			}
+			
+			private function onRemoved():void
+			{
+				AppProperties.getInstance().controller.application.removeEventListener( ApplicationEvent.SHOW_STATUS, onShowStatus );
+			}
+			
+			private function onAdded():void
+			{
+				if( !timer )
+				{
+					timer = new Timer( DateUtil.SECOND * 2, 1 );
+					timer.addEventListener( TimerEvent.TIMER_COMPLETE, onStatusDelay );
+				}
+				
+				onRemoved();
+				
+				AppProperties.getInstance().controller.application.addEventListener( ApplicationEvent.SHOW_STATUS, onShowStatus );
+			}
+			
+		]]>
+	</fx:Script>
+
+	<s:BorderContainer backgroundColor="0xFFFFFF" height="100%">
+			
+		<s:layout>
+			<s:HorizontalLayout paddingLeft="10" paddingTop="5" paddingRight="10" paddingBottom="5" verticalAlign="middle" />
+		</s:layout>
+		
+		<s:Label text="{statusMessage}" />
+		
+	</s:BorderContainer>
+	
+</s:HGroup>

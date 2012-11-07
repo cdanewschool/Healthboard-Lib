@@ -6,10 +6,10 @@
 	xmlns:components="components.*"
 	xmlns:general="components.general.*" 
 	xmlns:plus="external.TabBarPlus.plus.*"
-	creationComplete="init()" show="onShow()" >
+	creationComplete="init()" show="onShow()">
 	
 	<fx:Declarations>
-		<fx:Array id="bgeMedications">
+		<fx:Array id="bge">
 			<mx:GridLines gridDirection="both" >
 				<mx:horizontalStroke>
 					<mx:SolidColorStroke alpha="0" color="0xFFFFFF" />
@@ -24,7 +24,7 @@
 					<s:SolidColor color="{myHorizontalFill}" />
 				</mx:horizontalFill>
 			</mx:GridLines>
-			<mx:CartesianDataCanvas id="canvasMed" />
+			<mx:CartesianDataCanvas id="cartesianCanvas" />
 		</fx:Array>
 	</fx:Declarations>
 	
@@ -47,6 +47,7 @@
 			import enum.DateRanges;
 			
 			import events.ApplicationDataEvent;
+			import events.ApplicationEvent;
 			
 			import models.modules.MedicationsModel;
 			
@@ -57,7 +58,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.CollectionEvent;
 			import mx.events.ListEvent;
-			import mx.events.ToolTipEvent;
+			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
@@ -68,6 +69,8 @@
 			
 			import util.ArrayUtil;
 			import util.ChartLabelFunctions;
+			import util.DateFormatters;
+			import util.DateUtil;
 			
 			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
 			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
@@ -88,6 +91,31 @@
 				
 				myHorizontalAlternateFill = model.medicationsCategories.length % 2 == 1 ? 0x303030 : 0x4A4A49;
 				myHorizontalFill = model.medicationsCategories.length % 2 == 1 ? 0x4A4A49 : 0x303030;
+				
+				updateToday();
+			}
+			
+			private function updateToday():void
+			{
+				if( !model.medicationsCategories || !model.medicationsCategories.length ) return;
+				
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				var date:Date = new Date( today.fullYear, today.month, today.date, 12 );
+				
+				var dateValue:String = DateFormatters.dateTimeShort.format( date );
+				
+				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
+				var coordsYesterday:Point = cartesianCanvas.dataToLocal( DateFormatters.dateTimeShort.format(new Date( date.fullYear, date.month, date.date-1, 12) ) );
+				
+				var strokeThickness:int = Math.max( coords.x - coordsYesterday.x, 3 );
+				
+				cartesianCanvas.clear();
+				cartesianCanvas.lineStyle(strokeThickness,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
+				cartesianCanvas.moveTo( dateValue, model.medicationsCategories.getItemAt(0) );
+				cartesianCanvas.lineTo( dateValue, model.medicationsCategories.getItemAt(model.medicationsCategories.length-1) );
+				
+				var coords:Point = cartesianCanvas.dataToLocal( today );
+				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 10;
 			}
 			
 			private function updateOpenLeaves():void
@@ -126,7 +154,8 @@
 			
 			private function updateIntake(e:ChartItemEvent):void 
 			{
-				if(e.hitData.item.actionable) {
+				if(e.hitData.item.actionable) 
+				{
 					e.hitData.item.taken = !e.hitData.item.taken;
 					
 					//	this ensures that the chart points get colored/uncolored upon clicking them, by refreshing the chart's data provider.
@@ -153,19 +182,17 @@
 						myChartPopup.medHour = myDate.substr(11,2);		//(myDate.substr(12,1) == ":") ? "0" + myDate.substr(11,1) : myDate.substr(11,2);
 						myChartPopup.medMeridiem = myDate.substr(-2);
 						myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
-					}	
+					}
+					
+					var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					event.data = "Your intake has been updated";
+					AppProperties.getInstance().controller.application.dispatchEvent( event );
 				}
 			}
 			
 			private function medicationsSetMinMax():void 
 			{
-				hAxisMedications.minimum = model.minDate;	//new Date( "Oct 1 2010 12:00:00 PM");
-				hAxisMedications.maximum = model.maxDate;	//new Date( "Oct 1 2011 12:00:00 PM");
-				
-				canvasMed.lineStyle(100,0x00ADEE,.2,true,LineScaleMode.NORMAL,CapsStyle.SQUARE,JointStyle.MITER,2);
-				
-				canvasMed.moveTo('06/16/2012 12:00:00 PM','Prescription Drugs');
-				canvasMed.lineTo('06/16/2012 12:00:00 PM','Herbal Medicines');
+				updateDateRange();
 			}
 			
 			private function applyCustomDataTips():void 
@@ -182,11 +209,13 @@
 			
 			private function updateDateRange():void 
 			{
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				
+				model.minDate = new Date( today.fullYear, today.month, today.date - 3 );
+				model.maxDate = new Date( today.fullYear, today.month, today.date + 3, 12 );
+				
 				if( model.dateRange == DateRanges.WEEK ) 
 				{
-					model.minDate = new Date( "Jun 13 2012 12:00:00 AM");
-					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
-					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medicationsVerticalGridLine.alpha = 0;
 					
@@ -195,8 +224,8 @@
 				}
 				else if(model.dateRange == DateRanges.MONTH) 
 				{
-					model.minDate = new Date("May 19 2012 12:00:00 PM");
-					model.maxDate = new Date("Jun 19 2012 12:00:00 PM");
+					model.minDate.time -= DateUtil.MONTH;
+					model.maxDate.time += DateUtil.DAY * 4;
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medicationsVerticalGridLine.alpha = 0;
@@ -206,8 +235,8 @@
 				}
 				else if(model.dateRange == DateRanges.MONTH_THREE) 
 				{
-					model.minDate = new Date( "Mar 19 2012 12:00:00 PM");
-					model.maxDate = new Date( "Jun 19 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.MONTH * 3);
+					model.maxDate.time += (DateUtil.MONTH);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medicationsVerticalGridLine.alpha = 0;
@@ -217,8 +246,8 @@
 				}
 				else if(model.dateRange == DateRanges.YEAR) 
 				{
-					model.minDate = new Date( "Aug 20 2011 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR);
+					model.maxDate.time += (DateUtil.MONTH);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medicationsVerticalGridLine.alpha = 0;
@@ -228,8 +257,8 @@
 				}
 				else if(model.dateRange == DateRanges.YEAR_THREE) 
 				{
-					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR * 3);
+					model.maxDate.time += (DateUtil.YEAR * .5);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medicationsVerticalGridLine.alpha = 0.3;
@@ -239,8 +268,8 @@
 				}
 				else
 				{
-					model.minDate = new Date( "Aug 20 2009 12:00:00 PM");
-					model.maxDate = new Date( "Aug 20 2012 12:00:00 PM");
+					model.minDate.time -= (DateUtil.YEAR * 3);
+					model.maxDate.time += (DateUtil.YEAR * .5);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medicationsVerticalGridLine.alpha = 0.3;
@@ -251,6 +280,11 @@
 				
 				hAxisMedications.minimum = model.minDate;
 				hAxisMedications.maximum = model.maxDate;
+				
+				plotMedications.invalidateDisplayList();
+				plotMedications.validateNow();
+				
+				updateToday();
 			}
 			
 			private function switchMedicationsView(index:uint):void 
@@ -422,9 +456,9 @@
 			{
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
+				model.medicationsData.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
-				//model.medicationsCategoriesTree.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
-				
+					
 				onShow();
 			}
 			
@@ -452,10 +486,6 @@
 				
 				if( currentState != 'provider' )
 					showTip();
-			}
-			
-			private function onToolTipStart(event:ToolTipEvent):void {
-				
 			}
 		]]>
 	</fx:Script>
@@ -514,12 +544,12 @@
 							
 							<s:Label text="Time Range:" paddingTop="6" />
 							
-							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
-							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
-							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
-							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0"/>
-							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
-							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
+							<general:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
+							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
+							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
+							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0"/>
+							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" visible="{currentState!='provider'}" includeInLayout="{currentState!='provider'}"/>
+							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="0" paddingRight="0" />
 							<general:customLinkButton id="btnMedCustom" label="Custom" />
 							
 						</s:HGroup>
@@ -548,12 +578,17 @@
 							<s:HGroup id="medicationsDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="19">
 								
 								<s:Label text="Medication Name" paddingTop="1" paddingRight="35" />
+								
 								<s:Line yFrom="0" yTo="31">
 									<s:stroke>
 										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3"/>
 									</s:stroke>
 								</s:Line>
-								<s:Label text="Date" paddingTop="1" />
+								
+								<s:Group>
+									<s:Label text="Date" paddingTop="1" />
+									<s:Label id="todayLabel" text="Today" paddingTop="1" />
+								</s:Group>
 								
 							</s:HGroup>
 							
@@ -586,8 +621,8 @@
 								
 								<mx:PlotChart 
 									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
-									backgroundElements="{bgeMedications}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
-									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew" toolTipStart="onToolTipStart(event)"
+									backgroundElements="{bge}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
+									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew"
 									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips();" dataTipMode="single"><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
 									
 									<mx:horizontalAxisRenderers>
