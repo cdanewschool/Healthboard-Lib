@@ -145,6 +145,8 @@
 					var takenFirstDay:Boolean = checkTakenToday.selected;
 					var firstDay:Boolean = true;
 					
+					var medicationsData:Array = MedicationsModel(controller.model).medicationsData.source;
+					
 					for(var i:uint = 0; i < 365; i++)
 					{
 						for(var j:uint = 0; j < myFrequency; j++) 
@@ -172,7 +174,7 @@
 							
 							newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
 							
-							MedicationsModel(controller.model).medicationsData.addItemAt(newMedicationOP,indexToAddNewMedData);		//parentApplication.medicationsData.addItem(newMedication);
+							medicationsData[indexToAddNewMedData] = newMedicationOP;		//parentApplication.medicationsData.addItem(newMedication);
 							//parentApplication.medicationsDataOriginal.addItemAt(newMedicationOP,indexToAddNewMedDataOriginal);
 						}
 						if(myRecurrence == "week") i += 6;
@@ -185,6 +187,8 @@
 					var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
 					event.data = "Your intake has been added";
 					AppProperties.getInstance().controller.application.dispatchEvent( event );
+					
+					MedicationsModel(controller.model).medicationsData.source = medicationsData;
 					
 					PopUpManager.removePopUp(this);
 				}

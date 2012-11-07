@@ -13,10 +13,10 @@
 			
 			import models.modules.MedicationsModel;
 			
+			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
-			import mx.collections.ArrayCollection;
 			
 			[Bindable] public var med:Object;
 			[Bindable] public var medName:String;
@@ -40,13 +40,12 @@
 				med.intake = numQuantity.value;
 				med.frequency = numFrequency.value;
 				
-				if(med.date != null || numFrequency.value == 1) {		//if the medication is "SCHEDULED" (instead of "AS NEEDED"), we only show one daily icon.
-					/* if(med.dateP != null) med.dateP = med.dateP.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
-					else if(med.dateO != null) med.dateO = med.dateO.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
-					else if(med.dateS != null) med.dateS = med.dateS.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
-					else if(med.dateH != null) med.dateH = med.dateH.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem; */
-					if(med.date != null) med.date = med.date.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
-					else if(med.dateAN != null) med.dateAN = med.dateAN.substr(0,11) + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+				if(med.date != null || numFrequency.value == 1) {
+					
+					var dateParts:Array = med.date.split(" ");
+					
+					if(med.date != null) med.date = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					else if(med.dateAN != null) med.dateAN = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
 				}
 				else {	//if(AS NEEDED and numFrequency.value > 1)
 					var arrTimesBasedOnFrequency:Array = new Array([12],[8,18],[8,14,20],[7,12,17,22],[6,10,14,18,22],[7,10,13,16,19,22],[8,10,12,14,16,18,20],[8,10,12,14,16,18,20,22],[7,9,11,13,15,17,19,21,23],[5,7,9,11,13,15,17,19,21,23]);
