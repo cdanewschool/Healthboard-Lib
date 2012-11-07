@@ -9,7 +9,21 @@
 	creationComplete="init()" >
 	
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:Array id="bge">
+			<mx:GridLines gridDirection="both">
+				<mx:horizontalStroke>
+					<mx:SolidColorStroke alpha="0" />
+				</mx:horizontalStroke>
+				<mx:verticalStroke>
+					<s:SolidColorStroke id="verticalGridLine" alpha="0" color="0xFFFFFF" />
+				</mx:verticalStroke>
+				<mx:horizontalAlternateFill>
+					<mx:SolidColor color="0x303030" />
+				</mx:horizontalAlternateFill>
+			</mx:GridLines>
+			<mx:CartesianDataCanvas id="cartesianCanvas" />
+		</fx:Array>
+		
 	</fx:Declarations>
 	
 	<s:states>
@@ -38,6 +52,7 @@
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.PlotSeriesItem;
 			import mx.collections.ArrayCollection;
+			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
@@ -54,6 +69,21 @@
 			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
 			
 			[Bindable] public var showHeader:Boolean = true;
+			
+			private var today:Date = AppProperties.getInstance().controller.model.today;
+			
+			private function updateToday():void
+			{
+				var dateValue:String = DateFormatters.dateFormatterToday.format( today );
+				
+				cartesianCanvas.clear();
+				cartesianCanvas.lineStyle(3,0x00ADEE,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
+				cartesianCanvas.moveTo( dateValue, model.immunizationsCategories[0] );
+				cartesianCanvas.lineTo( dateValue, model.immunizationsCategories[model.immunizationsCategories.length-1] );
+				
+				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
+				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 10;
+			}
 			
 			private function checkImmunizationsRequired_clickHandler(event:IndexChangeEvent):void 
 			{
@@ -88,19 +118,7 @@
 				hAxisImmunizations.minimum = model.minDate;	//new Date( "Oct 1 2010 01:03:54 AM");
 				hAxisImmunizations.maximum = model.maxDate;	//new Date( "Oct 1 2011 01:03:54 AM");
 				
-				chartStyles.canvas.lineStyle(3,0x00ADEE,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
-				chartStyles.canvas.moveTo( DateFormatters.dateFormatterToday.format(new Date()),'Anthrax');		//canvas.moveTo(dateFormatterToday.format(new Date()),immunizationsCategories.length);
-				chartStyles.canvas.lineTo( DateFormatters.dateFormatterToday.format(new Date()),'Yellow Fever');	//canvas.lineTo(dateFormatterToday.format(new Date()),0.05);
-				
-				/*canvas.lineStyle(1,0xFFFFFF,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
-				//canvas.moveTo(dateFormatterToday.format(new Date("Sep 30 2010 01:03:54 AM")),'Influenza');
-				//canvas.lineTo(dateFormatterToday.format(new Date()),'Influenza');
-				for(var i:uint = 0; i < immunizationsCategories.length; i++) {
-				var minDatePlus1:Date = minDate;
-				minDatePlus1.setDate(minDate.getDate() + 1);
-				canvas.moveTo(this.dateFormatterToday.format(minDatePlus1),this.immunizationsCategories[i]);
-				canvas.lineTo(this.dateFormatterToday.format(maxDate),this.immunizationsCategories[i]);
-				}*/
+				updateToday();
 			}
 			
 			private function applyCustomDataTipsImm():void 
@@ -196,7 +214,7 @@
 					model.maxDate = new Date( "Aug 4 2012 01:03:54 AM");		//"Apr 4 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					chartStyles.immVerticalGridLine.alpha = 0;
+					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.MONTH_THREE ) 
 				{
@@ -204,7 +222,7 @@
 					model.maxDate = new Date( "Aug 7 2012 01:03:54 AM");		//"May 31 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					chartStyles.immVerticalGridLine.alpha = 0;
+					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR ) 
 				{
@@ -212,7 +230,7 @@
 					model.maxDate = new Date( "Dec 14 2012 01:03:54 AM");		//"Jul 14 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
-					chartStyles.immVerticalGridLine.alpha = 0;
+					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR_THREE ) 
 				{
@@ -220,7 +238,7 @@
 					model.maxDate = new Date( "Feb 4 2013 01:03:54 AM");		//"Sep 4 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.immVerticalGridLine.alpha = 0.3;
+					verticalGridLine.alpha = 0.3;
 				}
 				else if( model.dateRange == DateRanges.YEAR_FIVE ) 
 				{
@@ -228,7 +246,7 @@
 					model.maxDate = new Date( "Mar 4 2013 01:03:54 AM");		//"Jul 1 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.immVerticalGridLine.alpha = 0.3;
+					verticalGridLine.alpha = 0.3;
 				}
 				else if( model.dateRange == DateRanges.YEAR_TEN ) 
 				{
@@ -236,7 +254,7 @@
 					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");		//"Aug 1 2012 01:03:54 AM"
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.immVerticalGridLine.alpha = 0.3;
+					verticalGridLine.alpha = 0.3;
 				}
 				else
 				{
@@ -244,18 +262,13 @@
 					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
-					chartStyles.immVerticalGridLine.alpha = 0.3;
+					verticalGridLine.alpha = 0.3;
 				}
 				
 				hAxisImmunizations.minimum = model.minDate;
 				hAxisImmunizations.maximum = model.maxDate;
 				
-				/*for(var i:uint = 0; i < immunizationsCategories.length; i++) {
-				var minDatePlus1:Date = minDate;
-				minDatePlus1.setDate(minDate.getDate() + 1);
-				canvas.moveTo(this.dateFormatterToday.format(minDatePlus1),this.immunizationsCategories[i]);
-				canvas.lineTo(this.dateFormatterToday.format(maxDate),this.immunizationsCategories[i]);
-				}*/
+				updateToday();
 			}
 			
 			private function lblImmunizationDetailsAge(item:Object, column:DataGridColumn):String 
@@ -401,13 +414,13 @@
 							
 							<s:Label text="Time Range:" paddingTop="6" />
 							
-							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="{DateRanges.YEAR_FIVE}" click="setDateRange(DateRanges.YEAR_FIVE)" selected="{model.dateRange==DateRanges.YEAR_FIVE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="{DateRanges.YEAR_TEN}" click="setDateRange(DateRanges.YEAR_TEN)" selected="{model.dateRange==DateRanges.YEAR_TEN}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
-							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_FIVE}" click="setDateRange(DateRanges.YEAR_FIVE)" selected="{model.dateRange==DateRanges.YEAR_FIVE}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="{DateRanges.YEAR_TEN}" click="setDateRange(DateRanges.YEAR_TEN)" selected="{model.dateRange==DateRanges.YEAR_TEN}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
+							<general:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="4" paddingRight="4" />
 							<general:customLinkButton id="btnMedCustom" label="Custom" />
 							
 						</s:HGroup>
@@ -433,14 +446,22 @@
 								<s:VerticalLayout />
 							</s:layout>
 							
+							
 							<s:HGroup styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingLeft="36">
+								
 								<s:Label text="Immunization" paddingTop="1" />
+								
 								<s:Line yFrom="0" yTo="31">
 									<s:stroke>
 										<s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3"/>
 									</s:stroke>
 								</s:Line>
-								<s:Label text="Date" paddingTop="1" />
+								
+								<s:Group>
+									<s:Label text="Date" paddingTop="1" />
+									<s:Label id="todayLabel" text="Today" paddingTop="1" />
+								</s:Group>
+								
 							</s:HGroup>
 							
 							<s:HGroup paddingTop="-7" paddingBottom="-6"><!--paddingLeft="117"-->
@@ -452,7 +473,7 @@
 							</s:HGroup>
 							
 							<mx:PlotChart 
-								id="plotImmunizations" width="100%" height="456" dataProvider="{model.immunizationsData}" showDataTips="true" backgroundElements="{chartStyles.bgeImmunizations}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
+								id="plotImmunizations" width="100%" height="456" dataProvider="{model.immunizationsData}" showDataTips="true" backgroundElements="{bge}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
 								creationComplete="immunizationsSetMinMax(); applyCustomDataTipsImm();" itemClick="showImmunizationDetails(event)" dataTipFunction="dataTipsImmunizations" paddingLeft="7">
 								
 								<mx:horizontalAxisRenderers>
