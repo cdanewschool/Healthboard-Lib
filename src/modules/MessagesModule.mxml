@@ -951,6 +951,8 @@
 				tabsMessages.setTabClosePolicy(0, false);
 				tabsMessages.setTabClosePolicy(1, false);	//tabsMessages.setTabClosePolicy(viewStackMessages.length - 1, false);	
 				
+				showMessages( MessagesModel.INBOX );
+				
 				show();
 			}
 		]]>
