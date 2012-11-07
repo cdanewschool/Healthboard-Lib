@@ -6,7 +6,7 @@
 	xmlns:components="components.*"
 	xmlns:general="components.general.*" 
 	xmlns:plus="external.TabBarPlus.plus.*"
-	creationComplete="init()" show="onShow()">
+	creationComplete="init()" show="onShow()" xmlns:chart="components.chart.*">
 	
 	<fx:Declarations>
 		<fx:Array id="bge">
@@ -91,8 +91,6 @@
 				
 				myHorizontalAlternateFill = model.medicationsCategories.length % 2 == 1 ? 0x303030 : 0x4A4A49;
 				myHorizontalFill = model.medicationsCategories.length % 2 == 1 ? 0x4A4A49 : 0x303030;
-				
-				updateToday();
 			}
 			
 			private function updateToday():void
@@ -178,9 +176,11 @@
 						if(e.hitData.item.dateAN != null) myDate = e.hitData.item.dateAN;
 						else if(e.hitData.item.date != null) myDate = e.hitData.item.date;
 						
-						myChartPopup.medDate = myDate.substr(0,10);
-						myChartPopup.medHour = myDate.substr(11,2);		//(myDate.substr(12,1) == ":") ? "0" + myDate.substr(11,1) : myDate.substr(11,2);
-						myChartPopup.medMeridiem = myDate.substr(-2);
+						var date:Date = new Date( myDate );
+						
+						myChartPopup.medDate = myDate.split(' ')[0];
+						myChartPopup.medHour = date.hours.toString();
+						myChartPopup.medMeridiem = date.hours >= 12 ? 'PM' : 'AM';
 						myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
 					}
 					
@@ -197,7 +197,7 @@
 			
 			private function applyCustomDataTips():void 
 			{
-				plotMedications.setStyle( "dataTipRenderer", MyCustomDataTip );    
+				plotMedications.setStyle( "dataTipRenderer", MyCustomDataTip ); 
 			}
 			
 			private function setDateRange(range:String=null):void
@@ -447,16 +447,23 @@
 				myTipWindow.y = height/2 + 50;
 			}
 			
+			private function onDataChange( event:CollectionEvent = null ):void
+			{
+				updateHeightAndColors();
+			}
+			
 			private function onCategoriesChange( event:CollectionEvent = null ):void
 			{
 				updateHeightAndColors();
+				
+				updateToday();
 			}
 			
 			private function onDataLoaded( event:ApplicationDataEvent = null ):void
 			{
 				model.removeEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
 				
-				model.medicationsData.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
+				model.medicationsData.addEventListener( CollectionEvent.COLLECTION_CHANGE, onDataChange );
 				model.medicationsCategories.addEventListener( CollectionEvent.COLLECTION_CHANGE, onCategoriesChange );
 					
 				onShow();
@@ -467,6 +474,8 @@
 				controller.filterMedsFromStatus();
 				
 				updateHeightAndColors();
+				
+				updateToday();
 			}
 			
 			private function init():void
@@ -620,10 +629,10 @@
 									itemClick="onTreeItemClick(event)" creationComplete="updateOpenLeaves()" />
 								
 								<mx:PlotChart 
-									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
+									id="plotMedications" dataProvider="{model.medicationsData}" width="100%"
 									backgroundElements="{bge}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
 									paddingLeft="-44" showDataTips="true" mouseChildren="{currentState=='default'}" mouseEnabled="{currentState=='default'}"  dataTipFunction="dataTipsMedicationsNew"
-									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips(); plotMedications.dataTipMode='single';" ><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
+									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips();" dataTipMode='single'><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
 									
 									<mx:horizontalAxisRenderers>
 										
@@ -705,9 +714,9 @@
 										<mx:PlotSeries xField="dateO" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
 										<mx:PlotSeries xField="dateS" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
 										<mx:PlotSeries xField="dateH" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="7.5" selectable="true" stroke="{whiteStroke}" />-->
-										<mx:PlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="7" selectable="true" stroke="{chartStyles.whiteStroke}" />
-										<mx:PlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomCircleRenderer" radius="7.5" selectable="true" stroke="{chartStyles.whiteStroke}" />
-										<mx:PlotSeries xField="dateX" yField="name" visible="false" />	<!-- this invisible point exists only so we can create the blue stripe -->
+										<chart:CustomPlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="7" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<chart:CustomPlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomCircleRenderer" radius="7.5" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<chart:CustomPlotSeries xField="dateX" yField="name" visible="false" />	<!-- this invisible point exists only so we can create the blue stripe -->
 										<!--<mx:PlotSeries xField="datePpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
 										<mx:PlotSeries xField="dateOpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
 										<mx:PlotSeries xField="dateSpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
