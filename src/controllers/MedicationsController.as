@@ -245,13 +245,13 @@ package controllers
 			model.medicationsDataWidget.filterFunction = filterMedicationsWidget;
 			model.medicationsDataWidget.refresh();
 			
-			model.medicationsCategoriesWidget = new Array();
+			model.medicationsCategoriesWidget = new ArrayCollection();
 			
 			for(var j:uint = 0; j < model.medicationsDataWidget.length; j++) 
 			{
-				if( model.medicationsCategoriesWidget.indexOf(model.medicationsDataWidget[j].name) == -1) 
+				if( model.medicationsCategoriesWidget.getItemIndex(model.medicationsDataWidget.getItemAt(j).name) == -1) 
 				{
-					model.medicationsCategoriesWidget.push(model.medicationsDataWidget[j].name);
+					model.medicationsCategoriesWidget.addItem(model.medicationsDataWidget.getItemAt(j).name);
 				}
 			}
 		}

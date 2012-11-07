@@ -6,18 +6,6 @@
 	
 	<fx:Declarations>
 		
-		<fx:Array id="bgeMedicationsWidget">
-			<mx:GridLines gridDirection="both" >
-				<mx:horizontalStroke>
-					<mx:SolidColorStroke alpha="0.1" color="0xB3B3B3" />
-				</mx:horizontalStroke>
-				<mx:verticalStroke>
-					<s:SolidColorStroke id="medicationsVerticalGridLine2" weight="2" alpha="0.4" color="0x86888A" />
-				</mx:verticalStroke>
-			</mx:GridLines>
-			<mx:CartesianDataCanvas id="canvasMedWidget" />
-		</fx:Array>
-		
 		<s:SolidColor id="colorImmunizationsDue" color="0xF40000" />
 		<s:SolidColor id="colorImmunizationsDue1Month" color="0xFCEE21" />
 		<s:SolidColor id="colorImmunizationsToday" color="0x39B54A" />

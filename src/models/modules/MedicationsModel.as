@@ -22,16 +22,16 @@ package models.modules
 		public var medicationsDataWidget:ArrayCollection;
 		
 		public var medicationsCategories:ArrayCollection;
-		public var medicationsCategoriesWidget:Array;
+		public var medicationsCategoriesWidget:ArrayCollection;
 		public var medicationsCategoriesTree:ArrayCollection;
 		
 		public var openLeaves:Array;
 		
 		public var type:String = TYPE_ACTIVE;
 		
-		[Bindable] public var minDate:Date = new Date( "Jun 13 2012 12:00:00 AM");
-		[Bindable] public var maxDate:Date = new Date( "Jun 19 2012 12:00:00 PM");
-		[Bindable] public var maxDateWidget:Date = new Date( "Jun 19 2012 12:20:00 AM");
+		[Bindable] public var minDate:Date;
+		[Bindable] public var maxDate:Date;
+		[Bindable] public var maxDateWidget:Date;
 		
 		public var dateRange:String = DateRanges.WEEK;
 		
