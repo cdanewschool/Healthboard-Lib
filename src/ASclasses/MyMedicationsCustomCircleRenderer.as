@@ -1,27 +1,27 @@
 package ASclasses
 {
-	import flash.display.BitmapData;
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
-	import mx.charts.renderers.BoxItemRenderer;
-	import mx.core.FlexGlobals;
+	import mx.charts.renderers.CircleItemRenderer;
 	import mx.graphics.IFill;
 	import mx.graphics.IStroke;
 	import mx.graphics.SolidColor;
 	import mx.graphics.SolidColorStroke;
 	import mx.utils.ColorUtil;
 	
-	public class MyMedicationsCustomRenderer extends BoxItemRenderer
-	{
+	public class MyMedicationsCustomCircleRenderer extends CircleItemRenderer
+	{	
+		/**
+		 *  @private
+		 */
+		private static var rcFill:Rectangle = new Rectangle();
+		
 		private var _data:Object;
 		
-		[Bindable] [Embed("images/medIconOverdose.png")] public var imgOverdose:Class;
-		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;
-		
-		public function MyMedicationsCustomRenderer()
+		public function MyMedicationsCustomCircleRenderer()
 		{
 			super();
 		}
@@ -48,17 +48,17 @@ package ASclasses
 													  unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
-			
 			var fill:IFill;
 			var state:String = "";
 			
 			if (_data is ChartItem && _data.hasOwnProperty('fill'))
 			{
-				state = _data.currentState;
 				fill = _data.fill;
-			}	 	
+				state = _data.currentState;
+			}
 			else
 				fill = GraphicsUtilities.fillFromStyle(getStyle('fill'));
+			
 			
 			var color:uint;
 			var adjustedRadius:Number = 0;
@@ -71,7 +71,7 @@ package ASclasses
 						color = getStyle('itemRollOverColor');
 					else
 						color = ColorUtil.adjustBrightness2(GraphicsUtilities.colorFromFill(fill),-20);
-					fill = new SolidColor(color);		
+					fill = new SolidColor(color);
 					adjustedRadius = getStyle('adjustedRadius');
 					if (!adjustedRadius)
 						adjustedRadius = 0;
@@ -89,53 +89,27 @@ package ASclasses
 						color = getStyle('itemSelectionColor');
 					else
 						color = ColorUtil.adjustBrightness2(GraphicsUtilities.colorFromFill(fill),-30);
-					fill = new SolidColor(color);				
+					fill = new SolidColor(color);
 					adjustedRadius = getStyle('adjustedRadius');
 					if (!adjustedRadius)
 						adjustedRadius = 0;
 					break;
 			}
 			
-			/*var stroke:IStroke;
-			if(_data.item.index != FlexGlobals.topLevelApplication.exerciseData.length - 1) {
-				stroke = getStyle("stroke");
-			}
-			else {
-				stroke = new SolidColorStroke(0xFFFFFF,1);
-				fill = FlexGlobals.topLevelApplication.colorVitalSignsProvider;
-			}*/
-			//var stroke:IStroke = getStyle("stroke");
-			
-			var stroke:IStroke = _data.item.actionable ? getStyle("stroke") : new SolidColorStroke(0xFFFFFF,1,0.2);
+			var stroke:IStroke = _data.item.actionable ? getStyle("stroke") : new SolidColorStroke(0xFFFFFF,1,0.2);			//var stroke:IStroke = getStyle("stroke");		//CHANGED DAMIAN
 			
 			var w:Number = stroke ? stroke.weight / 2 : 0;
 			
-			var rc:Rectangle = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
+			rcFill.right = unscaledWidth;
+			rcFill.bottom = unscaledHeight;
 			
 			var g:Graphics = graphics;
-			g.clear();
-			if(_data.item.taken && (_data.item.intake != _data.item.directedIntake || (_data.item.frequency != null && _data.item.frequency != _data.item.directedFrequency))) {
-				var triangle_commands:Vector.<int> = new Vector.<int>();
-				triangle_commands.push(1, 2, 2, 2);
-				
-				var triangle_coord:Vector.<Number> = new Vector.<Number>();
-				triangle_coord.push(0,14, 8,0, 16,14, 0,14);
-				
-				g.beginBitmapFill(bmpOverdose);
-				g.drawPath(triangle_commands,triangle_coord);
-				//g.drawRect(0,0,16,14);
-			}
-			else {
-				g.moveTo(rc.left,rc.top);
-				if (stroke)
-					stroke.apply(g,null,null);
-				if (fill)
-					fill.begin(g,rc,null);
-				g.lineTo(rc.right,rc.top);
-				g.lineTo(rc.right,rc.bottom);
-				g.lineTo(rc.left,rc.bottom);
-				g.lineTo(rc.left,rc.top);
-			}
+			g.clear();		
+			if (stroke)
+				stroke.apply(g,null,null);
+			if (fill)
+				fill.begin(g, rcFill, null);
+			g.drawEllipse(w - adjustedRadius,w - adjustedRadius,unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
 			
 			if (fill)
 				fill.end(g);

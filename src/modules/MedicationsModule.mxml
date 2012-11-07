@@ -37,10 +37,10 @@
 		<![CDATA[
 			import ASclasses.MyCustomDataTip;
 			
-			import components.tabs.MedicationDetails;
 			import components.medications.medTips;
 			import components.medications.myAddMedication1Window;
 			import components.popups.myChartPopupWindow;
+			import components.tabs.MedicationDetails;
 			
 			import controllers.MedicationsController;
 			
@@ -57,6 +57,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.events.CollectionEvent;
 			import mx.events.ListEvent;
+			import mx.events.ToolTipEvent;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
@@ -125,32 +126,34 @@
 			
 			private function updateIntake(e:ChartItemEvent):void 
 			{
-				e.hitData.item.taken = !e.hitData.item.taken;
-				
-				//	this ensures that the chart points get colored/uncolored upon clicking them, by refreshing the chart's data provider.
-				model.medicationsData.refresh();		
-				
-				//remove existing popup (if any).
-				PopUpManager.removePopUp( myChartPopup );
-				
-				if(e.hitData.item.taken) 
-				{
-					myChartPopup = myChartPopupWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myChartPopupWindow) as TitleWindow );
-					myChartPopup.med = e.hitData.item;
-					myChartPopup.medName = e.hitData.item.name;
+				if(e.hitData.item.actionable) {
+					e.hitData.item.taken = !e.hitData.item.taken;
 					
-					var myDate:String;
-					/*if(e.hitData.item.dateP != null) myDate = e.hitData.item.dateP;
-					else if(e.hitData.item.dateO != null) myDate = e.hitData.item.dateO;
-					else if(e.hitData.item.dateS != null) myDate = e.hitData.item.dateS;
-					else if(e.hitData.item.dateH != null) myDate = e.hitData.item.dateH;*/
-					if(e.hitData.item.dateAN != null) myDate = e.hitData.item.dateAN;
-					else if(e.hitData.item.date != null) myDate = e.hitData.item.date;
+					//	this ensures that the chart points get colored/uncolored upon clicking them, by refreshing the chart's data provider.
+					model.medicationsData.refresh();		
 					
-					myChartPopup.medDate = myDate.substr(0,10);
-					myChartPopup.medHour = myDate.substr(11,2);		//(myDate.substr(12,1) == ":") ? "0" + myDate.substr(11,1) : myDate.substr(11,2);
-					myChartPopup.medMeridiem = myDate.substr(-2);
-					myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
+					//remove existing popup (if any).
+					PopUpManager.removePopUp( myChartPopup );
+					
+					if(e.hitData.item.taken) 
+					{
+						myChartPopup = myChartPopupWindow( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myChartPopupWindow) as TitleWindow );
+						myChartPopup.med = e.hitData.item;
+						myChartPopup.medName = e.hitData.item.name;
+						
+						var myDate:String;
+						/*if(e.hitData.item.dateP != null) myDate = e.hitData.item.dateP;
+						else if(e.hitData.item.dateO != null) myDate = e.hitData.item.dateO;
+						else if(e.hitData.item.dateS != null) myDate = e.hitData.item.dateS;
+						else if(e.hitData.item.dateH != null) myDate = e.hitData.item.dateH;*/
+						if(e.hitData.item.dateAN != null) myDate = e.hitData.item.dateAN;
+						else if(e.hitData.item.date != null) myDate = e.hitData.item.date;
+						
+						myChartPopup.medDate = myDate.substr(0,10);
+						myChartPopup.medHour = myDate.substr(11,2);		//(myDate.substr(12,1) == ":") ? "0" + myDate.substr(11,1) : myDate.substr(11,2);
+						myChartPopup.medMeridiem = myDate.substr(-2);
+						myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
+					}	
 				}
 			}
 			
@@ -311,7 +314,7 @@
 			
 			private function dataTipsMedicationsNew(hd:HitData):String 
 			{
-				return hd.item.taken ? (hd.item.dateAN != null || (hd.item.intake == hd.item.directedIntake && (hd.item.frequency == null || hd.item.frequency == hd.item.directedFrequency)) ? "Mark as Not Taken" : (hd.item.intake > hd.item.directedIntake || hd.item.frequency > hd.item.directedFrequency) ? "Overdose" : "Underdose") : "Mark as Taken";
+				return hd.item.actionable ? (hd.item.taken ? (hd.item.dateAN != null || (hd.item.intake == hd.item.directedIntake && (hd.item.frequency == null || hd.item.frequency == hd.item.directedFrequency)) ? "Mark as Not Taken" : (hd.item.intake > hd.item.directedIntake || hd.item.frequency > hd.item.directedFrequency) ? "Overdose" : "Underdose") : "Mark as Taken") : "You can't mark future medications as taken";
 			}
 			
 			private function medicationsNameDoseLabelFunction(item:Object, column:DataGridColumn):String 
@@ -450,6 +453,10 @@
 				if( currentState != 'provider' )
 					showTip();
 			}
+			
+			private function onToolTipStart(event:ToolTipEvent):void {
+				
+			}
 		]]>
 	</fx:Script>
 	
@@ -580,7 +587,7 @@
 								<mx:PlotChart 
 									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
 									backgroundElements="{bgeMedications}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
-									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew" 
+									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew" toolTipStart="onToolTipStart(event)"
 									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips();" dataTipMode="single"><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
 									
 									<mx:horizontalAxisRenderers>
@@ -663,8 +670,8 @@
 										<mx:PlotSeries xField="dateO" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
 										<mx:PlotSeries xField="dateS" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
 										<mx:PlotSeries xField="dateH" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="7.5" selectable="true" stroke="{whiteStroke}" />-->
-										<mx:PlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="6" selectable="true" stroke="{chartStyles.whiteStroke}" />
-										<mx:PlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<mx:PlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="7" selectable="true" stroke="{chartStyles.whiteStroke}" />
+										<mx:PlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomCircleRenderer" radius="7.5" selectable="true" stroke="{chartStyles.whiteStroke}" />
 										<mx:PlotSeries xField="dateX" yField="name" visible="false" />	<!-- this invisible point exists only so we can create the blue stripe -->
 										<!--<mx:PlotSeries xField="datePpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
 										<mx:PlotSeries xField="dateOpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />

@@ -141,6 +141,7 @@
 					
 					var newMedicationOP:ObjectProxy;
 					var takenFirstDay:Boolean = checkTakenToday.selected;
+					var firstDay:Boolean = true;
 					
 					for(var i:uint = 0; i < 365; i++)
 					{
@@ -165,6 +166,8 @@
 							if(radioAsNeeded.selected) newMedication.dateAN = myDateString;
 							else newMedication.date = myDateString;
 							
+							newMedication.actionable = firstDay;
+							
 							newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
 							
 							MedicationsModel(controller.model).medicationsData.addItemAt(newMedicationOP,indexToAddNewMedData);		//parentApplication.medicationsData.addItem(newMedication);
@@ -174,6 +177,7 @@
 						else if(myRecurrence == "month") i += 29;
 						
 						takenFirstDay = false;	//first day is over, so we set this to false as we loop through the rest of the days
+						firstDay = false;
 					}
 					
 					PopUpManager.removePopUp(this);

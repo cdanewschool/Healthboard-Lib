@@ -4,11 +4,17 @@ package controllers
 	
 	import events.ApplicationDataEvent;
 	
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display.Graphics;
+	
 	import models.modules.MedicationsModel;
 	
 	import mx.charts.ChartItem;
 	import mx.charts.series.items.PlotSeriesItem;
 	import mx.collections.ArrayCollection;
+	import mx.graphics.BitmapFill;
+	import mx.graphics.BitmapFillMode;
 	import mx.graphics.IFill;
 	import mx.graphics.SolidColor;
 	import mx.managers.PopUpManager;
@@ -25,6 +31,15 @@ package controllers
 	
 	public class MedicationsController extends BaseModuleController
 	{
+		[Bindable] [Embed("images/medIconOverdoseTransparent.png")] public var imgOverdose:Class;
+		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;
+		[Bindable] [Embed("images/medIconTaken2.png")] public var imgTaken:Class;
+		var bmpTaken:BitmapData = new imgTaken().bitmapData;
+		[Bindable] [Embed("images/medIconNotTaken2.png")] public var imgNotTaken:Class;
+		var bmpNotTaken:BitmapData = new imgNotTaken().bitmapData;
+		[Bindable] [Embed("images/medIconTakenAN2.png")] public var imgTakenAN:Class;
+		var bmpTakenAN:BitmapData = new imgTakenAN().bitmapData;
+		
 		public function MedicationsController()
 		{
 			super();
@@ -67,6 +82,16 @@ package controllers
 			
 			for(var i:uint = 0; i < model.medicationsData.length; i++) 
 			{
+				var medication:Object = model.medicationsData.getItemAt(i);
+				
+				if( medication && medication.hasOwnProperty('date') ) {
+					var today:Date = new Date("06/16/2012");
+					var itemDate:Date = new Date(medication.date);
+					itemDate.setHours(0,0,0,0);
+					
+					medication.actionable = itemDate.getTime() <= today.getTime();
+				}
+				
 				if(model.medicationsCategories.getItemIndex(model.medicationsData[i].name) == -1) 
 				{
 					model.medicationsCategories.addItem(model.medicationsData[i].name);
@@ -210,6 +235,41 @@ package controllers
 		
 		public function medicationsFillFunction(element:ChartItem, index:Number):IFill 
 		{
+			/*
+			//This shows the TRIANGLE warning without actually drawing the triangle...
+			var data:BitmapData = new BitmapData( bmpOverdose.width, bmpOverdose.height, true );
+			data.draw( bmpOverdose );
+			
+			var myFill:BitmapFill = new BitmapFill();
+			myFill.source = data;
+			//myFill.fillMode = BitmapFillMode.CLIP;
+			return myFill;
+			*/
+			
+			var item:PlotSeriesItem = PlotSeriesItem(element);
+			
+			var myFill:BitmapFill = new BitmapFill();
+			myFill.source = bmpNotTaken;
+			
+			if(item.item.taken) 
+			{
+				if( item.item.asNeeded ) 
+				{
+					myFill.source = bmpTakenAN;		//orange
+				}
+				else 
+				{
+					myFill.source = bmpTaken;	//blue
+				}
+			}
+			
+			if(element.item.actionable == false) myFill.alpha = 0.2;
+			
+			return myFill;
+			
+			
+			/*
+			//ORIGINAL, before changing solid colors to checkmark icons
 			var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
 			
 			var item:PlotSeriesItem = PlotSeriesItem(element);
@@ -228,6 +288,7 @@ package controllers
 			}
 			
 			return c;
+			*/
 		}
 		
 		private function createNonTakenMeds(med:Object):void 
