@@ -31,8 +31,8 @@ package controllers
 	
 	public class MedicationsController extends BaseModuleController
 	{
-		[Bindable] [Embed("images/medIconOverdoseTransparent.png")] public var imgOverdose:Class;
-		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;
+		/*[Bindable] [Embed("images/medIconOverdoseTransparent.png")] public var imgOverdose:Class;
+		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;*/
 		[Bindable] [Embed("images/medIconTaken2.png")] public var imgTaken:Class;
 		var bmpTaken:BitmapData = new imgTaken().bitmapData;
 		[Bindable] [Embed("images/medIconNotTaken2.png")] public var imgNotTaken:Class;
