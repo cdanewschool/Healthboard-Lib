@@ -723,7 +723,7 @@
 				
 				<s:VGroup id="vgNextSteps" visible="{selectedAppointment.nextSteps == 'Yes'}" includeInLayout="{selectedAppointment.nextSteps == 'Yes'}" paddingLeft="3">
 					<s:Label text="Next Steps" styleName="smallTextBold" />
-					<s:Label id="lblNextSteps" styleName="smallText" width="155" />
+					<s:Label id="lblNextSteps" styleName="smallText" width="155" text="{selectedAppointment.nextStepsText}" />
 				</s:VGroup>
 				
 				<s:VGroup id="classDetails" visible="{selectedAppointment.type != 'Appointment'}" includeInLayout="{selectedAppointment.type != 'Appointment'}">
