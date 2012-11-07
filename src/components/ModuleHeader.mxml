@@ -114,7 +114,7 @@
 		</s:HGroup>
 	</s:VGroup>
 
-	<components:StatusDisplay id="status" height="40" />
+	<components:StatusDisplay id="status" height="28" />
 	
 	<s:Spacer width="100%" />
 
