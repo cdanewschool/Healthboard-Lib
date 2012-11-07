@@ -623,7 +623,7 @@
 									id="plotMedications" dataProvider="{model.medicationsData}" width="100%" 
 									backgroundElements="{bge}" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;"
 									paddingLeft="-44" showDataTips="true" dataTipFunction="dataTipsMedicationsNew"
-									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips();" dataTipMode="single"><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
+									itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTips(); plotMedications.dataTipMode='single';" ><!-- height="403" (replaced by medications.as: plotMedications.height= medicationsCategories.length * 34 + 29;) paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTips();" -->
 									
 									<mx:horizontalAxisRenderers>
 										
