@@ -730,13 +730,13 @@
 								<mx:LegendItem label="Over-The-Counter Drugs" legendMarkerRenderer="mx.charts.renderers.TriangleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicationsOverTheCounterDrugs}" stroke="{whiteStroke}" />
 								<mx:LegendItem label="Supplements" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsInpatient}"  stroke="{whiteStroke}" />
 								<mx:LegendItem label="Herbal Medicines" legendMarkerRenderer="mx.charts.renderers.DiamondItemRenderer" markerAspectRatio="1" markerHeight="15" markerWidth="15" fill="{colorMedicationsHerbalMedicines}" stroke="{whiteStroke}" />-->
-								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicalRecordsOutpatient}"  stroke="{chartStyles.whiteStroke}" />
-								<mx:LegendItem label="As needed" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicalRecordsInpatient}"  stroke="{chartStyles.whiteStroke}" />
+								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="14" markerWidth="14" legendMarkerRenderer="@Embed(source='images/medIconTaken.png')" /><!--fill="{chartStyles.colorMedicalRecordsOutpatient}" -->
+								<mx:LegendItem label="As needed" legendMarkerRenderer="@Embed(source='images/medIconTakenANBorder.png')" markerAspectRatio="1" markerHeight="14" markerWidth="14" /><!--legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" fill="{chartStyles.colorMedicalRecordsInpatient}"-->
 								<mx:LegendItem label="Overdose/underdose" legendMarkerRenderer="@Embed(source='images/medIconOverdoseGrayBG.png')" markerAspectRatio="1" markerWidth="16" markerHeight="14" />
 							</mx:Legend>
 							
 							<mx:Legend color="0xFFFFFF" paddingLeft="155" fontFamily="myMyriadNoCFF" paddingTop="-10">
-								<mx:LegendItem label="Not Taken" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorMedicationsPast}" stroke="{chartStyles.whiteStroke}" />
+								<mx:LegendItem label="Not Taken" legendMarkerRenderer="@Embed(source='images/medIconNotTakenBorder.png')" markerAspectRatio="1" markerHeight="14" markerWidth="14" /><!--fill="{chartStyles.colorMedicationsPast}" -->
 							</mx:Legend>
 							
 						</s:NavigatorContent>

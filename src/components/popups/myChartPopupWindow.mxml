@@ -14,6 +14,7 @@
 			import models.modules.MedicationsModel;
 			
 			import mx.collections.ArrayCollection;
+			import mx.events.CollectionEvent;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
