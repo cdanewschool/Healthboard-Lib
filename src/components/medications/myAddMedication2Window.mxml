@@ -146,6 +146,7 @@
 					var firstDay:Boolean = true;
 					
 					var medicationsData:Array = MedicationsModel(controller.model).medicationsData.source;
+					var today:Date = AppProperties.getInstance().controller.model.today;
 					
 					for(var i:uint = 0; i < 365; i++)
 					{
@@ -153,7 +154,8 @@
 						{
 							newMedication = new Object();
 							newMedication = {name: StringUtil.titleCase(txtName.text.toLowerCase()), type: medTypeData, dose: 'PO ' + txtDosage.text + 'mg', directions: 'Take ' + numRoute.value + ' tablets for each intake, ' + strFrequency, directedIntake: numRoute.value, intake: numRoute.value, directedFrequency: myFrequency, refillsLeft: '---', taken: takenFirstDay, status: 'active', reason: txtReason.text, asNeeded: radioAsNeeded.selected};
-							myDate = new Date("06/16/2012");
+							myDate = new Date( today.fullYear, today.month, today.date );
+							
 							myHours = (arrTimesBasedOnFrequency[myFrequency-1][j] <= 12) ? arrTimesBasedOnFrequency[myFrequency-1][j] : arrTimesBasedOnFrequency[myFrequency-1][j] - 12;
 							myMeridiem = (arrTimesBasedOnFrequency[myFrequency-1][j] < 12) ? "AM" : "PM";
 							//myDate.setHours(myHours,0,0,0);
@@ -174,7 +176,7 @@
 							
 							newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
 							
-							medicationsData[indexToAddNewMedData] = newMedicationOP;		//parentApplication.medicationsData.addItem(newMedication);
+							medicationsData.splice( indexToAddNewMedData, 0, newMedicationOP );		//parentApplication.medicationsData.addItem(newMedication);
 							//parentApplication.medicationsDataOriginal.addItemAt(newMedicationOP,indexToAddNewMedDataOriginal);
 						}
 						if(myRecurrence == "week") i += 6;
@@ -189,6 +191,7 @@
 					AppProperties.getInstance().controller.application.dispatchEvent( event );
 					
 					MedicationsModel(controller.model).medicationsData.source = medicationsData;
+					MedicationsModel(controller.model).medicationsData.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
 					
 					PopUpManager.removePopUp(this);
 				}
