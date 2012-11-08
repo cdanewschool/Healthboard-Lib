@@ -3,11 +3,11 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	visible="false" includeInLayout="{statusMessage!=null}"
+	visible="false" includeInLayout="{statusMessage!=null}" hideEffect="{fade}"
 	removedFromStage="onRemoved()" addedToStage="onAdded()">
 	
 	<fx:Declarations>
-		<s:Fade id="fade" target="status" duration="450" alphaFrom="1" alphaTo="0" effectEnd="{statusMessage=null}"  />
+		<s:Fade id="fade" duration="450" alphaFrom="1" alphaTo="0" effectEnd="{statusMessage=null}"  />
 	</fx:Declarations>
 	
 	<fx:Script>
@@ -40,7 +40,6 @@
 			private function onStatusDelay( event:TimerEvent ):void
 			{
 				this.visible = false;
-				this.statusMessage = null;
 			}
 			
 			private function onRemoved():void
