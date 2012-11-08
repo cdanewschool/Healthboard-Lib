@@ -271,6 +271,12 @@
 				activateButton( btnCalendarMonth );
 			}
 			
+			private function onMonthViewViewClass( event:AppointmentEvent ):void
+			{
+				selectedAppointment = event.data;
+				populateLeftColumn();
+			}
+			
 			private function onMonthViewAddClass( event:AppointmentEvent ):void
 			{
 				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
@@ -356,7 +362,7 @@
 					
 					if( selectedAppointment.status == AppointmentStatus.COMPLETED ) 
 					{
-						MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingIndex = selectedAppointment.medRecIndex;
+						//MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingIndex = selectedAppointment.medRecIndex;
 					}
 					
 					var obj:Object = selectedAppointment;
@@ -482,7 +488,7 @@
 				monthView.addEventListener( CustomEvents.MONTH_VIEW_CLICK, onMonthViewClick );
 				monthView.addEventListener( AppointmentEvent.ADD_APPOINTMENT, onMonthViewAddAppointment );
 				monthView.addEventListener( AppointmentEvent.ADD_CLASS, onMonthViewAddClass );
-				monthView.addEventListener( AppointmentEvent.VIEW_CLASS, onMonthViewAddClass );
+				monthView.addEventListener( AppointmentEvent.VIEW_CLASS, onMonthViewViewClass );
 				
 				model.addEventListener( AppointmentEvent.ADD_APPOINTMENT, onMonthViewAddClass );
 				model.addEventListener( AppointmentEvent.ADD_CLASS, onMonthViewAddClass );
