@@ -28,6 +28,7 @@ package controllers
 	import styles.ChartStyles;
 	
 	import util.ArrayUtil;
+	import util.DateUtil;
 	
 	public class MedicationsController extends BaseModuleController
 	{
@@ -102,8 +103,8 @@ package controllers
 			{
 				var medication:Object = model.medicationsData.getItemAt(i);
 
-				if( medication.hasOwnProperty('date') ) medication.date = modernizeDate( medication.date );
-				if( medication.hasOwnProperty('dateX') ) medication.dateX = modernizeDate( medication.dateX );
+				if( medication.hasOwnProperty('date') ) medication.date = DateUtil.modernizeDate( medication.date );
+				if( medication.hasOwnProperty('dateX') ) medication.dateX = DateUtil.modernizeDate( medication.dateX );
 				
 				if( medication 
 					&& medication.hasOwnProperty('date') ) 
