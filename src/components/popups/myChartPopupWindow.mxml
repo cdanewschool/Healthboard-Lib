@@ -17,6 +17,7 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
+			import mx.events.CollectionEvent;
 			
 			[Bindable] public var med:Object;
 			[Bindable] public var medName:String;
@@ -42,30 +43,37 @@
 				
 				if(med.date != null || numFrequency.value == 1) {
 					
-					var dateParts:Array = med.date.split(" ");
+					var dateParts:Array;
 					
-					if(med.date != null) med.date = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
-					else if(med.dateAN != null) med.dateAN = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					if(med.date != null) 
+					{
+						dateParts = med.date.split(" ");
+						
+						med.date = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					}
+					else if(med.dateAN != null) 
+					{
+						dateParts = med.dateAN.split(" ");
+						
+						med.dateAN = dateParts[0] + ' ' + intakeHour.selectedItem + ":" + intakeMinute.selectedItem + ":00 " + intakeMeridiem.selectedItem;
+					}
 				}
-				else {	//if(AS NEEDED and numFrequency.value > 1)
+				else 
+				{
 					var arrTimesBasedOnFrequency:Array = new Array([12],[8,18],[8,14,20],[7,12,17,22],[6,10,14,18,22],[7,10,13,16,19,22],[8,10,12,14,16,18,20],[8,10,12,14,16,18,20,22],[7,9,11,13,15,17,19,21,23],[5,7,9,11,13,15,17,19,21,23]);
 					var myHours:uint;
 					var myMeridiem:String;
 					var newMedication:Object;
 					var newMedicationOP:ObjectProxy;
 					med.directedFrequency = numFrequency.value;		//updating the directedFrequency for this particular "As Needed" day, so that the frequency numstepper is no longer displayed in this day if this popup is called again. 
-					for(var j:uint = 0; j < numFrequency.value; j++) {
+					
+					for(var j:uint = 0; j < numFrequency.value; j++) 
+					{
 						myHours = (arrTimesBasedOnFrequency[numFrequency.value-1][j] <= 12) ? arrTimesBasedOnFrequency[numFrequency.value-1][j] : arrTimesBasedOnFrequency[numFrequency.value-1][j] - 12;
 						myMeridiem = (arrTimesBasedOnFrequency[numFrequency.value-1][j] < 12) ? "AM" : "PM";
-						newMedication = ObjectUtil.copy(med);
-						/* if(med.dateP != null) newMedication.dateP = newMedication.dateP.substr(0,11) + myHours + ":00:00 " + myMeridiem;
-						else if(med.dateO != null) newMedication.dateO = newMedication.dateO.substr(0,11) + myHours + ":00:00 " + myMeridiem;
-						else if(med.dateS != null) newMedication.dateS = newMedication.dateS.substr(0,11) + myHours + ":00:00 " + myMeridiem;
-						else if(med.dateH != null) newMedication.dateH = newMedication.dateH.substr(0,11) + myHours + ":00:00 " + myMeridiem; */
 						
-						//if(med.date != null) newMedication.date = newMedication.date.substr(0,11) + myHours + ":00:00 " + myMeridiem;
-						//else if(med.dateAN != null)
-							newMedication.dateAN = newMedication.dateAN.substr(0,11) + myHours + ":00:00 " + myMeridiem;
+						newMedication = ObjectUtil.copy(med);
+						newMedication.dateAN = newMedication.dateAN.split(' ')[0] + ' ' + myHours + ":00:00 " + myMeridiem;
 							
 						newMedicationOP = new ObjectProxy(newMedication);		//casting to ObjectProxy, otherwise the points in the graph don't get updated/taken when clicked...
 						
@@ -75,8 +83,9 @@
 					data.removeItemAt(data.getItemIndex(med));
 					//parentApplication.medicationsDataOriginal.removeItemAt(parentApplication.medicationsDataOriginal.getItemIndex(med));
 				}
-				
+
 				data.refresh();
+				data.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
 				
 				PopUpManager.removePopUp(this);
 			}
@@ -139,7 +148,7 @@
 		<s:VGroup visible="{med.directedFrequency == 1}"><!--only showing the frequency numstepper when directed frequency = 1 (i.e. when there is one icon per day), because otherwise it's confusing for the user and easy to create conflicts as to what frequency to indicate-->
 			<s:Label text="Frequency" fontStyle="italic" color="0x595959" paddingBottom="-4" />
 			<s:HGroup verticalAlign="middle">
-				<s:NumericStepper id="numFrequency" value="{med.directedFrequency}" minimum="1" maximum="30" width="40" />
+				<s:NumericStepper id="numFrequency" value="{med.directedFrequency}" minimum="1" maximum="10" width="40" />
 				<s:Label text="time(s)" color="0x595959" />
 			</s:HGroup>
 		</s:VGroup>
