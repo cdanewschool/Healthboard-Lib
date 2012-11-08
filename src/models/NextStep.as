@@ -2,6 +2,7 @@ package models
 {
 	public class NextStep
 	{
+		public var area:String;
 		public var assignee:String;
 		public var completed:Boolean;
 		public var dateAssigned:Date;
