@@ -584,7 +584,7 @@
 								<s:VerticalLayout />
 							</s:layout>
 							
-							<s:HGroup id="medicationsDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="19">
+							<s:HGroup id="medicationsDGHeader" styleName="subtitles" verticalAlign="middle" paddingTop="-1" paddingLeft="19">
 								
 								<s:Label text="Medication Name" paddingTop="1" paddingRight="35" />
 								
