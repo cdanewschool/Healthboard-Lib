@@ -14,6 +14,7 @@ package controllers
 	
 	import util.ArrayUtil;
 	import util.DateFormatters;
+	import util.DateUtil;
 
 	public class MedicalRecordsController extends BaseModuleController
 	{
@@ -54,11 +55,11 @@ package controllers
 				var medicalRecordObj:Object = model.medicalRecordsData.getItemAt(i);
 				var medicalRecordGridObj:Object = model.medicalRecordsDataGrid.getItemAt(i);
 				
-				if( medicalRecordObj.hasOwnProperty('date') ) medicalRecordObj.date = modernizeDate( medicalRecordObj.date );
-				if( medicalRecordObj.hasOwnProperty('inpdate') ) medicalRecordObj.inpdate = modernizeDate( medicalRecordObj.inpdate );
+				if( medicalRecordObj.hasOwnProperty('date') ) medicalRecordObj.date = DateUtil.modernizeDate( medicalRecordObj.date );
+				if( medicalRecordObj.hasOwnProperty('inpdate') ) medicalRecordObj.inpdate = DateUtil.modernizeDate( medicalRecordObj.inpdate );
 				
-				if( medicalRecordGridObj.hasOwnProperty('date') ) medicalRecordGridObj.date = modernizeDate( medicalRecordGridObj.date );
-				if( medicalRecordGridObj.hasOwnProperty('inpdate') ) medicalRecordGridObj.inpdate = modernizeDate( medicalRecordGridObj.inpdate );
+				if( medicalRecordGridObj.hasOwnProperty('date') ) medicalRecordGridObj.date = DateUtil.modernizeDate( medicalRecordGridObj.date );
+				if( medicalRecordGridObj.hasOwnProperty('inpdate') ) medicalRecordGridObj.inpdate = DateUtil.modernizeDate( medicalRecordGridObj.inpdate );
 				
 				if( model.medicalRecordsCategories.getItemIndex( medicalRecordObj.name ) == -1) model.medicalRecordsCategories.addItem( medicalRecordObj.name );
 				

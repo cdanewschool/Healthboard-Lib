@@ -96,7 +96,6 @@
 			private const SEARCH_PLACEHOLDER:String = "Search medical records";
 			
 			private var today:Date = AppProperties.getInstance().controller.model.today;
-			private var dateFormatter:DateFormatter = DateFormatters.dateFormatter;
 			
 			override protected function updateDisplayList( unscaledWidth:Number, unscaledHeight:Number ):void
 			{
@@ -346,12 +345,10 @@
 				
 				if( model.dateRange == DateRanges.DAY ) 
 				{
-					minDateMedRec.time -= DateUtil.DAY;
+					minDateMedRec.time -= (DateUtil.DAY * 1.5);
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.WEEK )
 				{
@@ -359,8 +356,6 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.MONTH )
 				{
@@ -368,35 +363,30 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartDay;
 					medRecVerticalGridLine.alpha = 0;
-					
-					dateFormatter = DateFormatters.dateFormatterDay;
 				}
 				else if( model.dateRange == DateRanges.MONTH_THREE ) 
 				{
 					minDateMedRec.time -= DateUtil.MONTH * 3;
+					maxDateMedRec.time += DateUtil.MONTH * .5;
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medRecVerticalGridLine.alpha = 0;
-					
-					dateFormatter = DateFormatters.dateFormatter;
 				}
 				else if( model.dateRange == DateRanges.YEAR ) 
 				{
 					minDateMedRec.time -= DateUtil.YEAR;
+					maxDateMedRec.time += DateUtil.MONTH * 1.5;
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
 					medRecVerticalGridLine.alpha = 0;
-					
-					dateFormatter = DateFormatters.dateFormatter;
 				}
 				else if( model.dateRange == DateRanges.YEAR_THREE ) 
 				{
 					minDateMedRec.time -= DateUtil.YEAR * 3;
+					maxDateMedRec.time += DateUtil.MONTH * 3;
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
-					
-					dateFormatter = DateFormatters.dateFormatterYear;
 				}
 				else
 				{
@@ -405,8 +395,6 @@
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
-					
-					dateFormatter = DateFormatters.dateFormatterYear;
 				}
 				
 				hAxisMedicalRecords.minimum = minDateMedRec;
