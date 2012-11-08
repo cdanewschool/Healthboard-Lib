@@ -389,6 +389,7 @@ s|TextArea {
 	color: "0xAEDEE4";
 	fontSize: 12;
 	fontWeight: bold;
+	fontFamily: "myMyriadNoCFF";
 }
 
 /*GREEN VERSION USED FOR THE MEDICATIONS PLOTCHART, IMMUNIZATION*/
@@ -396,6 +397,7 @@ s|TextArea {
 	color: "0xBED63A";
 	fontSize: 12;
 	fontWeight: bold;
+	fontFamily: "myMyriadNoCFF";
 }
 
 .standardDataGrid {
