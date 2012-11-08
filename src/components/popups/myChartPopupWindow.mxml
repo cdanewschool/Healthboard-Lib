@@ -107,9 +107,8 @@
 	<s:Label text="{medDate}" color="0x1D1D1B" />
 	<s:Label text="Intake Time" fontStyle="italic" color="0x595959" paddingBottom="-12" />
 	<s:HGroup>
-		<s:DropDownList id="intakeHour" selectedItem="{medHour}" width="50">
+		<s:DropDownList id="intakeHour" selectedIndex="{int(medHour) - 1}" width="50">
 			<s:ArrayCollection>
-				<fx:String>12</fx:String>
 				<fx:String>01</fx:String>
 				<fx:String>02</fx:String>
 				<fx:String>03</fx:String>
@@ -121,6 +120,7 @@
 				<fx:String>09</fx:String>
 				<fx:String>10</fx:String>
 				<fx:String>11</fx:String>
+				<fx:String>12</fx:String>
 			</s:ArrayCollection>
 		</s:DropDownList>
 		<s:DropDownList id="intakeMinute" selectedIndex="0" width="50">

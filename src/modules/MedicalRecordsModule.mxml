@@ -635,7 +635,7 @@
 							<s:VerticalLayout />
 						</s:layout>
 						
-						<s:HGroup id="medRecDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="42">
+						<s:HGroup id="medRecDGHeader" styleName="subtitles" verticalAlign="middle" paddingTop="-1" paddingLeft="42">
 							
 							<s:Label text="Type of Service" paddingTop="1" />
 							
