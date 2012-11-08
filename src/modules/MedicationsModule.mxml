@@ -179,7 +179,7 @@
 						var date:Date = new Date( myDate );
 						
 						myChartPopup.medDate = myDate.split(' ')[0];
-						myChartPopup.medHour = date.hours.toString();
+						myChartPopup.medHour = (date.hours>12 ? date.hours-12:date.hours).toString();
 						myChartPopup.medMeridiem = date.hours >= 12 ? 'PM' : 'AM';
 						myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
 					}
