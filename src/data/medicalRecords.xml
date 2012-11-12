@@ -5,12 +5,12 @@
 	<medicalRecord inpdate="{{MONTH-3}}/07/{{YEAR}}" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond">
 		<nextSteps task="Exercise for 40 minutes a day with running" completed="true" removed="true" recommendation="Exercise for 40 minutes a day with running" urgency="0" area="exercise"/>
-		<nextSteps task="Limit alcohol intake; 2 drinks a week maximum" completed="true" removed="true" recommendation="Limit alcohol intake; 2 drinks a week maximum" urgency="0" area="health" />
-		<nextSteps task="Take Healthy Diet 101 Class" completed="true" removed="true" recommendation="Take Healthy Diet 101 Class" urgency="0" area="schedule" />
+		<nextSteps task="Limit alcohol intake; 2 drinks a week maximum" completed="true" removed="true" recommendation="Limit alcohol intake; 2 drinks a week maximum" urgency="0" area="nutrition" />
+		<nextSteps task="Take Healthy Diet 101 Class" completed="true" removed="true" recommendation="Take Healthy Diet 101 Class" urgency="0" area="appointments" />
 	</medicalRecord>
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein">
-		<nextSteps task="Make an appointment for MRI" completed="true" removed="true" recommendation="Make an appointment for MRI" urgency="2" area="schedule" />
-		<nextSteps task="Start a new food plan to lower cholesterol" completed="true" removed="true" recommendation="Start a new food plan to lower cholesterol" urgency="2" area="health" />
+		<nextSteps task="Make an appointment for MRI" completed="true" removed="true" recommendation="Make an appointment for MRI" urgency="2" area="appointments" />
+		<nextSteps task="Start a new food plan to lower cholesterol" completed="true" removed="true" recommendation="Start a new food plan to lower cholesterol" urgency="2" area="nutrition" />
 	</medicalRecord>
 	<medicalRecord date="{{MONTH-1}}/16/{{YEAR}}" name="Radiology" order="3.5" classification="Outpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord inpdate="{{MONTH}}/16/{{YEAR}}" name="Radiology" order="3.5" classification="Inpatient" reason="MRI" provider="Dr. Berg"></medicalRecord>
@@ -18,8 +18,8 @@
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="ER" order="5.5" classification="Outpatient" reason="Brain Surgery" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Specialist" order="6.5" classification="Outpatient" reason="Consultation" provider="Dr. Hammond"></medicalRecord>
 	<medicalRecord date="{{MONTH-1}}/16/{{YEAR}}" name="Primary Care" order="7.5" classification="Outpatient" reason="Physician Examination" provider="Dr. Berg">
-		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="exercise" />
-		<nextSteps task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Set a Reminder" date="17:23, October 7, 2012" area="vitals" />		
+		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="appointments" />
+		<nextSteps task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Continue to check blood sugar twice daily - Set a Reminder" date="17:23, October 7, 2012" area="vitals" />		
 	</medicalRecord>
 	<medicalRecord name="Doctor Visits" order="8.5" classification="Outpatient" reason="Visit" provider="Dr. Berg"></medicalRecord>
 </medicalRecords>
