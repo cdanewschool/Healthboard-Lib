@@ -8,9 +8,9 @@ package models
 	{
 		public var name:String;
 		public var size:int;
-		public var data:ByteArray;
+		public var data:*;
 		
-		public function FileUpload( name:String, size:int, data:ByteArray )
+		public function FileUpload( name:String, size:int, data:* )
 		{
 			this.name = name;
 			this.size = size;
