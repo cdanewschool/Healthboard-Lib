@@ -193,7 +193,7 @@ package external.calendar.classes.utils
 				for(var j:int=0; j<DataHolder.getInstance().dataProvider.length; j++) {
 					var obj:Object = DataHolder.getInstance().dataProvider[j];
 					if(ObjectUtil.dateCompare(obj.date, _savedDate) == 0){
-						if(obj.hour == strLabel && obj.meridiem == objHourCell.data.meridiem){
+						if(parseInt(obj.hour) == parseInt(strLabel) && obj.meridiem == objHourCell.data.meridiem){
 							if(obj.mins == 0){
 								objHourCell.btnFirstHalf.label = obj.desc;	//timeSlots[CommonUtils.formatHourCellDate(objHourCell)].reason;
 								objHourCell.btnFirstHalf.visible = true;
