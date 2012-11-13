@@ -63,26 +63,41 @@ package controllers
 				
 				if( model.medicalRecordsCategories.getItemIndex( medicalRecordObj.name ) == -1) model.medicalRecordsCategories.addItem( medicalRecordObj.name );
 				
+				var nextStepObj:Object;
+				var nextStep:NextStep;
+				
 				if( medicalRecordObj.nextSteps is ArrayCollection) 
 				{
+					var nextSteps:ArrayCollection = new ArrayCollection();
+					
 					for(var j:uint = 0; j < medicalRecordObj.nextSteps.length; j++) 
 					{
-						var nextStepObj:Object = medicalRecordObj.nextSteps[j];
+						nextStepObj = medicalRecordObj.nextSteps[j];
 						
 						medicalRecordObj.nextSteps[j].provider = medicalRecordObj.provider;		//should I do the same thing with "date", so there wouldn't be a need to create a duplicate? element under <medicalRecord>?
 						
-						var nextStep:NextStep = NextStep.fromObj( nextStepObj );
+						nextStep = NextStep.fromObj( nextStepObj );
 						nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
 						nextStep.assignee = medicalRecordObj.provider;
 						
-						model.medicalRecordsNextSteps.addItem( nextStep );
+						nextSteps.addItem( nextStep );
 					}
 				}
 				else if( medicalRecordObj.nextSteps is ObjectProxy ) 
 				{
+					nextStepObj = medicalRecordObj.nextSteps;
+					
 					medicalRecordObj.nextSteps.provider = medicalRecordObj.provider;
-					model.medicalRecordsNextSteps.addItem( medicalRecordObj.nextSteps );
+					
+					nextStep = NextStep.fromObj( nextStepObj );
+					nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
+					nextStep.assignee = medicalRecordObj.provider;
+					
+					nextSteps.addItem( nextStep );
 				}
+				
+				medicalRecordObj.nextSteps = nextSteps;
+				model.medicalRecordsNextSteps = nextSteps;
 			}
 			
 			model.medicalRecordsNextSteps.addEventListener( CollectionEvent.COLLECTION_CHANGE, onNextStepsChange );
@@ -103,6 +118,23 @@ package controllers
 		private function filterByCompleted( item:NextStep ):Boolean
 		{
 			return !item.completed;
+		}
+		
+		public function getMedicalRecordByNextStep( nextStep:NextStep ):Object
+		{
+			var model:MedicalRecordsModel = model as MedicalRecordsModel;
+			
+			for each(var medicalRecord:Object in model.medicalRecordsData)
+			{
+				if( !medicalRecord.nextSteps ) continue;
+				
+				if( medicalRecord.nextSteps.getItemIndex( nextStep ) > -1 )
+				{
+					return medicalRecord;
+				}
+			}
+			
+			return null;
 		}
 	}
 }

@@ -10,10 +10,8 @@ package controllers
 	import events.AppointmentEvent;
 	import events.AuthenticationEvent;
 	
-	import external.TabBarPlus.plus.TabBarPlus;
 	import external.TabBarPlus.plus.TabPlus;
 	
-	import flash.display.DisplayObject;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
@@ -25,7 +23,6 @@ package controllers
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
 	
-	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
@@ -144,6 +141,10 @@ package controllers
 		
 		protected function onHandleAppointmentRequest( event:AppointmentEvent ):void 
 		{
+			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
+			evt.data = Constants.MODULE_APPOINTMENTS;
+			application.dispatchEvent( evt );
+			
 			if( event.type == AppointmentEvent.REQUEST_APPOINTMENT )
 			{
 				var myAppointment:myAppointmentsWindow = myAppointmentsWindow( PopUpManager.createPopUp( application, myAppointmentsWindow ) as TitleWindow );
@@ -167,10 +168,6 @@ package controllers
 				}
 				
 				AppointmentsModel(appointmentsController.model).isRecommending = true;
-				
-				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
-				evt.data = Constants.MODULE_APPOINTMENTS;
-				application.dispatchEvent( evt );
 				
 				var myClass:myClassesWindow = myClassesWindow( PopUpManager.createPopUp( application, myClassesWindow ) as TitleWindow );
 				PopUpManager.centerPopUp( myClass );

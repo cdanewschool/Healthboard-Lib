@@ -10,6 +10,8 @@
 		<![CDATA[
 			import events.AppointmentEvent;
 			
+			import models.NextStep;
+			
 			import mx.collections.ArrayCollection;
 			import mx.controls.LinkButton;
 			import mx.controls.Text;
@@ -45,13 +47,14 @@
 						
 						if(serviceData.nextSteps[i].recommendation != '') 
 						{
+							myLinkButton.data = serviceData.nextSteps[i];
 							myLinkButton.label = "Recommendation: " + serviceData.nextSteps[i].recommendation;
 							myLinkButton.setStyle("paddingLeft",38);
 							myLinkButton.setStyle("color","0xAEDEE4");
 							myLinkButton.setStyle("textRollOverColor","0xAEDEE4");
 							myLinkButton.setStyle("textSelectedColor","0xAEDEE4");
 							myLinkButton.setStyle("skin",null);
-							if(serviceData.nextSteps[i].recommendation == "Gentle Chair Yoga Class") myLinkButton.addEventListener(MouseEvent.CLICK,clickHandler);
+							myLinkButton.addEventListener( MouseEvent.CLICK, onNextStepClick );
 						}
 						
 						myHGroup.addElement(myLblBullet);
@@ -61,15 +64,25 @@
 						vgNextSteps.addElement(myVGroup);
 					}
 				}
-				else if(serviceData.nextSteps is ObjectProxy) 
-				{
-				}
 			}
 			
-			private function clickHandler(event:MouseEvent):void 
+			private function onNextStepClick(event:MouseEvent):void 
 			{
-				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
-				evt.data = 'Gentle Chair Yoga Class';
+				var data:NextStep = LinkButton(event.currentTarget).data as NextStep;
+				
+				if( !data.recommendation ) return;
+				
+				var evt:AppointmentEvent;
+				
+				if( data.type == "class" )
+				{
+					evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, data.recommendation );
+				}
+				else
+				{
+					evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true, data.recommendation );
+				}
+				
 				dispatchEvent( evt );
 			}
 			
