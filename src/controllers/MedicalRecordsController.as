@@ -50,6 +50,8 @@ package controllers
 			model.medicalRecordsCategories = new ArrayCollection();		//this is set to a new Array here, so that it is reset not only when the graph is first drawn, but also when the "Required only" checkbox is UNCHECKED, so the categories for the Y axis are re-calculated.
 			model.medicalRecordsNextSteps = new ArrayCollection();
 			
+			var nextSteps:ArrayCollection = new ArrayCollection();
+			
 			for(var i:uint = 0; i < model.medicalRecordsData.length; i++) 
 			{
 				var medicalRecordObj:Object = model.medicalRecordsData.getItemAt(i);
@@ -68,8 +70,6 @@ package controllers
 				
 				if( medicalRecordObj.nextSteps is ArrayCollection) 
 				{
-					var nextSteps:ArrayCollection = new ArrayCollection();
-					
 					for(var j:uint = 0; j < medicalRecordObj.nextSteps.length; j++) 
 					{
 						nextStepObj = medicalRecordObj.nextSteps[j];
@@ -97,10 +97,11 @@ package controllers
 				}
 				
 				medicalRecordObj.nextSteps = nextSteps;
-				model.medicalRecordsNextSteps = nextSteps;
 			}
 			
+			model.medicalRecordsNextSteps = nextSteps;
 			model.medicalRecordsNextSteps.addEventListener( CollectionEvent.COLLECTION_CHANGE, onNextStepsChange );
+			
 			onNextStepsChange();
 			
 			super.dataResultHandler(event);

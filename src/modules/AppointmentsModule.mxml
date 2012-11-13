@@ -215,6 +215,8 @@
 						nextStepsContainer.addElement( vgroup );
 						
 						var label:Label = new Label();
+						label.setStyle('truncateToFit', true);
+						label.width = 150;
 						label.text = nextStep.recommendation;
 						label.styleName = "smallText";
 						label.setStyle('paddingLeft',9);

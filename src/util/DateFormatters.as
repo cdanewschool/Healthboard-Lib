@@ -35,5 +35,8 @@ package util
 		
 		public static var dateTimeShort:DateFormatter = new DateFormatter();
 		dateTimeShort.formatString = "MM/DD/YYYY L:NN:SS A";
+		
+		public static var monthShortDayNumberYearFull:DateFormatter = new DateFormatter();
+		monthShortDayNumberYearFull.formatString = "MMM D, YYYY";
 	}
 }

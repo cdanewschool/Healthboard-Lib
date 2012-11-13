@@ -1,9 +1,11 @@
 package models
 {
 	import mx.collections.ArrayCollection;
+	
+	import util.DateFormatters;
 
 	[Bindable]
-	public class UserModel
+	public class UserModel extends PersonModel
 	{
 		public static const STATE_AVAILABLE:String = "A";
 		public static const STATE_UNAVAILABLE:String = "U";
@@ -11,29 +13,43 @@ package models
 		public static const TYPE_PROVIDER:String = "provider";
 		public static const TYPE_PATIENT:String = "patient";
 		
+		//	internal
 		public var id:int;
 		public var userType:String;
 		
-		public var firstName:String;
-		public var lastName:String;
-		public var sex:String;
-		public var team:String;
+		//	basic
+		public var birthdate:Date;
+		public var sex:int;
 		
 		//	contact
 		public var email:String;
 		public var phone:String;
 		
+		//	location
+		public var city:String;
+		public var latitude:Number;
+		public var longitude:Number;
+		public var state:String;
+		public var street1:String;
+		public var street2:String;
+		public var zip:String;
+		
 		//	security
 		public var username:String;
 		public var password:String;
 		
-		public var available:String;
+		//	medical
+		public var team:String;
 		
+		//	application-specific
+		public var available:String;
 		public var chatHistory:ArrayCollection;
 		
 		public function UserModel( type:String = TYPE_PATIENT )
 		{
 			this.userType = type;
+			
+			super();
 		}
 		
 		public function get fullName():String
@@ -44,6 +60,16 @@ package models
 		public function get fullNameAbbreviated():String
 		{
 			return lastName;
+		}
+		
+		public function getBirthdate():String
+		{
+			return DateFormatters.dateOnlyBackslashDelimited.format( birthdate );
+		}
+		
+		public function getSex():String
+		{
+			return sex == 0 ? 'Male' : 'Female';
 		}
 		
 		public function getDefaultProfilePictureURL( size:String = "small" ):String

@@ -6,6 +6,9 @@ package events
 	{
 		public static const SUCCESS:String = "authenticationSuccess";
 		public static const ERROR:String = "authenticationError";
+		public static const PROMPT:String = "authenticationPrompt";
+		
+		public var onAuthenticatedCallback:Function;
 		
 		public function AuthenticationEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{
