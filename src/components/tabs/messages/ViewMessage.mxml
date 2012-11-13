@@ -381,7 +381,7 @@
 												}
 											]]>
 										</fx:Script>
-										<mx:Label text="{data.filename}" color="0xAEDEE4" />
+										<mx:Label text="{data.name}" color="0xAEDEE4" />
 										<mx:Label text="{data.filesize}" color="0xFFFFFF" />
 										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete attachment" buttonMode="true" click="delete_clickHandler(event)" />
 									</mx:HBox>

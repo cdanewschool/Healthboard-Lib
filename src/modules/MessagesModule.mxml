@@ -958,7 +958,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup creationComplete="init()" width="100%" paddingTop="10">
+	<s:VGroup creationComplete="init()" width="100%">
 		
 		<components:ModuleHeader 
 			id="messagesHeader"

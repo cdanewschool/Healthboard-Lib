@@ -4,6 +4,7 @@ package controllers
 	
 	import enum.RecipientType;
 	
+	import models.FileUpload;
 	import models.modules.MessagesModel;
 	
 	import mx.collections.ArrayCollection;
@@ -99,7 +100,7 @@ package controllers
 							status: "read", correspondent: "Physician", prefix: "a ", date: "Dec 24 2010 01:03:54 AM", subject: "Thanks", isDraft: false, checkboxSelection: false, 
 							messages: 
 							[
-								{sender: "You", date: "Dec 24 2010 01:03:54 AM", text: "Hi Doctor,\n\nIt's been a month since my sinus surgery, and I still get periodical nose bleeding. Should I have this checked?", imageAttachments: new ArrayCollection([{filename: 'bloodyNose.jpg', image: myPic}]), nonImageAttachments: null, urgency: "Not urgent", status: "read"}
+								{sender: "You", date: "Dec 24 2010 01:03:54 AM", text: "Hi Doctor,\n\nIt's been a month since my sinus surgery, and I still get periodical nose bleeding. Should I have this checked?", imageAttachments: new ArrayCollection([ new FileUpload('bloodyNose.jpg', 0, myPic)]), nonImageAttachments: null, urgency: "Not urgent", status: "read"}
 						]
 						},
 						{
