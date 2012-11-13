@@ -2,6 +2,7 @@ package models
 {
 	public class NextStep
 	{
+		public var actionId:String;
 		public var area:String;
 		public var assignee:String;
 		public var completed:Boolean;
@@ -10,6 +11,7 @@ package models
 		public var removed:Boolean;
 		public var status:String;
 		public var task:String;
+		public var type:String;
 		public var urgency:int;
 		
 		public function NextStep()

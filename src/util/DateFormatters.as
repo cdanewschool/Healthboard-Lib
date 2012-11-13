@@ -34,6 +34,9 @@ package util
 		dateOnlyBackslashDelimited.formatString = "MM/DD/YYYY";
 		
 		public static var dateTimeShort:DateFormatter = new DateFormatter();
-		dateTimeShort.formatString = "MM/DD/YYYY J:NN:SS A";
+		dateTimeShort.formatString = "MM/DD/YYYY L:NN:SS A";
+		
+		public static var monthShortDayNumberYearFull:DateFormatter = new DateFormatter();
+		monthShortDayNumberYearFull.formatString = "MMM D, YYYY";
 	}
 }

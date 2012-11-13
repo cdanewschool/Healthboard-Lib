@@ -113,7 +113,7 @@
 				cartesianCanvas.lineTo( dateValue, model.medicationsCategories.getItemAt(model.medicationsCategories.length-1) );
 				
 				var coords:Point = cartesianCanvas.dataToLocal( today );
-				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 10;
+				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 14;
 			}
 			
 			private function updateOpenLeaves():void
@@ -179,7 +179,7 @@
 						var date:Date = new Date( myDate );
 						
 						myChartPopup.medDate = myDate.split(' ')[0];
-						myChartPopup.medHour = date.hours.toString();
+						myChartPopup.medHour = (date.hours>12 ? date.hours-12:date.hours).toString();
 						myChartPopup.medMeridiem = date.hours >= 12 ? 'PM' : 'AM';
 						myChartPopup.move(e.stageX + 11,e.stageY - myChartPopup.height - 12);
 					}
@@ -730,7 +730,7 @@
 								<mx:LegendItem label="Over-The-Counter Drugs" legendMarkerRenderer="mx.charts.renderers.TriangleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicationsOverTheCounterDrugs}" stroke="{whiteStroke}" />
 								<mx:LegendItem label="Supplements" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsInpatient}"  stroke="{whiteStroke}" />
 								<mx:LegendItem label="Herbal Medicines" legendMarkerRenderer="mx.charts.renderers.DiamondItemRenderer" markerAspectRatio="1" markerHeight="15" markerWidth="15" fill="{colorMedicationsHerbalMedicines}" stroke="{whiteStroke}" />-->
-								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="14" markerWidth="14" legendMarkerRenderer="@Embed(source='images/medIconTaken.png')" /><!--fill="{chartStyles.colorMedicalRecordsOutpatient}" -->
+								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="14" markerWidth="14" legendMarkerRenderer="@Embed(source='images/medIconTakenBorder.png')" /><!--fill="{chartStyles.colorMedicalRecordsOutpatient}" -->
 								<mx:LegendItem label="As needed" legendMarkerRenderer="@Embed(source='images/medIconTakenANBorder.png')" markerAspectRatio="1" markerHeight="14" markerWidth="14" /><!--legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" fill="{chartStyles.colorMedicalRecordsInpatient}"-->
 								<mx:LegendItem label="Overdose/underdose" legendMarkerRenderer="@Embed(source='images/medIconOverdoseGrayBG.png')" markerAspectRatio="1" markerWidth="16" markerHeight="14" />
 							</mx:Legend>

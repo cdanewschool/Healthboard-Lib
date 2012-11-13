@@ -82,7 +82,7 @@
 				cartesianCanvas.lineTo( dateValue, model.immunizationsCategories[model.immunizationsCategories.length-1] );
 				
 				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
-				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 10;
+				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 7;
 			}
 			
 			private function checkImmunizationsRequired_clickHandler(event:IndexChangeEvent):void 
@@ -447,7 +447,7 @@
 							</s:layout>
 							
 							
-							<s:HGroup styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingLeft="36">
+							<s:HGroup styleName="subtitles" verticalAlign="middle" paddingLeft="36">
 								
 								<s:Label text="Immunization" paddingTop="1" />
 								

@@ -414,7 +414,7 @@
 				cartesianCanvas.lineTo( dateValue, model.medicalRecordsCategories.getItemAt(model.medicalRecordsCategories.length-1) );
 				
 				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
-				todayLabel.x = coords.x - todayLabel.width/2 - 10;
+				todayLabel.x = coords.x - todayLabel.width/2 - 7;
 			}
 			
 			private function filterSearchMedRed(item:Object):Boolean
@@ -635,7 +635,7 @@
 							<s:VerticalLayout />
 						</s:layout>
 						
-						<s:HGroup id="medRecDGHeader" styleName="dataGridHeaderAlternative" verticalAlign="middle" paddingTop="-1" paddingLeft="42">
+						<s:HGroup id="medRecDGHeader" styleName="subtitles" verticalAlign="middle" paddingTop="-1" paddingLeft="42">
 							
 							<s:Label text="Type of Service" paddingTop="1" />
 							
