@@ -1,9 +1,8 @@
 package components.general 
 {
-	import mx.controls.LinkButton;
 	import flash.text.TextLineMetrics;
 	
-	public class MultilineLinkButton extends LinkButton 
+	public class MultilineLinkButton extends MainLinkButton 
 	{
 		override protected function createChildren():void 
 		{
