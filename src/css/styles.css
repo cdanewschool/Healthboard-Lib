@@ -197,6 +197,14 @@ s|TextArea {
 	fontFamily: "myMyriad";
 }
 
+.linkBtnGreen {
+	skin: ClassReference(null);
+	color: "0xBED63A";
+	textRollOverColor: "0xCCCC33";
+	fontSize: 13;
+	fontFamily: "myMyriad";
+}
+
 .linkBtnBlue {
 	skin: ClassReference(null);
 	color: "0xAEDEE4";
@@ -209,7 +217,7 @@ s|TextArea {
 
 .linkBtnOrange {
 	skin: ClassReference(null);
-	color: "0xFFFFFF";
+	color: "0xF29222";
 	textRollOverColor: "0xFF931E";
 	textSelectedColor: "0xFF931E";
 	paddingLeft: 0;
@@ -222,6 +230,17 @@ s|TextArea {
 	skin: ClassReference(null);
 	color: "0x064E71";
 	textRollOverColor: "0xAEDEE4";
+	paddingLeft: 0;
+	paddingTop:0;
+	paddingRight:0;
+	paddingBottom:0;
+}
+
+.linkBtnWhite {
+	skin: ClassReference(null);
+	color: "0xFFFFFF";
+	textRollOverColor: "0xFFFFFF";
+	fontFamily: "myMyriad";
 	paddingLeft: 0;
 	paddingTop:0;
 	paddingRight:0;
@@ -768,4 +787,66 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	fontSize: 11;
 	font-weight: normal;
 	color: "0xDA2925";	
+}
+
+/*	advisory	*/
+.blue13Bold {
+	color: "0xAEDBE2";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 13;
+}
+.gray13Italic {
+	color: "0xCCCCCC";
+	font-family: "myMyriad";
+	font-weight: normal;
+	font-size: 13;
+	font-style: italic;
+}
+.gray11Bold {
+	color: "0xCCCCCC";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 11;
+}
+.gray19 {
+	color: "0xCCCCCC";
+	font-family: "myMyriad";
+	font-weight: normal;
+	font-size: 19;
+}
+.lightBlue11Bold {
+	color: "0x9FD6DC";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 11;
+}
+.lightBlue11Italic {
+	color: "0x9FD6DC";
+	font-family: "myMyriad";
+	font-style: italic;
+	font-size: 13;
+}
+.lightBlue19Bold {
+	color: "0x9FD6DC";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 19;
+}
+.orange16Bold {
+	color: "0xF29222";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 16;
+}
+.white12Bold {
+	color: "0xffffff";
+	font-family: "myMyriad";
+	font-weight: bold;
+	font-size: 12;
+}
+.green12Bold {
+	fontSize: 11;
+	fontWeight:bold;
+	color: "0xBED63A";
 }
