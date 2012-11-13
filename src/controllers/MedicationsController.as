@@ -358,7 +358,7 @@ package controllers
 			}
 		}
 		
-		public function onRecordIntakeClick():void
+		public function onRecordIntakeClick(medication:Object):void
 		{
 			
 		}
@@ -368,6 +368,22 @@ package controllers
 			for each(var med:Object in MedicationsModel(model).medicationsData) 
 			{
 				if( med.name == name )
+				{
+					return med;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function getMedicationByNameAndDate( name:String, date:Date ):Object
+		{
+			for each(var med:Object in MedicationsModel(model).medicationsData) 
+			{
+				var medDate:Date = new Date( med.date );
+				
+				if( med.name == name 
+					&& (medDate.time == date.time ) )
 				{
 					return med;
 				}
