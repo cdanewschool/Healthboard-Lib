@@ -63,15 +63,18 @@ package controllers
 				
 				if( model.medicalRecordsCategories.getItemIndex( medicalRecordObj.name ) == -1) model.medicalRecordsCategories.addItem( medicalRecordObj.name );
 				
+				var nextStepObj:Object;
+				var nextStep:NextStep;
+				
 				if( medicalRecordObj.nextSteps is ArrayCollection) 
 				{
 					for(var j:uint = 0; j < medicalRecordObj.nextSteps.length; j++) 
 					{
-						var nextStepObj:Object = medicalRecordObj.nextSteps[j];
+						nextStepObj = medicalRecordObj.nextSteps[j];
 						
 						medicalRecordObj.nextSteps[j].provider = medicalRecordObj.provider;		//should I do the same thing with "date", so there wouldn't be a need to create a duplicate? element under <medicalRecord>?
 						
-						var nextStep:NextStep = NextStep.fromObj( nextStepObj );
+						nextStep = NextStep.fromObj( nextStepObj );
 						nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
 						nextStep.assignee = medicalRecordObj.provider;
 						
@@ -80,8 +83,15 @@ package controllers
 				}
 				else if( medicalRecordObj.nextSteps is ObjectProxy ) 
 				{
+					nextStepObj = medicalRecordObj.nextSteps;
+					
 					medicalRecordObj.nextSteps.provider = medicalRecordObj.provider;
-					model.medicalRecordsNextSteps.addItem( medicalRecordObj.nextSteps );
+					
+					nextStep = NextStep.fromObj( nextStepObj );
+					nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
+					nextStep.assignee = medicalRecordObj.provider;
+					
+					model.medicalRecordsNextSteps.addItem( nextStep );
 				}
 			}
 			

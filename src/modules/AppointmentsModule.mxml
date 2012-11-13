@@ -25,6 +25,7 @@
 			import components.popups.myAppointmentsWindow;
 			import components.popups.myClassesWindow;
 			import components.popups.myConfirmCancelWindow;
+			import components.general.MainLinkButton;
 			
 			import controllers.AppointmentsController;
 			
@@ -40,6 +41,7 @@
 			import external.calendar.mxml_views.monthCell;
 			
 			import models.Message;
+			import models.NextStep;
 			import models.modules.AppointmentsModel;
 			import models.modules.MedicalRecordsModel;
 			
@@ -51,6 +53,7 @@
 			import mx.events.DataGridEvent;
 			import mx.formatters.DateFormatter;
 			import mx.managers.PopUpManager;
+			import mx.controls.LinkButton;
 			
 			import styles.ChartStyles;
 			
@@ -181,15 +184,82 @@
 					{
 						myUpcomingApptLabel.data = obj;
 						
-						var label:String = obj.provider + " - " + obj.desc + "\n";
-						label += String(obj.date).substr(0,3) + ", " + String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " hrs";
+						var title:String = obj.provider + " - " + obj.desc + "\n";
+						title += String(obj.date).substr(0,3) + ", " + String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " hrs";
 						
-						myUpcomingApptLabel.label = label;
+						myUpcomingApptLabel.label = title;
 						
 						upcomingAppts.addElement( myUpcomingApptLabel );
 					}
 					
 					if( obj.date.time > today.time ) upcomingAppointmentCount++;
+				}
+				
+				
+				var nextSteps:ArrayCollection = MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model).medicalRecordsNextSteps;
+				
+				nextStepsContainer.removeAllElements();
+				
+				var j:int;
+				
+				for(i=0,j=0;i<nextSteps.length;i++)
+				{
+					if( j == 2 ) break;
+					
+					var nextStep:NextStep = nextSteps.getItemAt(i) as NextStep;
+					
+					if( !nextStep.completed )
+					{
+						var vgroup:VGroup = new VGroup();
+						vgroup.gap = 0;
+						nextStepsContainer.addElement( vgroup );
+						
+						var label:Label = new Label();
+						label.text = nextStep.recommendation;
+						label.styleName = "smallText";
+						label.setStyle('paddingLeft',9);
+						label.setStyle('paddingTop',15);
+						vgroup.addElement( label );
+						
+						var hgroup:HGroup = new HGroup();
+						hgroup.setStyle('paddingTop',-5);
+						hgroup.setStyle('paddingBottom',-5);
+						hgroup.setStyle('paddingLeft',-5);
+						vgroup.addElement( hgroup );
+						
+						if( nextStep.area != null )
+						{
+							var linkButton:MainLinkButton = new MainLinkButton();
+							linkButton.data = nextStep;
+							linkButton.label = nextStep.type == "class" ? "Schedule Class" : "Schedule Appointment";
+							linkButton.setStyle('fontSize',10.5);
+							linkButton.setStyle('color','0xAEDEE4');
+							linkButton.setStyle('textRollOverColor','0xAEDEE4');
+							linkButton.setStyle('textSelectedColor','0xAEDEE4');
+							linkButton.addEventListener( MouseEvent.CLICK, onNextStepClick );
+							hgroup.addElement( linkButton );
+						}
+						
+						j++;
+					}
+				}
+			}
+			
+			private function onNextStepClick(event:MouseEvent):void
+			{
+				var nextStep:NextStep = LinkButton(event.target).data as NextStep;
+				
+				if( nextStep.area == "schedule" )
+				{
+					if( nextStep.type == "class" )
+					{
+						requestClasses( nextStep.actionId )
+					}
+					else
+					{
+						stackViews.selectedIndex = 1; 
+						controller.setAvailable( 'set2', nextStep.task );
+					}
 				}
 			}
 			
@@ -546,7 +616,9 @@
 				
 				<s:Label text="Next Steps" styleName="subtitles" textAlign="center" width="100%" paddingTop="23" />
 				
-				<!--	TODO: populate recommendations dynamically	-->
+				<s:VGroup id="nextStepsContainer" gap="3" />
+				
+				<!--
 				<s:Label text="Tetanus Vaccination" styleName="smallText" paddingLeft="9" paddingTop="15" />
 				
 				<s:HGroup paddingTop="-5" paddingBottom="-5" paddingLeft="-1">
@@ -558,6 +630,7 @@
 				<s:HGroup paddingTop="-5" paddingBottom="-5" paddingLeft="-1">
 					<mx:LinkButton id="btnScheduleClass" label="Schedule Class" click="requestClasses('yogaGentle')" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnScheduleClass.styleName='linkBtnUnderline';}" rollOut="btnScheduleClass.styleName='linkBtn';" />
 				</s:HGroup>
+				-->
 				
 				<s:Spacer height="100%" />
 				
