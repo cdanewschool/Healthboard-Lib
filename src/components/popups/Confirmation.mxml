@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	width="295" height="81"
+	controlBarVisible="true" 
+	skinClass="skins.general.myHeaderlessTitleWindow"
+	creationComplete="init()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import models.Appointment;
+			import models.UserModel;
+			
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			[Bindable] public var confirmationText:String;
+			
+			private function close():void
+			{
+				dispatchEvent( new CloseEvent( Event.CLOSE ) );
+				
+				PopUpManager.removePopUp( this );
+			}
+			
+			private function init():void
+			{
+				controlBarVisible = false;
+			}
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:BasicLayout id="layout" />
+	</s:layout>
+	
+	<s:Label width="100%" text="{confirmationText}" styleName="darkGrayBold16" textAlign="center" paddingTop="10" />
+	
+	<s:HGroup horizontalAlign="center" width="100%" bottom="10">
+		<s:Button label="Confirm" click="close()" />
+	</s:HGroup>
+	
+</s:TitleWindow>
