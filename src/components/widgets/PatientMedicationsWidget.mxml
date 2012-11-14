@@ -62,6 +62,9 @@
 			
 			private function init():void
 			{
+				model.minDate = new Date( today.fullYear, today.month, today.date - 3 );
+				model.maxDateWidget = new Date( today.fullYear, today.month, today.date + 3, 12 );
+				
 				if( !model.dataLoaded )
 				{
 					model.addEventListener( ApplicationDataEvent.LOADED, onDataLoaded );
@@ -74,9 +77,6 @@
 				{
 					onDataLoaded();
 				}
-				
-				model.minDate = new Date( today.fullYear, today.month, today.date - 3 );
-				model.maxDateWidget = new Date( today.fullYear, today.month, today.date + 3, 12 );
 			}
 		]]>
 	</fx:Script>
