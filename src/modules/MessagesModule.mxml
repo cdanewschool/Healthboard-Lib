@@ -618,6 +618,10 @@
 					else lblMessagesNumber.text = messageCount.substr(2,1);
 					*/
 					
+					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					evt.data = "Your message has been deleted";
+					dispatchEvent( evt );
+					
 					refreshDisplayedMessages();
 				}
 				else 
