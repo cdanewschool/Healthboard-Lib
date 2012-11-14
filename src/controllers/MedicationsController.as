@@ -214,7 +214,6 @@ package controllers
 					currentLeaf = 0;
 				}
 				else {
-					if(currentCategory == -1) currentCategory = 0;	//THIS LINE PREVENTS AN ERROR WHEN FILTERING ONLY DISCONTINUED MEDS, IT SHOULDN'T BE HERE, PLEASE REVISE LATER.
 					var newLeaf:Object = new Object();
 					newLeaf = ({category: medicationsCategoriesReversed[i]});
 					model.medicationsCategoriesTree[currentCategory].children[currentLeaf] = newLeaf;
@@ -235,7 +234,7 @@ package controllers
 		private function filterMedications(item:Object):Boolean 
 		{
 			if(MedicationsModel(model).type == MedicationsModel.TYPE_ACTIVE) return item.status != "inactive";
-			else if(MedicationsModel(model).type == MedicationsModel.TYPE_DISCONTINUED) return item.status == "inactive";
+			else if(MedicationsModel(model).type == MedicationsModel.TYPE_DISCONTINUED) return item.status != "active";
 			else return true;
 		}
 		
