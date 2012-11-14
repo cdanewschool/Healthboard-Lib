@@ -20,7 +20,7 @@
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="ER" order="5.5" classification="Outpatient" reason="Brain Surgery" provider="Dr. Berg"></medicalRecord>
 	<medicalRecord date="{{MONTH-2}}/11/{{YEAR}}" name="Specialist" order="6.5" classification="Outpatient" reason="Consultation" provider="Dr. Hammond"></medicalRecord>
 	<medicalRecord date="{{MONTH-1}}/16/{{YEAR}}" name="Primary Care" order="7.5" classification="Outpatient" reason="Physician Examination" provider="Dr. Berg">
-		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="records" type="class" actionId="yogaGentile"/>
+		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="appointments" type="class" actionId="yogaGentile"/>
 		<nextSteps task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Continue to check blood sugar twice daily - Set a Reminder" date="17:23, October 7, 2012" area="vitals" />		
 	</medicalRecord>
 	<medicalRecord name="Doctor Visits" order="8.5" classification="Outpatient" reason="Visit" provider="Dr. Berg"></medicalRecord>
