@@ -1,8 +1,6 @@
 .DS_Store
-.actionScriptProperties
 .flexProperties
 .fxpProperties
-.project
 .settings
 /bin-debug
 /bin-release
