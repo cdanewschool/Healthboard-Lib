@@ -253,7 +253,7 @@
 			
 			private function lblMedicalRecordsNextSteps(item:Object, column:DataGridColumn):String
 			{
-				return item.nextSteps != null ? "Yes" : "";
+				return item.nextSteps != null && item.nextSteps.length ? "Yes" : "";
 			}
 			
 			private function switchMedicalRecordsView(index:uint):void 

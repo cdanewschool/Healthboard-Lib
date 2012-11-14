@@ -8,6 +8,11 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import ASclasses.Constants;
+			
+			import controllers.MedicalRecordsController;
+			
+			import events.ApplicationEvent;
 			import events.AppointmentEvent;
 			
 			import models.NextStep;
@@ -18,6 +23,8 @@
 			import mx.utils.ObjectProxy;
 			
 			[Bindable] public var serviceData:Object;
+			
+			private var controller:MedicalRecordsController = AppProperties.getInstance().controller.medicalRecordsController as MedicalRecordsController;
 			
 			public var myLinkButton:LinkButton;
 			
@@ -44,18 +51,17 @@
 						myTxtDescription.htmlText = serviceData.nextSteps[i].task;
 						
 						myLinkButton = new LinkButton();
-						
-						if(serviceData.nextSteps[i].recommendation != '') 
-						{
-							myLinkButton.data = serviceData.nextSteps[i];
-							myLinkButton.label = "Recommendation: " + serviceData.nextSteps[i].recommendation;
-							myLinkButton.setStyle("paddingLeft",38);
-							myLinkButton.setStyle("color","0xAEDEE4");
-							myLinkButton.setStyle("textRollOverColor","0xAEDEE4");
-							myLinkButton.setStyle("textSelectedColor","0xAEDEE4");
-							myLinkButton.setStyle("skin",null);
-							myLinkButton.addEventListener( MouseEvent.CLICK, onNextStepClick );
-						}
+						myLinkButton.width = 300;
+						myLinkButton.data = serviceData.nextSteps[i];
+						myLinkButton.label = "Recommendation: " + serviceData.nextSteps[i].recommendation;
+						myLinkButton.setStyle("truncateToFit",true);
+						myLinkButton.setStyle("skin",null);
+						myLinkButton.setStyle("paddingLeft",38);
+						myLinkButton.setStyle("color","0xAEDEE4");
+						myLinkButton.setStyle("textAlign","left");
+						myLinkButton.setStyle("textRollOverColor","0xAEDEE4");
+						myLinkButton.setStyle("textSelectedColor","0xAEDEE4");
+						myLinkButton.addEventListener( MouseEvent.CLICK, onNextStepClick );
 						
 						myHGroup.addElement(myLblBullet);
 						myHGroup.addElement(myTxtDescription);
@@ -68,22 +74,8 @@
 			
 			private function onNextStepClick(event:MouseEvent):void 
 			{
-				var data:NextStep = LinkButton(event.currentTarget).data as NextStep;
-				
-				if( !data.recommendation ) return;
-				
-				var evt:AppointmentEvent;
-				
-				if( data.type == "class" )
-				{
-					evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, data.recommendation );
-				}
-				else
-				{
-					evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true, data.recommendation );
-				}
-				
-				dispatchEvent( evt );
+				var item:NextStep = LinkButton(event.currentTarget).data as NextStep;
+				controller.showNextStep( item );
 			}
 			
 			private function rolloverHandler(event:MouseEvent):void 

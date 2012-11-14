@@ -7,6 +7,8 @@ package models.modules
 	[Bindable] 
 	public class VitalSignsModel extends ModuleModel
 	{
+		public static const ID:String = "vitalsigns";
+		
 		public var dateRange:String;
 		
 		public var dateMin:Date = new Date(2011,7,26);

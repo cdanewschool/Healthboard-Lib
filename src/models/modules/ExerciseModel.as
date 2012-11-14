@@ -7,6 +7,8 @@ package models.modules
 	[Bindable]
 	public class ExerciseModel extends ModuleModel
 	{
+		public static const ID:String = "exercise";
+		
 		public var bookmarks:ArrayCollection;
 		
 		public var exerciseData:ArrayCollection;

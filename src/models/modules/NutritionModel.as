@@ -7,6 +7,8 @@ package models.modules
 	[Bindable] 
 	public class NutritionModel extends ModuleModel
 	{
+		public static const ID:String = "nutrition";
+		
 		//	images shared by module and widget
 		[Embed("images/nutritionAlcoholEmpty.png")] public var alcoholEmpty:Class;
 		[Embed("images/nutritionAlcoholFull.png")] public var alcoholFull:Class;

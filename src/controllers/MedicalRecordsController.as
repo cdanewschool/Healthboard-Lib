@@ -1,8 +1,19 @@
 package controllers
 {
+	import ASclasses.Constants;
+	
+	import events.ApplicationEvent;
+	import events.AppointmentEvent;
+	
+	import flash.events.Event;
+	
 	import models.ApplicationModel;
 	import models.NextStep;
+	import models.modules.AppointmentsModel;
+	import models.modules.ExerciseModel;
 	import models.modules.MedicalRecordsModel;
+	import models.modules.NutritionModel;
+	import models.modules.VitalSignsModel;
 	
 	import mx.charts.DateTimeAxis;
 	import mx.collections.ArrayCollection;
@@ -68,35 +79,36 @@ package controllers
 				var nextStepObj:Object;
 				var nextStep:NextStep;
 				
+				var nextStepsForRecord:ArrayCollection = new ArrayCollection();
+				
 				if( medicalRecordObj.nextSteps is ArrayCollection) 
 				{
 					for(var j:uint = 0; j < medicalRecordObj.nextSteps.length; j++) 
 					{
 						nextStepObj = medicalRecordObj.nextSteps[j];
 						
-						medicalRecordObj.nextSteps[j].provider = medicalRecordObj.provider;		//should I do the same thing with "date", so there wouldn't be a need to create a duplicate? element under <medicalRecord>?
-						
 						nextStep = NextStep.fromObj( nextStepObj );
 						nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
 						nextStep.assignee = medicalRecordObj.provider;
 						
 						nextSteps.addItem( nextStep );
+						nextStepsForRecord.addItem( nextStep );
 					}
 				}
 				else if( medicalRecordObj.nextSteps is ObjectProxy ) 
 				{
 					nextStepObj = medicalRecordObj.nextSteps;
 					
-					medicalRecordObj.nextSteps.provider = medicalRecordObj.provider;
-					
 					nextStep = NextStep.fromObj( nextStepObj );
 					nextStep.dateAssigned = new Date( Date.parse( medicalRecordObj.date ) );
 					nextStep.assignee = medicalRecordObj.provider;
 					
 					nextSteps.addItem( nextStep );
+					nextStepsForRecord.addItem( nextStep );
 				}
 				
-				medicalRecordObj.nextSteps = nextSteps;
+				medicalRecordObj.nextSteps = nextStepsForRecord;
+				medicalRecordGridObj.nextSteps = nextStepsForRecord;
 			}
 			
 			model.medicalRecordsNextSteps = nextSteps;
@@ -119,6 +131,44 @@ package controllers
 		private function filterByCompleted( item:NextStep ):Boolean
 		{
 			return !item.completed;
+		}
+		
+		public function showNextStep( item:NextStep ):void
+		{
+			var evt:Event;
+			
+			var module:String;
+			
+			if( item.area == ExerciseModel.ID )
+				module = Constants.MODULE_EXERCISE;
+			else if( item.area == NutritionModel.ID )
+				module = Constants.MODULE_NUTRITION;
+			else if( item.area == AppointmentsModel.ID )
+			{
+				if( item.recommendation )
+				{
+					if( item.type == "class" )
+						evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, item.actionId );
+					else
+						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
+					
+					AppProperties.getInstance().controller.application.dispatchEvent( evt );
+				}
+				else
+				{
+					module = Constants.MODULE_APPOINTMENTS;
+				}						
+			}
+			else if( item.area == VitalSignsModel.ID )
+				module = Constants.MODULE_VITAL_SIGNS;
+			else if( item.area == MedicalRecordsModel.ID )
+				module = Constants.MODULE_MEDICAL_RECORDS;
+			
+			if( module )
+			{
+				evt = new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, module );
+				AppProperties.getInstance().controller.application.dispatchEvent( evt );
+			}
 		}
 		
 		public function getMedicalRecordByNextStep( nextStep:NextStep ):Object

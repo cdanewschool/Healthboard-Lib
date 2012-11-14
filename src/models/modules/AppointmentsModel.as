@@ -10,6 +10,8 @@ package models.modules
 	[Bindable] 
 	public class AppointmentsModel extends ModuleModel
 	{
+		public static const ID:String = "appointments";
+		
 		public static const STATUSES:ArrayCollection = new ArrayCollection( [ AppointmentStatus.ALL, AppointmentStatus.SCHEDULED, AppointmentStatus.COMPLETED ] );
 		
 		[Embed("images/blueArrowLeft.png")] 	public var blueArrowLeft:Class;
