@@ -3,39 +3,49 @@
 @namespace mx "library://ns.adobe.com/flex/mx";
 
 mx|Application { skinClass: "skins.general.backgroundGradient"; fontFamily: "myMyriad"; }
-mx|LinkButton { skin: ClassReference(null); paddingLeft: 0; paddingTop:0; paddingRight:0; paddingBottom:0; }
 
+/*	BEGIN FONT STYLES	*/
+
+/*	core font styles	*/
 .bold { font-weight: bold; }
 .italic { font-style: italic; }
 .underline{ textDecoration: underline; }
 
 /*	colors	*/
 .emphasizedNumber { color: "0xFF931E"; }
-
-.button { font-size: 11; color: "0x000000"; chromeColor: "0xB3B3B3"; }
-.toggleButton { toggleBackgroundColor: "0x4A4A49"; skin: ClassReference("skins.general.MyLinkButtonSkin"); }
-
-.viewStack { backgroundColor: "0x4A4A49"; borderColor: "0xBDBCBC"; borderStyle: "solid"; cornerRadius: 2; }
-
-.navigatorContent { backgroundColor: "0x333333"; }
-.navigatorContentHeaderBar {  backgroundColor: "0x706F6F"; color: "0xFFFFFF" }
-
-/*	colors	*/
 .dataGridAlternateColor1 { color: "0xAEDEE4"; }
 .dropdownLabelText { color: "0x000000"; }
-.headerAlternateColor1 { color: "0xBED63A"; }	/*	green	*/
-.linkButtonStyle1{ color: "0xAEDEE4"; textRollOverColor: "0xAEDEE4"; }		/*	light blue	*/
-.linkButtonStyle2{ color: "0x064E71"; textRollOverColor: "0xAEDEE4"; }		/*	dark blue	*/
+.headerAlternateColor1 { color: "0xBED63A"; }	/*	green	*/	/*	PublicHealthAdvisoryItemRenderer	*/
 .subheadText { color: "0x4D4D4D"; }	/*	dark gray	*/
 
-/*	popups	*/
+/*	BEGIN COMPONENT STYLES	*/
+
+/*	button	*/
+.button { font-size: 11; color: "0x000000"; chromeColor: "0xB3B3B3"; }	/*	PublicHealthAdvisoryItemRenderer	*/
+.toggleButton { toggleBackgroundColor: "0x4A4A49"; skin: ClassReference("skins.general.MyLinkButtonSkin"); }	/*	PublicHealthAdvisoryItemRenderer	*/
+
+/*	border container	*/
+.borderContainer1 { backgroundColor: "0x4B4A4A"; borderColor: "0xBCBBBB"; cornerRadiu: 5 }	/*	PublicHealthAdvisoryItemRenderer	*/
+.borderContainer2 { backgroundColor: "0x3C3C3B"; borderAlpha: 0 }	/*	PublicHealthAdvisoryItemRenderer	*/
+
+/*	grid	*/
+.ruledGrid {  horizontalGap:-1; verticalGap:-1; }
+.ruledGrid mx|GridItem { borderColor:#BCBBBB; borderAlpha: .3; borderStyle:solid; paddingLeft: 4; paddingRight: 4; paddingTop: 4; paddingBottom: 0; }
+
+/*	link button	*/
+.linkButtonStyle1{ color: "0xAEDEE4"; textRollOverColor: "0xAEDEE4"; }		/*	light blue	*/	/*	PublicHealthAdvisoryItemRenderer	*/
+.linkButtonStyle2{ color: "0x064E71"; textRollOverColor: "0xAEDEE4"; }		/*	dark blue	*/
+
+/*	navigator content	*/
+.navigatorContent { backgroundColor: "0x333333"; }	/*	ViewPublicHealthAdvisories	*/
+.navigatorContentHeaderBar {  backgroundColor: "0x706F6F"; color: "0xFFFFFF" }	/*	ViewPublicHealthAdvisories	*/
+
+/*	view stack	*/
+.viewStack { backgroundColor: "0x4A4A49"; borderColor: "0xBDBCBC"; borderStyle: "solid"; cornerRadius: 2; }
+
+/*	POPUP STYLES	*/
 .headerlessPopup { skinClass: ClassReference("skins.general.myHeaderlessTitleWindow") }
 .headerlessPopupTitle { fontWeight: "bold"; fontSize: 16 }
 .headerlessPopupInset { cornerRadius: 3; backgroundAlpha: 0; borderColor: "0x878787" }
 .headerlessPopupModuleHeaderBackground { backgroundColor: "0xCECECE"; font-style: italic; color: "0x4D4D4D" }
 .headerlessPopupFormLabel { color: "0x000000"; fontSize: 13; fontWeight: normal }
-
-/*	grid	*/
-.ruledGrid {  horizontalGap:-1; verticalGap:-1; }
-.ruledGrid mx|GridItem { borderColor:#BCBBBB; borderStyle:solid; paddingLeft: 4; paddingRight: 4; paddingTop: 4; paddingBottom: 2; }
-
