@@ -756,7 +756,7 @@
 	
 	<s:HGroup id="medicalRecordsBottomBoxes" paddingTop="17" gap="22">
 		
-		<s:BorderContainer width="{currentState=='provider'?223:294}" height="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" fontSize="13">
+		<s:BorderContainer width="{currentState=='provider'?223:477}" height="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" fontSize="13">
 			
 			<s:layout>
 				<s:VerticalLayout paddingLeft="23" paddingTop="17" gap="18" />
@@ -783,7 +783,7 @@
 			
 		</s:BorderContainer>
 		
-		<s:BorderContainer width="{currentState=='provider'?350:659}" maxHeight="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+		<s:BorderContainer visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" width="350" maxHeight="173" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
 			
 			<s:layout>
 				<s:VerticalLayout paddingTop="17" />
@@ -862,9 +862,8 @@
 		</s:BorderContainer>
 		
 		<s:BorderContainer 
-			width="350" maxHeight="173" 
-			backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" 
-			visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}">
+			width="{currentState=='provider'?350:478}" maxHeight="173" 
+			backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
 			
 			<s:layout>
 				<s:VerticalLayout paddingTop="17" />
