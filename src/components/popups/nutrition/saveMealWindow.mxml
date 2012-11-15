@@ -9,6 +9,8 @@
 		<![CDATA[
 			import controllers.NutritionController;
 			
+			import events.ApplicationEvent;
+			
 			import models.modules.NutritionModel;
 			
 			import mx.managers.PopUpManager;
@@ -23,6 +25,10 @@
 			{
 				var arrMealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
 				model.savedMeals[arrMealTypes.indexOf(mealType)].addItem(mealIngredients);
+				
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your meal has been saved";
+				AppProperties.getInstance().controller.application.dispatchEvent( evt );
 				
 				PopUpManager.removePopUp(this);
 			}

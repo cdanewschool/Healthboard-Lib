@@ -1746,10 +1746,6 @@
 																	mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
 																	mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
 																	
-																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-																	evt.data = "Your meal has been added";
-																	AppProperties.getInstance().controller.application.dispatchEvent( evt );
-																	
 																	PopUpManager.centerPopUp(mySaveMealWindow);
 																}
 															]]>
