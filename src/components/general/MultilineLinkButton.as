@@ -10,7 +10,7 @@ package components.general
 			
 			if (textField)
 			{
-				textField.wordWrap = true;
+				textField.wordWrap = false;
 				textField.multiline = true;
 			}
 		}
