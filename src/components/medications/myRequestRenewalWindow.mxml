@@ -15,11 +15,11 @@
 			private function confirmRenewal():void 
 			{
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-				event.data = "Your renewal request has been sent";
+				event.data = "Your renewal request has been sent. Please allow 3 business days.";
 				AppProperties.getInstance().controller.application.dispatchEvent( event );
 				
-				var myConfirmRenewal:myConfirmRenewalWindow = myConfirmRenewalWindow(PopUpManager.createPopUp(this, myConfirmRenewalWindow) as spark.components.TitleWindow);
-				PopUpManager.centerPopUp(myConfirmRenewal);
+				/* var myConfirmRenewal:myConfirmRenewalWindow = myConfirmRenewalWindow(PopUpManager.createPopUp(this, myConfirmRenewalWindow) as spark.components.TitleWindow);
+				PopUpManager.centerPopUp(myConfirmRenewal); */
 				PopUpManager.removePopUp(this);
 			}
 		]]>
