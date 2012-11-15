@@ -19,8 +19,10 @@ package models.modules
 		public var immunizationsCategories:Array;
 		public var immunizationsDueNumber:uint = 0;
 		
-		public var minDate:Date = new Date( "Dec 14 2011 01:03:54 AM");
-		public var maxDate:Date = new Date( "Dec 14 2012 01:03:54 AM");
+		private var today:Date = new Date();	
+		
+		public var minDate:Date = new Date( today.fullYear, today.month - 7, 14 );
+		public var maxDate:Date = new Date( today.fullYear, today.month + 5, 14 );
 		
 		public var dateRange:String = DateRanges.YEAR;
 		

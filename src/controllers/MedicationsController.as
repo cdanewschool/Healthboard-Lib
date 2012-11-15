@@ -339,7 +339,7 @@ package controllers
 				myDate.setDate(myDate.date+i);
 				
 				//	TODO: use date formatter
-				twoDigitMonth = (myDate.getMonth() + 1 < 10) ? "0" + (myDate.getMonth() + 1) + "/" : (myDate.getMonth() + 1) + "/";
+				twoDigitMonth = (myDate.getMonth() < 10) ? "0" + (myDate.getMonth()) + "/" : (myDate.getMonth()) + "/";
 				twoDigitHours = (myHours < 10) ? "0" + myHours + ":" : myHours + ":";		//adding the extra colon to ensure it's a string
 				
 				myDateString = twoDigitMonth + myDate.getDate() + "/" + myDate.getFullYear() + " " + twoDigitHours + "00:00 " + myMeridiem;

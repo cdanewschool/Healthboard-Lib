@@ -9,7 +9,7 @@ package util
 		public static const HOUR:Number = MINUTE * 60;
 		public static const DAY:Number = HOUR * 24;
 		public static const WEEK:Number = DAY * 7;
-		public static const MONTH:Number = WEEK * 4;
+		public static const MONTH:Number = DAY * 30.4368;
 		public static const YEAR:Number = MONTH * 12;
 		
 		public static function formatDateFromString(date:String):String 
@@ -37,6 +37,45 @@ package util
 		
 		public static  function modernizeDate( value:String ):String
 		{
+			var dateTimeParts:Array = value.split(' ');
+			var date:String = dateTimeParts[0];
+			var time:String = dateTimeParts.length > 1 ? ' ' + dateTimeParts[1] : '';
+			
+			var dateParts:Array = date.split('/');
+			
+			var today:Date = AppProperties.getInstance().controller.model.today;
+			
+			var now:Date = new Date( today.fullYear, today.month, today.date );
+			
+			var x= dateParts[0].substr(1);
+			
+			if( dateParts[0] == "*" ) 
+				dateParts[0] = now.month;
+			else if( new RegExp( /-|\+/ ).exec( dateParts[0] ) == null )
+				now.month = parseInt( dateParts[0] );
+			else 
+				now.time += parseInt( dateParts[0].charAt(0) == "+" ? dateParts[0].substr(1) : dateParts[0] ) * MONTH;
+			
+			if( dateParts[1] == "*" ) 
+				dateParts[1] = now.date;
+			else if( new RegExp( /-|\+/ ).exec( dateParts[1] ) == null )
+				now.date = parseInt( dateParts[1] );
+			else 
+				now.time += parseInt( dateParts[1].charAt(0) == "+" ? dateParts[1].substr(1) : dateParts[1] ) * DAY;
+			
+			if( dateParts[2] == "*" ) 
+				dateParts[2] = now.fullYear;
+			else if( new RegExp( /-|\+/ ).exec( dateParts[2] ) == null )
+				now.fullYear = parseInt( dateParts[2] );
+			else 
+				now.time += parseInt( dateParts[2].charAt(0) == "+" ? dateParts[2].substr(1) : dateParts[2] ) * YEAR;
+			
+			return (now.month+1) + '/' + now.date + '/' + now.fullYear + time;
+		}
+		
+		/*
+		public static  function modernizeDate( value:String ):String
+		{
 			var today:Date = AppProperties.getInstance().controller.model.today;
 			
 			var year:int = today.fullYear;
@@ -54,5 +93,6 @@ package util
 			
 			return value;
 		}
+		*/
 	}
 }

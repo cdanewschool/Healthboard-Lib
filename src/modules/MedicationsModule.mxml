@@ -113,7 +113,7 @@
 				cartesianCanvas.lineTo( dateValue, model.medicationsCategories.getItemAt(model.medicationsCategories.length-1) );
 				
 				var coords:Point = cartesianCanvas.dataToLocal( today );
-				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 14;
+				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 7;
 			}
 			
 			private function updateOpenLeaves():void
@@ -235,7 +235,7 @@
 				}
 				else if(model.dateRange == DateRanges.MONTH_THREE) 
 				{
-					model.minDate.time -= (DateUtil.MONTH * 3);
+					model.minDate.time -= (DateUtil.MONTH * 4);
 					model.maxDate.time += (DateUtil.MONTH);
 					
 					hAxisMedications.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;

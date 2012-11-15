@@ -8,6 +8,8 @@ package controllers
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.mxml.HTTPService;
 	
+	import util.DateUtil;
+	
 	public class ImmunizationsController extends BaseModuleController
 	{
 		public function ImmunizationsController()
@@ -29,6 +31,9 @@ package controllers
 			
 			for(var i:uint = 0; i < model.immunizationsData.length; i++)
 			{
+				var immunization:Object = model.immunizationsData.getItemAt(i);
+				if( immunization.hasOwnProperty('date') ) immunization.date = DateUtil.modernizeDate( immunization.date );
+				
 				if( model.immunizationsCategories.indexOf(model.immunizationsData.getItemAt(i).name) == -1 ) 
 				{
 					model.immunizationsCategories.push( model.immunizationsData.getItemAt(i).name );

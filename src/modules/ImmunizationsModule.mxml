@@ -63,6 +63,7 @@
 			
 			import util.ChartLabelFunctions;
 			import util.DateFormatters;
+			import util.DateUtil;
 			
 			[Bindable] public var controller:ImmunizationsController = AppProperties.getInstance().controller.immunizationsController;
 			[Bindable] private var model:ImmunizationsModel = controller.model as ImmunizationsModel;
@@ -115,8 +116,8 @@
 		
 			private function immunizationsSetMinMax():void 
 			{
-				hAxisImmunizations.minimum = model.minDate;	//new Date( "Oct 1 2010 01:03:54 AM");
-				hAxisImmunizations.maximum = model.maxDate;	//new Date( "Oct 1 2011 01:03:54 AM");
+				hAxisImmunizations.minimum = model.minDate;	
+				hAxisImmunizations.maximum = model.maxDate;	
 				
 				updateToday();
 			}
@@ -207,59 +208,67 @@
 			private function updateDateRange():void 
 			{
 				//	TODO: update min/max dates based on current date, not a hard-coded one
+				model.minDate = new Date( today.fullYear, today.month, today.date );
+				model.maxDate = new Date( today.fullYear, today.month, today.date );
 				
 				if( model.dateRange == DateRanges.MONTH ) 
 				{
-					model.minDate = new Date( "Jun 28 2012 01:03:54 AM");		//"Feb 28 2012 01:03:54 AM"
-					model.maxDate = new Date( "Aug 4 2012 01:03:54 AM");		//"Apr 4 2012 01:03:54 AM"
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.DAY * 18;		//model.minDate = new Date( "Jun 28 2012 01:03:54 AM");
+					model.maxDate.time += DateUtil.DAY * 18;		//model.maxDate = new Date( "Aug 4 2012 01:03:54 AM");
 					
-					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth2;
 					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.MONTH_THREE ) 
 				{
-					model.minDate = new Date( "Apr 28 2012 01:03:54 AM");		//"Jan 31 2012 01:03:54 AM"
-					model.maxDate = new Date( "Aug 7 2012 01:03:54 AM");		//"May 31 2012 01:03:54 AM"
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.DAY * 65;		//model.minDate = new Date( "Apr 28 2012 01:03:54 AM");
+					model.maxDate.time += DateUtil.DAY * 35;		//model.maxDate = new Date( "Aug 7 2012 01:03:54 AM");
 					
-					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth2;
 					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR ) 
 				{
-					model.minDate = new Date( "Dec 14 2011 01:03:54 AM");		//"Jul 14 2011 01:03:54 AM"
-					model.maxDate = new Date( "Dec 14 2012 01:03:54 AM");		//"Jul 14 2012 01:03:54 AM"
+					model.minDate = new Date( today.fullYear, today.month - 7, 14 );		//model.minDate = new Date( "Dec 14 2011 01:03:54 AM");
+					model.maxDate = new Date( today.fullYear, today.month + 5, 14 );		//model.maxDate = new Date( "Dec 14 2012 01:03:54 AM");
 					
-					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth2;
 					verticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR_THREE ) 
 				{
-					model.minDate = new Date( "Dec 4 2009 01:03:54 AM");		//"Sep 4 2009 01:03:54 AM"
-					model.maxDate = new Date( "Feb 4 2013 01:03:54 AM");		//"Sep 4 2012 01:03:54 AM"
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.MONTH * 31;		//model.minDate = new Date( "Dec 4 2009 01:03:54 AM");
+					model.maxDate.time += DateUtil.MONTH * 7;		//model.maxDate = new Date( "Feb 4 2013 01:03:54 AM");
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					verticalGridLine.alpha = 0.3;
 				}
 				else if( model.dateRange == DateRanges.YEAR_FIVE ) 
 				{
-					model.minDate = new Date( "Dec 4 2007 01:03:54 AM");		//"Jul 1 2007 01:03:54 AM"
-					model.maxDate = new Date( "Mar 4 2013 01:03:54 AM");		//"Jul 1 2012 01:03:54 AM"
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.MONTH * 55;		//model.minDate = new Date( "Dec 4 2007 01:03:54 AM");
+					model.maxDate.time += DateUtil.MONTH * 7;		//model.maxDate = new Date( "Mar 4 2013 01:03:54 AM");
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					verticalGridLine.alpha = 0.3;
 				}
 				else if( model.dateRange == DateRanges.YEAR_TEN ) 
 				{
-					model.minDate = new Date( "Nov 4 2002 01:03:54 AM");		//"Aug 1 2002 01:03:54 AM"
-					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");		//"Aug 1 2012 01:03:54 AM"
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.MONTH * 115;		//model.minDate = new Date( "Nov 4 2002 01:03:54 AM");
+					model.maxDate.time += DateUtil.MONTH * 7;		//model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					verticalGridLine.alpha = 0.3;
 				}
 				else
 				{
-					model.minDate = new Date( "Nov 4 2002 01:03:54 AM");
-					model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");
+					//remember to make sure labels don't get messed up
+					model.minDate.time -= DateUtil.MONTH * 115;		//model.minDate = new Date( "Nov 4 2002 01:03:54 AM");
+					model.maxDate.time += DateUtil.MONTH * 7;		//model.maxDate = new Date( "Apr 4 2013 01:03:54 AM");
 					
 					hAxisImmunizations.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					verticalGridLine.alpha = 0.3;
@@ -545,7 +554,7 @@
 								</mx:verticalAxisRenderers>-->
 								
 								<mx:horizontalAxis>
-									<mx:DateTimeAxis id="hAxisImmunizations" labelFunction="ChartLabelFunctions.lblHAxisPlotChartMonth" />
+									<mx:DateTimeAxis id="hAxisImmunizations" labelFunction="ChartLabelFunctions.lblHAxisPlotChartMonth2" />
 								</mx:horizontalAxis>
 								
 								<mx:verticalAxis>

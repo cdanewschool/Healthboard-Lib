@@ -340,8 +340,7 @@
 				minDateMedRec = new Date( today.fullYear, today.month, today.date );
 				maxDateMedRec = new Date( today.fullYear, today.month, today.date );
 				
-				minDateMedRec.time += DateUtil.DAY;
-				maxDateMedRec.time += DateUtil.DAY;
+				maxDateMedRec.time += (DateUtil.DAY * 1.25);
 				
 				if( model.dateRange == DateRanges.DAY ) 
 				{
@@ -369,15 +368,15 @@
 					minDateMedRec.time -= DateUtil.MONTH * 3;
 					maxDateMedRec.time += DateUtil.MONTH * .5;
 					
-					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth2;
 					medRecVerticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR ) 
 				{
-					minDateMedRec.time -= DateUtil.YEAR;
-					maxDateMedRec.time += DateUtil.MONTH * 1.5;
+					minDateMedRec = new Date( today.fullYear - 1, today.month, 14 );		//by setting the day to 14, we are basically ensuring the month labels don't mess up the chart's alignment by being at the "edge"... 		//minDateMedRec.time -= DateUtil.YEAR;
+					maxDateMedRec = new Date( today.fullYear, today.month + 1, 14 );																																					//maxDateMedRec.time += DateUtil.MONTH * 1.5;
 					
-					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth;
+					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartMonth2;
 					medRecVerticalGridLine.alpha = 0;
 				}
 				else if( model.dateRange == DateRanges.YEAR_THREE ) 
@@ -392,6 +391,7 @@
 				{
 					//	TODO: set minDateMedRec/maxDateMedRec based on actual data
 					minDateMedRec.time -= DateUtil.YEAR * 3;
+					maxDateMedRec.time += DateUtil.MONTH * 3;
 					
 					hAxisMedicalRecords.labelFunction = ChartLabelFunctions.lblHAxisPlotChartYear;
 					medRecVerticalGridLine.alpha = 0.3;
@@ -695,7 +695,7 @@
 								</mx:verticalAxisRenderers>
 								
 								<mx:horizontalAxis>
-									<mx:DateTimeAxis id="hAxisMedicalRecords" labelFunction="ChartLabelFunctions.lblHAxisPlotChartMonth" />
+									<mx:DateTimeAxis id="hAxisMedicalRecords" labelFunction="ChartLabelFunctions.lblHAxisPlotChartMonth2" />
 								</mx:horizontalAxis>
 								
 								<mx:verticalAxis>
