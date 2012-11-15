@@ -11,7 +11,14 @@ package util
 			return DateFormatters.dateFormatterDay.format(new Date(cat.fullYear, cat.month, cat.dateUTC));				
 		}
 		
+		//used for "Medications" chart (which has displayLocalTime="true")
 		public static function lblHAxisPlotChartMonth(cat:Object, pcat:Object, ax:DateTimeAxis):String 
+		{
+			return DateFormatters.dateFormatter.format(new Date(cat.fullYear, cat.month, cat.dateUTC));				
+		}
+		
+		//used for "Medical Records" and "Immunizations" chart (which don't have displayLocalTime="true")
+		public static function lblHAxisPlotChartMonth2(cat:Object, pcat:Object, ax:DateTimeAxis):String 
 		{
 			return DateFormatters.dateFormatter.format(new Date(cat.fullYear, cat.month + 1, cat.dateUTC));				
 		}
