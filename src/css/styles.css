@@ -106,7 +106,7 @@ s|DropDownList {
 }
 
 mx|DateField {
-	skin: Embed("images/calendar.png");
+	skin: Embed("/images/calendar.png");
 	upSkin: ClassReference(null);
 	overSkin: ClassReference(null);
 	downSkin: ClassReference(null);
@@ -272,7 +272,7 @@ s|TextArea {
 
 /*displayed in each module's top right corner*/
 .searchButtonIcon {
-	icon: Embed('images/btnSearchIcon.png');
+	icon: Embed('/images/btnSearchIcon.png');
 	chromeColor: "0xB3B3B3";
 	left: -4;
 }
@@ -517,8 +517,8 @@ s|FormItem {
 }
 
 .erButtonIcon {
-	upIcon: Embed("../images/smallArrowCollapsed.png");
-	overIcon: Embed("../images/smallArrowCollapsedBlue.png");
+	upIcon: Embed("/images/smallArrowCollapsed.png");
+	overIcon: Embed("/images/smallArrowCollapsedBlue.png");
 }
 
 .erSearchLight {
