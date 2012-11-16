@@ -2,7 +2,7 @@
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
 
-mx|Application { skinClass: "skins.general.backgroundGradient"; fontFamily: "myMyriad"; }
+s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); fontFamily: "myMyriad"; }
 
 /*	BEGIN FONT STYLES	*/
 

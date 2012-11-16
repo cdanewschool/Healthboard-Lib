@@ -10,7 +10,7 @@
 		</fx:Array>
 		
 		<fx:Array id="exerciseMileRunBackground">
-			<s:Image source="@Embed('images/exerciseMileRunBGnew.jpg')" width="817" height="35" />
+			<s:Image source="@Embed('/images/exerciseMileRunBGnew.jpg')" width="817" height="35" />
 		</fx:Array>
 		
 	</fx:Declarations>
@@ -203,7 +203,7 @@
 	
 	<components:ModuleHeader 
 		id="header"
-		icon="@Embed('images/btnHome.png')"
+		icon="@Embed('/images/btnHome.png')"
 		title="Exercise" 
 		actionSuffix="months till the next PRT." actionCount="3"
 		secondaryActionSuffix="Physician-assigned exercises." secondaryActionCount="2" 
@@ -320,9 +320,9 @@
 								<s:HGroup verticalAlign="middle" gap="12" width="200">
 									
 									<s:HGroup paddingTop="-4">
-										<s:Image id="exPRTHappy" source="@Embed('images/exerciseHappy.png')" />
-										<s:Image id="exPRTNeutral" source="@Embed('images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exPRTSad" source="@Embed('images/exerciseSad.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exPRTHappy" source="@Embed('/images/exerciseHappy.png')" />
+										<s:Image id="exPRTNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exPRTSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
 									</s:HGroup>
 									
 									<s:VGroup gap="5">
@@ -344,9 +344,9 @@
 								<s:HGroup verticalAlign="middle" gap="12">
 									
 									<s:HGroup paddingTop="-4">
-										<s:Image id="exPushHappy" source="@Embed('images/exerciseHappy.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exPushNeutral" source="@Embed('images/exerciseNeutral.png')" />
-										<s:Image id="exPushSad" source="@Embed('images/exerciseSad.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exPushHappy" source="@Embed('/images/exerciseHappy.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exPushNeutral" source="@Embed('/images/exerciseNeutral.png')" />
+										<s:Image id="exPushSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
 									</s:HGroup>
 									
 									<s:VGroup gap="5">
@@ -369,9 +369,9 @@
 								<s:HGroup verticalAlign="middle" gap="12">
 									
 									<s:HGroup paddingTop="-4">
-										<s:Image id="exRunHappy" source="@Embed('images/exerciseHappy.png')" />
-										<s:Image id="exRunNeutral" source="@Embed('images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exRunSad" source="@Embed('images/exerciseSad.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exRunHappy" source="@Embed('/images/exerciseHappy.png')" />
+										<s:Image id="exRunNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exRunSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
 									</s:HGroup>
 									
 									<s:VGroup gap="5">
@@ -399,9 +399,9 @@
 								<s:HGroup verticalAlign="middle" gap="12">
 									
 									<s:HGroup paddingTop="-4">
-										<s:Image id="exWeightHappy" source="@Embed('images/exerciseHappy.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exWeightNeutral" source="@Embed('images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exWeightSad" source="@Embed('images/exerciseSad.png')" />
+										<s:Image id="exWeightHappy" source="@Embed('/images/exerciseHappy.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exWeightNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exWeightSad" source="@Embed('/images/exerciseSad.png')" />
 									</s:HGroup>
 									
 									<s:VGroup gap="5">
@@ -422,9 +422,9 @@
 								<s:HGroup verticalAlign="middle" gap="12">
 									
 									<s:HGroup paddingTop="-4">
-										<s:Image id="exCurlHappy" source="@Embed('images/exerciseHappy.png')" />
-										<s:Image id="exCurlNeutral" source="@Embed('images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exCurlSad" source="@Embed('images/exerciseSad.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exCurlHappy" source="@Embed('/images/exerciseHappy.png')" />
+										<s:Image id="exCurlNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
+										<s:Image id="exCurlSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
 									</s:HGroup>
 									
 									<s:VGroup gap="5">
@@ -538,8 +538,8 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnExChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" chromeColor="0xFF931E" /><!--click="switchVitalView(0);" clearSearchMedications(); (under click)-->
-						<s:Button id="btnExList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" styleName="buttonText" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
+						<s:Button id="btnExChart" width="29" height="24" icon="@Embed('/images/btnImmunizationsChart.png')" chromeColor="0xFF931E" /><!--click="switchVitalView(0);" clearSearchMedications(); (under click)-->
+						<s:Button id="btnExList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" styleName="buttonText" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -697,9 +697,9 @@
 													
 													<s:VGroup width="125">
 														
-														<mx:LinkButton visible="{data.measure == 'Avg. PRT Score'}" includeInLayout="{data.measure == 'Avg. PRT Score'}" icon.expanded="@Embed(source='images/exercisePRT.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Avg. PRT Score'}" includeInLayout="{data.measure == 'Avg. PRT Score'}" icon.expanded="@Embed(source='/images/exercisePRT.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														
-														<mx:LinkButton visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" paddingBottom="-8" icon.expanded="@Embed(source='images/exerciseRun.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" paddingBottom="-8" icon.expanded="@Embed(source='/images/exerciseRun.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														
 														<s:DropDownList visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" id="dropDownERBookmarks" prompt="Switch   ▼" change="{dropDownERBookmarks.selectedIndex = -1}" width="150" horizontalScrollPolicy="off" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkinNoButton" color="0xAEDBE2"> <!--layoutDirection="rtl" change="messageSort()"-->
 															<mx:ArrayCollection>
@@ -710,9 +710,9 @@
 															</mx:ArrayCollection>
 														</s:DropDownList>
 														
-														<mx:LinkButton visible="{data.measure == 'Curl Ups'}" includeInLayout="{data.measure == 'Curl Ups'}" icon.expanded="@Embed(source='images/exerciseCurlUps.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Curl Ups'}" includeInLayout="{data.measure == 'Curl Ups'}" icon.expanded="@Embed(source='/images/exerciseCurlUps.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														
-														<mx:LinkButton visible="{data.measure == 'Push Ups'}" includeInLayout="{data.measure == 'Push Ups'}" icon.expanded="@Embed(source='images/exercisePushUps.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Push Ups'}" includeInLayout="{data.measure == 'Push Ups'}" icon.expanded="@Embed(source='/images/exercisePushUps.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 													
 													</s:VGroup>
 													
@@ -761,9 +761,9 @@
 													<s:HGroup verticalAlign="middle" gap="13">
 														
 														<s:HGroup>
-															<s:Image id="exWeightHappy" source="@Embed('images/exerciseHappy.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value > 55}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value >= 55}" />
-															<s:Image id="exWeightNeutral" source="@Embed('images/exerciseNeutral.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value >= 45 &amp;&amp; data.chart[0].data[data.chart[0].data.length - 1].value &lt; 55}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value >= 45 &amp;&amp; data.chart[0].data[data.chart[0].data.length - 1].value &lt; 55}" />
-															<s:Image id="exWeightSad" source="@Embed('images/exerciseSad.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value &lt; 45}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value &lt; 45}" />
+															<s:Image id="exWeightHappy" source="@Embed('/images/exerciseHappy.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value > 55}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value >= 55}" />
+															<s:Image id="exWeightNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value >= 45 &amp;&amp; data.chart[0].data[data.chart[0].data.length - 1].value &lt; 55}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value >= 45 &amp;&amp; data.chart[0].data[data.chart[0].data.length - 1].value &lt; 55}" />
+															<s:Image id="exWeightSad" source="@Embed('/images/exerciseSad.png')" visible="{data.chart[0].data[data.chart[0].data.length - 1].value &lt; 45}" includeInLayout="{data.chart[0].data[data.chart[0].data.length - 1].value &lt; 45}" />
 														</s:HGroup>
 														
 														<s:VGroup gap="3">
@@ -819,9 +819,9 @@
 									<s:HGroup verticalAlign="middle" gap="13">
 										
 										<s:HGroup>
-											<s:Image source="@Embed('images/exerciseHappy.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55}" />
-											<s:Image source="@Embed('images/exerciseNeutral.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 55}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 55}" />
-											<s:Image source="@Embed('images/exerciseSad.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 45}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 45}" />
+											<s:Image source="@Embed('/images/exerciseHappy.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55}" />
+											<s:Image source="@Embed('/images/exerciseNeutral.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 55}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 55}" />
+											<s:Image source="@Embed('/images/exerciseSad.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 45}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 45}" />
 										</s:HGroup>
 										
 										<s:VGroup gap="3">
@@ -847,8 +847,8 @@
 									<s:HGroup width="174">
 										
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgRunDiffPos" source="@Embed('images/vitalUpGreen2.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value > 0}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value > 0}" />
-											<s:Image id="imgRunDiffNeg" source="@Embed('images/vitalDownRed.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0}" />
+											<s:Image id="imgRunDiffPos" source="@Embed('/images/vitalUpGreen2.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value > 0}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value > 0}" />
+											<s:Image id="imgRunDiffNeg" source="@Embed('/images/vitalDownRed.png')" visible="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0}" includeInLayout="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0}" />
 										</s:HGroup>	
 										
 										<s:VGroup gap="3">
@@ -1039,8 +1039,8 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnExPChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" chromeColor="0xFF931E" /><!--click="switchVitalView(0);" clearSearchMedications(); (under click)-->
-						<s:Button id="btnExPList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" styleName="buttonText" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
+						<s:Button id="btnExPChart" width="29" height="24" icon="@Embed('/images/btnImmunizationsChart.png')" chromeColor="0xFF931E" /><!--click="switchVitalView(0);" clearSearchMedications(); (under click)-->
+						<s:Button id="btnExPList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" styleName="buttonText" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -1192,8 +1192,8 @@
 													</mx:states>
 													
 													<s:VGroup width="100">
-														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='images/exerciseRun.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='images/exBike.png')" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='/images/exerciseRun.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='/images/exBike.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="27" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
 													</s:VGroup>
 													
@@ -1248,11 +1248,11 @@
 															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
-																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
+																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
 																<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>
-																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
+																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
 															</mx:series>
 															
 															<mx:horizontalAxis>
@@ -1586,8 +1586,8 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnExPerChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" chromeColor="0xFF931E" click="switchExercisePerView(0);" />
-						<s:Button id="btnExPerList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" styleName="buttonText" click="switchExercisePerView(1);" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
+						<s:Button id="btnExPerChart" width="29" height="24" icon="@Embed('/images/btnImmunizationsChart.png')" chromeColor="0xFF931E" click="switchExercisePerView(0);" />
+						<s:Button id="btnExPerList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" styleName="buttonText" click="switchExercisePerView(1);" /><!--click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -1682,12 +1682,12 @@
 																}
 															}	
 															
-															[Embed("images/exBike.png")] public var iconBike:Class;
-															[Embed("images/exerciseRun.png")] public var iconRun:Class;
-															[Embed("images/exPERswim.png")] public var iconSwim:Class;
-															[Embed("images/exPERmachine.png")] public var iconMachine:Class;
-															[Embed("images/exPERyoga.png")] public var iconYoga:Class;
-															[Embed("images/exPERweight.png")] public var iconWeight:Class;
+															[Embed("/images/exBike.png")] public var iconBike:Class;
+															[Embed("/images/exerciseRun.png")] public var iconRun:Class;
+															[Embed("/images/exPERswim.png")] public var iconSwim:Class;
+															[Embed("/images/exPERmachine.png")] public var iconMachine:Class;
+															[Embed("/images/exPERyoga.png")] public var iconYoga:Class;
+															[Embed("/images/exPERweight.png")] public var iconWeight:Class;
 															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
 															{
@@ -1750,7 +1750,7 @@
 													</mx:states>
 													
 													<s:VGroup width="100">
-														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" icon.collapsed="@Embed(source='images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="27" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
 													</s:VGroup>
 													
@@ -1813,7 +1813,7 @@
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>
 																
-																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="@Embed(source='images/exerciseUntrackableIcon.png')" radius="8" fill="{outerDocument.chartStyles.colorExerciseUntrackable}" />
+																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="@Embed(source='/images/exerciseUntrackableIcon.png')" radius="8" fill="{outerDocument.chartStyles.colorExerciseUntrackable}" />
 																
 															</mx:series>
 															
@@ -1844,11 +1844,11 @@
 															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
-																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
+																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
 																<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>
-																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
+																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
 															</mx:series>
 															
 															<mx:horizontalAxis>

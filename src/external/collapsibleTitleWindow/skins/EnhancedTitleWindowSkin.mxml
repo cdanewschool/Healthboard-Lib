@@ -125,8 +125,8 @@ in accordance with the terms of the license agreement accompanying it.
 			
 			private var cornerRadius:Number;
 			
-			[Bindable] [Embed("images/btnWidgetArrow.png")] public var myArrow:Class;
-			[Bindable] [Embed("images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
+			[Bindable] [Embed("/images/btnWidgetArrow.png")] public var myArrow:Class;
+			[Bindable] [Embed("/images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
 			//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
 			
 			
@@ -320,7 +320,7 @@ in accordance with the terms of the license agreement accompanying it.
 					<s:layout><s:HorizontalLayout verticalAlign="middle" gap="5"/></s:layout>
 					<enhancedtitlewindow:TriangleIndicator id="expandIndicator"/>
 					<s:VGroup paddingTop="-2" visible="{hostComponent.displayWarning}" includeInLayout="{hostComponent.displayWarning}">
-						<s:Image source="@Embed('images/widgetWarning.png')" toolTip="{hostComponent.warningToolTip}" buttonMode="{isWidgetClickable}" click="{if(isWidgetClickable) handleHeaderClick();}" />
+						<s:Image source="@Embed('/images/widgetWarning.png')" toolTip="{hostComponent.warningToolTip}" buttonMode="{isWidgetClickable}" click="{if(isWidgetClickable) handleHeaderClick();}" />
 					</s:VGroup>
 					<s:HGroup gap="15">
 						<s:Label id="titleDisplay" maxDisplayedLines="1"
@@ -341,7 +341,7 @@ in accordance with the terms of the license agreement accompanying it.
 					</s:Group>
 					
 					<!--- @copy spark.components.TitleWindow#closeButton -->
-					<s:Image id="arrow" source="@Embed('images/btnWidgetArrow.png')" visible="{isWidgetClickable}" includeInLayout="{isWidgetClickable}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
+					<s:Image id="arrow" source="@Embed('/images/btnWidgetArrow.png')" visible="{isWidgetClickable}" includeInLayout="{isWidgetClickable}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
 					<s:HGroup paddingTop="-6" paddingLeft="-9" visible="{hostComponent.showDropDown}" includeInLayout="{hostComponent.showDropDown}">
 						<s:DropDownList id="dropDownView" dropShadowVisible="false" dataProvider="{hostComponent.dropDownDataProvider}" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12" /><!--change="dropDownView_changeHandler(event)"-->
 					</s:HGroup>

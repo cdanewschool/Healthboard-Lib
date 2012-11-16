@@ -17,7 +17,7 @@
 	<s:Label text="Tips for Keeping Track of Your Medications" fontWeight="bold" fontSize="16" />
 	
 	<s:HGroup paddingTop="15" paddingBottom="6" gap="12">
-		<s:Image source="@Embed('images/medicationTips.png')" />
+		<s:Image source="@Embed('/images/medicationTips.png')" />
 		<s:VGroup>
 			<s:Label text="Click the icon to record intake!" fontWeight="bold" fontSize="12" paddingBottom="11" />
 			<s:Label text="{'This module is designed to keep track of your\nmedications and their intake history. You can add\nyour intake record by just clicking a medication icon\nin the timeline.'}" lineHeight="16" />

@@ -38,18 +38,18 @@
 	<s:Label text="Select one or more medications to request a renewal:" fontSize="12" color="#4D4D4D" />
 	<s:HGroup verticalAlign="middle">
 		<s:CheckBox selected="true" />
-		<s:Image source="@Embed('images/medLisinoprilSm.jpg')" visible="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}" includeInLayout="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}"/>
-		<s:Image source="@Embed('images/medCoumadinSm.jpg')" visible="{medNameDosage == 'Warfarin (Coumadin®) - PO 5mg Tab'}" includeInLayout="{medNameDosage == 'Warfarin (Coumadin®) - PO 5mg Tab'}" />
+		<s:Image source="@Embed('/images/medLisinoprilSm.jpg')" visible="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}" includeInLayout="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}"/>
+		<s:Image source="@Embed('/images/medCoumadinSm.jpg')" visible="{medNameDosage == 'Warfarin (Coumadin®) - PO 5mg Tab'}" includeInLayout="{medNameDosage == 'Warfarin (Coumadin®) - PO 5mg Tab'}" />
 		<s:Label text="{medNameDosage}" />
 	</s:HGroup>
 	<s:HGroup verticalAlign="middle" visible="{medNameDosage != 'Lisinopril (Prinivil/Zestril) - PO 40mg Tab'}" includeInLayout="{medNameDosage != 'Lisinopril (Prinivil/Zestril) - PO 40mg Tab'}">
 		<s:CheckBox />
-		<s:Image source="@Embed('images/medLisinoprilSm.jpg')" />
+		<s:Image source="@Embed('/images/medLisinoprilSm.jpg')" />
 		<s:Label text="Lisinopril (Prinivil/Zestril) - PO 40mg Tab" />
 	</s:HGroup>
 	<s:HGroup verticalAlign="middle" visible="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}" includeInLayout="{medNameDosage != 'Warfarin (Coumadin®) - PO 5mg Tab'}">
 		<s:CheckBox />
-		<s:Image source="@Embed('images/medCoumadinSm.jpg')" />
+		<s:Image source="@Embed('/images/medCoumadinSm.jpg')" />
 		<s:Label text="Warfarin (Coumadin®) - PO 5mg Tab" />
 	</s:HGroup>
 	<s:Line xFrom="0" xTo="324">

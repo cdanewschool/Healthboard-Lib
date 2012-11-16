@@ -73,12 +73,12 @@
 			<s:HGroup verticalAlign="middle">
 				<s:RadioButton groupName="type" id="radioTrackable" selected="true" />
 				<s:Label text="Trackable Exercise" width="110" />
-				<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" toolTip="Trackable Exercise is exercise that you can enter various types of information such as duration, distance, and speed. You can review the line graph of the records." />
+				<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" toolTip="Trackable Exercise is exercise that you can enter various types of information such as duration, distance, and speed. You can review the line graph of the records." />
 			</s:HGroup>
 			<s:HGroup verticalAlign="middle">
 				<s:RadioButton groupName="type" id="radioUntrackable" />
 				<s:Label text="Untrackable Exercise" width="110" />
-				<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" toolTip="Untrackable Exercise is exercise that you can record in text format." />
+				<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" toolTip="Untrackable Exercise is exercise that you can record in text format." />
 			</s:HGroup>
 		</s:VGroup>
 		<s:Line yFrom="0" yTo="135">
@@ -88,27 +88,27 @@
 		</s:Line>
 		<s:VGroup visible="{radioTrackable.selected}" includeInLayout="{radioTrackable.selected}" paddingLeft="6" gap="0" paddingTop="-2">
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIcon.png')" />
+				<s:Image source="@Embed('/images/exPersonalIcon.png')" />
 				<mx:LinkButton id="btnRunWalk" label="+ Run/Walk" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnRunWalk.styleName='linkBtnUnderline';" rollOut="btnRunWalk.styleName='linkBtn';" click="addTrackableExercise('Run / Walk')" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIconBike.png')" />
+				<s:Image source="@Embed('/images/exPersonalIconBike.png')" />
 				<mx:LinkButton id="btnBike" label="+ Bike" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnBike.styleName='linkBtnUnderline';" rollOut="btnBike.styleName='linkBtn';" click="addTrackableExercise('Bike')" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIconSwim.png')" />
+				<s:Image source="@Embed('/images/exPersonalIconSwim.png')" />
 				<mx:LinkButton id="btnSwim" label="+ Swim" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnSwim.styleName='linkBtnUnderline';" rollOut="btnSwim.styleName='linkBtn';" click="addTrackableExercise('Swim')" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIconElliptical.png')" />
+				<s:Image source="@Embed('/images/exPersonalIconElliptical.png')" />
 				<mx:LinkButton id="btnElliptical" label="+ Elliptical Machine" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnElliptical.styleName='linkBtnUnderline';" rollOut="btnElliptical.styleName='linkBtn';" click="addTrackableExercise('Elliptical Machine')" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIconYoga.png')" />
+				<s:Image source="@Embed('/images/exPersonalIconYoga.png')" />
 				<mx:LinkButton id="btnYoga" label="+ Yoga" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnYoga.styleName='linkBtnUnderline';" rollOut="btnYoga.styleName='linkBtn';" click="addTrackableExercise('Yoga')"/>
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('images/exPersonalIconWeight.png')" />
+				<s:Image source="@Embed('/images/exPersonalIconWeight.png')" />
 				<mx:LinkButton id="btnWeight" label="+ Weight Training" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnWeight.styleName='linkBtnUnderline';" rollOut="btnWeight.styleName='linkBtn';" click="addTrackableExercise('Weight Training')" />
 			</s:HGroup>
 		</s:VGroup>

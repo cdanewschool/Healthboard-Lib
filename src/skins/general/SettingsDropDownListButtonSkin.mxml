@@ -36,8 +36,8 @@
 		]]>
 	</fx:Script>
 	
-	<s:BitmapImage source.over="@Embed('images/optionsSettings_over.png')"
-				   source.down="@Embed('images/optionsSettings_down.png')"
+	<s:BitmapImage source.over="@Embed('/images/optionsSettings_over.png')"
+				   source.down="@Embed('/images/optionsSettings_down.png')"
 				   left="0" right="0" top="0" bottom="0" width="59" height="46" />
 	
 	<!-- layer 8: text -->

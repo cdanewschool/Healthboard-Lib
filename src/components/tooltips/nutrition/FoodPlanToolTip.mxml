@@ -39,5 +39,5 @@
 		<s:Label text="Grains Group:" fontWeight="bold" />
 		<s:Label text="counts as 1 ounce equivalent whole grains." />
 	</s:HGroup>
-	<s:Image source="@Embed('images/nutritionRice.jpg')" />
+	<s:Image source="@Embed('/images/nutritionRice.jpg')" />
 </s:BorderContainer>

@@ -39,10 +39,10 @@
 	
 	<!--- Defines the appearance of the x in the close button. -->
 	<s:Group top="1" left="1" id="xSymbol">
-		<s:BitmapImage source="@Embed('images/btnCloseSmall.png')"
-					   source.over="@Embed('images/btnClose_overSmall.png')"
-					   source.down="@Embed('images/btnClose_overSmall.png')"
-					   source.disabled="@Embed('images/btnClose_overSmall.png')" />
+		<s:BitmapImage source="@Embed('/images/btnCloseSmall.png')"
+					   source.over="@Embed('/images/btnClose_overSmall.png')"
+					   source.down="@Embed('/images/btnClose_overSmall.png')"
+					   source.disabled="@Embed('/images/btnClose_overSmall.png')" />
 	</s:Group>
 	
 </s:SparkSkin>

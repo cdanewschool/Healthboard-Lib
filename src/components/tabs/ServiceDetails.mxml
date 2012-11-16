@@ -321,7 +321,7 @@
 										</mx:Label>
 										<s:Spacer width="100%" />
 										<s:VGroup paddingTop="-4">
-											<s:Image source="@Embed('images/redMark.png')" visible="{data.Warning}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
+											<s:Image source="@Embed('/images/redMark.png')" visible="{data.Warning}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
 										</s:VGroup>
 										
 									</mx:HBox>
@@ -367,22 +367,22 @@
 				
 				<!--
 				<s:HGroup id="hgImagesColonoscopy" gap="12">
-					<s:Image source="@Embed('images/medicalRecordsRadiology1.png')" />
-					<s:Image source="@Embed('images/medicalRecordsRadiology1.png')" rotation="180" />
-					<s:Image source="@Embed('images/medicalRecordsRadiology1.png')" rotation="180" />					
+					<s:Imagesource="@Embed('/imageses/medicalRecordsRadiology1.png')" />
+					<s:Imagsource="@Embed('/imagesges/medicalRecordsRadiology1.png')" rotation="180" />
+					<s:Imasource="@Embed('/imagesages/medicalRecordsRadiology1.png')" rotation="180" />					
 				</s:HGroup>
 				-->
 				
 				<s:HGroup id="hgImagesColonoscopy" gap="12">
-					<s:Image source="@Embed('images/medicalRecordsMRI1.jpg')" />
-					<s:Image source="@Embed('images/medicalRecordsMRI2.jpg')" />
-					<s:Image source="@Embed('images/medicalRecordsMRI3.jpg')" />
+					<s:Image source="@Embed('/images/medicalRecordsMRI1.jpg')" />
+					<s:Image source="@Embed('/images/medicalRecordsMRI2.jpg')" />
+					<s:Image source="@Embed('/images/medicalRecordsMRI3.jpg')" />
 				</s:HGroup>
 				
 				<s:HGroup id="hgImagesNasal" gap="12" visible="false" includeInLayout="false">
-					<s:Image source="@Embed('images/medicalRecordsProcedure1.jpg')" />
-					<s:Image source="@Embed('images/medicalRecordsProcedure1.jpg')" rotation="180" />
-					<s:Image source="@Embed('images/medicalRecordsProcedure1.jpg')" rotation="180" />					
+					<s:Image source="@Embed('/images/medicalRecordsProcedure1.jpg')" />
+					<s:Image source="@Embed('/images/medicalRecordsProcedure1.jpg')" rotation="180" />
+					<s:Image source="@Embed('/images/medicalRecordsProcedure1.jpg')" rotation="180" />
 				</s:HGroup>
 				
 				<s:Label text="{serviceData.reason + ' Report'}" styleName="greenBoldText" paddingTop="22" />

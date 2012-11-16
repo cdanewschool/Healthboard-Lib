@@ -369,7 +369,7 @@
 	<components:ModuleHeader
 		width="100%" 
 		visible="{showHeader}" includeInLayout="{showHeader}"
-		icon="@Embed('images/btnHome.png')" title="Immunizations"
+		icon="@Embed('/images/btnHome.png')" title="Immunizations"
 		showBackground="false" 
 		actionPrefix="You have" actionCount="{model.immunizationsDueNumber}" actionSuffix="immunizations due or due soon." 
 		showSearch="true" searchPlaceholder="Search immunizations"
@@ -426,8 +426,8 @@
 						</s:HGroup>
 						
 						<s:HGroup gap="0">
-							<s:Button id="btnImmunizationsChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" click="switchImmunizationsView(0)" chromeColor="0xFF931E" />
-							<s:Button id="btnImmunizationsList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" click="switchImmunizationsView(1)" styleName="buttonText" />
+							<s:Button id="btnImmunizationsChart" width="29" height="24" icon="@Embed('/images/btnImmunizationsChart.png')" click="switchImmunizationsView(0)" chromeColor="0xFF931E" />
+							<s:Button id="btnImmunizationsList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="switchImmunizationsView(1)" styleName="buttonText" />
 						</s:HGroup>
 						
 					</s:BorderContainer>

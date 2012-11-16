@@ -276,8 +276,8 @@
 					<fx:Component>
 						<mx:HBox>
 							<mx:HBox width="17" paddingTop="8">
-								<s:Image source="@Embed('images/messagesUrgent.png')" toolTip="Urgent" visible="{data.urgency == 'Urgent'}" includeInLayout="{data.urgency == 'Urgent'}" />
-								<s:Image source="@Embed('images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.urgency == 'Somewhat urgent'}" includeInLayout="{data.urgency == 'Somewhat urgent'}" />
+								<s:Image source="@Embed('/images/messagesUrgent.png')" toolTip="Urgent" visible="{data.urgency == 'Urgent'}" includeInLayout="{data.urgency == 'Urgent'}" />
+								<s:Image source="@Embed('/images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.urgency == 'Somewhat urgent'}" includeInLayout="{data.urgency == 'Somewhat urgent'}" />
 							</mx:HBox>
 							<mx:VBox width="430" paddingTop="10" paddingBottom="16" verticalGap="13">
 								<mx:HBox width="100%" verticalAlign="middle">
@@ -353,7 +353,7 @@
 											]]>
 										</fx:Script>
 										<mx:Image id="imgAttachment" source="{data.data}" maxWidth="430" maxHeight="430" horizontalAlign="center" horizontalCenter="0" /> <!--visible="false" includeInLayout="false"-->
-										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete image attachment" buttonMode="true" right="5" top="5" click="delete_clickHandler(event)" />
+										<mx:Image source="@Embed('/images/messagesDelete.png')" toolTip="Delete image attachment" buttonMode="true" right="5" top="5" click="delete_clickHandler(event)" />
 									</mx:Canvas>
 								</fx:Component>
 							</mx:itemRenderer>
@@ -383,7 +383,7 @@
 										</fx:Script>
 										<mx:Label text="{data.name}" color="0xAEDEE4" />
 										<mx:Label text="{data.filesize}" color="0xFFFFFF" />
-										<mx:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete attachment" buttonMode="true" click="delete_clickHandler(event)" />
+										<mx:Image source="@Embed('/images/messagesDelete.png')" toolTip="Delete attachment" buttonMode="true" click="delete_clickHandler(event)" />
 									</mx:HBox>
 								</fx:Component>
 							</s:itemRenderer>
@@ -395,8 +395,8 @@
 						<s:dataProvider>
 							<s:ArrayList>
 								<fx:Object label="Not urgent" />
-								<fx:Object label="Somewhat urgent" icon="@Embed('images/messagesSomewhatUrgent.png')" />
-								<fx:Object label="Urgent" icon="@Embed('images/messagesUrgent.png')" />
+								<fx:Object label="Somewhat urgent" icon="@Embed('/images/messagesSomewhatUrgent.png')" />
+								<fx:Object label="Urgent" icon="@Embed('/images/messagesUrgent.png')" />
 							</s:ArrayList>							
 						</s:dataProvider>
 					</s:DropDownList>

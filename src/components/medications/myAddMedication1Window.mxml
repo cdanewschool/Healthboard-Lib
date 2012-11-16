@@ -81,7 +81,7 @@
 	
 	<s:HGroup id="hgWarning" width="100%" horizontalAlign="right" verticalAlign="middle" visible="false">
 		<s:Label text="Drug Interaction Warning" color="0xE20613" fontStyle="italic" fontSize="10" />
-		<s:Image source="@Embed('images/redWarning.png')" />
+		<s:Image source="@Embed('/images/redWarning.png')" />
 	</s:HGroup>
 	
 	<s:HGroup paddingBottom="6">
