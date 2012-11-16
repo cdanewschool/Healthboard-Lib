@@ -25,5 +25,5 @@
 	</fx:Declarations>
 	
 	<s:Label text="Data From My Foodpedia:" fontSize="11" color="0x1D1D1B" fontWeight="bold" />
-	<s:Image source="@Embed('images/nutritionSpinachQuiche.png')" />
+	<s:Image source="@Embed('/images/nutritionSpinachQuiche.png')" />
 </s:BorderContainer>

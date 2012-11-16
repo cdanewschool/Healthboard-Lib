@@ -49,6 +49,9 @@ package models
 		{
 			this.userType = type;
 			
+			this.latitude = NaN;
+			this.longitude = NaN;
+			
 			super();
 		}
 		
@@ -62,14 +65,19 @@ package models
 			return lastName;
 		}
 		
-		public function getBirthdate():String
+		public function get age():int
+		{
+			return birthdate ? (AppProperties.getInstance().controller.model.today.fullYear - birthdate.fullYear) : 0;
+		}
+		
+		public function get birthdateLabel():String
 		{
 			return DateFormatters.dateOnlyBackslashDelimited.format( birthdate );
 		}
 		
-		public function getSex():String
+		public function get sexLabel():String
 		{
-			return sex == 0 ? 'Male' : 'Female';
+			return sex == 1 ? 'Male' : 'Female';
 		}
 		
 		public function getDefaultProfilePictureURL( size:String = "small" ):String

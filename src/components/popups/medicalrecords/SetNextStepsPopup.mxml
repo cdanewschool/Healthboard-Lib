@@ -166,8 +166,8 @@
 			<s:dataProvider>
 				<s:ArrayList>
 					<fx:Object label="Not urgent" />
-					<fx:Object label="Somewhat urgent" icon="@Embed('images/messagesSomewhatUrgent.png')" />
-					<fx:Object label="Urgent" icon="@Embed('images/messagesUrgent.png')" />
+					<fx:Object label="Somewhat urgent" icon="@Embed('/images/messagesSomewhatUrgent.png')" />
+					<fx:Object label="Urgent" icon="@Embed('/images/messagesUrgent.png')" />
 				</s:ArrayList>							
 			</s:dataProvider>
 		</s:DropDownList>

@@ -568,7 +568,7 @@
 	
 	<components:ModuleHeader 
 		id="header"
-		icon="@Embed('images/btnHome.png')"
+		icon="@Embed('/images/btnHome.png')"
 		title="Medical Records" 
 		actionSuffix="new medical record." actionCount="1" 
 		showSearch="true" searchFunction="searchFilterMedRed" showBackground="false" visible="{showHeader}" includeInLayout="{showHeader}" />
@@ -615,8 +615,8 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnMedicalRecordsChart" width="29" height="24" icon="@Embed('images/btnImmunizationsChart.png')" chromeColor="0xFF931E" click="switchMedicalRecordsView(0)" />
-						<s:Button id="btnMedicalRecordsList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" styleName="buttonText" click="switchMedicalRecordsView(1)" />
+						<s:Button id="btnMedicalRecordsChart" width="29" height="24" icon="@Embed('/images/btnImmunizationsChart.png')" chromeColor="0xFF931E" click="switchMedicalRecordsView(0)" />
+						<s:Button id="btnMedicalRecordsList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" styleName="buttonText" click="switchMedicalRecordsView(1)" />
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -827,7 +827,7 @@
 							<fx:Component>
 								<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 									<mx:VBox paddingTop="2">
-										<s:Image source="@Embed('images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
+										<s:Image source="@Embed('/images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
 									</mx:VBox>
 									<mx:VBox verticalGap="1" paddingTop="-2"><!--vgap was 3, no paddingTop-->
 										<mx:LinkButton id="btnNextStepsMarkCompleted" label="{data.completed ? 'Unmark completed' : 'Mark completed'}" paddingTop="-5" color="0xAEDEE4" click="{data.completed = !data.completed}" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsMarkCompleted.styleName='linkBtnUnderline';}" rollOut="btnNextStepsMarkCompleted.styleName='linkBtn';" />

@@ -36,9 +36,9 @@
 		]]>
 	</fx:Script>
 	
-	<s:BitmapImage source="@Embed('images/healthFocusOptions.png')"
-				   source.down="@Embed('images/healthFocusOptionsDown.png')"
-				   left="0" right="0" top="0" bottom="0" width="19" height="30" /><!--source.over="@Embed('images/options_over2.png')"-->
+	<s:BitmapImage source="@Embed('/images/healthFocusOptions.png')"
+				   source.down="@Embed('/images/healthFocusOptionsDown.png')"
+				   left="0" right="0" top="0" bottom="0" width="19" height="30" /><!--source.over="@Embed('/images/options_over2.png')"-->
 	
 	<!-- layer 8: text -->
 	<s:Label id="labelDisplay"

@@ -235,7 +235,7 @@
 			<s:HorizontalLayout gap="12" paddingTop="5" />
 		</s:layout>
 		<s:HGroup paddingLeft="31" paddingTop="2">
-			<s:Image source="@Embed('images/redWarning2.png')" toolTip="Please enter frequency" visible="{validationError}" />
+			<s:Image source="@Embed('/images/redWarning2.png')" toolTip="Please enter frequency" visible="{validationError}" />
 		</s:HGroup>
 		<s:Label text="Frequency:" textAlign="right" width="57" paddingTop="7" />
 		<s:VGroup gap="2">

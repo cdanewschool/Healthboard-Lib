@@ -45,30 +45,30 @@
 			
 			import util.DateUtil;
 			
-			[Bindable] [Embed("images/vitalSignsCommentPatient.png")] public var iconComment:Class;
+			[Bindable] [Embed("/images/vitalSignsCommentPatient.png")] public var iconComment:Class;
 			
-			[Bindable] [Embed("images/nutritionPlateEmpty.png")] public var plateEmpty:Class;
-			[Bindable] [Embed("images/nutritionPlateFull.png")] public var plateFull:Class;
-			[Bindable] [Embed("images/nutritionPlatePartial.png")] public var platePartial:Class;
-			[Bindable] [Embed("images/nutritionPlateAlternative.png")] public var plateAlternative:Class;
-			[Bindable] [Embed('images/nutritionFoodJournalEmpty.png')] public var bigPlateEmpty:Class;
-			[Bindable] [Embed('images/nutritionFoodJournal.png')] public var bigPlatePartial:Class;
-			[Bindable] [Embed('images/nutritionFoodJournalFull.png')] public var bigPlateFull:Class;
-			[Bindable] [Embed('images/nutritionFoodJournalAlmostFull.png')] public var bigPlateAlmostFull:Class;
-			[Bindable] [Embed("images/nutritionBigSodiumEmpty.png")] public var bigSodiumEmpty:Class;
-			[Bindable] [Embed("images/nutritionBigSodiumPartial.png")] public var bigSodiumPartial:Class;
-			[Bindable] [Embed("images/nutritionBigSodiumFull.png")] public var bigSodiumFull:Class;
-			[Bindable] [Embed("images/nutritionBigSodiumFullRed.png")] public var bigSodiumFullRed:Class;
-			[Bindable] [Embed("images/nutritionBigFatsOilsEmpty.png")] public var bigFatsOilsEmpty:Class;
-			[Bindable] [Embed("images/nutritionBigFatsOilsPartial.png")] public var bigFatsOilsPartial:Class;
-			[Bindable] [Embed("images/nutritionBigFatsOilsFull.png")] public var bigFatsOilsFull:Class;
-			[Bindable] [Embed("images/nutritionBigAlcoholEmpty.png")] public var bigAlcoholEmpty:Class;
-			[Bindable] [Embed("images/nutritionBigAlcoholPartial.png")] public var bigAlcoholPartial:Class;
-			[Bindable] [Embed("images/nutritionBigAlcoholFull.png")] public var bigAlcoholFull:Class;
-			[Bindable] [Embed("images/nutritionBigWaterEmpty.png")] public var bigWaterEmpty:Class;
-			[Bindable] [Embed("images/nutritionBigWaterPartial.png")] public var bigWaterPartial:Class;
-			[Bindable] [Embed("images/nutritionBigWaterFull.png")] public var bigWaterFull:Class;
-			[Bindable] [Embed("images/nutritionBigWaterVeryFull.png")] public var bigWaterVeryFull:Class;
+			[Bindable] [Embed("/images/nutritionPlateEmpty.png")] public var plateEmpty:Class;
+			[Bindable] [Embed("/images/nutritionPlateFull.png")] public var plateFull:Class;
+			[Bindable] [Embed("/images/nutritionPlatePartial.png")] public var platePartial:Class;
+			[Bindable] [Embed("/images/nutritionPlateAlternative.png")] public var plateAlternative:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalEmpty.png')] public var bigPlateEmpty:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournal.png')] public var bigPlatePartial:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalFull.png')] public var bigPlateFull:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalAlmostFull.png')] public var bigPlateAlmostFull:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumEmpty.png")] public var bigSodiumEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumPartial.png")] public var bigSodiumPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumFull.png")] public var bigSodiumFull:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumFullRed.png")] public var bigSodiumFullRed:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsEmpty.png")] public var bigFatsOilsEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsPartial.png")] public var bigFatsOilsPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsFull.png")] public var bigFatsOilsFull:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholEmpty.png")] public var bigAlcoholEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholPartial.png")] public var bigAlcoholPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholFull.png")] public var bigAlcoholFull:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterEmpty.png")] public var bigWaterEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterPartial.png")] public var bigWaterPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterFull.png")] public var bigWaterFull:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterVeryFull.png")] public var bigWaterVeryFull:Class;
 			
 			[Bindable] private var controller:NutritionController = AppProperties.getInstance().controller.nutritionController as NutritionController;
 			[Bindable] public var model:NutritionModel = controller.model as NutritionModel;
@@ -595,7 +595,7 @@
 	
 	<components:ModuleHeader 
 		id="header"
-		icon="@Embed('images/btnHome.png')"
+		icon="@Embed('/images/btnHome.png')"
 		title="Nutrition" 
 		actionSuffix="new notifications" actionCount="0" showActionsIfNone="true"
 		showSearch="true" searchPlaceholder="Search Nutrition" showBackground="false" 
@@ -640,7 +640,7 @@
 							<s:HGroup width="100%" verticalAlign="middle">
 								<s:Label text="Record a Meal" styleName="lightBlueSubtitles" fontSize="12" />
 								<s:Spacer width="100%" />
-								<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp()" />
+								<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp()" />
 							</s:HGroup>
 							
 							<s:HGroup gap="10">
@@ -713,22 +713,22 @@
 							<s:Label text="Record Water Intake" styleName="lightBlueSubtitles" fontSize="12" />
 							
 							<s:HGroup paddingTop="4" gap="10">
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 1;}" visible="{glassesTaken &lt; 1}" includeInLayout="{glassesTaken &lt; 1}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = glassesTaken == 1 ? 0 : 1;}" visible="{glassesTaken >= 1}" includeInLayout="{glassesTaken >= 1}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken &lt; 2}" includeInLayout="{glassesTaken &lt; 2}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken >= 2}" includeInLayout="{glassesTaken >= 2}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken &lt; 3}" includeInLayout="{glassesTaken &lt; 3}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken >= 3}" includeInLayout="{glassesTaken >= 3}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken &lt; 4}" includeInLayout="{glassesTaken &lt; 4}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken >= 4}" includeInLayout="{glassesTaken >= 4}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken &lt; 5}" includeInLayout="{glassesTaken &lt; 5}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken >= 5}" includeInLayout="{glassesTaken >= 5}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken &lt; 6}" includeInLayout="{glassesTaken &lt; 6}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken >= 6}" includeInLayout="{glassesTaken >= 6}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken &lt; 7}" includeInLayout="{glassesTaken &lt; 7}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken >= 7}" includeInLayout="{glassesTaken >= 7}" />
-								<s:Image source="@Embed('images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken &lt; 8}" includeInLayout="{glassesTaken &lt; 8}" />
-								<s:Image source="@Embed('images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken >= 8}" includeInLayout="{glassesTaken >= 8}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 1;}" visible="{glassesTaken &lt; 1}" includeInLayout="{glassesTaken &lt; 1}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = glassesTaken == 1 ? 0 : 1;}" visible="{glassesTaken >= 1}" includeInLayout="{glassesTaken >= 1}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken &lt; 2}" includeInLayout="{glassesTaken &lt; 2}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken >= 2}" includeInLayout="{glassesTaken >= 2}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken &lt; 3}" includeInLayout="{glassesTaken &lt; 3}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken >= 3}" includeInLayout="{glassesTaken >= 3}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken &lt; 4}" includeInLayout="{glassesTaken &lt; 4}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken >= 4}" includeInLayout="{glassesTaken >= 4}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken &lt; 5}" includeInLayout="{glassesTaken &lt; 5}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken >= 5}" includeInLayout="{glassesTaken >= 5}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken &lt; 6}" includeInLayout="{glassesTaken &lt; 6}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken >= 6}" includeInLayout="{glassesTaken >= 6}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken &lt; 7}" includeInLayout="{glassesTaken &lt; 7}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken >= 7}" includeInLayout="{glassesTaken >= 7}" />
+								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken &lt; 8}" includeInLayout="{glassesTaken &lt; 8}" />
+								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken >= 8}" includeInLayout="{glassesTaken >= 8}" />
 							</s:HGroup>
 							
 							<s:Label text="{glassesTaken != 8 ? glassesTaken + ' cups' : '8+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
@@ -950,7 +950,7 @@
 						<s:HGroup width="100%" verticalAlign="middle">
 							<s:Label text="My Food Plan" styleName="lightBlueSubtitles" fontSize="12" />
 							<s:Spacer width="100%" />
-							<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" />
 						</s:HGroup>
 						
 						<s:Label text="My Goal is to:" />
@@ -1024,21 +1024,21 @@
 						<s:Label text="{'Remember, get most of calories from fruits,\nvegetables and starches.'}" />
 						
 						<s:HGroup width="100%" verticalAlign="middle" paddingTop="14" paddingBottom="-2">
-							<s:Image source="@Embed('images/iconGreenCircle.png')" />
+							<s:Image source="@Embed('/images/iconGreenCircle.png')" />
 							<s:Label text="Food to Increase" styleName="subtitles" fontWeight="normal" />
 							<s:Spacer width="100%" />
 							<mx:LinkButton id="btnNutViewMore1" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore1.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore1.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 						</s:HGroup>
-						<s:Image source="@Embed('images/nutritionFoodsToEat.jpg')" />
+						<s:Image source="@Embed('/images/nutritionFoodsToEat.jpg')" />
 						
 						<s:HGroup width="100%" verticalAlign="middle" paddingTop="20" paddingBottom="-2">
-							<s:Image source="@Embed('images/iconRedCross.png')" />
+							<s:Image source="@Embed('/images/iconRedCross.png')" />
 							<s:Label text="Food to Limit" styleName="subtitles" fontWeight="normal" />
 							<s:Spacer width="100%" />
 							<mx:LinkButton id="btnNutViewMore2" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore2.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore2.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 						</s:HGroup>
 						
-						<s:Image source="@Embed('images/nutritionFoodToLimit.jpg')" />
+						<s:Image source="@Embed('/images/nutritionFoodToLimit.jpg')" />
 						
 					</s:BorderContainer>
 				</s:HGroup>
@@ -1070,7 +1070,7 @@
 						
 						<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" gap="-1" paddingRight="10" paddingTop="5">
 							<mx:LinkButton id="btnNutViewHistory" label="View History" paddingTop="-1" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewHistory.styleName='linkBtnUnderline';}" rollOut="btnNutViewHistory.styleName='linkBtn';" />
-							<s:Image source="@Embed('images/erBtnHelp.png')" buttonMode="true" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" />
 						</s:HGroup>
 						
 						<s:VGroup width="805" paddingLeft="68">
@@ -1124,7 +1124,7 @@
 										<s:BasicLayout />
 									</s:layout>
 									
-									<s:Image source="@Embed('images/nutritionMyFoodPlan.jpg')" x="32" y="9" />
+									<s:Image source="@Embed('/images/nutritionMyFoodPlan.jpg')" x="32" y="9" />
 									
 									<s:BorderContainer width="90" height="98" borderVisible="false" backgroundAlpha="0" x="221" y="56" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
 									
@@ -1132,7 +1132,7 @@
 								</s:BorderContainer>
 								
 								<!--<s:HGroup paddingLeft="32" paddingTop="9">
-								<s:Image source="@Embed('images/nutritionMyFoodPlan.jpg')" />
+								<s:Image source="@Embed('/images/nutritionMyFoodPlan.jpg')" />
 								</s:HGroup>-->
 							</s:BorderContainer>
 							
@@ -1146,14 +1146,14 @@
 									
 									<s:VGroup>
 										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
-											<s:Image source="@Embed('images/iconGreenCircle.png')" />
+											<s:Image source="@Embed('/images/iconGreenCircle.png')" />
 											<s:Label text="Food to Increase" styleName="greenBoldText" />
 											<s:Spacer width="100%" />
 											<mx:LinkButton id="btnNutViewMore3" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore3.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore3.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 										</s:HGroup>
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('images/nutritionFoodsToEat.jpg')" />
-											<s:Image source="@Embed('images/nutritionFoodsToEat2.jpg')" />
+											<s:Image source="@Embed('/images/nutritionFoodsToEat.jpg')" />
+											<s:Image source="@Embed('/images/nutritionFoodsToEat2.jpg')" />
 										</s:HGroup>
 									</s:VGroup>
 									
@@ -1165,14 +1165,14 @@
 									
 									<s:VGroup>
 										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
-											<s:Image source="@Embed('images/iconRedCross.png')" />
+											<s:Image source="@Embed('/images/iconRedCross.png')" />
 											<s:Label text="Food to Limit" styleName="greenBoldText" />
 											<s:Spacer width="100%" />
 											<mx:LinkButton id="btnNutViewMore4" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore4.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore4.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 										</s:HGroup>
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('images/nutritionFoodToLimit.jpg')" />
-											<s:Image source="@Embed('images/nutritionFoodToLimit2.jpg')" />
+											<s:Image source="@Embed('/images/nutritionFoodToLimit.jpg')" />
+											<s:Image source="@Embed('/images/nutritionFoodToLimit2.jpg')" />
 										</s:HGroup>
 									</s:VGroup>
 									
@@ -1219,7 +1219,7 @@
 													<fx:Component>		
 														<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 															<mx:VBox paddingTop="2">
-																<s:Image source="@Embed('images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
+																<s:Image source="@Embed('/images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
 															</mx:VBox>
 															<mx:VBox verticalGap="1" paddingTop="-2"><!--vgap was 3, no paddingTop-->
 																<mx:LinkButton id="btnNextStepsMarkCompleted" label="{data.completed ? 'Unmark completed' : 'Mark completed'}" paddingTop="-5" color="0xAEDEE4" click="{data.completed = !data.completed; outerDocument.model.notes.refresh();}" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsMarkCompleted.styleName='linkBtnUnderline';}" rollOut="btnNextStepsMarkCompleted.styleName='linkBtn';" />
@@ -1286,13 +1286,13 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="-1" visible="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" includeInLayout="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" paddingLeft="4" paddingRight="4">
-						<s:Button id="btnNutLeft" width="28" height="24" icon="@Embed('images/arrowLeft.png')" click="nutNavigateDate('prev')" />
-						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
+						<s:Button id="btnNutLeft" width="28" height="24" icon="@Embed('/images/arrowLeft.png')" click="nutNavigateDate('prev')" />
+						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('/images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnNutChart" width="29" height="24" icon="@Embed('images/btnNutritionChart.png')" chromeColor="0xFF931E" /><!--click="switchExercisePerView(0);"-->
-						<s:Button id="btnNutList" width="29" height="24" icon="@Embed('images/btnCalendarMonth.png')" styleName="buttonText" /><!--click="switchExercisePerView(1);" click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
+						<s:Button id="btnNutChart" width="29" height="24" icon="@Embed('/images/btnNutritionChart.png')" chromeColor="0xFF931E" /><!--click="switchExercisePerView(0);"-->
+						<s:Button id="btnNutList" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" styleName="buttonText" /><!--click="switchExercisePerView(1);" click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -1458,13 +1458,13 @@
 											</mx:BarChart>
 											
 											<s:HGroup fontSize="14" color="0xFFFFFF" paddingTop="14" paddingLeft="35" gap="13">
-												<s:Image source="@Embed('images/nutritionJournalFood.png')" />
+												<s:Image source="@Embed('/images/nutritionJournalFood.png')" />
 												<s:Label text="{'+ ' + model.dailyCaloriesCurrent.getItemAt(0).calories}" textAlign="right" width="53" />
 												<s:Label text="calories consumed" />
 											</s:HGroup>
 											
 											<s:HGroup fontSize="14" color="0xFFFFFF" paddingTop="2" paddingBottom="1" paddingLeft="35" gap="13">
-												<s:Image source="@Embed('images/nutritionJournalExercise.png')" />
+												<s:Image source="@Embed('/images/nutritionJournalExercise.png')" />
 												<s:Label text="- 0" textAlign="right" width="53" />
 												<s:Label text="calories burned" />
 											</s:HGroup>
@@ -1754,7 +1754,7 @@
 														<s:Spacer width="100%" />
 														<mx:LinkButton id="btnSave" label="Save" color="0x828282" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" skin="{null}" paddingLeft="0" rollOver="{btnSave.styleName='linkBtnUnderline';}" rollOut="btnSave.styleName='linkBtn';" click="saveMealPrompt(event)" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}" />
 														<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
-															<s:Image source="@Embed('images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="nutDeleteHandler(event)" />
+															<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="nutDeleteHandler(event)" />
 														</s:VGroup>
 													</mx:HBox>
 												</fx:Component>

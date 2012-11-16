@@ -71,7 +71,7 @@
 				<s:Label text="Write a Comment" fontWeight="bold" />
 				<s:Label text="{'When you record a meal, also write when, where, and\nwhy you had the meal. This will keep your food journal\naccurate, and help both you and your health care\nproviders to understand your eating habits.'}" paddingTop="18" lineHeight="18" />
 				<s:HGroup paddingLeft="45" paddingTop="8">
-					<s:Image source="@Embed('images/nutritionHelpMeal.png')" />
+					<s:Image source="@Embed('/images/nutritionHelpMeal.png')" />
 				</s:HGroup>
 			</s:NavigatorContent>
 			<s:NavigatorContent label="Record Water Intake">

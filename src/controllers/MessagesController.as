@@ -12,7 +12,7 @@ package controllers
 	
 	public class MessagesController extends BaseModuleController
 	{
-		[Embed(source="images/bloodyNose.jpg")] private var myPic:Class;
+		[Embed(source="/images/bloodyNose.jpg")] private var myPic:Class;
 		
 		public function MessagesController()
 		{

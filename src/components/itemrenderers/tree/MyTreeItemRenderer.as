@@ -12,7 +12,7 @@ package components.itemrenderers.tree
 	{
 		public var btnLink:LinkButton;
 		public var imgRedMark:Image;
-		[Embed(source="images/redMark.png")] [Bindable] public var redMark:Class;
+		[Embed(source="/images//redMark.png")] [Bindable] public var redMark:Class;
 		public function MyTreeItemRenderer()
 		{
 			super();

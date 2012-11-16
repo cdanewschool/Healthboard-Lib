@@ -14,10 +14,10 @@ package models.modules
 		
 		public static const STATUSES:ArrayCollection = new ArrayCollection( [ AppointmentStatus.ALL, AppointmentStatus.SCHEDULED, AppointmentStatus.COMPLETED ] );
 		
-		[Embed("images/blueArrowLeft.png")] 	public var blueArrowLeft:Class;
-		[Embed("images/blueArrowRight.png")] public var blueArrowRight:Class;
-		[Embed("images/grayArrowLeft.png")] 	public var grayArrowLeft:Class;
-		[Embed("images/grayArrowRight.png")] public var grayArrowRight:Class;
+		[Embed("/images/blueArrowLeft.png")] 	public var blueArrowLeft:Class;
+		[Embed("/images/blueArrowRight.png")] public var blueArrowRight:Class;
+		[Embed("/images/grayArrowLeft.png")] 	public var grayArrowLeft:Class;
+		[Embed("/images/grayArrowRight.png")] public var grayArrowRight:Class;
 		
 		public var appointments:ArrayCollection;
 		

@@ -10,16 +10,16 @@ package models.modules
 		public static const ID:String = "nutrition";
 		
 		//	images shared by module and widget
-		[Embed("images/nutritionAlcoholEmpty.png")] public var alcoholEmpty:Class;
-		[Embed("images/nutritionAlcoholFull.png")] public var alcoholFull:Class;
-		[Embed("images/nutritionFatsOilsEmpty.png")] public var fatsOilsEmpty:Class;
-		[Embed("images/nutritionFatsOilsPartial.png")] public var fatsOilsPartial:Class;
-		[Embed("images/nutritionSodiumFull.png")] public var sodiumFull:Class;
-		[Embed("images/nutritionSodiumEmpty.png")] public var sodiumEmpty:Class;
-		[Embed("images/nutritionSodiumPartial.png")] public var sodiumPartial:Class;
-		[Embed("images/nutritionSugarsEmpty.png")] public var sugarsEmpty:Class;
-		[Embed("images/nutritionSugarsFull.png")] public var sugarsFull:Class;
-		[Embed("images/nutritionSugarsPartial.png")] public var sugarsPartial:Class;
+		[Embed("/images/nutritionAlcoholEmpty.png")] public var alcoholEmpty:Class;
+		[Embed("/images/nutritionAlcoholFull.png")] public var alcoholFull:Class;
+		[Embed("/images/nutritionFatsOilsEmpty.png")] public var fatsOilsEmpty:Class;
+		[Embed("/images/nutritionFatsOilsPartial.png")] public var fatsOilsPartial:Class;
+		[Embed("/images/nutritionSodiumFull.png")] public var sodiumFull:Class;
+		[Embed("/images/nutritionSodiumEmpty.png")] public var sodiumEmpty:Class;
+		[Embed("/images/nutritionSodiumPartial.png")] public var sodiumPartial:Class;
+		[Embed("/images/nutritionSugarsEmpty.png")] public var sugarsEmpty:Class;
+		[Embed("/images/nutritionSugarsFull.png")] public var sugarsFull:Class;
+		[Embed("/images/nutritionSugarsPartial.png")] public var sugarsPartial:Class;
 		
 		public var mealType:String;
 		

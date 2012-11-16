@@ -36,9 +36,9 @@
 		]]>
 	</fx:Script>
 	
-	<s:BitmapImage source="@Embed('images/calendar.png')"
-				   source.over="@Embed('images/calendar_over.png')"
-				   source.down="@Embed('images/calendar_down.png')"
+	<s:BitmapImage source="@Embed('/images/calendar.png')"
+				   source.over="@Embed('/images/calendar_over.png')"
+				   source.down="@Embed('/images/calendar_down.png')"
 				   left="0" right="0" top="0" bottom="0" width="25" height="26" />
 	
 	<!-- layer 8: text -->

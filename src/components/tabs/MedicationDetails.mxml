@@ -127,7 +127,7 @@
 					<s:HGroup paddingTop="15">
 						<s:Label width="102" textAlign="right" fontWeight="bold" text="Drug Image" />
 						<s:HGroup paddingLeft="7">
-							<s:Image source="@Embed('images/medicationsDrugImage.jpg')" />
+							<s:Image source="@Embed('/images/medicationsDrugImage.jpg')" />
 						</s:HGroup>
 					</s:HGroup>
 					

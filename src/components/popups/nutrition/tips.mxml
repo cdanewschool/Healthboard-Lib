@@ -17,7 +17,7 @@
 	<s:Label text="Tips for Keeping an Accurate Food Journal" fontWeight="bold" fontSize="16" />
 	
 	<s:HGroup paddingTop="15" paddingBottom="6" gap="12">
-		<s:Image source="@Embed('images/nutritionTips.jpg')" />
+		<s:Image source="@Embed('/images/nutritionTips.jpg')" />
 		<s:VGroup>
 			<s:Label text="What you drink also counts!" fontWeight="bold" fontSize="12" paddingBottom="11" />
 			<s:Label text="{'Make sure to record all beverages that you consume\nin the food and beverage description. This also\nincludes no-calorie drinks such as diet sodas and\nunsweetened ice tea.'}" lineHeight="16" />

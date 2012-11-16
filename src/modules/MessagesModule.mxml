@@ -44,9 +44,9 @@
 			
 			import spark.events.IndexChangeEvent;
 			
-			[Embed(source="images/bloodyNose.jpg")] private static var myPic:Class;
-			[Embed('images/btnHome.png')] private var btnHome:Class;
-			[Embed('images/patientHome.png')] private var btnPatient:Class;
+			[Embed(source="/images/bloodyNose.jpg")] private static var myPic:Class;
+			[Embed('/images/btnHome.png')] private var btnHome:Class;
+			[Embed('/images/patientHome.png')] private var btnPatient:Class;
 			
 			[Bindable] public var controller:MessagesController = AppProperties.getInstance().controller.messagesController as MessagesController;
 			[Bindable] public var model:MessagesModel = controller.model as MessagesModel;
@@ -1068,9 +1068,9 @@
 									<mx:itemRenderer>
 										<fx:Component>
 											<mx:HBox horizontalAlign="center"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
-												<s:Image source="@Embed('images/messagesEnvelope.png')" toolTip="Unread" visible="{data.status == 'unread'}" includeInLayout="{data.status == 'unread'}" />
-												<!--<s:Image source="@Embed('images/messagesRead.png')" toolTip="Read" visible="{data.status == 'read'}" includeInLayout="{data.status == 'read'}" />-->
-												<s:Image source="@Embed('images/messagesReplied.png')" toolTip="Replied" visible="{data.status == 'replied'}" includeInLayout="{data.status == 'replied'}" />
+												<s:Image source="@Embed('/images/messagesEnvelope.png')" toolTip="Unread" visible="{data.status == 'unread'}" includeInLayout="{data.status == 'unread'}" />
+												<!--<s:Image source="@Embed('/images/messagesRead.png')" toolTip="Read" visible="{data.status == 'read'}" includeInLayout="{data.status == 'read'}" />-->
+												<s:Image source="@Embed('/images/messagesReplied.png')" toolTip="Replied" visible="{data.status == 'replied'}" includeInLayout="{data.status == 'replied'}" />
 											</mx:HBox>
 										</fx:Component>
 									</mx:itemRenderer>
@@ -1133,8 +1133,8 @@
 												</fx:Script>
 												
 												<mx:HBox width="17" >
-													<s:Image source="@Embed('images/messagesUrgent.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
-													<s:Image source="@Embed('images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
+													<s:Image source="@Embed('/images/messagesUrgent.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
+													<s:Image source="@Embed('/images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
 												</mx:HBox>
 												
 												<mx:VBox verticalGap="3">
@@ -1161,7 +1161,7 @@
 												}
 												]]>
 												</fx:Script>-->
-												<s:Image source="@Embed('images/messagesDelete.png')" toolTip="Delete" /><!--buttonMode="true" click="image1_clickHandler(event)"-->
+												<s:Image source="@Embed('/images/messagesDelete.png')" toolTip="Delete" /><!--buttonMode="true" click="image1_clickHandler(event)"-->
 											</mx:VBox>
 										</fx:Component>
 									</mx:itemRenderer>
@@ -1177,7 +1177,7 @@
 						
 					</s:NavigatorContent>
 					
-					<s:NavigatorContent icon="@Embed('images/messagesNew.png')">
+					<s:NavigatorContent icon="@Embed('/images/messagesNew.png')">
 						
 					</s:NavigatorContent>
 					

@@ -595,7 +595,7 @@
 	
 	<components:ModuleHeader 
 		id="header"
-		icon="@Embed('images/btnHome.png')" title="Appointments" 
+		icon="@Embed('/images/btnHome.png')" title="Appointments" 
 		actionPrefix="You have" actionCount="{upcomingAppointmentCount}" actionSuffix="appointments in the coming week." showBackground="false"
 		showSearch="true" searchPlaceholder="Search appointments" 
 		visible="{showHeader}" includeInLayout="{showHeader}" />
@@ -669,9 +669,9 @@
 					<s:Spacer width="100%" />
 					
 					<s:HGroup gap="0">
-						<s:Button id="btnCalendarMonth" width="29" height="24" icon="@Embed('images/btnCalendarMonth.png')" click="onMonthClick()" chromeColor="0xFF931E" />
-						<s:Button id="btnCalendarWeek" width="29" height="24" icon="@Embed('images/btnCalendarWeek.png')" click="onWeekClick()" chromeColor="0xB3B3B3" />
-						<s:Button id="btnCalendarList" width="29" height="24" icon="@Embed('images/btnCalendarList.png')" click="onListClick()" chromeColor="0xB3B3B3" />
+						<s:Button id="btnCalendarMonth" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" click="onMonthClick()" chromeColor="0xFF931E" />
+						<s:Button id="btnCalendarWeek" width="29" height="24" icon="@Embed('/images/btnCalendarWeek.png')" click="onWeekClick()" chromeColor="0xB3B3B3" />
+						<s:Button id="btnCalendarList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="onListClick()" chromeColor="0xB3B3B3" />
 					</s:HGroup>
 					
 				</s:BorderContainer>
@@ -703,7 +703,7 @@
 					</s:HGroup>
 					
 					<s:HGroup gap="0">
-						<s:Button width="29" height="24" icon="@Embed('images/btnCalendarList.png')" click="onListClick()" chromeColor="0xFF931E" />
+						<s:Button width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="onListClick()" chromeColor="0xFF931E" />
 					</s:HGroup>
 					
 				</s:BorderContainer>

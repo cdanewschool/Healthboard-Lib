@@ -18,7 +18,7 @@ package ASclasses
 	{
 		private var _data:Object;
 		
-		[Bindable] [Embed("images/medIconOverdose.png")] public var imgOverdose:Class;
+		[Bindable] [Embed("/images//medIconOverdose.png")] public var imgOverdose:Class;
 		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;
 		
 		public function MyMedicationsCustomRenderer()
