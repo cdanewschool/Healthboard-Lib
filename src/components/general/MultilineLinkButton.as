@@ -19,9 +19,13 @@ package components.general
 		{
 			textField.text = s;
 			
-			var lineMetrics:TextLineMetrics = textField.getLineMetrics(0);
-			lineMetrics.width = textField.textWidth;
-			lineMetrics.height = textField.textHeight;
+			try
+			{
+				var lineMetrics:TextLineMetrics = textField.getLineMetrics(0);
+				lineMetrics.width = textField.textWidth;
+				lineMetrics.height = textField.textHeight;
+			}
+			catch(e:Error){}
 			
 			return lineMetrics;
 		}
