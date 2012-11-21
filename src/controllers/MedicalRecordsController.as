@@ -8,6 +8,7 @@ package controllers
 	import flash.events.Event;
 	
 	import models.ApplicationModel;
+	import models.ModuleMappable;
 	import models.NextStep;
 	import models.modules.AppointmentsModel;
 	import models.modules.ExerciseModel;
@@ -135,40 +136,7 @@ package controllers
 		
 		public function showNextStep( item:NextStep ):void
 		{
-			var evt:Event;
-			
-			var module:String;
-			
-			if( item.area == ExerciseModel.ID )
-				module = Constants.MODULE_EXERCISE;
-			else if( item.area == NutritionModel.ID )
-				module = Constants.MODULE_NUTRITION;
-			else if( item.area == AppointmentsModel.ID )
-			{
-				if( item.recommendation )
-				{
-					if( item.type == "class" )
-						evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, item.actionId );
-					else
-						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
-					
-					AppProperties.getInstance().controller.application.dispatchEvent( evt );
-				}
-				else
-				{
-					module = Constants.MODULE_APPOINTMENTS;
-				}						
-			}
-			else if( item.area == VitalSignsModel.ID )
-				module = Constants.MODULE_VITAL_SIGNS;
-			else if( item.area == MedicalRecordsModel.ID )
-				module = Constants.MODULE_MEDICAL_RECORDS;
-			
-			if( module )
-			{
-				evt = new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, module );
-				AppProperties.getInstance().controller.application.dispatchEvent( evt );
-			}
+			AppProperties.getInstance().controller.processModuleMappable( item as ModuleMappable );
 		}
 		
 		public function getMedicalRecordByNextStep( nextStep:NextStep ):Object

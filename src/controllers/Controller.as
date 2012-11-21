@@ -12,20 +12,29 @@ package controllers
 	
 	import external.TabBarPlus.plus.TabPlus;
 	
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
 	import models.ApplicationModel;
+	import models.ModuleMappable;
+	import models.NextStep;
+	import models.UserPreferences;
 	import models.modules.AppointmentsModel;
+	import models.modules.ExerciseModel;
 	import models.modules.ImmunizationsModel;
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
+	import models.modules.NutritionModel;
+	import models.modules.VitalSignsModel;
 	
 	import mx.core.FlexGlobals;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
+	import mx.events.StyleEvent;
+	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
 	import mx.states.State;
 	
@@ -46,7 +55,7 @@ package controllers
 		[Bindable] public var nutritionController:NutritionController;
 		[Bindable] public var vitalSignsController:VitalSignsController;
 		
-		[Bindable] public var model:ApplicationModel;
+ 		private var _model:ApplicationModel;
 		
 		public var application:Application;
 		
@@ -80,6 +89,32 @@ package controllers
 			
 			sessionTimer = new Timer( 5000 );
 			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
+		}
+		
+		[Bindable]
+		public function get model():ApplicationModel
+		{
+			return _model;
+		}
+
+		public function set model(value:ApplicationModel):void
+		{
+			_model = value;
+		}
+
+		public function savePreferences( preferences:UserPreferences ):void
+		{
+			loadStyles();
+		}
+		
+		protected function loadStyles():void
+		{
+			application.styleManager.loadStyleDeclarations( "assets/themes/" + model.preferences.colorScheme + ".swf" ).addEventListener( StyleEvent.COMPLETE, onStylesLoad );
+		}
+		
+		protected function onStylesLoad(event:StyleEvent):void
+		{
+			model.dispatchEvent( new ApplicationEvent( ApplicationEvent.STYLES_LOADED ) );
 		}
 		
 		protected function onAuthenticated(event:AuthenticationEvent):void
@@ -259,6 +294,47 @@ package controllers
 		
 		public function selectSetting( event:IndexChangeEvent ):void
 		{
+		}
+		
+		public function processModuleMappable( item:ModuleMappable ):void
+		{
+			var evt:Event;
+			
+			var module:String;
+			
+			if( item.area == ExerciseModel.ID )
+				module = Constants.MODULE_EXERCISE;
+			else if( item.area == MedicationsModel.ID )
+				module = Constants.MODULE_MEDICATIONS;
+			else if( item.area == NutritionModel.ID )
+				module = Constants.MODULE_NUTRITION;
+			else if( item.area == AppointmentsModel.ID )
+			{
+				if( item is NextStep 
+					&& (item as NextStep).recommendation )
+				{
+					if( item.type == "class" )
+						evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, (item as NextStep).actionId );
+					else
+						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
+					
+					AppProperties.getInstance().controller.application.dispatchEvent( evt );
+				}
+				else
+				{
+					module = Constants.MODULE_APPOINTMENTS;
+				}						
+			}
+			else if( item.area == VitalSignsModel.ID )
+				module = Constants.MODULE_VITAL_SIGNS;
+			else if( item.area == MedicalRecordsModel.ID )
+				module = Constants.MODULE_MEDICAL_RECORDS;
+			
+			if( module )
+			{
+				evt = new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, module );
+				application.dispatchEvent( evt );
+			}
 		}
 		
 		public function getModuleTitle(module:String):String

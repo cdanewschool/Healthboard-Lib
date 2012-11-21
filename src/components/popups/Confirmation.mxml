@@ -14,7 +14,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import models.Appointment;
 			import models.UserModel;
 			
 			import mx.events.CloseEvent;

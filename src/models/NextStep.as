@@ -1,9 +1,8 @@
 package models
 {
-	public class NextStep
+	public class NextStep extends ModuleMappable
 	{
 		public var actionId:String;
-		public var area:String;
 		public var assignee:String;
 		public var completed:Boolean;
 		public var dateAssigned:Date;
@@ -11,7 +10,6 @@ package models
 		public var removed:Boolean;
 		public var status:String;
 		public var task:String;
-		public var type:String;
 		public var urgency:int;
 		
 		public function NextStep()
