@@ -846,7 +846,12 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	font-size: 12;
 }
 .green12Bold {
-	fontSize: 11;
+	fontSize: 12;
 	fontWeight:bold;
 	color: "0xBED63A";
+}
+
+.healthAdvisoryChartAxisTitles {
+	fontSize: 11;
+	color: "0xF2F2F2";
 }
