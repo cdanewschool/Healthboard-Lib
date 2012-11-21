@@ -204,16 +204,7 @@
 			<s:FormLayout gap="-5" paddingLeft="-10" paddingTop="-10" />
 		</s:layout>
 		<s:FormItem label="Subject:" color="0xFFFFFF">
-			<s:ComboBox id="cbSubjects" prompt="Select a subject" width="454" color="0x4D4D4D" change="{this.label = cbSubjects.selectedItem; cbRecipients.selectedIndex = cbSubjects.selectedIndex;}">
-				<s:dataProvider>
-					<mx:ArrayList>	<!--if you wanted, you could set this to objects instead of strings, so they would have (1) the label, and (2) the recipient type specified-->
-						<fx:String>Question about my medication</fx:String>
-						<fx:String>Question about my recovery</fx:String>
-						<fx:String>Question about billing</fx:String>
-						<fx:String>Scheduling an appointment</fx:String>
-					</mx:ArrayList>
-				</s:dataProvider>
-			</s:ComboBox>
+			<s:ComboBox id="cbSubjects" prompt="Select a subject" width="454" color="0x4D4D4D" change="{this.label = cbSubjects.selectedItem; cbRecipients.selectedIndex = cbSubjects.selectedIndex;}" dataProvider="{model.predefinedSubjects}" />
 		</s:FormItem>
 		<s:FormItem label="To:" color="0xFFFFFF">
 			<s:ComboBox id="cbRecipients" prompt="Select a recipient" width="454" color="0x4D4D4D" dataProvider="{model.recipientTypes}" labelField="label" />

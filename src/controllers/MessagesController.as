@@ -116,6 +116,16 @@ package controllers
 			model.messagesToDisplay = new ArrayCollection();
 			model.messagesTrash = new ArrayCollection();
 			
+			model.predefinedSubjects = new ArrayCollection
+				(
+					[
+						'Question about my medication',
+						'Question about my recovery',
+						'Question about billing',
+						'Scheduling an appointment'
+					]
+				);
+			
 			model.messages.addEventListener( CollectionEvent.COLLECTION_CHANGE, onMessagesChange );
 			
 			updateMessageCounts();

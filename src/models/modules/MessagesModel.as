@@ -7,6 +7,8 @@ package models.modules
 	[Bindable]
 	public class MessagesModel extends ModuleModel
 	{
+		public static const ID:String = "messages";
+		
 		public static const INBOX:String = "inbox";
 		public static const DRAFT:String = "draft";
 		public static const SENT:String = "sent";
@@ -25,5 +27,7 @@ package models.modules
 		
 		public var draftMessageCount:int;
 		public var unreadMessageCount:int;
+		
+		public var predefinedSubjects:ArrayCollection
 	}
 }
