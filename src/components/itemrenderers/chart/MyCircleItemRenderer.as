@@ -3,18 +3,12 @@ package components.itemrenderers.chart
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
-	import models.modules.VitalSignsModel;
-	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
 	import mx.charts.renderers.CircleItemRenderer;
-	import mx.core.Application;
-	import mx.core.FlexGlobals;
-	import mx.core.IDataRenderer;
 	import mx.graphics.IFill;
 	import mx.graphics.IStroke;
 	import mx.graphics.SolidColor;
-	import mx.skins.ProgrammaticSkin;
 	import mx.utils.ColorUtil;
 	
 	public class MyCircleItemRenderer extends CircleItemRenderer
@@ -112,22 +106,13 @@ package components.itemrenderers.chart
 			if (stroke)	stroke.apply(g,null,null);
 			if (fill) fill.begin(g, rcFill, null);
 			
-			var maxDate:String;
-			var model:VitalSignsModel = VitalSignsModel(AppProperties.getInstance().controller.vitalSignsController.model);
-			
-			if(_data.item.vital == 'weight') maxDate = model.weightMax;
-			else if(_data.item.vital == 'bloodPressure') maxDate = model.bloodPressureMax;
-			else if(_data.item.vital == 'heartRate') maxDate = model.heartRateMax;
-			else if(_data.item.vital == 'respiratory') maxDate = model.respiratoryMax;
-			else if(_data.item.vital == 'temperature') maxDate = model.temperatureMax;
-			else if(_data.item.vital == 'height') maxDate = model.heightMax;
-			else if(_data.item.vital == 'comments') maxDate = model.commentsMax;
-			
-			if(_data.item.date != maxDate) {
-				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
-			}
-			else {
+			if( _data.element.items.indexOf( _data ) == _data.element.items.length -1 ) 
+			{
 				g.drawEllipse(w - adjustedRadius,w - adjustedRadius,unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
+			}
+			else 
+			{
+				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
 			}
 			
 			if (fill)
