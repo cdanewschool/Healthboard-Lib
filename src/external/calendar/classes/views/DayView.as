@@ -1,6 +1,6 @@
-package calendar.classes.views
+package external.calendar.classes.views
 {
-	import calendar.classes.utils.CommonUtils;
+	import external.calendar.classes.utils.CommonUtils;
 	
 	import mx.containers.ApplicationControlBar;
 	import mx.containers.Canvas;

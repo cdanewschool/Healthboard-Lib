@@ -5,7 +5,7 @@
 	
 	<!-- host component -->
 	<fx:Metadata>
-		[HostComponent("plus.TabPlus")]
+		[HostComponent("external.TabBarPlus.plus.TabPlus")]
 	</fx:Metadata>
 	
 	<fx:Script>
@@ -84,7 +84,7 @@
 	</s:Label>
 	
 	<s:Button id="closeBtn"
-			  skinClass="plus.tabskins.TabCloseBtnSkin"
+			  skinClass="external.TabBarPlus.plus.tabskins.TabCloseBtnSkin"
 			  verticalCenter="1"
 			  right="2" />
 

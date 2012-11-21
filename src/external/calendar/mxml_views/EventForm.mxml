@@ -8,7 +8,7 @@
 	
 	<mx:Script>
 		<![CDATA[
-			import calendar.classes.model.DataHolder;
+			import external.calendar.classes.model.DataHolder;
 			
 			/* selected index of hour drop down menu */
 			[Bindable]
