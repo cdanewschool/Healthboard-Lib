@@ -1,0 +1,5 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+s|Application { skinClass: ClassReference("skins.general.backgroundGradientWhite"); backgroundColor: "0xFFFFFF"; fontFamily: "myMyriad"; }

@@ -14,6 +14,8 @@ package events
 		
 		public static const SHOW_STATUS:String = "showStatus";
 		
+		public static const STYLES_LOADED:String = "stylesLoaded";
+		
 		public var data:*;
 		
 		public var message:Message;

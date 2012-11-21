@@ -9,15 +9,16 @@ s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); f
 /*	core font styles	*/
 .bold { font-weight: bold; }
 .italic { font-style: italic; }
-.underline{ textDecoration: underline; }
+.underline { textDecoration: underline; }
 
 /*	colors	*/
 .emphasizedNumber { color: "0xFF931E"; }
+.emphasizedNumberSubtext { color: "0xCCCCCC"; }
 .dataGridAlternateColor1 { color: "0xAEDEE4"; }
 .dropdownLabelText { color: "0x000000"; }
 .headerAlternateColor1 { color: "0xBED63A"; }	/*	green	*/	/*	PublicHealthAdvisoryItemRenderer	*/
 .subheadText { color: "0x4D4D4D"; }	/*	dark gray	*/
-
+.subheadText2 { color: "0xCCCBCB"; }	/*	dark gray	*/	/*	DecisionSupportWidget	*/
 /*	BEGIN COMPONENT STYLES	*/
 
 /*	button	*/
@@ -35,6 +36,9 @@ s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); f
 /*	link button	*/
 .linkButtonStyle1{ color: "0xAEDEE4"; textRollOverColor: "0xAEDEE4"; }		/*	light blue	*/	/*	PublicHealthAdvisoryItemRenderer	*/
 .linkButtonStyle2{ color: "0x064E71"; textRollOverColor: "0xAEDEE4"; }		/*	dark blue	*/
+.linkButtonStyle3{ color: "0xE6E6E6"; textRollOverColor: "0xE6E6E6"; }		/*	light gray	*/
+.linkButtonStyle4{ color: "0xB3B3B3"; textRollOverColor: "0xE6E6E6"; }		/*	yellow	*/
+.linkButtonStyle5{ color: "0xFF931E"; textRollOverColor: "0xFF931E"; }		/*	orange	*/
 
 /*	navigator content	*/
 .navigatorContent { backgroundColor: "0x333333"; }	/*	ViewPublicHealthAdvisories	*/
@@ -49,3 +53,10 @@ s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); f
 .headerlessPopupInset { cornerRadius: 3; backgroundAlpha: 0; borderColor: "0x878787" }
 .headerlessPopupModuleHeaderBackground { backgroundColor: "0xCECECE"; font-style: italic; color: "0x4D4D4D" }
 .headerlessPopupFormLabel { color: "0x000000"; fontSize: 13; fontWeight: normal }
+
+/* MODULES	*/
+
+/*	decision support	*/
+.decisionSupportModuleRiskLevelStatText { color: "0xCCCCCC" }
+.decisionSupportModuleRiskLevelLow { color: "0xF8E831" }
+.decisionSupportModuleRiskLevelHigh { color: "0xE84E1B" }
