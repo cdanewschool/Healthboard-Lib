@@ -118,6 +118,8 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 
 		protected function onExpandIndicatorClick(event:MouseEvent):void
 		{
+			event.stopImmediatePropagation();
+			
 			if(!headerClickable && collapsible) 
 				expanded = !expanded;
 		}
