@@ -3,26 +3,21 @@ package components.itemrenderers.chart
 	import flash.display.Graphics;
 	import flash.geom.Rectangle;
 	
-	import models.modules.VitalSignsModel;
-	
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
 	import mx.charts.renderers.CircleItemRenderer;
-	import mx.core.Application;
-	import mx.core.FlexGlobals;
-	import mx.core.IDataRenderer;
 	import mx.graphics.IFill;
 	import mx.graphics.IStroke;
 	import mx.graphics.SolidColor;
-	import mx.skins.ProgrammaticSkin;
 	import mx.utils.ColorUtil;
 	
-	public class MyCircleItemRenderer extends CircleItemRenderer
+	public class MyMixedItemRenderer extends CircleItemRenderer
 	{
 		private static var rcFill:Rectangle = new Rectangle();
+		
 		private var _data:Object;
 
-		public function MyCircleItemRenderer()
+		public function MyMixedItemRenderer()
 		{
 			super();
 		}
@@ -50,6 +45,7 @@ package components.itemrenderers.chart
 													  unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth, unscaledHeight);
+			
 			var fill:IFill;
 			var state:String = "";
 			
@@ -103,35 +99,45 @@ package components.itemrenderers.chart
 			
 			var w:Number = stroke ? stroke.weight / 2 : 0;
 			
-			rcFill.right = unscaledWidth;
-			rcFill.bottom = unscaledHeight;
-			
 			var g:Graphics = graphics;
 			g.clear();		
 			
 			if (stroke)	stroke.apply(g,null,null);
 			if (fill) fill.begin(g, rcFill, null);
 			
-			var maxDate:String;
-			var model:VitalSignsModel = VitalSignsModel(AppProperties.getInstance().controller.vitalSignsController.model);
-			
-			if(_data.item.vital == 'weight') maxDate = model.weightMax;
-			else if(_data.item.vital == 'bloodPressure') maxDate = model.bloodPressureMax;
-			else if(_data.item.vital == 'heartRate') maxDate = model.heartRateMax;
-			else if(_data.item.vital == 'respiratory') maxDate = model.respiratoryMax;
-			else if(_data.item.vital == 'temperature') maxDate = model.temperatureMax;
-			else if(_data.item.vital == 'height') maxDate = model.heightMax;
-			else if(_data.item.vital == 'comments') maxDate = model.commentsMax;
-			
-			if(_data.item.date != maxDate) {
-				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
+			if( data.item.type == 'provider' )
+			{
+				var rc:Rectangle = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
+				
+				g.moveTo(rc.left,rc.top);
+				g.lineTo(rc.right,rc.top);
+				g.lineTo(rc.right,rc.bottom);
+				g.lineTo(rc.left,rc.bottom);
+				g.lineTo(rc.left,rc.top);
 			}
-			else {
-				g.drawEllipse(w - adjustedRadius,w - adjustedRadius,unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
+			else
+			{
+				rcFill.right = unscaledWidth;
+				rcFill.bottom = unscaledHeight;
+				
+				adjustedRadius += radiusOffset;
+				
+				if( shouldRender() )
+					g.drawEllipse(w - adjustedRadius,w - adjustedRadius, unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
 			}
 			
 			if (fill)
 				fill.end(g);
+		}
+		
+		protected function shouldRender():Boolean
+		{
+			return true;
+		}
+		
+		protected function get radiusOffset():int
+		{
+			return 0;
 		}
 	}
 }

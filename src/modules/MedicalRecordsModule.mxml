@@ -405,6 +405,8 @@
 			
 			private function updateToday():void
 			{
+				if( !model.medicalRecordsCategories || !model.medicalRecordsCategories.length ) return;
+				
 				var date:Date = new Date( today.fullYear, today.month, today.date );
 				var dateValue = DateFormatters.dateFormatterToday.format( date );
 				

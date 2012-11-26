@@ -1,5 +1,8 @@
 package models
 {
+	import mx.collections.ArrayCollection;
+
+	[Bindable]
 	public class Message
 	{
 		public static const URGENCY_NOT_URGENT:String = "Not Urgent";
@@ -10,8 +13,12 @@ package models
 		public var recipients:Array;
 		public var recipientType:String;
 		
-		public var urgency:String;
+		public var subject:String;
 		public var body:String;
+		public var urgency:String;
+		
+		public var imageAttachments:ArrayCollection = new ArrayCollection();
+		public var nonImageAttachments:ArrayCollection = new ArrayCollection();
 		
 		public function Message()
 		{

@@ -75,6 +75,8 @@
 			
 			private function updateToday():void
 			{
+				if( !model.immunizationsCategories || !model.immunizationsCategories.length ) return;
+				
 				var dateValue:String = DateFormatters.dateFormatterToday.format( today );
 				
 				cartesianCanvas.clear();
