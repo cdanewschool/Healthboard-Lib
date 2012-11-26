@@ -272,7 +272,7 @@ s|TextArea {
 
 /*displayed in each module's top right corner*/
 .searchButtonIcon {
-	icon: url("/images/btnSearchIcon.png");
+	icon: Embed("/images/btnSearchIcon.png");
 	chromeColor: "0xB3B3B3";
 	left: -4;
 }
@@ -514,11 +514,6 @@ s|FormItem {
 	borderAlpha: 0.3;
 	cornerRadius: 3;
 	backgroundAlpha: 0;
-}
-
-.erButtonIcon {
-	upIcon: url("/images/smallArrowCollapsed.png");
-	overIcon: url("/images/smallArrowCollapsedBlue.png");
 }
 
 .erSearchLight {

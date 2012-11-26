@@ -83,17 +83,17 @@ package models
 		public function getDefaultProfilePictureURL( size:String = "small" ):String
 		{
 			if( userType == UserModel.TYPE_PATIENT )
-				return "images/patients/" + size + "/default.jpg";
+				return "assets/images/patients/" + size + "/default.jpg";
 			
-			return "images/providers/" + size + "/default.jpg";
+			return "assets/images/providers/" + size + "/default.jpg";
 		}
 		
 		public function getProfilePictureURL( size:String = "small" ):String
 		{
 			if( userType == UserModel.TYPE_PATIENT )
-				return "images/patients/" + size + "/" + lastName.toLowerCase() + ".jpg";
+				return "assets/images/patients/" + size + "/" + lastName.toLowerCase() + ".jpg";
 			
-			return "images/providers/" + size + "/" + lastName.toLowerCase() + ".jpg";
+			return "assets/images/providers/" + size + "/" + lastName.toLowerCase() + ".jpg";
 		}
 	}
 }
