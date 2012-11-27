@@ -1,5 +1,7 @@
 package models
 {
+	import avmplus.getQualifiedClassName;
+	
 	import enum.ColorSchemeType;
 	import enum.DateFormatType;
 	import enum.TimeFormatType;
@@ -7,6 +9,7 @@ package models
 	import enum.ViewModeType;
 	
 	import flash.utils.describeType;
+	import flash.utils.getDefinitionByName;
 	
 	import mx.collections.ArrayCollection;
 
@@ -30,7 +33,6 @@ package models
 		{
 		}
 		
-		[Bindable]
 		public function setPasswordRequiredForModule( id:String, required:Boolean ):void
 		{
 			if( required && (!restrictedModules || restrictedModules.getItemIndex( id ) == -1 ) )
@@ -45,7 +47,6 @@ package models
 			}
 		}
 		
-		[Bindable]
 		public function getPasswordRequiredForModule( id:String ):Boolean
 		{
 			return restrictedModules && restrictedModules.getItemIndex( id ) > -1;
@@ -53,11 +54,18 @@ package models
 		
 		public function clone():Preferences
 		{
-			var val:Preferences = new Preferences();
+			var className:Class = getDefinitionByName( getQualifiedClassName(this) ) as Class; // get class
+			
+			var val:Preferences = new className();
 			
 			var definition:XML = describeType(this);
 			
-			for each(var prop:XML in definition..accessor)
+			for each(var prop:XML in definition..variable)
+			{
+				val[prop.@name] = this[prop.@name];
+			}
+			
+			for each(prop in definition..accessor)
 			{
 				if( prop.@access == "readonly" ) continue;
 				

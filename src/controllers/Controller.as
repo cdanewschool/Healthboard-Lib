@@ -32,6 +32,7 @@ package controllers
 	import models.modules.VitalSignsModel;
 	
 	import mx.core.FlexGlobals;
+	import mx.core.IFlexDisplayObject;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
 	import mx.events.StyleEvent;
@@ -124,21 +125,30 @@ package controllers
 			model.preferences = preferences;
 		}
 		
-		protected function processPreferences( preferences:Preferences ):void
+		protected function processPreferences( preferences:Preferences = null ):void
 		{
-			if( preferences.colorScheme != model.preferences.colorScheme )
+			if( preferences == null ) preferences  = model.preferences;
+			
+			if( preferences 
+				&& preferences.colorScheme != model.preferences.colorScheme )
 			{
-				loadStyles();
+				loadStyles( preferences.colorScheme );
 			}
 		}
 		
-		protected function loadStyles():void
+		protected function loadStyles( scheme:String = null ):void
 		{
-			application.styleManager.loadStyleDeclarations( "assets/themes/" + model.preferences.colorScheme + ".swf" ).addEventListener( StyleEvent.COMPLETE, onStylesLoad );
+			if( !scheme ) scheme = model.preferences.colorScheme;
+			
+			CursorManager.setBusyCursor();
+			
+			application.styleManager.loadStyleDeclarations( "assets/themes/" + scheme + ".swf" ).addEventListener( StyleEvent.COMPLETE, onStylesLoad, false, 0, true );
 		}
 		
 		protected function onStylesLoad(event:StyleEvent):void
 		{
+			CursorManager.removeBusyCursor();
+			
 			model.dispatchEvent( new ApplicationEvent( ApplicationEvent.STYLES_LOADED ) );
 		}
 		
@@ -278,6 +288,13 @@ package controllers
 		public function logout():void
 		{
 			sessionTimer.stop();
+			
+			//	close all popups
+			for (var i:int = application.systemManager.popUpChildren.numChildren - 1; i >= 0; i--)
+			{
+				var popup:IFlexDisplayObject = IFlexDisplayObject(application.systemManager.popUpChildren.getChildAt(i));
+				PopUpManager.removePopUp(popup);
+			}
 			
 			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
 			evt.data = Constants.STATE_DEFAULT;
