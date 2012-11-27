@@ -114,9 +114,8 @@ package controllers
 			}
 		}
 
-		protected function loadPreferences():void
-		{
-		}
+		protected function showPreferences():void{}
+		protected function loadPreferences():void{}
 		
 		public function savePreferences( preferences:Preferences ):void
 		{

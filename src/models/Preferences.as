@@ -13,6 +13,7 @@ package models
 	
 	import mx.collections.ArrayCollection;
 
+	[Bindable]
 	public class Preferences
 	{
 		//	general
