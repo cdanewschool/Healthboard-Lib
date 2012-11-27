@@ -28,7 +28,7 @@ package models
 		
 		public var settings:ArrayCollection;
 		
-		public var preferences:UserPreferences;
+		public var preferences:Preferences;
 		
 		public var supportedLanguages:ArrayCollection;
 		

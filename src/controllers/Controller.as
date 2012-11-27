@@ -15,13 +15,14 @@ package controllers
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
+	import flash.net.SharedObject;
 	import flash.utils.Timer;
 	import flash.utils.getTimer;
 	
 	import models.ApplicationModel;
 	import models.ModuleMappable;
 	import models.NextStep;
-	import models.UserPreferences;
+	import models.Preferences;
 	import models.modules.AppointmentsModel;
 	import models.modules.ExerciseModel;
 	import models.modules.ImmunizationsModel;
@@ -62,7 +63,10 @@ package controllers
 		protected var initialized:Boolean;
 		
 		protected var lastActivity:int;
+		
 		private var sessionTimer:Timer;
+		
+		protected var persistentData:SharedObject;
 		
 		public function Controller()
 		{
@@ -89,6 +93,8 @@ package controllers
 			
 			sessionTimer = new Timer( 5000 );
 			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
+			
+			persistentData = SharedObject.getLocal( id );
 		}
 		
 		[Bindable]
@@ -100,11 +106,30 @@ package controllers
 		public function set model(value:ApplicationModel):void
 		{
 			_model = value;
+			
+			if( model )
+			{
+				loadPreferences();
+			}
 		}
 
-		public function savePreferences( preferences:UserPreferences ):void
+		protected function loadPreferences():void
 		{
-			loadStyles();
+		}
+		
+		public function savePreferences( preferences:Preferences ):void
+		{
+			processPreferences( preferences );
+			
+			model.preferences = preferences;
+		}
+		
+		protected function processPreferences( preferences:Preferences ):void
+		{
+			if( preferences.colorScheme != model.preferences.colorScheme )
+			{
+				loadStyles();
+			}
 		}
 		
 		protected function loadStyles():void
@@ -350,6 +375,11 @@ package controllers
 			if( module == Constants.MODULE_VITAL_SIGNS ) return "Vital Signs";
 			
 			return null;
+		}
+		
+		protected function get id():String
+		{
+			throw new Error( 'Sub-classes must implement get id()' );
 		}
 	}
 }
