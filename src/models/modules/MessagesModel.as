@@ -3,6 +3,7 @@ package models.modules
 	import models.modules.ModuleModel;
 	
 	import mx.collections.ArrayCollection;
+	import mx.formatters.DateFormatter;
 	
 	[Bindable]
 	public class MessagesModel extends ModuleModel
@@ -28,6 +29,7 @@ package models.modules
 		public var draftMessageCount:int;
 		public var unreadMessageCount:int;
 		
-		public var predefinedSubjects:ArrayCollection
+		public var predefinedSubjects:ArrayCollection;
+		public var dateFormatter:DateFormatter;
 	}
 }

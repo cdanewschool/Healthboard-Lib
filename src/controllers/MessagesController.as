@@ -9,6 +9,7 @@ package controllers
 	
 	import mx.collections.ArrayCollection;
 	import mx.events.CollectionEvent;
+	import mx.formatters.DateFormatter;
 	
 	public class MessagesController extends BaseModuleController
 	{
@@ -26,6 +27,10 @@ package controllers
 			super.init();
 			
 			var model:MessagesModel = model as MessagesModel;
+			
+			var dateFormatter:DateFormatter = new DateFormatter();
+			dateFormatter.formatString = "MMM 04 YYYY L:NN:SS A";
+			model.dateFormatter = dateFormatter;
 			
 			model.recipientTypes = new ArrayCollection
 				(
