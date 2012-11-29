@@ -254,15 +254,17 @@ package controllers
 			appointmentsController.setAvailable( 'set2', event.data.toString() );
 		}
 		
-		protected function setState( state:String ):void
+		protected function setState( state:String ):Boolean
 		{
 			for each( var states:State in application.states )
 			{
 				if( states.name == state )
 				{
-					application.currentState = state;
+					return application.currentState = state;
 				}
 			}
+			
+			return false;
 		}
 		
 		private function onActivity( event:MouseEvent ):void
@@ -287,6 +289,9 @@ package controllers
 		public function logout():void
 		{
 			sessionTimer.stop();
+			
+			//	remove all cursors
+			CursorManager.removeAllCursors();
 			
 			//	close all popups
 			for (var i:int = application.systemManager.popUpChildren.numChildren - 1; i >= 0; i--)
