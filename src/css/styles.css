@@ -482,6 +482,11 @@ s|FormItem {
 	backgroundAlpha: 0;
 }
 
+.erButtonIcon {
+	upIcon: Embed("/images/smallArrowCollapsed.png");
+	overIcon: Embed("/images/smallArrowCollapsedBlue.png");
+}
+
 .erSearchLight {
 	borderAlpha: 0;
 	backgroundAlpha: 0;
@@ -802,7 +807,12 @@ paddingLeft:30;
 	font-size: 12;
 }
 .green12Bold {
-	fontSize: 11;
+	fontSize: 12;
 	fontWeight:bold;
 	color: "0xBED63A";
+}
+
+.healthAdvisoryChartAxisTitles {
+	fontSize: 11;
+	color: "0xF2F2F2";
 }

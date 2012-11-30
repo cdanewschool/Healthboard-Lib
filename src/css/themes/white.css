@@ -32,7 +32,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	selectionColor: "0x31535E";
 	textRollOverColor: "0x2D0F0F";
 	textSelectedColor: "0x2D0F0F";
-	verticalAlign: middle;
+	verticalAlign: 'middle';
 	verticalGridLines: true; 
 }
 
@@ -53,6 +53,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	textSelectedColor: "0x2D0F0F";
 	textRollOverColor: "0xFFFFFF";
 	rollOverColor: "0xCCCCCC"; 
+	verticalAlign: 'middle';
 	verticalGridLines: true;
 }
 
