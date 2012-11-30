@@ -21,10 +21,17 @@ in accordance with the terms of the license agreement accompanying it.
 @playerversion AIR 1.5
 @productversion Flex 4
 -->
-<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
-			 xmlns:fb="http://ns.adobe.com/flashbuilder/2009" blendMode="normal" mouseEnabled="false"
-			 minWidth="76" minHeight="0" alpha.disabled="0.5" alpha.disabledWithControlBar="0.5" xmlns:enhancedtitlewindow="external.collapsibleTitleWindow.components.enhancedtitlewindow.*" xmlns:mx="library://ns.adobe.com/flex/mx">
-	<fx:Metadata>[HostComponent("external.collapsibleTitleWindow.components.enhancedtitlewindow.EnhancedTitleWindow")]</fx:Metadata>
+<s:SparkSkin 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:fb="http://ns.adobe.com/flashbuilder/2009" 
+	xmlns:enhancedtitlewindow="external.collapsibleTitleWindow.components.enhancedtitlewindow.*" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	blendMode="normal" mouseEnabled="false"
+	minWidth="76" minHeight="0" alpha.disabled="0.5" alpha.disabledWithControlBar="0.5">
+	
+	<fx:Metadata>
+		[HostComponent("external.collapsibleTitleWindow.components.enhancedtitlewindow.EnhancedTitleWindow")]
+	</fx:Metadata>
 	
 	<fx:Script fb:purpose="styling">
 		
@@ -100,9 +107,9 @@ in accordance with the terms of the license agreement accompanying it.
 				
 				if (bottomMaskRect) setPartCornerRadii(bottomMaskRect, withControls); 
 				
-				borderStroke.color = 0xBDBDBC;	//damian
+				borderStroke.color = getStyle("borderColor");	//damian
 				borderStroke.alpha = getStyle("borderAlpha");
-				backgroundFill.color = 0x3C3C3B;	//damian
+				backgroundFill.color = getStyle("backgroundColor");	//damian
 				backgroundFill.alpha = getStyle("backgroundAlpha");
 				
 				expandIndicator.visible = expandIndicator.includeInLayout = getStyle("showExpandIndicator");
@@ -127,8 +134,6 @@ in accordance with the terms of the license agreement accompanying it.
 			
 			[Bindable] [Embed("/images/btnWidgetArrow.png")] public var myArrow:Class;
 			[Bindable] [Embed("/images/btnWidgetArrowOver.png")] public var myArrowOver:Class;
-			//[Bindable] [Embed("images/widgetWarning.png")] public var widgetWarning:Class;
-			
 			
 			private function handleHeaderClick():void {
 				
@@ -137,39 +142,6 @@ in accordance with the terms of the license agreement accompanying it.
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
 				event.data = hostComponent.module;
 				hostComponent.dispatchEvent( event );
-				
-				/*
-				if(parentApplication.currentState == 'providerHome') {
-					if(parentApplication.viewStackProviderModules.getChildByName(hostComponent.module)) parentApplication.viewStackProviderModules.selectedChild = parentApplication.viewStackProviderModules.getChildByName(hostComponent.module);
-				}
-				else {
-					parentApplication.currentState = hostComponent.module;
-					
-					//the following if statements were originally written in "if(hostComponent.module == 'modCalendar' ANDAND parentApplication.shouldAddInitialAppointments) parentApplication.onApplicationStart()" form, but Flex was throwing strange errors regarding the ANDAND (with characters) use.
-					if(hostComponent.module == 'modCalendar') 
-					{
-						if(parentApplication.shouldAddInitialAppointments) 
-							parentApplication.onApplicationStart();
-					}
-					else if(hostComponent.module == 'modImmunizations') 
-					{
-						if(!parentApplication.wasImmunizationDataLoaded) 
-							parentApplication.immunizationsXMLdata.send();
-					}
-					else if(hostComponent.module == 'modMedicalRecords') 
-					{
-						if(!AppProperties.getInstance().controller.medicalRecordsController.model.dataLoaded) 
-						{
-							var evt:ApplicationDataEvent = new ApplicationDataEvent( ApplicationDataEvent.LOAD, true );
-							evt.data = "medicalRecords";
-							dispatchEvent( evt );
-						}
-					}
-					else if(hostComponent.module == 'modMedications') {
-						if(!parentApplication.wasMedicationDataLoaded) parentApplication.medicationsXMLdata.send();
-					}
-				}
-				*/
 			}
 
 			[Bindable]
@@ -184,8 +156,6 @@ in accordance with the terms of the license agreement accompanying it.
 				
 				invalidateProperties();
 			}
-
-			
 		]]>
 		
 	</fx:Script>
@@ -220,9 +190,10 @@ in accordance with the terms of the license agreement accompanying it.
 	</s:transitions>
 	
 	<!--- drop shadow can't be hittable so it stays sibling of other graphics @private-->
-	<s:RectangularDropShadow id="dropShadow" blurX="20" blurY="20" alpha="0.32" 
-							 alpha.inactiveGroup="0.22" distance="11"  distance.inactiveGroup="7"
-							 angle="90" color="0x000000" left="0" top="0" right="0" bottom="0"/>
+	<s:RectangularDropShadow 
+		id="dropShadow" blurX="20" blurY="20" alpha="0.32" 
+		alpha.inactiveGroup="0.22" distance="11"  distance.inactiveGroup="7"
+		angle="90" color="0x000000" left="0" top="0" right="0" bottom="0"/>
 	
 	<!--- drop shadow can't be hittable so all other graphics go in this group -->
 	<s:Group left="0" right="0" top="0" bottom="0">
@@ -278,8 +249,8 @@ in accordance with the terms of the license agreement accompanying it.
 				<s:Rect id="tbFill" left="0" right="0" top="0" bottom="1">
 					<s:fill>
 						<s:LinearGradient>
-							<s:GradientEntry color="{!hostComponent.displayWarning ? 0x323231 : 0x6B3736}" /><!--damian--><!--color.inactiveGroup="0xEAEAEA"-->
-							<s:GradientEntry color="0x757574" /><!--damian--><!--color.inactiveGroup="0xCECECE"-->
+							<s:GradientEntry color="{!hostComponent.displayWarning ? getStyle('headerBackgroundColors')[0] : getStyle('headerBackgroundColorAlternate') }" /><!--damian--><!--color.inactiveGroup="0xEAEAEA"-->
+							<s:GradientEntry color="{getStyle('headerBackgroundColors')[1]}" />
 						</s:LinearGradient>
 					</s:fill>
 				</s:Rect>
@@ -318,7 +289,7 @@ in accordance with the terms of the license agreement accompanying it.
 				<!--- @copy spark.components.Panel#titleDisplay -->
 				<s:Group id="titleBarGroup" left="6" right="6" top="1">
 					<s:layout><s:HorizontalLayout verticalAlign="middle" gap="5"/></s:layout>
-					<enhancedtitlewindow:TriangleIndicator id="expandIndicator"/>
+					<enhancedtitlewindow:TriangleIndicator id="expandIndicator" fillColor="{getStyle('headerColor')}"/>
 					<s:VGroup paddingTop="-2" visible="{hostComponent.displayWarning}" includeInLayout="{hostComponent.displayWarning}">
 						<s:Image source="@Embed('/images/widgetWarning.png')" toolTip="{hostComponent.warningToolTip}" buttonMode="{isWidgetClickable}" click="{if(isWidgetClickable) handleHeaderClick();}" />
 					</s:VGroup>
@@ -326,12 +297,12 @@ in accordance with the terms of the license agreement accompanying it.
 						<s:Label id="titleDisplay" maxDisplayedLines="1"
 								 height="100%"
 								 verticalAlign="middle" fontWeight="bold"
-								 color="0xFFFFFF" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}" rollOver="{if(isWidgetClickable) titleDisplay.styleName='linkBtnUnderline'}" rollOut="{if(isWidgetClickable) titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+								 color="{getStyle('headerColor')}" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}" rollOver="{if(isWidgetClickable) titleDisplay.styleName='linkBtnUnderline'}" rollOut="{if(isWidgetClickable) titleDisplay.styleName='linkBtn'}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
 						</s:Label>
 						<s:Label id="subTitleDisplay" maxDisplayedLines="1"
 								 height="100%"
 								 verticalAlign="middle" fontWeight="normal"
-								 color="0x868686" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
+								 color="{getStyle('headerColorAlternate')}" fontSize="16" click="{if(isWidgetClickable) handleHeaderClick()}" buttonMode="{isWidgetClickable}">	<!--color+fontsize (damian)-->	<!--adding link on header's title-->
 						</s:Label>
 					</s:HGroup>
 					

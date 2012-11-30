@@ -729,11 +729,12 @@
 						
 						<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 						<mx:DataGrid 
-							id="medicalRecordsList" dataProvider="{model.medicalRecordsDataGrid}" styleName="standardDataGrid"
+							id="medicalRecordsList" 
+							dataProvider="{model.medicalRecordsDataGrid}" 
+							styleName="standardDataGrid"
 							width="100%" height="100%"
 							itemClick="showServiceDetailsDG(event)"
-							paddingTop="6" headerStyleName="dataGridHeader"
-							rowHeight="27"><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+							paddingTop="6" rowHeight="27">
 							
 							<mx:columns> 
 								<mx:DataGridColumn dataField="date" headerText="Date of Service" paddingLeft="5" labelFunction="lblMedicalRecordsDate" />

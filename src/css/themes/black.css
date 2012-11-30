@@ -1,8 +1,78 @@
 /* CSS file */
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
+@namespace enhancedtitlewindow "external.collapsibleTitleWindow.components.enhancedtitlewindow.*";
 
 s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); fontFamily: "myMyriad"; }
+
+enhancedtitlewindow|EnhancedTitleWindow {
+	borderColor: "0xBDBDBC";
+	backgroundColor: "0x3C3C3B";
+	headerBackgroundColors: "0x323231","0x757574";
+	headerBackgroundColorAlternate: "0x6B3736";
+	headerColor: "0xFFFFFF";
+	headerColorAlternate: "0x868686";
+	showExpandIndicator: true;
+	skinClass:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
+}
+
+.standardDataGrid {
+	alternatingItemColors: #303030,#3C3C3B;
+	borderVisible: false;
+	color: "0xFFFFFF";
+	horizontalGridLineColor: "0x444442";
+	headerBackgroundColor: "0x3C3C3B";
+	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	headerStyleName: "dataGridHeader";
+	headerHeight: 30;
+	horizontalGridLines: true;	
+	fontFamily: "myMyriadNoCFF";
+	selectionColor: "0x31535E";
+	textRollOverColor: "0xFFFFFF";
+	textSelectedColor: "0xFFFFFF";
+	rollOverColor: "0x31535E";
+	verticalAlign: middle;
+	verticalGridLines: true; 
+}
+
+.standardDataGridSolid {
+	alternatingItemColors: "0x3C3C3B","0x3C3C3B";
+	borderVisible: false;
+	color: "0xFFFFFF";
+	fontFamily: "myMyriadNoCFF";
+	horizontalGridLineColor: "0x444442";
+	horizontalSeparatorSkin: ClassReference(null); 
+	headerBackgroundColor: "0x3C3C3B";
+	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
+	headerStyleName: "dataGridHeader";
+	headerHeight: 30;
+	horizontalGridLines: true;
+	rollOverColor: "0x31535E"; 
+	selectionColor: "0x31535E";
+	textRollOverColor: "0xFFFFFF";
+	textSelectedColor: "0xFFFFFF";
+	verticalGridLines: true;
+}
+
+.dataGridHeader {
+	color: "0xAEDEE4";
+	fontSize: 12;
+	fontWeight: bold;
+	fontFamily: "myMyriadNoCFF";
+}
+
+.dataGridHeaderAlternative {
+	color: "0xBED63A";
+	fontSize: 12;
+	fontWeight: bold;
+	fontFamily: "myMyriadNoCFF";
+}
+
+.barChart {
+	backgroundColor: "0x3C3C3B";
+}
 
 /*	BEGIN FONT STYLES	*/
 
