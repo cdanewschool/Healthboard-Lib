@@ -41,6 +41,8 @@ package models
 			today = new Date();
 			
 			supportedLanguages = new ArrayCollection( [ { id:"en_US", label:"English" } ] );
+			
+			preferences = new Preferences();
 		}
 
 		private function dispatchDataLoad( data:* ):void

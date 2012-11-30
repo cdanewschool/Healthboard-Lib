@@ -5,6 +5,8 @@ package controllers
 	import components.popups.myAppointmentsWindow;
 	import components.popups.myClassesWindow;
 	
+	import enum.ViewModeType;
+	
 	import events.ApplicationDataEvent;
 	import events.ApplicationEvent;
 	import events.AppointmentEvent;
@@ -33,6 +35,7 @@ package controllers
 	
 	import mx.core.FlexGlobals;
 	import mx.core.IFlexDisplayObject;
+	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
 	import mx.events.ListEvent;
 	import mx.events.StyleEvent;
@@ -71,6 +74,8 @@ package controllers
 		
 		public function Controller()
 		{
+			_model = new ApplicationModel();
+			
 			appointmentsController = new AppointmentsController();
 			exerciseController = new ExerciseController();
 			immunizationsController = new ImmunizationsController();
@@ -114,7 +119,8 @@ package controllers
 			}
 		}
 
-		protected function showPreferences():void{}
+		public function showPreferences():UIComponent{return null}
+		
 		protected function loadPreferences():void{}
 		
 		public function savePreferences( preferences:Preferences ):void
@@ -172,7 +178,12 @@ package controllers
 			sessionTimer.reset();
 			sessionTimer.start();
 			
-			setState( Constants.STATE_LOGGED_IN );
+			showHome();
+		}
+		
+		protected function showHome():void
+		{
+			setState( model.preferences.viewMode == ViewModeType.WIDGET ? Constants.STATE_WIDGET_VIEW : Constants.STATE_LOGGED_IN );
 		}
 		
 		private function onApplicationComplete(event:FlexEvent):void
@@ -260,7 +271,9 @@ package controllers
 			{
 				if( states.name == state )
 				{
-					return application.currentState = state;
+					application.currentState = state;
+					
+					return true;
 				}
 			}
 			
