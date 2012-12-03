@@ -7,6 +7,12 @@
 	xmlns:plus="external.TabBarPlus.plus.*"
 	initialize="updateNutritionDatesMonth('thisMonth');" 
 	creationComplete="showTip(); initFills();" xmlns:general="components.general.*">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.Sort;
+			import mx.events.DataGridEvent;
+		]]>
+	</fx:Script>
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -17,14 +23,14 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.collections.SortField;
 			import ASclasses.Constants;
-			
-			import components.tooltips.nutrition.FoodJournalToolTip;
-			import components.tooltips.nutrition.FoodPlanToolTip;
 			
 			import components.popups.nutrition.downloadWorksheetWindow;
 			import components.popups.nutrition.help;
 			import components.popups.nutrition.tips;
+			import components.tooltips.nutrition.FoodJournalToolTip;
+			import components.tooltips.nutrition.FoodPlanToolTip;
 			
 			import controllers.NutritionController;
 			
@@ -35,8 +41,8 @@
 			import models.modules.NutritionModel;
 			
 			import mx.charts.ChartItem;
-			import mx.events.ToolTipEvent;
 			import mx.events.ListEvent;
+			import mx.events.ToolTipEvent;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
@@ -105,6 +111,8 @@
 			private var arrMonthlyCalories3:Array = new Array(1900,2000,1650,1750,1900,2150,2050,2000,2150,1950,2100,2000,1800,1850,1800,1900,1600,1650,1600,1750,1800,1750,1600,1700,1900,2000,2000,2000,2100,1900);
 			
 			[Bindable] public var nutritionRollOverRowIndex:int = -2;
+			
+			[Bindable] public var mealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
 			
 			[Bindable]
 			public function get glassesTaken():uint
@@ -190,8 +198,15 @@
 					&& nutComments.text != '') 
 					btnNutReadComment.visible = true;
 				
+				var portionUnit:String = nutritionPortionTypes.selectedItem;
+				
+				if( portionUnit == 'other' )
+				{
+					portionUnit = nutritionPortionOther.text;
+				}
+				
 				var now:Date = new Date();
-				model.foodJournal.addItem( { meal:dropDownNutritionMealType.selectedItem, portion:numPortion.value + ' ' + nutritionPortionTypes.selectedItem, ingredients:(nutritionFoodSearch.text != 'Search' && nutritionFoodSearch.text != '') ? nutritionFoodSearch.text : dropDownNutritionSavedMeal.selectedItem, calories:123, date:DateUtil.get10DigitDate((now.getMonth()+1)+'/'+now.getDate()+'/'+now.getFullYear()), comments:(nutComments.text == 'Enter when, where, and why you had the meal.') ? '' : nutComments.text});
+				model.foodJournal.addItem( { meal:dropDownNutritionMealType.selectedItem, portion: numPortion.value + ' ' + portionUnit, ingredients:(nutritionFoodSearch.text != 'Search' && nutritionFoodSearch.text != '') ? nutritionFoodSearch.text : dropDownNutritionSavedMeal.selectedItem, calories:123, date:DateUtil.get10DigitDate((now.getMonth()+1)+'/'+now.getDate()+'/'+now.getFullYear()), comments:(nutComments.text == 'Enter when, where, and why you had the meal.') ? '' : nutComments.text});
 				
 				nutritionJournal.rowCount++;
 				nutritionJournal.rowCount--;		//this is a quick trick to get nutritionJournal.rowCount to refresh
@@ -471,6 +486,15 @@
 					else if(currentMonthlyPlate == 1) updateNutritionDatesMonth('alt1');
 					else updateNutritionDatesMonth('alt2');
 				}
+				
+				updateMealSort();
+			}
+			
+			private function updateMealSort():void
+			{
+				var sort:Sort = new Sort();
+				sort.fields = [ new SortField('ingredients') ];
+				nutritionJournal.dataProvider.sort = sort;
 			}
 			
 			private function updateNutritionDatesDay(set:String):void 
@@ -658,7 +682,7 @@
 										</s:ArrayCollection>							
 									</s:dataProvider>
 								</s:DropDownList>
-								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a saved meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex)}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a saved meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex) as ArrayCollection}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
 							</s:HGroup>
 							
 							<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="5" paddingBottom="-4" />
@@ -667,13 +691,13 @@
 							
 							<s:VGroup paddingTop="2" visible="{dropDownNutritionSavedMeal.selectedIndex > -1 || (nutritionFoodSearch.text != 'Search' &amp;&amp; nutritionFoodSearch.text != '')}">
 								
-								<s:HGroup verticalAlign="middle" gap="14">
+								<s:HGroup verticalAlign="middle" gap="10">
 									
 									<s:Label text="What portion?" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="3" />
 									
-									<s:NumericStepper id="numPortion" maximum="1000" value="1" width="57" />
+									<s:NumericStepper id="numPortion" maximum="1000" value="1" width="40" />
 									
-									<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="24" width="64">
+									<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="24" width="70">
 										<s:dataProvider>
 											<s:ArrayCollection>
 												<fx:String>cups</fx:String>
@@ -682,9 +706,12 @@
 												<fx:String>pieces</fx:String>
 												<fx:String>bowls</fx:String>
 												<fx:String>servings</fx:String>
+												<fx:String>other</fx:String>
 											</s:ArrayCollection>
 										</s:dataProvider>
 									</s:DropDownList>
+									
+									<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="35" height="24" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
 									
 								</s:HGroup>
 								
@@ -795,7 +822,7 @@
 						</s:HGroup>
 						
 						<s:Label text="Total Calories" styleName="subtitles" fontWeight="normal" paddingTop="11" paddingBottom="-4" />
-						<s:Label text="{model.summaryCalories.getItemAt(0).calories + ' cals.'}" fontSize="11" fontStyle="italic" color="0xFF931E" visible="{model.hasMealBeenSubmitted}" />
+						<!--<s:Label text="{model.summaryCalories.getItemAt(0).calories + ' cals.'}" fontSize="11" fontStyle="italic" color="0xFF931E" visible="{model.hasMealBeenSubmitted}" />-->
 						
 						<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
 						
@@ -803,6 +830,7 @@
 							
 							<mx:series>
 								
+								<!--
 								<mx:BarSeries id="nutCalExcessSeries" yField="type" xField="calories" visible="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal}">
 									<mx:fill>
 										<mx:LinearGradient rotation="90">
@@ -814,6 +842,7 @@
 										</mx:LinearGradient>
 									</mx:fill>
 								</mx:BarSeries>
+								-->
 								
 								<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
 								<mx:BarSeries id="nutCaloriesSeries" yField="type" xField="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal ? 'goal' : 'calories'}">	<!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
@@ -1033,7 +1062,14 @@
 							<s:Spacer width="100%" />
 							<mx:LinkButton id="btnNutViewMore1" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore1.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore1.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 						</s:HGroup>
-						<s:Image source="@Embed('/images/nutritionFoodsToEat.jpg')" />
+						
+						<s:HGroup gap="2">
+							<s:Image source="@Embed('/images/nutrition/foods/bread.jpg')" toolTip="Bread" />
+							<s:Image source="@Embed('/images/nutrition/foods/berries.jpg')" toolTip="Berries" />
+							<s:Image source="@Embed('/images/nutrition/foods/vegetables.jpg')" toolTip="Vegetables" />
+							<s:Image source="@Embed('/images/nutrition/foods/grapes.jpg')" toolTip="Grapes" />
+							<s:Image source="@Embed('/images/nutrition/foods/lettuce.jpg')" toolTip="Lettuce" />
+						</s:HGroup>
 						
 						<s:HGroup width="100%" verticalAlign="middle" paddingTop="20" paddingBottom="-2">
 							<s:Image source="@Embed('/images/iconRedCross.png')" />
@@ -1042,7 +1078,13 @@
 							<mx:LinkButton id="btnNutViewMore2" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore2.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore2.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 						</s:HGroup>
 						
-						<s:Image source="@Embed('/images/nutritionFoodToLimit.jpg')" />
+						<s:HGroup gap="2">
+							<s:Image source="@Embed('/images/nutrition/foods/cheese.jpg')" toolTip="Cheese" />
+							<s:Image source="@Embed('/images/nutrition/foods/redmeat.jpg')" toolTip="Red Meat" />
+							<s:Image source="@Embed('/images/nutrition/foods/icecream.jpg')" toolTip="Ice Cream" />
+							<s:Image source="@Embed('/images/nutrition/foods/friedchicken.jpg')" toolTip="Fried Chicken" />
+							<s:Image source="@Embed('/images/nutrition/foods/hamburgers.jpg')" toolTip="Hamburgers" />
+						</s:HGroup>
 						
 					</s:BorderContainer>
 				</s:HGroup>
@@ -1149,16 +1191,23 @@
 									</s:layout>
 									
 									<s:VGroup>
+										
 										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
 											<s:Image source="@Embed('/images/iconGreenCircle.png')" />
 											<s:Label text="Food to Increase" styleName="greenBoldText" />
 											<s:Spacer width="100%" />
 											<mx:LinkButton id="btnNutViewMore3" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore3.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore3.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 										</s:HGroup>
+										
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('/images/nutritionFoodsToEat.jpg')" />
-											<s:Image source="@Embed('/images/nutritionFoodsToEat2.jpg')" />
+											<s:Image source="@Embed('/images/nutrition/foods/bread.jpg')" toolTip="Bread" />
+											<s:Image source="@Embed('/images/nutrition/foods/berries.jpg')" toolTip="Berries" />
+											<s:Image source="@Embed('/images/nutrition/foods/vegetables.jpg')" toolTip="Vegetables" />
+											<s:Image source="@Embed('/images/nutrition/foods/grapes.jpg')" toolTip="Grapes" />
+											<s:Image source="@Embed('/images/nutrition/foods/lettuce.jpg')" toolTip="Lettuce" />
+											<s:Image source="@Embed('/images/nutrition/foods/water.jpg')" toolTip="Water" />
 										</s:HGroup>
+										
 									</s:VGroup>
 									
 									<s:Line yFrom="0" yTo="79">
@@ -1168,16 +1217,23 @@
 									</s:Line>
 									
 									<s:VGroup>
+										
 										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
 											<s:Image source="@Embed('/images/iconRedCross.png')" />
 											<s:Label text="Food to Limit" styleName="greenBoldText" />
 											<s:Spacer width="100%" />
 											<mx:LinkButton id="btnNutViewMore4" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore4.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore4.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
 										</s:HGroup>
+										
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('/images/nutritionFoodToLimit.jpg')" />
-											<s:Image source="@Embed('/images/nutritionFoodToLimit2.jpg')" />
+											<s:Image source="@Embed('/images/nutrition/foods/cheese.jpg')" toolTip="Cheese" />
+											<s:Image source="@Embed('/images/nutrition/foods/redmeat.jpg')" toolTip="Red Meat" />
+											<s:Image source="@Embed('/images/nutrition/foods/icecream.jpg')" toolTip="Ice Cream" />
+											<s:Image source="@Embed('/images/nutrition/foods/friedchicken.jpg')" toolTip="Fried Chicken" />
+											<s:Image source="@Embed('/images/nutrition/foods/hamburgers.jpg')" toolTip="Hamburgers" />
+											<s:Image source="@Embed('/images/nutrition/foods/soda.jpg')" toolTip="Soda" />
 										</s:HGroup>
+										
 									</s:VGroup>
 									
 								</s:BorderContainer>
@@ -1404,6 +1460,8 @@
 											
 											<mx:BarChart id="nutFoodJournalCalories" dataProvider="{model.dailyCaloriesCurrent}" type="overlaid" height="28" width="278">
 												<mx:series>
+													
+													<!--
 													<mx:BarSeries id="nutJourCalExcessSeries" yField="type" xField="calories" visible="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal}">
 														<mx:fill>
 															<mx:LinearGradient rotation="90">
@@ -1415,6 +1473,8 @@
 															</mx:LinearGradient>
 														</mx:fill>
 													</mx:BarSeries>
+													-->
+													
 													<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
 													<mx:BarSeries id="nutJourCaloriesSeries" yField="type" xField="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal ? 'goal' : 'calories'}">	<!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
 														<mx:fill>
@@ -1427,6 +1487,7 @@
 															</mx:LinearGradient>
 														</mx:fill>
 													</mx:BarSeries>
+													
 												</mx:series>
 												
 												<mx:verticalAxis>
@@ -1712,25 +1773,102 @@
 									fontSize="12"
 									headerHeight="27" paddingTop="4"
 									rowHeight="27" horizontalGridLines="false" 
-									itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2"><!--itemClick="showServiceDetailsDG(event)" defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+									itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2" 
+									creationComplete="nutritionJournal.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE,true,false,1))">
 									
 									<mx:columns> 
-										<mx:DataGridColumn dataField="meal" headerText="Meal" paddingLeft="5" width="70" />
-										<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
-										<!--<mx:DataGridColumn dataField="ingredients" headerText="Ingredients" width="275" paddingLeft="5" />-->
-										<mx:DataGridColumn dataField="ingredients" headerText="Ingredients" width="275" paddingLeft="5" fontFamily="myMyriad">
+										<mx:DataGridColumn dataField="meal" headerText="Saved" paddingLeft="5" width="70">
 											<mx:itemRenderer>
 												<fx:Component>
-													<mx:HBox width="100%" paddingTop="-3" horizontalScrollPolicy="off">
+													<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center" paddingTop="0">
 														<fx:Script>
 															<![CDATA[
 																import components.popups.nutrition.saveMealWindow;
 																
 																import events.ApplicationEvent;
 																
+																import mx.controls.Alert;
+																import mx.controls.CheckBox;
+																import mx.events.CloseEvent;
 																import mx.managers.PopUpManager;
+																import mx.collections.ArrayCollection;
 																
-																protected function nutDeleteHandler(event:MouseEvent):void 
+																import spark.components.TitleWindow;
+																
+																[Bindable] private var mealSaved:Boolean;
+																
+																protected function showSaveMealPrompt():void 
+																{
+																	var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as TitleWindow);
+																	mySaveMealWindow.addEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
+																	
+																	var item:Object = outerDocument.nutritionJournal.selectedItem;
+																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
+																	
+																	mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
+																	mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
+																	
+																	PopUpManager.centerPopUp(mySaveMealWindow);
+																}
+																
+																private function onSaveMealPromptClose(event:CloseEvent):void
+																{
+																	var window:saveMealWindow = event.currentTarget as saveMealWindow;
+																	
+																	if( event.detail == Alert.YES )
+																	{
+																		outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( window.mealType ) ].addItem( window.mealIngredients );
+																		
+																		var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																		evt.data = "Your meal has been saved";
+																		AppProperties.getInstance().controller.application.dispatchEvent( evt );
+																		
+																		update();
+																	}
+																	
+																	window.removeEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
+																	
+																	PopUpManager.removePopUp( window );
+																}
+																
+																private function removeSavedMeal():void
+																{
+																	var index:int = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients );
+																	
+																	if( index > -1 )
+																	{
+																		ArrayCollection( outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ) ).removeItemAt( index );
+																	}
+																	
+																	update();
+																}
+																
+																private function update():void
+																{
+																	mealSaved = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients ) > -1;
+																}
+															]]>
+														</fx:Script>
+														
+														<mx:Image source="@Embed(source='/images/medIconTakenAN2.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
+														<mx:Image source="@Embed(source='/images/medIconNotTaken2.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="showSaveMealPrompt()" />
+														
+													</mx:HBox>
+												</fx:Component>
+											</mx:itemRenderer>
+										</mx:DataGridColumn>
+										<mx:DataGridColumn dataField="meal" headerText="Meal" paddingLeft="5" width="70" />
+										<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
+										<mx:DataGridColumn dataField="ingredients" headerText="Ingredients" width="275" paddingLeft="5" fontFamily="myMyriad">
+											<mx:itemRenderer>
+												<fx:Component>
+													<mx:HBox width="100%" paddingTop="-3" horizontalScrollPolicy="off">
+														
+														<fx:Script>
+															<![CDATA[
+																import events.ApplicationEvent;
+																
+																protected function deleteMeal():void 
 																{
 																	var item:Object = outerDocument.nutritionJournal.selectedItem;
 																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
@@ -1742,25 +1880,13 @@
 																	dispatchEvent( evt );
 																}
 																
-																protected function saveMealPrompt(event:MouseEvent):void 
-																{
-																	var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as spark.components.TitleWindow);
-																	
-																	var item:Object = outerDocument.nutritionJournal.selectedItem;
-																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
-																	
-																	mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
-																	mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
-																	
-																	PopUpManager.centerPopUp(mySaveMealWindow);
-																}
 															]]>
 														</fx:Script>
+														
 														<mx:Label text="{data.ingredients}" fontSize="12" paddingTop="1" toolTip="{(data.ingredients == 'Spinach quiche') ? ' ' : ''}" toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" color="{data.ingredients == 'Spinach quiche' ? 0xAEDEE4 : 0xFFFFFF}" />
 														<s:Spacer width="100%" />
-														<mx:LinkButton id="btnSave" label="Save" color="0x828282" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" skin="{null}" paddingLeft="0" rollOver="{btnSave.styleName='linkBtnUnderline';}" rollOut="btnSave.styleName='linkBtn';" click="saveMealPrompt(event)" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}" />
 														<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
-															<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="nutDeleteHandler(event)" />
+															<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
 														</s:VGroup>
 													</mx:HBox>
 												</fx:Component>

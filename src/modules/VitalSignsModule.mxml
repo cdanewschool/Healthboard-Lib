@@ -847,7 +847,7 @@
 							<s:Label text="My Weight" styleName="greenBoldText" />
 							
 							<s:HGroup gap="15">
-								<s:VGroup gap="1">
+								<s:VGroup gap="1" width="125">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblWeight" styleName="orangeStandout" creationComplete="lblWeight.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value" />
 										<s:Label fontSize="13" text="pounds" color="0xFFFFFF" />
@@ -855,7 +855,7 @@
 									<s:Label id="lblDate" creationComplete="lblDate.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1">
+								<s:VGroup gap="1" width="125">
 									<s:HGroup>
 										<s:HGroup paddingTop="11">
 											<s:Image id="imgWeightDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgWeightDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value > 0" includeInLayout="{imgWeightDiffNeg.visible}" />
@@ -869,7 +869,7 @@
 									<s:Label id="lblDatePrev" creationComplete="lblDatePrev.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" paddingLeft="21">
+								<s:VGroup gap="1" paddingLeft="21" width="125">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblBMI" styleName="orangeStandout" creationComplete="lblBMI.text=String(int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10)" />
 										<s:Label fontSize="13" text="BMI" color="0xFFFFFF" />
@@ -877,7 +877,7 @@
 									<s:Label id="lblDate2" width="105" creationComplete="lblDate2.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" paddingLeft="-8">
+								<s:VGroup gap="1" paddingLeft="-8" width="125">
 									<s:HGroup>
 										<s:HGroup paddingTop="11">
 											<s:Image id="imgBMIDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgBMIDiffNeg.visible=int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10 > 0" includeInLayout="{imgBMIDiffNeg.visible}" />
@@ -891,7 +891,7 @@
 									<s:Label id="lblDatePrev2" creationComplete="lblDatePrev2.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" paddingLeft="21">
+								<s:VGroup gap="1" paddingLeft="21" width="125">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTarget.text=dropDownVitalSignsWeightReference.selectedIndex == 0 ? String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10) : model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation" />
 										<s:Label fontSize="13" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'BMI' : 'pounds'}" color="0xFFFFFF" />
@@ -997,7 +997,7 @@
 							<s:Label text="My Blood Pressure" styleName="greenBoldText" />
 							
 							<s:HGroup gap="40">
-								<s:VGroup gap="1">
+								<s:VGroup gap="1" width="150">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblBloodPressure1" styleName="orangeStandout" creationComplete="lblBloodPressure1.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value" />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
@@ -1007,19 +1007,19 @@
 									<s:Label id="lblDatePressure" creationComplete="lblDatePressure.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1">
+								<s:VGroup gap="1" width="250">
 									<s:HGroup>
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgSystolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgSystolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value > 0" includeInLayout="{imgSystolicDiffNeg.visible}" />
-											<s:Image id="imgSystolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgSystolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value &lt; 0" includeInLayout="{imgSystolicDiffPos.visible}" />
+											<s:Image id="imgSystolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgSystolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value > 0" />
+											<s:Image id="imgSystolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgSystolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value &lt; 0" />
 										</s:HGroup>
 										<s:HGroup verticalAlign="baseline" gap="4">
 											<s:Label id="lblSystolicDiff" styleName="orangeStandout" creationComplete="lblSystolicDiff.text=String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value)" />
 											<s:Label id="lblDiffDash" fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
 										</s:HGroup>
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgDiastolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgDiastolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 > 0" includeInLayout="{imgDiastolicDiffNeg.visible}" />
-											<s:Image id="imgDiastolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgDiastolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 &lt; 0" includeInLayout="{imgDiastolicDiffPos.visible}" />
+											<s:Image id="imgDiastolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgDiastolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 > 0" />
+											<s:Image id="imgDiastolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgDiastolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 &lt; 0" />
 										</s:HGroup>
 										<s:HGroup verticalAlign="baseline" gap="4">
 											<s:Label id="lblDiastolicDiff" styleName="orangeStandout" creationComplete="lblDiastolicDiff.text=String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2)" />
@@ -1029,7 +1029,7 @@
 									<s:Label id="lblDatePressurePrev" creationComplete="lblDatePressurePrev.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="215" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" paddingLeft="-10">
+								<s:VGroup gap="1" paddingLeft="-10" width="150">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblTargetPressure" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation" />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />

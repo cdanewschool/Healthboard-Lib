@@ -25,7 +25,7 @@ package models.modules
 		
 		public var meals:ArrayCollection;
 		
-		public var savedMeals:Array;
+		public var savedMeals:ArrayCollection;
 		
 		public var summaryCalories:ArrayCollection;
 		

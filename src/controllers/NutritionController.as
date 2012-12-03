@@ -2,12 +2,13 @@ package controllers
 {
 	import controllers.BaseModuleController;
 	
+	import enum.DateRanges;
+	
 	import models.modules.NutritionModel;
 	
 	import mx.collections.ArrayCollection;
 	
 	import util.DateUtil;
-	import enum.DateRanges;
 	
 	public class NutritionController extends BaseModuleController
 	{
@@ -37,12 +38,14 @@ package controllers
 					]
 				);
 			
-			model.savedMeals = new Array
+			model.savedMeals = new ArrayCollection
 				(
-					new ArrayCollection(['Cereal','Yogurt with cereal bar','Orange juice']),
-					new ArrayCollection(['Gnocchi with sausage','Tuna Salad','Turkey Sandwich']),
-					new ArrayCollection(['Cereal Bar','Ham and cheese sandwich','Nuts','Peanut butter and jelly']),
-					new ArrayCollection(['Spinach Lasagna','Fajitas (Chicken with Onions, Green Pepper)','Chipotle Veggie Burrito','Tuna Noodle Casserole'])
+					[
+						new ArrayCollection(['Cereal','Yogurt with cereal bar','Orange juice']),
+						new ArrayCollection(['Gnocchi with sausage','Tuna Salad','Turkey Sandwich']),
+						new ArrayCollection(['Cereal Bar','Ham and cheese sandwich','Nuts','Peanut butter and jelly']),
+						new ArrayCollection(['Spinach Lasagna','Fajitas (Chicken with Onions, Green Pepper)','Chipotle Veggie Burrito','Tuna Noodle Casserole'])
+					]
 				);
 			
 			model.summaryCalories = new ArrayCollection

@@ -13,6 +13,8 @@
 			
 			import models.modules.NutritionModel;
 			
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
 			[Bindable] public var mealType:String;
@@ -23,14 +25,7 @@
 			
 			private function saveMeal():void 
 			{
-				var arrMealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
-				model.savedMeals[arrMealTypes.indexOf(mealType)].addItem(mealIngredients);
-				
-				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-				evt.data = "Your meal has been saved";
-				AppProperties.getInstance().controller.application.dispatchEvent( evt );
-				
-				PopUpManager.removePopUp(this);
+				dispatchEvent( new CloseEvent( CloseEvent.CLOSE, false, false, Alert.YES ) );
 			}
 		]]>
 	</fx:Script>
