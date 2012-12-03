@@ -866,7 +866,7 @@
 											<s:Label id="lblWeightDiffUnits" fontSize="13" text="pounds" color="0xFFFFFF" />
 										</s:HGroup>
 									</s:HGroup>
-									<s:Label id="lblDatePrev" creationComplete="lblWeightDiff.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+									<s:Label id="lblDatePrev" creationComplete="lblDatePrev.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
 								</s:VGroup>
 								
 								<s:VGroup gap="1" paddingLeft="21">
