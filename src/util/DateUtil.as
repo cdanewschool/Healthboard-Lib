@@ -47,7 +47,7 @@ package util
 			
 			var now:Date = new Date( today.fullYear, today.month, today.date );
 			
-			var x= dateParts[0].substr(1);
+			var x:String = dateParts[0].substr(1);
 			
 			if( dateParts[0] == "*" ) 
 				dateParts[0] = now.month;

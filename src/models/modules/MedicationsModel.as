@@ -29,9 +29,9 @@ package models.modules
 		
 		public var type:String = TYPE_ACTIVE;
 		
-		[Bindable] public var minDate:Date;
-		[Bindable] public var maxDate:Date;
-		[Bindable] public var maxDateWidget:Date;
+		public var minDate:Date;
+		public var maxDate:Date;
+		public var maxDateWidget:Date;
 		
 		public var dateRange:String = DateRanges.WEEK;
 		

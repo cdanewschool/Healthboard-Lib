@@ -112,7 +112,7 @@
 				cartesianCanvas.moveTo( dateValue, model.medicationsCategories.getItemAt(0) );
 				cartesianCanvas.lineTo( dateValue, model.medicationsCategories.getItemAt(model.medicationsCategories.length-1) );
 				
-				var coords:Point = cartesianCanvas.dataToLocal( today );
+				coords = cartesianCanvas.dataToLocal( today );
 				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 7;
 			}
 			

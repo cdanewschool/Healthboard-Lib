@@ -100,7 +100,7 @@
 			
  			private var _glassesTaken:uint = 0;
 			
-			private var arrMonthlyCalories1:Array = new Array(1900,1970,2000,1900,2150,1800,2000,1900,2050,1750,2000,1900,1750,1800,2100,2000,1900,2000,1800,1800,1900,2150,1600,1900,1700,2000,1650,1800,2200,475);
+			[Bindable] private var arrMonthlyCalories1:Array = new Array(1900,1970,2000,1900,2150,1800,2000,1900,2050,1750,2000,1900,1750,1800,2100,2000,1900,2000,1800,1800,1900,2150,1600,1900,1700,2000,1650,1800,2200,475);
 			private var arrMonthlyCalories2:Array = new Array(2000,1800,1900,1600,1700,1700,2100,1800,1900,2000,2000,2050,1750,1900,2100,2150,2000,2100,1800,1600,1800,1900,2000,1900,2150,1800,1600,2000,2150,1900);
 			private var arrMonthlyCalories3:Array = new Array(1900,2000,1650,1750,1900,2150,2050,2000,2150,1950,2100,2000,1800,1850,1800,1900,1600,1650,1600,1750,1800,1750,1600,1700,1900,2000,2000,2000,2100,1900);
 			
@@ -233,7 +233,9 @@
 			}
 			
 			private function updateDateRange():void 
-			{	
+			{
+				var meal:Object;
+				
 				if( model.dateRange == DateRanges.DAY ) 
 				{
 					viewsNutritionJournal.selectedIndex = 0;
@@ -246,7 +248,7 @@
 					
 					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear())
 					}
@@ -263,7 +265,7 @@
 					
 					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear())
 					}
@@ -280,7 +282,7 @@
 					
 					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentMonth.getMonth()+1)+'/01/'+currentMonth.getFullYear())
 					}
@@ -404,6 +406,8 @@
 			
 			private function nutNavigateDate(direction:String):void 
 			{
+				var meal:Object;
+				
 				//	if view == DAILY
 				if( viewsNutritionJournal.selectedIndex == 0 ) 
 				{
@@ -416,7 +420,7 @@
 					
 					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear())
 					}
@@ -437,7 +441,7 @@
 					
 					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear())
 					}
@@ -458,7 +462,7 @@
 					
 					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
-					for each(var meal:Object in nutritionJournal.dataProvider) 
+					for each(meal in nutritionJournal.dataProvider) 
 					{
 						meal.date = DateUtil.get10DigitDate((currentMonth.getMonth()+1)+'/01/'+currentMonth.getFullYear())
 					}
@@ -654,7 +658,7 @@
 										</s:ArrayCollection>							
 									</s:dataProvider>
 								</s:DropDownList>
-								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a saved meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals[dropDownNutritionMealType.selectedIndex]}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a saved meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex)}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
 							</s:HGroup>
 							
 							<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="5" paddingBottom="-4" />

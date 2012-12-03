@@ -155,12 +155,13 @@ package controllers
 			}
 			
 			var i:uint;
+			var j:uint;
 			
 			if( model.currentMainBox == MessagesModel.INBOX )
 			{
 				for(i = 0; i < model.messages.length; i++) 
 				{
-					for(var j:uint = 0; j < model.messages[i].messages.length; j++) 
+					for(j = 0; j < model.messages[i].messages.length; j++) 
 					{
 						if(model.messages[i].messages[j].sender != "You") 
 						{
@@ -176,7 +177,7 @@ package controllers
 				{
 					var loopMax:uint = (model.messages[i].isDraft) ? model.messages[i].messages.length - 1 : model.messages[i].messages.length;			//if the message thread "isDraft", then we don't loop through the last message (which is the draft message)
 					
-					for(var j:uint = 0; j < loopMax; j++) 
+					for(j = 0; j < loopMax; j++) 
 					{
 						if(model.messages[i].messages[j].sender == "You") 
 						{
@@ -188,7 +189,7 @@ package controllers
 			}
 			else if( model.currentMainBox == MessagesModel.DRAFT )
 			{
-				for(var i:uint = 0; i < model.messages.length; i++)
+				for(i = 0; i < model.messages.length; i++)
 				{
 					if(model.messages[i].isDraft) model.messagesToDisplay.addItem(model.messages[i]);
 				}
@@ -245,7 +246,7 @@ package controllers
 				}
 			}
 			
-			for(var i:uint = 0; i < model.messages.length; i++) 
+			for(i = 0; i < model.messages.length; i++) 
 			{
 				if(model.messages[i].isDraft) draftMessages++;
 			}

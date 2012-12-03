@@ -250,9 +250,9 @@
 					</s:DropDownList>
 					
 					<s:HGroup id="groupWeight" verticalAlign="middle" paddingTop="3">
-						<s:TextInput id="txtWeight" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation}" change="{txtBMI.text = String(Math.round(((Number(txtWeight.text) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" />
+						<s:TextInput id="txtWeight" width="39" height="24" maxChars="3" creationComplete="txtWeight.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation" change="txtBMI.text = String(Math.round(((Number(txtWeight.text) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)" />
 						<s:Label color="0x666666" text="pounds    OR" paddingRight="5" paddingTop="1" />
-						<s:TextInput id="txtBMI" width="39" height="24" maxChars="4" text="{String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)}" change="{txtWeight.text = String(Math.round((Number(txtBMI.text) * Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)) / 703))}" />
+						<s:TextInput id="txtBMI" width="39" height="24" maxChars="4" creationComplete="txtBMI.text=String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10)" change="txtWeight.text = String(Math.round((Number(txtBMI.text) * Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)) / 703))" />
 						<s:Label color="0x666666" text="BMI" paddingTop="1" />
 					</s:HGroup>
 					
@@ -260,13 +260,13 @@
 						
 						<s:HGroup verticalAlign="middle">
 							<s:Label width="74" textAlign="right" color="0x000000" text="Systolic:" />
-							<s:TextInput id="txtSystolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation}" />
+							<s:TextInput id="txtSystolic" width="39" height="24" maxChars="3" creationComplete="txtSystolic.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation" />
 							<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
 						</s:HGroup>
 						
 						<s:HGroup verticalAlign="middle">
 							<s:Label width="74" textAlign="right" color="0x000000" text="Diastolic:" />
-							<s:TextInput id="txtDiastolic" width="39" height="24" maxChars="3" text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2}" />
+							<s:TextInput id="txtDiastolic" width="39" height="24" maxChars="3" creationComplete="txtDiastolic.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2" />
 							<s:Label color="0x666666" text="mmHg" paddingRight="5" paddingTop="1" />
 						</s:HGroup>
 						

@@ -47,7 +47,8 @@ in accordance with the terms of the license agreement accompanying it.
 		<![CDATA[
 			import flash.net.navigateToURL;
 			
-			function openPage(){
+			private function openPage():void
+			{
 				navigateToURL(new URLRequest(data.url), "blank")
 			}
 		]]>

@@ -51,7 +51,7 @@
 			
 			public var adminUsername:String = 'pipi';
 			
-			public var allowAccountCreation:Boolean = true;
+			[Bindable] public var allowAccountCreation:Boolean = true;
 			
 			private function clearValidationErrors():void 
 			{

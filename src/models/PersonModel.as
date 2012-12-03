@@ -1,5 +1,6 @@
 package models
 {
+	[Bindable]
 	public class PersonModel
 	{
 		public var firstName:String;

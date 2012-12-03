@@ -35,11 +35,11 @@ package controllers
 		/*[Bindable] [Embed("/images/medIconOverdoseTransparent.png")] public var imgOverdose:Class;
 		var bmpOverdose:BitmapData = new imgOverdose().bitmapData;*/
 		[Bindable] [Embed("/images/medIconTaken2.png")] public var imgTaken:Class;
-		var bmpTaken:BitmapData = new imgTaken().bitmapData;
+		private var bmpTaken:BitmapData = new imgTaken().bitmapData;
 		[Bindable] [Embed("/images/medIconNotTaken2.png")] public var imgNotTaken:Class;
-		var bmpNotTaken:BitmapData = new imgNotTaken().bitmapData;
+		private var bmpNotTaken:BitmapData = new imgNotTaken().bitmapData;
 		[Bindable] [Embed("/images/medIconTakenAN2.png")] public var imgTakenAN:Class;
-		var bmpTakenAN:BitmapData = new imgTakenAN().bitmapData;
+		private var bmpTakenAN:BitmapData = new imgTakenAN().bitmapData;
 		
 		public function MedicationsController()
 		{

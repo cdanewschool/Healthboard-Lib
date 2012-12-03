@@ -183,9 +183,11 @@ package controllers
 			appointments.sort = sort;
 			appointments.refresh();
 			
+			var appointment:Object;
+			
 			for(var i:int=0;i<appointments.length;i++)
 			{
-				var appointment:Object = appointments[i];
+				appointment = appointments[i];
 				
 				if( appointment.date.time >= today.time )
 				{
@@ -196,7 +198,7 @@ package controllers
 			
 			model.currentAppointmentIndex = defaultAppointment ? appointments.getItemIndex(defaultAppointment) : 0;
 			
-			for each(var appointment in appointments)
+			for each(appointment in appointments)
 			{
 				appointment.hour = (appointment.date.hours % 12 ).toString();
 				appointment.meridiem = appointment.date.hours<12?"am":"pm";

@@ -1054,7 +1054,7 @@
 							dataProvider="{model.messagesToDisplay}" 
 							buttonMode="true"
 							itemClick="dgMessages_itemClickHandler(event)" 
-							visible="{model.messagesToDisplay}" includeInLayout="{model.messagesToDisplay}"
+							visible="{model.messagesToDisplay!=null}" includeInLayout="{model.messagesToDisplay!=null}"
 							width="100%" height="100%"
 							color="0xFFFFFF" verticalAlign="middle"
 							selectable="false"
@@ -1133,13 +1133,13 @@
 												</fx:Script>
 												
 												<mx:HBox width="17" >
-													<s:Image source="@Embed('/images/messagesUrgent.png')" toolTip="Urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Urgent'}" />
-													<s:Image source="@Embed('/images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" visible="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" includeInLayout="{data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'}" />
+													<s:Image id="urgentIcon" source="@Embed('/images/messagesUrgent.png')" toolTip="Urgent" creationComplete="urgentIcon.visible=data.messages[data.messages.length - 1].urgency == 'Urgent'" includeInLayout="{urgentIcon.visible}" />
+													<s:Image id="somewhatUrgentIcon" source="@Embed('/images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" creationComplete="somewhatUrgentIcon.visible=data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'" includeInLayout="{somewhatUrgentIcon.visible}" />
 												</mx:HBox>
 												
 												<mx:VBox verticalGap="3">
 													<s:Label text="{showNumberOfMessages() + data.subject}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
-													<s:Label text="{data.messages[data.messages.length - 1].text.substr(0,75) + showEllipsis()}" maxDisplayedLines="1" />
+													<s:Label id="preview" creationComplete="preview.text=data.messages[data.messages.length - 1].text.substr(0,75) + showEllipsis()" maxDisplayedLines="1" />
 												</mx:VBox>
 												
 											</mx:HBox>

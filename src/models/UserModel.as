@@ -47,12 +47,12 @@ package models
 		
 		public function UserModel( type:String = TYPE_PATIENT )
 		{
+			super();
+			
 			this.userType = type;
 			
 			this.latitude = NaN;
 			this.longitude = NaN;
-			
-			super();
 		}
 		
 		public function get fullName():String

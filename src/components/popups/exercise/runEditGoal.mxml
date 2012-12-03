@@ -118,10 +118,10 @@
 			id="sliderGoalPoints"
 			snapInterval="1"
 			labels="{[45,100]}" labelOffset="30"
-			minimum="45" maximum="100" value="{model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].target}"
+			minimum="45" maximum="100"
 			showTrackHighlight="true" showDataTip="false" tickInterval="5" tickOffset="12" tickLength="2"
 			width="357"
-			liveDragging="true" /><!--dataTipFormatFunction="getSliderLabel"change="rangeUpdateMixed();" -->
+			liveDragging="true" creationComplete="sliderGoalPoints.value=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].target" /><!--dataTipFormatFunction="getSliderLabel"change="rangeUpdateMixed();" -->
 		
 	</s:HGroup>
 	

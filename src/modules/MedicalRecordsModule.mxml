@@ -408,7 +408,7 @@
 				if( !model.medicalRecordsCategories || !model.medicalRecordsCategories.length ) return;
 				
 				var date:Date = new Date( today.fullYear, today.month, today.date );
-				var dateValue = DateFormatters.dateFormatterToday.format( date );
+				var dateValue:String = DateFormatters.dateFormatterToday.format( date );
 				
 				cartesianCanvas.clear();
 				cartesianCanvas.lineStyle(3,0x00ADEE,0.3,true,LineScaleMode.NORMAL,CapsStyle.ROUND,JointStyle.MITER,2);
@@ -896,7 +896,7 @@
 										<s:Label text="•" fontSize="6" paddingTop="2" />
 										<s:Label text="{data.problem}" width="160" lineHeight="16" />
 									</mx:HBox>
-									<s:Label text="Entered on {Constants.MONTHS[ data.date.month ] + ' ' + data.date.date + ', ' + data.date.year + ' by ' + data.provider}"  fontSize="6" paddingTop="2" styleName="mediumGray12Italic" />
+									<s:Label id="enteredOn" creationComplete="enteredOn.text='Entered on ' + Constants.MONTHS[ data.dateEntered.month ] + ' ' + data.dateEntered.date + ', ' + data.dateEntered.year + ' by ' + data.provider"  fontSize="6" paddingTop="2" styleName="mediumGray12Italic" />
 								</mx:VBox>
 							</fx:Component>
 						</mx:itemRenderer>
