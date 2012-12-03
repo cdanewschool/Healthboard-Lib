@@ -97,7 +97,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 .toggleButton { toggleBackgroundColor: "0x4A4A49"; skin: ClassReference("skins.general.MyLinkButtonSkin"); }	/*	PublicHealthAdvisoryItemRenderer	*/
 
 /*	border container	*/
-.borderContainer1 { backgroundColor: "0x4B4A4A"; borderColor: "0xBCBBBB"; cornerRadiu: 5 }	/*	PublicHealthAdvisoryItemRenderer	*/
+.borderContainer1 { backgroundColor: "0x4B4A4A"; borderColor: "0xBCBBBB"; borderAlpha: 0.5; cornerRadius: 4; }	/*	PublicHealthAdvisoryItemRenderer	*/
 .borderContainer2 { backgroundColor: "0x3C3C3B"; borderAlpha: 0 }	/*	PublicHealthAdvisoryItemRenderer	*/
 
 /*	grid	*/
