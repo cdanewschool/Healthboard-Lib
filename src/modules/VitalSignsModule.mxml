@@ -32,6 +32,7 @@
 			import components.vitalsigns.addTrackerWindow;
 			import components.vitalsigns.editGoalWindow;
 			import components.vitalsigns.recordVitalsWindow;
+			import components.vitalsigns.viewVitalsWindow;
 			
 			import controllers.VitalSignsController;
 			
@@ -63,6 +64,8 @@
 			[Bindable] public var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
 			
 			[Bindable] public var showHeader:Boolean = true;
+			
+			private var viewVitalsPopup:viewVitalsWindow;
 			
 			private function switchVitalView(index:uint):void 
 			{
@@ -107,6 +110,35 @@
 				myEditGoal.currentState = editGoalWindow.STATE_DEFAULT;
 				
 				PopUpManager.centerPopUp(myEditGoal);
+			}
+			
+			public function viewVitals(e:ChartItemEvent):void 
+			{
+				e.stopImmediatePropagation();
+				
+				showVitals(e.hitData.item.date);
+			}
+			
+			public function showVitals(date:*):void
+			{
+				if( viewVitalsPopup && viewVitalsPopup.parent ) PopUpManager.removePopUp(viewVitalsPopup);
+				
+				viewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);
+				viewVitalsPopup.date = date;
+				viewVitalsPopup.populateEntry();
+				
+				PopUpManager.centerPopUp(viewVitalsPopup);
+			}
+			
+			public function viewVitalsComments(e:ChartItemEvent):void 
+			{
+				if( viewVitalsPopup && viewVitalsPopup.parent ) PopUpManager.removePopUp(viewVitalsPopup);
+				
+				viewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);
+				viewVitalsPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
+				viewVitalsPopup.populateEntry();
+				
+				PopUpManager.centerPopUp(viewVitalsPopup);
 			}
 			
 			private function onAddCommentClick():void
@@ -196,6 +228,16 @@
 				}
 			}
 			
+			private function getCommentsLabel(item:Object,column:DataGridColumn):String
+			{
+				var comments:Array = [];
+				
+				for each(var comment:Object in item.comments)
+					comments.push( comment.comment );
+				
+				return comments.join('; ');
+			}
+			
 			private function pressureChartRolloverEventHandler(event:ChartItemEvent):void 
 			{
 				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].value;
@@ -214,7 +256,7 @@
 				myPressureLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
 			}
 			
-			private function pressureChartRolloutEventHandler(event:ChartItemEvent):void 
+			private function pressureChartRolloutEventHandler(event:ChartItemEvent=null):void 
 			{
 				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value;
 				lblBloodPressure2.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2;
@@ -465,7 +507,7 @@
 							color="0xFFFFFF" verticalAlign="middle"
 							dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragComplete="controller.updateVitalIndices()"
 							selectionDuration="2000" useRollOver="false" selectionColor="{dgVitalSigns.selectedItem == model.vitalSigns.getItemAt(6) ? 0x000000 : dgVitalSigns.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
-							headerHeight="0"
+							headerHeight="0" 
 							borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x4A4A49]"
 							variableRowHeight="true" initialize="controller.updateVitalIndices()"><!--rowCount="7"-->
 							
@@ -480,7 +522,6 @@
 														
 														import components.itemrenderers.chart.MyCircleItemRenderer;
 														import components.itemrenderers.chart.MyCircleItemRendererOver;
-														import components.vitalsigns.viewVitalsWindow;
 														
 														import mx.charts.HitData;
 														import mx.charts.events.ChartItemEvent;
@@ -545,26 +586,6 @@
 														{
 															return hd.item.type == 'patient' ? hd.item.datePatient : hd.item.dateProvider;
 														}
-														
-														private var myViewVitalsPopup:viewVitalsWindow;
-														
-														public function viewVitals(e:ChartItemEvent):void 
-														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);		//added 'this.parentApplication as DisplayObject' instead of 'this', to make the popup appear in the center of the screen; otherwise it would show off the screen in some cases, making it impossible to close.
-															myViewVitalsPopup.date = e.hitData.item.date;
-															myViewVitalsPopup.populateEntry();
-															
-															PopUpManager.centerPopUp(myViewVitalsPopup);
-														}
-														
-														public function viewVitalsComments(e:ChartItemEvent):void 
-														{
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, viewVitalsWindow) as spark.components.TitleWindow);
-															myViewVitalsPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
-															myViewVitalsPopup.populateEntry();
-															
-															PopUpManager.centerPopUp(myViewVitalsPopup);
-														}
 													]]>
 												</fx:Script>
 												
@@ -601,7 +622,7 @@
 														width="445" height="107" 
 														backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" 
 														itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" 
-														itemClick="viewVitals(event)" change="chartChange(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+														itemClick="outerDocument.viewVitals(event)" change="chartChange(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
 														
 														<mx:series>
 															
@@ -611,7 +632,7 @@
 																</mx:lineStroke>
 															</mx:LineSeries>
 															
-															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}" selectedIndex="0"><!--form="curve" -->
+															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" buttonMode="true" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}" selectedIndex="0"><!--form="curve" -->
 																<mx:lineStroke>
 																	<s:SolidColorStroke color="0xFFFFFF" weight="3" /><!--4-->
 																</mx:lineStroke>
@@ -669,7 +690,7 @@
 													<mx:PlotChart 
 														id="chartComments" width="445" height="45" 
 														backgroundElements="{bge}"
-														showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewVitalsComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
+														showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewVitalsComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 														
 														<mx:series>
 															
@@ -793,41 +814,41 @@
 							styleName="standardDataGrid"
 							width="100%" height="100%"
 							paddingTop="6" headerStyleName="dataGridHeaderAlternative"
-							rowHeight="27"><!--itemClick="showMedicationDetailsDG(event)" defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+							rowHeight="27" itemClick="showVitals(event.itemRenderer.data.date)"><!--itemClick="showMedicationDetailsDG(event)" defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
 							
 							<mx:columns>
-								<mx:DataGridColumn dataField="Date" headerText="Date" paddingLeft="5" /><!--labelFunction="lblMedicationsNameDose" -->
-								<mx:DataGridColumn dataField="WeightBMI" headerText="Weight / BMI" paddingLeft="5">
+								<mx:DataGridColumn dataField="date" headerText="Date" paddingLeft="5" /><!--labelFunction="lblMedicationsNameDose" -->
+								<mx:DataGridColumn dataField="weightBMI" headerText="Weight / BMI" paddingLeft="5">
 									<mx:itemRenderer>
 										<fx:Component>
-											<mx:HBox width="100%" paddingTop="0" toolTip="{int(data.WeightBMI.substr(0,3)) >= 180  ? (int(data.WeightBMI.substr(0,3)) >= 215 ? 'Obese' : 'Overweight') : ''}" horizontalScrollPolicy="off">
-												<mx:Label text="{data.WeightBMI}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}" fontFamily="myMyriad" />
+											<mx:HBox width="100%" paddingTop="0" toolTip="{int(data.weightBMI.substr(0,3)) >= 180  ? (int(data.weightBMI.substr(0,3)) >= 215 ? 'Obese' : 'Overweight') : ''}" horizontalScrollPolicy="off">
+												<mx:Label text="{data.weightBMI}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}" fontFamily="myMyriad" />
 												<s:Spacer width="100%" />
 												<s:VGroup paddingTop="-6">
-													<s:Image source="@Embed('/images/redMark.png')" visible="{int(data.WeightBMI.substr(0,3)) >= 180}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
+													<s:Image source="@Embed('/images/redMark.png')" visible="{int(data.weightBMI.substr(0,3)) >= 180}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
 												</s:VGroup>
 											</mx:HBox>
 										</fx:Component>
 									</mx:itemRenderer>
 								</mx:DataGridColumn>
-								<mx:DataGridColumn dataField="BloodPressure" headerText="Blood Pres." paddingLeft="5" fontFamily="myMyriad">
+								<mx:DataGridColumn dataField="bloodPressure" headerText="Blood Pres." paddingLeft="5" fontFamily="myMyriad">
 									<mx:itemRenderer>
 										<fx:Component>
-											<mx:HBox width="100%" paddingTop="0" toolTip="{(int(data.BloodPressure.substr(0,3)) >= 120 || int(data.BloodPressure.substr(4)) >= 80) ? (int(data.BloodPressure.substr(0,3)) >= 140 ? 'Systolic ' + data.BloodPressure.substr(0,3) + ' mmHg is Hypertension.' + (int(data.BloodPressure.substr(4)) >= 80 ? (int(data.BloodPressure.substr(4)) >= 90 ? '\nDiastolic ' + data.BloodPressure.substr(4) + ' mmHg is Hypertension.' : '\nDiastolic ' + data.BloodPressure.substr(4) + ' mmHg is Prehypertension.') : '') : 'Systolic ' + data.BloodPressure.substr(0,3) + ' mmHg is Prehypertension.' + (int(data.BloodPressure.substr(4)) >= 80 ? (int(data.BloodPressure.substr(4)) >= 90 ? '\nDiastolic ' + data.BloodPressure.substr(4) + ' mmHg is Hypertension.' : '\nDiastolic ' + data.BloodPressure.substr(4) + ' mmHg is Prehypertension.') : '')) : ''}" horizontalScrollPolicy="off">
-												<mx:Label text="{data.BloodPressure}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}" />
+											<mx:HBox width="100%" paddingTop="0" toolTip="{(int(data.bloodPressure.substr(0,3)) >= 120 || int(data.bloodPressure.substr(4)) >= 80) ? (int(data.bloodPressure.substr(0,3)) >= 140 ? 'Systolic ' + data.bloodPressure.substr(0,3) + ' mmHg is Hypertension.' + (int(data.bloodPressure.substr(4)) >= 80 ? (int(data.bloodPressure.substr(4)) >= 90 ? '\nDiastolic ' + data.bloodPressure.substr(4) + ' mmHg is Hypertension.' : '\nDiastolic ' + data.bloodPressure.substr(4) + ' mmHg is Prehypertension.') : '') : 'Systolic ' + data.bloodPressure.substr(0,3) + ' mmHg is Prehypertension.' + (int(data.bloodPressure.substr(4)) >= 80 ? (int(data.bloodPressure.substr(4)) >= 90 ? '\nDiastolic ' + data.bloodPressure.substr(4) + ' mmHg is Hypertension.' : '\nDiastolic ' + data.bloodPressure.substr(4) + ' mmHg is Prehypertension.') : '')) : ''}" horizontalScrollPolicy="off">
+												<mx:Label text="{data.bloodPressure}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}" />
 												<s:Spacer width="100%" />
 												<s:VGroup paddingTop="-6">
-													<s:Image source="@Embed('/images/redMark.png')" visible="{int(data.BloodPressure.substr(0,3)) >= 120 || int(data.BloodPressure.substr(4)) >= 80}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
+													<s:Image source="@Embed('/images/redMark.png')" visible="{int(data.bloodPressure.substr(0,3)) >= 120 || int(data.bloodPressure.substr(4)) >= 80}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->
 												</s:VGroup>
 											</mx:HBox>
 										</fx:Component>
 									</mx:itemRenderer>
 								</mx:DataGridColumn>
-								<mx:DataGridColumn dataField="HeartRate" headerText="Heart Rate" paddingLeft="5" />
-								<mx:DataGridColumn dataField="Respiratory" headerText="Respiratory" paddingLeft="5" />
-								<mx:DataGridColumn dataField="Temperature" headerText="Temperature" paddingLeft="5" />
-								<mx:DataGridColumn dataField="Height" headerText="Height" paddingLeft="5" />
-								<mx:DataGridColumn dataField="Comments" headerText="Comments" paddingLeft="5" color="0xAEDEE4"/>
+								<mx:DataGridColumn dataField="heartRate" headerText="Heart Rate" paddingLeft="5" />
+								<mx:DataGridColumn dataField="respiratory" headerText="Respiratory" paddingLeft="5" />
+								<mx:DataGridColumn dataField="temperature" headerText="Temperature" paddingLeft="5" />
+								<mx:DataGridColumn dataField="height" headerText="Height" paddingLeft="5" />
+								<mx:DataGridColumn dataField="comments" headerText="Comments" paddingLeft="5" color="0xAEDEE4" labelFunction="getCommentsLabel"/>
 							</mx:columns> 
 						</mx:DataGrid>
 						
@@ -949,7 +970,7 @@
 							id="vitalsWeightLineChart"
 							paddingLeft="-3" paddingTop="-6" width="823" height="395"
 							backgroundElements="{vitalSignsWeightBackground}" seriesFilters="[]" selectionMode="single" 
-							itemRollOver="weightChartRolloverEventHandler(event)" itemRollOut="weightChartRolloutEventHandler(event)" 
+							itemRollOver="weightChartRolloverEventHandler(event)" itemRollOut="weightChartRolloutEventHandler(event)" itemClick="viewVitals(event)"
 							change="event.stopImmediatePropagation()" creationComplete="vitalsWeightLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data">
 							
 							<mx:series>
@@ -958,7 +979,7 @@
 										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
 									</mx:lineStroke>
 								</mx:LineSeries>
-								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
+								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" buttonMode="true" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xFFFFFF" weight="4" /><!--4-->
 									</mx:lineStroke>
@@ -997,43 +1018,43 @@
 							<s:Label text="My Blood Pressure" styleName="greenBoldText" />
 							
 							<s:HGroup gap="40">
-								<s:VGroup gap="1" width="150">
+								<s:VGroup gap="1">
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblBloodPressure1" styleName="orangeStandout" creationComplete="lblBloodPressure1.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value" />
+										<s:Label id="lblBloodPressure1" styleName="orangeStandout"  />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
-										<s:Label id="lblBloodPressure2" styleName="orangeStandout" creationComplete="lblBloodPressure2.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2" />
+										<s:Label id="lblBloodPressure2" styleName="orangeStandout" />
 										<s:Label fontSize="13" text="mmHG" color="0xFFFFFF" />
 									</s:HGroup>
-									<s:Label id="lblDatePressure" creationComplete="lblDatePressure.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblDatePressure" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" width="250">
+								<s:VGroup gap="1">
 									<s:HGroup>
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgSystolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgSystolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value > 0" />
-											<s:Image id="imgSystolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgSystolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value &lt; 0" />
+											<s:Image id="imgSystolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" visible="false" includeInLayout="false" />
+											<s:Image id="imgSystolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" visible="false" includeInLayout="false"/>
 										</s:HGroup>
 										<s:HGroup verticalAlign="baseline" gap="4">
 											<s:Label id="lblSystolicDiff" styleName="orangeStandout" creationComplete="lblSystolicDiff.text=String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value)" />
 											<s:Label id="lblDiffDash" fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
 										</s:HGroup>
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgDiastolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgDiastolicDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 > 0" />
-											<s:Image id="imgDiastolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgDiastolicDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2 &lt; 0" />
+											<s:Image id="imgDiastolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" visible="false" includeInLayout="false"/>
+											<s:Image id="imgDiastolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" visible="false" includeInLayout="false"/>
 										</s:HGroup>
 										<s:HGroup verticalAlign="baseline" gap="4">
-											<s:Label id="lblDiastolicDiff" styleName="orangeStandout" creationComplete="lblDiastolicDiff.text=String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2)" />
+											<s:Label id="lblDiastolicDiff" styleName="orangeStandout" />
 											<s:Label id="lblPressureDiffUnits" fontSize="13" text="mmHg" color="0xFFFFFF" />
 										</s:HGroup>
 									</s:HGroup>
-									<s:Label id="lblDatePressurePrev" creationComplete="lblDatePressurePrev.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="215" />
+									<s:Label id="lblDatePressurePrev" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="215" />
 								</s:VGroup>
 								
-								<s:VGroup gap="1" paddingLeft="-10" width="150">
+								<s:VGroup gap="1" paddingLeft="-10">
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblTargetPressure" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation" />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
-										<s:Label id="lblTargetPressure2" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure2.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2" />
+										<s:Label id="lblTargetPressure2" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2"/>
 										<s:Label fontSize="13" text="mmHg" color="0xFFFFFF" />
 									</s:HGroup>
 									<s:Label id="lblTargetPressureBottom" text="Target mmHg" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
@@ -1097,7 +1118,7 @@
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
 							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
 							change="event.stopImmediatePropagation()" 
-							creationComplete="vitalsPressureLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data">
+							creationComplete="vitalsPressureLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data; pressureChartRolloutEventHandler()">
 							
 							<mx:series>
 								

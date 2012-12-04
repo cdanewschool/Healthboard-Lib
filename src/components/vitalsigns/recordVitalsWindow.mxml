@@ -11,6 +11,7 @@
 			
 			import models.modules.VitalSignsModel;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.managers.PopUpManager;
@@ -213,7 +214,9 @@
 				var myNewWeightBMI:String = txtWeight.text == '' ? '' : txtWeight.text + ' / ' + String(int(((int(txtWeight.text) * 703) / Math.pow(myNewHeightInInches, 2))*10)/10);
 				var myNewBloodPressure:String = txtBloodPressure1.text == '' ? '' : txtBloodPressure1.text + '/' + txtBloodPressure2.text;
 				
-				entryByDate = {Date: DateUtil.get10DigitDate(txtDate.text), WeightBMI: myNewWeightBMI, BloodPressure: myNewBloodPressure, HeartRate: txtHeartRate.text, Respiratory: txtRespiratory.text, Temperature: txtTemperature.text, Height: myNewHeight, Comments: txtComments.text, RecordedBy: 'You'};
+				var comments:ArrayCollection = new ArrayCollection( [ { comment:txtComments.text,author:'You',date:new Date()} ] );
+				
+				entryByDate = {date: DateUtil.get10DigitDate(txtDate.text), weightBMI: myNewWeightBMI, bloodPressure: myNewBloodPressure, heartRate: txtHeartRate.text, respiratory: txtRespiratory.text, temperature: txtTemperature.text, height: myNewHeight, comments: comments, author: 'You'};
 				model.vitalSignsByDate.addItem(entryByDate);
 				
 				model.vitalSigns.refresh();

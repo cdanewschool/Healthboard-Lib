@@ -1850,7 +1850,7 @@
 															]]>
 														</fx:Script>
 														
-														<mx:Image source="@Embed(source='/images/medIconTakenAN2.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
+														<mx:Image source="@Embed(source='/images/medIconTaken2.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
 														<mx:Image source="@Embed(source='/images/medIconNotTaken2.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="showSaveMealPrompt()" />
 														
 													</mx:HBox>
@@ -1879,15 +1879,24 @@
 																	evt.data = "Your meal has been deleted";
 																	dispatchEvent( evt );
 																}
-																
 															]]>
 														</fx:Script>
 														
-														<mx:Label text="{data.ingredients}" fontSize="12" paddingTop="1" toolTip="{(data.ingredients == 'Spinach quiche') ? ' ' : ''}" toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" color="{data.ingredients == 'Spinach quiche' ? 0xAEDEE4 : 0xFFFFFF}" />
+														<mx:Label text="{data.ingredients}" fontSize="12" paddingTop="1" color="0xFFFFFF" />
+														
 														<s:Spacer width="100%" />
+														
+														<general:MainLinkButton 
+															label="Info" 
+															color="0xAEDEE4" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" 
+															paddingLeft="0" 
+															toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" 
+															visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}" />
+														
 														<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
 															<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
 														</s:VGroup>
+														
 													</mx:HBox>
 												</fx:Component>
 											</mx:itemRenderer>

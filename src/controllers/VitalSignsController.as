@@ -19,6 +19,8 @@ package controllers
 		{
 			var fullname:String = AppProperties.getInstance().controller.model.fullname;
 			
+			//	TODO: merge vitalSigns and vitalSigns by date into one array
+			
 			VitalSignsModel(model).vitalSigns = new ArrayCollection
 				(
 					[
@@ -139,7 +141,7 @@ package controllers
 										{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/01/2012',comments:'I got closer to my target weight', vital:'comments'},
 										{type:'patient',expectation:'expectation',author:fullname,datePatient:'02/01/2012',comments:'I got closer to my target weight', vital:'comments'},
 										{type:'provider',expectation:'expectation',author:fullname,dateProvider:'08/14/2012',comments:'Slight weight increase, please be aware.', vital:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/08/2012',comments:'Respiratory rate is normal, but I am not feeling so well.', vital:'comments'}
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/08/2012',comments:'respiratory rate is normal, but I am not feeling so well.', vital:'comments'}
 									]
 								} 
 							]
@@ -150,18 +152,18 @@ package controllers
 			VitalSignsModel(model).vitalSignsByDate = new ArrayCollection
 				(
 					[
-						{Date:'09/03/2011', WeightBMI: '200 / 27.8', BloodPressure: '145/92', HeartRate: 85, Respiratory: 26, Temperature: 98, Height: "5'11''", Comments: 'I got closer to my target weight', RecordedBy: 'You', abnormalWeight: true, abnormalPressure: true},
-						{Date:'10/03/2011', WeightBMI: '195 / 27.1', BloodPressure: '139/85', HeartRate: 80, Respiratory: 24, Temperature: 107, Height: '', Comments: 'I got closer to my target weight', RecordedBy: 'Dr. Andrew Berg', abnormalWeight: true, abnormalPressure: false},
-						{Date:'10/04/2011', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '', Temperature: 98, Height: '', Comments: '', RecordedBy: 'You'},	
-						{Date:'11/03/2011', WeightBMI: '190 / 26.4', BloodPressure: '130/82', HeartRate: 98, Respiratory: 28, Temperature: '', Height: '', Comments: 'The patient has gotten closer to his target weight', RecordedBy: 'You'},
-						{Date:'01/01/2012', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '', Temperature: '', Height: '', Comments: 'I got closer to my target weight', RecordedBy: 'You'},
-						{Date:'02/01/2012', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '', Temperature: '', Height: '', Comments: 'I got closer to my target weight', RecordedBy: 'You'},
-						{Date:'05/03/2012', WeightBMI: '', BloodPressure: '128/80', HeartRate: 76, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
-						{Date:'06/03/2012', WeightBMI: '', BloodPressure: '126/80', HeartRate: 70, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
-						{Date:'07/14/2012', WeightBMI: '180 / 25.1', BloodPressure: '130/82', HeartRate: 66, Respiratory: '', Temperature: '', Height: '', Comments: '', RecordedBy: 'You'},
-						{Date:'08/14/2012', WeightBMI: '185 / 25.7', BloodPressure: '124/76', HeartRate: '', Respiratory: '22', Temperature: 98, Height: '', Comments: 'Slight weight increase, please be aware.', RecordedBy: 'Dr. Andrew Berg'},
-						{Date:'09/08/2012', WeightBMI: '', BloodPressure: '', HeartRate: '', Respiratory: '20', Temperature: '', Height: '', Comments: 'Respiratory rate is normal, but I am not feeling so well.', RecordedBy: 'You'},
-						{Date:'09/14/2012', WeightBMI: '175 / 24.4', BloodPressure: '120/78', HeartRate: '', Respiratory: '20', Temperature: 103, Height: "5'11''", Comments: '', RecordedBy: 'You', abnormalWeight: true, abnormalPressure: false}
+						{date:'09/03/2011', weightBMI: '200 / 27.8', bloodPressure: '145/92', heartRate: 85, respiratory: 26, temperature: 98, height: "5'11''", recordedBy: 'You', comments: new ArrayCollection( [{comment:'I got closer to my target weight', author: 'You', date:new Date()}]), abnormalWeight: true, abnormalPressure: true},
+						{date:'10/03/2011', weightBMI: '195 / 27.1', bloodPressure: '139/85', heartRate: 80, respiratory: 24, temperature: 107, height: '', recordedBy: 'Dr. Andrew Berg', comments: new ArrayCollection( [{comment:'I got closer to my target weight', author: 'Dr. Andrew Berg', date:new Date()}]),  abnormalWeight: true, abnormalPressure: false},
+						{date:'10/04/2011', weightBMI: '', bloodPressure: '', heartRate: '', respiratory: '', temperature: 98, height: ''},	
+						{date:'11/03/2011', weightBMI: '190 / 26.4', bloodPressure: '130/82', heartRate: 98, respiratory: 28, temperature: '', height: '', recordedBy: 'You', comments: new ArrayCollection( [{comment:'The patient has gotten closer to his target weight', author: 'You', date:new Date()}]) },
+						{date:'01/01/2012', weightBMI: '', bloodPressure: '', heartRate: '', respiratory: '', temperature: '', height: '', comments: new ArrayCollection( [{comment:'I got closer to my target weight', author: 'You', date:new Date()}])},
+						{date:'02/01/2012', weightBMI: '', bloodPressure: '', heartRate: '', respiratory: '', temperature: '', height: '', comments: new ArrayCollection( [{comment:'I got closer to my target weight', author: 'You', date:new Date()}])},
+						{date:'05/03/2012', weightBMI: '', bloodPressure: '128/80', heartRate: 76, respiratory: '', temperature: '', height: ''},
+						{date:'06/03/2012', weightBMI: '', bloodPressure: '126/80', heartRate: 70, respiratory: '', temperature: '', height: ''},
+						{date:'07/14/2012', weightBMI: '180 / 25.1', bloodPressure: '130/82', heartRate: 66, respiratory: '', temperature: '', height: ''},
+						{date:'08/14/2012', weightBMI: '185 / 25.7', bloodPressure: '124/76', heartRate: '', respiratory: '22', temperature: 98, height: '', recordedBy: 'Dr. Andrew Berg', comments: new ArrayCollection( [{comment:'Slight weight increase, please be aware.', author: 'Dr. Andrew Berg', date:new Date()}])},
+						{date:'09/08/2012', weightBMI: '', bloodPressure: '', heartRate: '', respiratory: '20', temperature: '', height: '', recordedBy: 'You', comments: new ArrayCollection( [{comment:'respiratory rate is normal, but I am not feeling so well.', author: 'You', date:new Date()}])},
+						{date:'09/14/2012', weightBMI: '175 / 24.4', bloodPressure: '120/78', heartRate: '', respiratory: '20', temperature: 103, height: "5'11''", abnormalWeight: true, abnormalPressure: false, recordedBy: 'You'}
 					]
 				);
 			
