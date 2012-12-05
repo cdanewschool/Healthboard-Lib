@@ -33,6 +33,7 @@
 			import models.modules.ExerciseModel;
 			
 			import mx.charts.ChartItem;
+			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.LineSeriesItem;
 			import mx.graphics.IFill;
@@ -77,7 +78,7 @@
 				PopUpManager.centerPopUp(myRecordResults);
 			}
 			
-			private function switchExerciseView(index:uint):void 
+			public function switchExerciseView(index:uint):void 
 			{
 				viewsExercisePRT.selectedIndex = index;
 				
@@ -85,7 +86,7 @@
 				else if(index == 2) highlightSelectedExercise('1.5 Mile Run');
 			}
 			
-			private function switchExercisePhyView(index:uint):void 
+			public function switchExercisePhyView(index:uint):void 
 			{
 				viewsExercisePA.selectedIndex = index;
 				
@@ -93,7 +94,7 @@
 				else if(index == 2) highlightSelectedExercisePA('Run / Walk');
 			}
 			
-			private function switchExercisePerView(index:uint):void 
+			public function switchExercisePerView(index:uint):void 
 			{
 				viewsExercisePER.selectedIndex = index;
 				
@@ -203,6 +204,14 @@
 			{
 				var myAddPersonalExercise:addPersonalExercise = addPersonalExercise(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, addPersonalExercise) as spark.components.TitleWindow);
 				PopUpManager.centerPopUp(myAddPersonalExercise);
+			}
+			
+			private function dataTipsMileRun(hd:HitData):String {
+				return "<FONT SIZE='11'>" + hd.item.value + " points on " + hd.item.date + "</FONT>";
+			}
+			
+			private function dataTipsRunWalk(hd:HitData):String {
+				return "<FONT SIZE='11'>" + hd.item.value + " minutes on " + hd.item.date + "</FONT>";
 			}
 			
 			private function init():void
@@ -658,6 +667,10 @@
 																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
 															}	
 															
+															private function switchExerciseViewFromRenderer(measure:String):void {
+																if(measure == "1.5 Mile Run") outerDocument.switchExerciseView(2);
+															}
+															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
 															{
 																lblValue.text = data.chart[0].data[event.hitData.chartItem.index].value;
@@ -717,23 +730,25 @@
 													
 													<s:VGroup width="125">
 														
-														<mx:LinkButton visible="{data.measure == 'Avg. PRT Score'}" includeInLayout="{data.measure == 'Avg. PRT Score'}" icon.expanded="@Embed(source='/images/exercisePRT.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
+															<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+															<mx:LinkButton visible="{data.measure == 'Avg. PRT Score'}" includeInLayout="{data.measure == 'Avg. PRT Score'}" icon.expanded="@Embed(source='/images/exercisePRT2.png')" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+															<mx:LinkButton visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" icon.expanded="@Embed(source='/images/exerciseRun2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+															<mx:LinkButton visible="{data.measure == 'Curl Ups'}" includeInLayout="{data.measure == 'Curl Ups'}" icon.expanded="@Embed(source='/images/exerciseCurlUps2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+															<mx:LinkButton visible="{data.measure == 'Push Ups'}" includeInLayout="{data.measure == 'Push Ups'}" icon.expanded="@Embed(source='/images/exercisePushUps2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+														</s:HGroup>
 														
-														<mx:LinkButton visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" paddingBottom="-8" icon.expanded="@Embed(source='/images/exerciseRun.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<s:HGroup paddingTop="-8" visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}">
+															<s:DropDownList id="dropDownERBookmarks" prompt="Switch   ▼" change="{dropDownERBookmarks.selectedIndex = -1}" width="150" horizontalScrollPolicy="off" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkinNoButton" color="0xAEDBE2"> <!--layoutDirection="rtl" change="messageSort()"-->
+																<mx:ArrayCollection>
+																	<fx:String>1.5 Mile Run</fx:String>
+																	<fx:String>500 Yard/450 Meter Swim</fx:String>
+																	<fx:String>12 Minute Elliptical Machine</fx:String>
+																	<fx:String>12 Minute Stationary Bike</fx:String>
+																</mx:ArrayCollection>
+															</s:DropDownList>
+														</s:HGroup>
 														
-														<s:DropDownList visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" id="dropDownERBookmarks" prompt="Switch   ▼" change="{dropDownERBookmarks.selectedIndex = -1}" width="150" horizontalScrollPolicy="off" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkinNoButton" color="0xAEDBE2"> <!--layoutDirection="rtl" change="messageSort()"-->
-															<mx:ArrayCollection>
-																<fx:String>1.5 Mile Run</fx:String>
-																<fx:String>500 Yard/450 Meter Swim</fx:String>
-																<fx:String>12 Minute Elliptical Machine</fx:String>
-																<fx:String>12 Minute Stationary Bike</fx:String>
-															</mx:ArrayCollection>
-														</s:DropDownList>
-														
-														<mx:LinkButton visible="{data.measure == 'Curl Ups'}" includeInLayout="{data.measure == 'Curl Ups'}" icon.expanded="@Embed(source='/images/exerciseCurlUps.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														
-														<mx:LinkButton visible="{data.measure == 'Push Ups'}" includeInLayout="{data.measure == 'Push Ups'}" icon.expanded="@Embed(source='/images/exercisePushUps.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-													
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" width="450">
@@ -775,7 +790,7 @@
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'collapsed'}" visible="{this.currentState == 'collapsed'}" width="460">
-														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4"/>
+														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
 													<s:HGroup verticalAlign="middle" gap="13">
@@ -903,7 +918,7 @@
 											<s:Label text="sec." />
 										</s:HGroup>
 										
-										<s:Label text="Target Points and Time" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+										<s:Label text="Goal: Points and Time" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 										
 									</s:VGroup>
 									
@@ -987,6 +1002,7 @@
 								paddingLeft="-3" paddingTop="-6" width="817" height="342"
 								dataProvider="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') ).chart.getItemAt(0).data}"
 								backgroundElements="{exerciseMileRunBackground}" seriesFilters="[]" selectionMode="single" 
+								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsMileRun"
 								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
@@ -1116,7 +1132,7 @@
 								id="dgExercisePA" rowColorFunction="DataGridFunctions.calcCommentsRowColor" width="100%" height="100%" dataProvider="{model.exerciseDataByMeasurePhysicianAssigned}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
 								color="0xFFFFFF" verticalAlign="middle"
 								dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragComplete="controller.updatePAIndices()"
-								selectionDuration="2000" useRollOver="false" selectionColor="{dgExercisePA.selectedItem == model.exerciseDataByMeasurePhysicianAssigned.getItemAt(2) ? 0x000000 : dgExercisePA.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
+								selectionDuration="2000" useRollOver="false" selectionColor="{dgExercisePA.selectedItem == model.exerciseDataByMeasurePhysicianAssigned.getItemAt(0) ? 0x000000 : dgExercisePA.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
 								headerHeight="0"
 								borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x4A4A49]"
 								variableRowHeight="true" initialize="controller.updatePAIndices()"><!--rowCount="7"-->
@@ -1125,7 +1141,7 @@
 									<mx:DataGridColumn dataField="measure">
 										<mx:itemRenderer>
 											<fx:Component>
-												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{if(data.chartType == 'comments') this.currentState = 'collapsed'}">
 													<fx:Script>
 														<![CDATA[
 															import ASclasses.MyCustomDataTip;
@@ -1158,6 +1174,10 @@
 																
 																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
 															}	
+															
+															private function switchExerciseViewFromRenderer(measure:String):void {
+																if(measure == "Run / Walk") outerDocument.switchExercisePhyView(2);
+															}
 															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
 															{
@@ -1215,11 +1235,18 @@
 														<s:State name="collapsed" />
 													</mx:states>
 													
-													<s:VGroup width="100">
+													<!--<s:VGroup width="100">
 														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='/images/exerciseRun.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='/images/exBike.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="27" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
-													</s:VGroup>
+													</s:VGroup>-->
+													
+													<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
+														<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='/images/exerciseRun2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='/images/exerciseBike2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+														<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="8" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
+													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" width="497">
 														
@@ -1261,10 +1288,10 @@
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="473">
-														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4"/>
+														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="497">
+													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="497">
 														
 														<mx:PlotChart 
 															id="chartComments" width="465" height="45" 
@@ -1298,6 +1325,10 @@
 														</mx:PlotChart>
 													</s:VGroup>
 													
+													<s:VGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
+														<mx:Label text="{data.chart[0].data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
+													</s:VGroup>
+													
 													<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
 														
 														<s:HGroup verticalAlign="baseline" gap="4">
@@ -1314,7 +1345,7 @@
 														
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
+													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
 														<s:Label text="Provider Entry" />
 														<s:Label text="Patient Entry" />
 													</s:VGroup>
@@ -1480,6 +1511,7 @@
 								dataProvider="{model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart.getItemAt(0).data}"
 								paddingLeft="-3" paddingTop="-6" width="817" height="195"
 								backgroundElements="[]" seriesFilters="[]" selectionMode="single" 
+								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsRunWalk"
 								itemRollOver="runWalkChartRolloverEventHandler(event)" itemRollOut="runWalkChartRolloutEventHandler(event)"> <!-- itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
@@ -1680,7 +1712,7 @@
 									<mx:DataGridColumn dataField="measure">
 										<mx:itemRenderer>
 											<fx:Component>
-												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{if(data.measure == 'Comments') this.currentState = 'collapsed'}">
 													<fx:Script>
 														<![CDATA[
 															import ASclasses.MyCustomDataTip;
@@ -1711,12 +1743,22 @@
 																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
 															}	
 															
-															[Bindable] [Embed("/images/exBike.png")] public var iconBike:Class;
+															/* [Bindable] [Embed("/images/exBike.png")] public var iconBike:Class;
 															[Bindable] [Embed("/images/exerciseRun.png")] public var iconRun:Class;
 															[Bindable] [Embed("/images/exPERswim.png")] public var iconSwim:Class;
 															[Bindable] [Embed("/images/exPERmachine.png")] public var iconMachine:Class;
 															[Bindable] [Embed("/images/exPERyoga.png")] public var iconYoga:Class;
-															[Bindable] [Embed("/images/exPERweight.png")] public var iconWeight:Class;
+															[Bindable] [Embed("/images/exPERweight.png")] public var iconWeight:Class; */
+															[Bindable] [Embed("/images/exerciseBike2.png")] public var iconBike:Class;
+															[Bindable] [Embed("/images/exerciseRun2.png")] public var iconRun:Class;
+															[Bindable] [Embed("/images/exPERswim2.png")] public var iconSwim:Class;
+															[Bindable] [Embed("/images/exPERmachine2.png")] public var iconMachine:Class;
+															[Bindable] [Embed("/images/exPERyoga2.png")] public var iconYoga:Class;
+															[Bindable] [Embed("/images/exPERweight2.png")] public var iconWeight:Class;
+															
+															private function switchExerciseViewFromRenderer(measure:String):void {
+																//
+															}
 															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
 															{
@@ -1778,10 +1820,16 @@
 														<s:State name="collapsed" />
 													</mx:states>
 													
-													<s:VGroup width="100">
+													<!--<s:VGroup width="100">
 														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="27" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
-													</s:VGroup>
+													</s:VGroup>-->
+													
+													<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
+														<s:Image buttonMode="true" visible="{data.chartType == 'trackable' || data.measure == 'Comments'}" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="8" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
+													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" width="497">
 														
@@ -1826,7 +1874,7 @@
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" width="473">
-														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4"/>
+														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType == 'untrackable' &amp;&amp; data.measure != 'Comments'}" visible="{data.chartType == 'untrackable' &amp;&amp; data.measure != 'Comments'}" paddingBottom="3" paddingTop="3" width="497">
@@ -1865,7 +1913,7 @@
 														</mx:PlotChart>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.measure == 'Comments'}" visible="{data.measure == 'Comments'}" paddingBottom="3" paddingTop="3" width="497">
+													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.measure == 'Comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.measure == 'Comments'}" paddingBottom="3" paddingTop="3" width="497">
 														
 														<mx:PlotChart 
 															id="chartComments" width="465" height="45" 
@@ -1899,6 +1947,10 @@
 														</mx:PlotChart>
 													</s:VGroup>
 													
+													<s:VGroup includeInLayout="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
+														<mx:Label text="{data.chart[0].data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
+													</s:VGroup>
+													
 													<s:VGroup includeInLayout="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" visible="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" gap="3">
 														<s:HGroup verticalAlign="baseline" gap="4">
 															<s:Label id="lblValue" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
@@ -1907,7 +1959,7 @@
 														<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.measure == 'Comments'}" visible="{data.measure == 'Comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
+													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.measure == 'Comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.measure == 'Comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
 														<s:Label text="Provider Entry" />
 														<s:Label text="Patient Entry" />
 													</s:VGroup>

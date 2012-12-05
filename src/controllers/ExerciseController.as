@@ -149,6 +149,27 @@ package controllers
 			model.exerciseDataByMeasurePhysicianAssigned = new ArrayCollection
 				(
 					[
+						{
+							measure: "Comments", chartType: "comments",
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
+											]
+										)
+									}
+								]
+							)
+						},
+						
 						{ 
 							measure: "Run / Walk", chartMin:15, chartMax:45,
 							chart: new ArrayCollection
@@ -189,28 +210,8 @@ package controllers
 									}
 								]
 							)
-						},
-						
-						{
-							measure: "Comments", chartType: "comments",
-							chart: new ArrayCollection
-							(
-								[ 
-									{ 
-										data: new ArrayCollection
-										(
-											[
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
-											]
-										)
-									}
-								]
-							)
 						}
+						
 					]
 				);
 			
@@ -233,6 +234,27 @@ package controllers
 			model.exerciseDataByMeasurePersonal = new ArrayCollection
 				(
 					[
+						{ 
+							measure: "Comments", chartType: 'untrackable',
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
+											]
+										)
+									}
+								]
+							)
+						},
+						
 						{ 
 							measure: "Bike", chartMin:15, chartMax:45, chartType:'trackable',
 							chart: new ArrayCollection
@@ -273,28 +295,8 @@ package controllers
 									}
 								]
 							)
-						},
-						
-						{ 
-							measure: "Comments", chartType: 'untrackable',
-							chart: new ArrayCollection
-							(
-								[ 
-									{ 
-										data: new ArrayCollection
-										(
-											[
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
-											]
-										)
-									}
-								]
-							)
 						}
+						
 					]
 				);
 			
