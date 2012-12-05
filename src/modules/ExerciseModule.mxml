@@ -1326,7 +1326,7 @@
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-														<mx:Label text="{data.chart[0].data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
+														<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
@@ -1948,7 +1948,7 @@
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-														<mx:Label text="{data.chart[0].data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
+														<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" visible="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" gap="3">
