@@ -210,7 +210,7 @@ package controllers
 		{
 			if( event.data == 0 )
 			{
-				application.currentState = model.viewMode;
+				showHome();
 			}
 		}
 		
