@@ -12,6 +12,7 @@
 			
 			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.CollectionEvent;
 			import mx.events.SliderEvent;
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectProxy;
@@ -43,12 +44,13 @@
 			
 			private function updateGoal():void 
 			{
-				for(var i:uint = 0; i < model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data.length; i++) 
+				for(var i:uint = 0; i < model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') ).chart.getItemAt(0).data.length; i++) 
 				{
-					model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data[i].target = sliderGoalPoints.value;
+					model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') ).chart.getItemAt(0).data.getItemAt(i).target = sliderGoalPoints.value;
 				}
 				
-				model.exerciseDataByMeasure.refresh();
+				model.exerciseDataByMeasure.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
+				
 				PopUpManager.removePopUp(this);
 			}
 			

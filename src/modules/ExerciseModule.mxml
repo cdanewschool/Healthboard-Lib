@@ -2,7 +2,13 @@
 <s:VGroup 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:plus="external.TabBarPlus.plus.*" xmlns:ASclasses="ASclasses.*" xmlns:components="components.*" xmlns:radarchart="fr.kapit.radarchart.*" xmlns:general="components.general.*">
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:plus="external.TabBarPlus.plus.*" 
+	xmlns:ASclasses="ASclasses.*" 
+	xmlns:components="components.*" 
+	xmlns:radarchart="fr.kapit.radarchart.*"
+	xmlns:general="components.general.*" 
+	creationComplete="init()">
 	
 	<fx:Declarations>
 		
@@ -36,6 +42,7 @@
 			
 			import util.ChartLabelFunctions;
 			import util.DataGridFunctions;
+			import util.DateFormatters;
 			import util.DateUtil;
 			
 			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
@@ -197,15 +204,25 @@
 				var myAddPersonalExercise:addPersonalExercise = addPersonalExercise(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, addPersonalExercise) as spark.components.TitleWindow);
 				PopUpManager.centerPopUp(myAddPersonalExercise);
 			}
+			
+			private function init():void
+			{
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				
+				var nextPRT:Date = new Date( today.fullYear, today.month, today.date );
+				nextPRT.time += DateUtil.MONTH * 3;
+				
+				header.actionCount = DateFormatters.dateFormatterDay.format(nextPRT) + '.';
+			}
 		]]>
 	</fx:Script>
 	
 	<components:ModuleHeader 
 		id="header"
 		icon="@Embed('/images/btnHome.png')"
-		title="Exercise" 
-		actionSuffix="months till the next PRT." actionCount="3"
-		secondaryActionSuffix="Physician-assigned exercises." secondaryActionCount="2" 
+		title="Exercise" showActionsIfNone="true"
+		actionPrefix="Your next PRT will be on" actionSuffix=""
+		secondaryActionSuffix="Physician-assigned exercises." secondaryActionCount="3"
 		showSearch="true" searchPlaceholder="Search Exercise" showBackground="false" visible="{showHeader}" includeInLayout="{showHeader}" />
 	
 	<s:Spacer height="10" />
@@ -819,7 +836,7 @@
 								
 								<s:HGroup gap="35">
 									
-									<s:HGroup verticalAlign="middle" gap="13">
+									<s:HGroup verticalAlign="middle" gap="13" width="150">
 										
 										<s:HGroup>
 											<s:Image id="exerciseHappy" source="@Embed('/images/exerciseHappy.png')" creationComplete="exerciseHappy.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55" includeInLayout="{exerciseHappy.visible}" />
@@ -968,9 +985,9 @@
 							<mx:LineChart 
 								id="exerciseMileRunLineChart"
 								paddingLeft="-3" paddingTop="-6" width="817" height="342"
+								dataProvider="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') ).chart.getItemAt(0).data}"
 								backgroundElements="{exerciseMileRunBackground}" seriesFilters="[]" selectionMode="single" 
-								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)" 
-								creationComplete="exerciseMileRunLineChart.dataProvider=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
+								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
 									<mx:LineSeries yField="target" xField="date" interactive="false">
@@ -1460,9 +1477,10 @@
 							
 							<mx:LineChart 
 								id="exerciseRunWalkLineChart"
+								dataProvider="{model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart.getItemAt(0).data}"
 								paddingLeft="-3" paddingTop="-6" width="817" height="195"
 								backgroundElements="[]" seriesFilters="[]" selectionMode="single" 
-								itemRollOver="runWalkChartRolloverEventHandler(event)" itemRollOut="runWalkChartRolloutEventHandler(event)" creationComplete="exerciseRunWalkLineChart.dataProvider=model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data"> <!-- itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
+								itemRollOver="runWalkChartRolloverEventHandler(event)" itemRollOut="runWalkChartRolloutEventHandler(event)"> <!-- itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
 									

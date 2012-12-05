@@ -47,74 +47,90 @@ package controllers
 					[
 						{
 							measure: "Avg. PRT Score", chartMin: 35, chartMax: 100,
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{value:56, expectation:45, date:'07/24/2011', type:'provider', measure:'PRTscore'},
-										{value:61, expectation:45, date:'10/11/2011', type:'provider', measure:'PRTscore'},
-										{value:74, expectation:45, date:'11/03/2011', type:'patient', measure:'PRTscore'},
-										{value:81, expectation:45, date:'01/03/2012', type:'patient', measure:'PRTscore'},
-										{value:86, expectation:45, date:'05/03/2012', type:'patient', measure:'PRTscore'},
-										{value:92, expectation:45, date:'09/24/2012', type:'provider', measure:'PRTscore'}
-									]
-								}
-							]
+							chart:  new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{value:56, expectation:45, date:'07/24/2011', type:'provider', measure:'PRTscore'},
+												{value:61, expectation:45, date:'10/11/2011', type:'provider', measure:'PRTscore'},
+												{value:74, expectation:45, date:'11/03/2011', type:'patient', measure:'PRTscore'},
+												{value:81, expectation:45, date:'01/03/2012', type:'patient', measure:'PRTscore'},
+												{value:86, expectation:45, date:'05/03/2012', type:'patient', measure:'PRTscore'},
+												{value:92, expectation:45, date:'09/24/2012', type:'provider', measure:'PRTscore'}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{
 							measure: "1.5 Mile Run", chartMin: 35, chartMax: 100,
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{value:62, expectation:45, target:62, targetMin:14, targetSec:40, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:40},
-										{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:35},
-										{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:14, sec:30},
-										{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:50},
-										{value:60, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
-										{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:40}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{value:62, expectation:45, target:62, targetMin:14, targetSec:40, date:'07/24/2011', type:'provider', measure:'mileRun', min:14, sec:40},
+												{value:63, expectation:45, target:62, date:'10/11/2011', type:'provider', measure:'mileRun', min:14, sec:35},
+												{value:64, expectation:45, target:62, date:'11/03/2011', type:'patient', measure:'mileRun', min:14, sec:30},
+												{value:60, expectation:45, target:62, date:'01/03/2012', type:'patient', measure:'mileRun', min:14, sec:50},
+												{value:60, expectation:45, target:62, date:'05/03/2012', type:'patient', measure:'mileRun', min:14, sec:30},
+												{value:62, expectation:45, target:62, date:'09/24/2012', type:'provider', measure:'mileRun', min:14, sec:40}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{
 							measure: "Curl Ups", chartMin: 35, chartMax: 100,
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{value:80, expectation:45, date:'07/24/2011', type:'provider', measure:'curlUps', times:40},
-										{value:81, expectation:45, date:'10/11/2011', type:'provider', measure:'curlUps', times:40},
-										{value:56, expectation:45, date:'11/03/2011', type:'patient', measure:'curlUps', times:30},
-										{value:50, expectation:45, date:'01/03/2012', type:'patient', measure:'curlUps', times:35},
-										{value:52, expectation:45, date:'05/03/2012', type:'patient', measure:'curlUps', times:35},
-										{value:70, expectation:45, date:'09/24/2012', type:'provider', measure:'curlUps', times:40}
-									]
-								} 
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{value:80, expectation:45, date:'07/24/2011', type:'provider', measure:'curlUps', times:40},
+												{value:81, expectation:45, date:'10/11/2011', type:'provider', measure:'curlUps', times:40},
+												{value:56, expectation:45, date:'11/03/2011', type:'patient', measure:'curlUps', times:30},
+												{value:50, expectation:45, date:'01/03/2012', type:'patient', measure:'curlUps', times:35},
+												{value:52, expectation:45, date:'05/03/2012', type:'patient', measure:'curlUps', times:35},
+												{value:70, expectation:45, date:'09/24/2012', type:'provider', measure:'curlUps', times:40}
+											]
+										)
+									} 
+								]
+							)
 						},
 						
 						{
 							measure: "Push Ups", chartMin: 35, chartMax: 100,
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{value:92, expectation:45, date:'07/24/2011', type:'provider', measure:'pushUps', times:20},
-										{value:92, expectation:45, date:'10/11/2011', type:'provider', measure:'pushUps', times:20},
-										{value:64, expectation:45, date:'11/03/2011', type:'patient', measure:'pushUps', times:20},
-										{value:55, expectation:45, date:'01/03/2012', type:'patient', measure:'pushUps', times:25},
-										{value:65, expectation:45, date:'05/03/2012', type:'patient', measure:'pushUps', times:25},
-										{value:50, expectation:45, date:'09/24/2012', type:'provider', measure:'pushUps', times:24}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{value:92, expectation:45, date:'07/24/2011', type:'provider', measure:'pushUps', times:20},
+												{value:92, expectation:45, date:'10/11/2011', type:'provider', measure:'pushUps', times:20},
+												{value:64, expectation:45, date:'11/03/2011', type:'patient', measure:'pushUps', times:20},
+												{value:55, expectation:45, date:'01/03/2012', type:'patient', measure:'pushUps', times:25},
+												{value:65, expectation:45, date:'05/03/2012', type:'patient', measure:'pushUps', times:25},
+												{value:50, expectation:45, date:'09/24/2012', type:'provider', measure:'pushUps', times:24}
+											]
+										)
+									}
+								]
+							)
 						}
 					]
 				);
@@ -135,53 +151,65 @@ package controllers
 					[
 						{ 
 							measure: "Run / Walk", chartMin:15, chartMax:45,
-							chart:
-							[ 
-								{
-									data:
-									[
-										{value:30, expectation:30, date:'10/11/2011',miles:3.0, measure:'runWalk'},
-										{value:32, expectation:30, date:'11/11/2011',miles:3.0, measure:'runWalk'},
-										{value:34, expectation:30, date:'12/11/2011',miles:3.0, measure:'runWalk'},
-										{value:27, expectation:30, date:'01/11/2012',miles:3.0, measure:'runWalk'},
-										{value:30, expectation:30, date:'08/03/2012',miles:3.0, measure:'runWalk'}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{
+										data: new ArrayCollection
+										(
+											[
+												{value:30, expectation:30, date:'10/11/2011',miles:3.0, measure:'runWalk'},
+												{value:32, expectation:30, date:'11/11/2011',miles:3.0, measure:'runWalk'},
+												{value:34, expectation:30, date:'12/11/2011',miles:3.0, measure:'runWalk'},
+												{value:27, expectation:30, date:'01/11/2012',miles:3.0, measure:'runWalk'},
+												{value:30, expectation:30, date:'08/03/2012',miles:3.0, measure:'runWalk'}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{ 
 							measure: "Bike", chartMin:15, chartMax:45,
-							chart:
-							[ 
-								{
-									data:
-									[
-										{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
-										{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
-										{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
-										{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
-										{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{
+										data: new ArrayCollection
+										(
+											[
+												{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
+												{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
+												{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
+												{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
+												{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{
 							measure: "Comments", chartType: "comments",
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
+											]
+										)
+									}
+								]
+							)
 						}
 					]
 				);
@@ -207,53 +235,65 @@ package controllers
 					[
 						{ 
 							measure: "Bike", chartMin:15, chartMax:45, chartType:'trackable',
-							chart:
-							[ 
-								{
-									data:
-									[
-										{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
-										{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
-										{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
-										{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
-										{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{
+										data: new ArrayCollection
+										(
+											[
+												{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
+												{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
+												{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
+												{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
+												{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{ 
 							measure: "Hike", chartMin:15, chartMax:45, chartType: 'untrackable',
-							chart:
-							[
-								{
-									data:
-									[
-										{value:"This is my comment", expectation:30, date:'10/11/2011',measure:'hike', yvalue:30},
-										{value:"This is my comment", expectation:30, date:'11/11/2011', measure:'hike', yvalue:30},
-										{value:"This is my comment", expectation:30, date:'12/11/2011', measure:'hike', yvalue:30},
-										{value:"This is my comment", expectation:30, date:'01/11/2012',measure:'hike', yvalue:30},
-										{value:"This is my comment", expectation:30, date:'08/03/2012', measure:'hike', yvalue:30}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[
+									{
+										data: new ArrayCollection
+										(
+											[
+												{value:"This is my comment", expectation:30, date:'10/11/2011',measure:'hike', yvalue:30},
+												{value:"This is my comment", expectation:30, date:'11/11/2011', measure:'hike', yvalue:30},
+												{value:"This is my comment", expectation:30, date:'12/11/2011', measure:'hike', yvalue:30},
+												{value:"This is my comment", expectation:30, date:'01/11/2012',measure:'hike', yvalue:30},
+												{value:"This is my comment", expectation:30, date:'08/03/2012', measure:'hike', yvalue:30}
+											]
+										)
+									}
+								]
+							)
 						},
 						
 						{ 
 							measure: "Comments", chartType: 'untrackable',
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
-									]
-								}
-							]
+							chart: new ArrayCollection
+							(
+								[ 
+									{ 
+										data: new ArrayCollection
+										(
+											[
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'10/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
+											]
+										)
+									}
+								]
+							)
 						}
 					]
 				);

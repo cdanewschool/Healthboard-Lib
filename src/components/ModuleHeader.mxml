@@ -22,11 +22,11 @@
 			[Bindable] public var searchPlaceholder:String;
 			[Bindable] public var searchFunction:Function;
 			
-			[Bindable] public var actionCount:int = 0;
+			[Bindable] public var actionCount:* = 0;
 			[Bindable] public var actionPrefix:String = "You have";
 			[Bindable] public var actionSuffix:String = "new messages";
 			
-			[Bindable] public var secondaryActionCount:int = 0;
+			[Bindable] public var secondaryActionCount:* = 0;
 			[Bindable] public var secondaryActionPrefix:String = "You have";
 			[Bindable] public var secondaryActionSuffix:String = "new messages";
  			
@@ -92,10 +92,10 @@
 	
 	<s:VGroup paddingLeft="30" verticalAlign="middle" visible="{status.statusMessage==null}" includeInLayout="{status.statusMessage==null}">
 		
-		<s:HGroup visible="{actionCount>0 || showActionsIfNone}" includeInLayout="{actionCount>0 || showActionsIfNone}">
+		<s:HGroup visible="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}" includeInLayout="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}">
 			
 			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
-			<s:Label text="{actionCount>0?actionCount:'no'}" styleName="moduleSubtitleItalic {actionCount>0?'moduleSubtitleNumber':null}" />
+			<s:Label text="{(actionCount is String ? actionCount != null : actionCount>0)?actionCount:'no'}" styleName="moduleSubtitleItalic {(actionCount is String ? actionCount != null : actionCount>0)?'moduleSubtitleNumber':null}" />
 			<s:Label text="{actionSuffix?actionSuffix:''}" styleName="moduleSubtitleItalic" />
 			
 			<s:HGroup 
