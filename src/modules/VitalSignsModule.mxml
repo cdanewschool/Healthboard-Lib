@@ -43,6 +43,7 @@
 			import models.modules.VitalSignsModel;
 			
 			import mx.charts.ChartItem;
+			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.LineSeriesItem;
 			import mx.containers.TitleWindow;
@@ -64,7 +65,7 @@
 			
 			[Bindable] public var showHeader:Boolean = true;
 			
-			private function switchVitalView(index:uint):void 
+			public function switchVitalView(index:uint):void 
 			{
 				viewsVitalSigns.selectedIndex = index;
 				
@@ -279,6 +280,14 @@
 					myPressureLineSeries2.alpha = myPressureExpectationSeries2.alpha = 1;
 				}
 			}
+			
+			private function dataTipsWeight(hd:HitData):String {
+				return "<FONT SIZE='11'>" + hd.item.value + " pounds on " + hd.item.date + "</FONT>";
+			}
+			
+			private function dataTipsBloodPressure(hd:HitData):String {
+				return "<FONT SIZE='11'>" + hd.item.value + "/" + hd.item.value2 + " mmHg on " + hd.item.date + "</FONT>";
+			}
 		]]>
 	</fx:Script>
 	
@@ -464,7 +473,7 @@
 							id="dgVitalSigns" rowColorFunction="DataGridFunctions.calcCommentsRowColor" width="100%" height="100%" dataProvider="{model.vitalSigns}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
 							color="0xFFFFFF" verticalAlign="middle"
 							dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragComplete="controller.updateVitalIndices()"
-							selectionDuration="2000" useRollOver="false" selectionColor="{dgVitalSigns.selectedItem == model.vitalSigns.getItemAt(6) ? 0x000000 : dgVitalSigns.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
+							selectionDuration="2000" useRollOver="false" selectionColor="{dgVitalSigns.selectedItem == model.vitalSigns.getItemAt(0) ? 0x000000 : dgVitalSigns.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
 							headerHeight="0"
 							borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x4A4A49]"
 							variableRowHeight="true" initialize="controller.updateVitalIndices()"><!--rowCount="7"-->
@@ -473,7 +482,7 @@
 								<mx:DataGridColumn dataField="vital">
 									<mx:itemRenderer>
 										<fx:Component>
-											<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+											<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{if(data.chartType == 'comments') this.currentState = 'collapsed'}">
 												<fx:Script>
 													<![CDATA[
 														import ASclasses.MyCustomDataTip;
@@ -503,6 +512,11 @@
 															}
 															
 															item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+														}
+														
+														private function switchVitalViewFromRenderer(vital:String):void {
+															if(vital == "Weight") outerDocument.switchVitalView(2);
+															else if(vital == "Blood pressure") outerDocument.switchVitalView(3);
 														}
 														
 														private function chartRolloverEventHandler(event:ChartItemEvent):void 
@@ -589,9 +603,15 @@
 												</mx:transition>
 												-->
 												
-												<s:HGroup width="140">
+												<!--<s:HGroup width="140">
 													<mx:LinkButton includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" icon.expanded="@Embed(source='/images/smallArrow.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" id="btnVital" label="{data.vital}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 													<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="27" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
+												</s:HGroup>-->
+												
+												<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
+													<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
+													<mx:LinkButton includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" label="{data.vital}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchVitalViewFromRenderer(data.vital)" />
+													<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="8" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
 												</s:HGroup>
 												
 												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" width="460">
@@ -661,10 +681,10 @@
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-													<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4"/>
+													<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 												</s:VGroup>
 												
-												<s:VGroup includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="460">
+												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="460">
 													
 													<mx:PlotChart 
 														id="chartComments" width="445" height="45" 
@@ -700,6 +720,10 @@
 														</mx:verticalAxisRenderers>
 														
 													</mx:PlotChart>
+												</s:VGroup>
+												
+												<s:VGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
+													<mx:Label text="{data.chart[0].data.length + ' total comments, 2 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
@@ -751,7 +775,7 @@
 													<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 												</s:VGroup>
 												
-												<s:VGroup includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
+												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
 													<s:Label text="Provider Entry" />
 													<s:Label text="Patient Entry" />
 												</s:VGroup>
@@ -896,7 +920,7 @@
 										<s:Label id="lblTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTarget.text=dropDownVitalSignsWeightReference.selectedIndex == 0 ? String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10) : model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation" />
 										<s:Label fontSize="13" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'BMI' : 'pounds'}" color="0xFFFFFF" />
 									</s:HGroup>
-									<s:Label id="lblTargetBottom" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'Target BMI' : 'Target weight'}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblTargetBottom" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'Goal: BMI' : 'Goal: weight'}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 							</s:HGroup>
 						</s:VGroup>
@@ -949,6 +973,7 @@
 							id="vitalsWeightLineChart"
 							paddingLeft="-3" paddingTop="-6" width="823" height="395"
 							backgroundElements="{vitalSignsWeightBackground}" seriesFilters="[]" selectionMode="single" 
+							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsWeight"
 							itemRollOver="weightChartRolloverEventHandler(event)" itemRollOut="weightChartRolloutEventHandler(event)" 
 							change="event.stopImmediatePropagation()" creationComplete="vitalsWeightLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data">
 							
@@ -1036,7 +1061,7 @@
 										<s:Label id="lblTargetPressure2" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure2.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2" />
 										<s:Label fontSize="13" text="mmHg" color="0xFFFFFF" />
 									</s:HGroup>
-									<s:Label id="lblTargetPressureBottom" text="Target mmHg" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblTargetPressureBottom" text="Goal: mmHg" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 							</s:HGroup>
 						</s:VGroup>
@@ -1096,6 +1121,7 @@
 							paddingLeft="-3" paddingTop="-6" width="823" height="348"
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
 							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
+							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsBloodPressure"
 							change="event.stopImmediatePropagation()" 
 							creationComplete="vitalsPressureLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data">
 							

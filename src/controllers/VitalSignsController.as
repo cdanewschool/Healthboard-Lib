@@ -23,6 +23,25 @@ package controllers
 				(
 					[
 						{ 
+							vital: "Comments", chartType: "comments",
+							chart:
+							[ 
+								{ 
+									data:
+									[
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/03/2011',comments:'I got closer to my target weight', vital:'comments'},
+										{type:'provider',expectation:'expectation',author:'Dr. Andrew Berg',dateProvider:'10/03/2011',comments:'The patient has gotten closer to his target weight', vital:'comments'},
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/03/2011',comments:'I got closer to my target weight', vital:'comments'},
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/01/2012',comments:'I got closer to my target weight', vital:'comments'},
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'02/01/2012',comments:'I got closer to my target weight', vital:'comments'},
+										{type:'provider',expectation:'expectation',author:fullname,dateProvider:'08/14/2012',comments:'Slight weight increase, please be aware.', vital:'comments'},
+										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/08/2012',comments:'Respiratory rate is normal, but I am not feeling so well.', vital:'comments'}
+									]
+								} 
+							]
+						},
+						
+						{ 
 							vital: "Weight", chartType: "normal", chartMin: 160, chartMax: 210,
 							chart:
 							[ 
@@ -124,26 +143,8 @@ package controllers
 										{value:71, expectation:71, date:'09/14/2012', type:'patient', vital:'height'}]
 								} 
 							]
-						},
-						
-						{ 
-							vital: "Comments", chartType: "comments",
-							chart:
-							[ 
-								{ 
-									data:
-									[
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/03/2011',comments:'I got closer to my target weight', vital:'comments'},
-										{type:'provider',expectation:'expectation',author:'Dr. Andrew Berg',dateProvider:'10/03/2011',comments:'The patient has gotten closer to his target weight', vital:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/03/2011',comments:'I got closer to my target weight', vital:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/01/2012',comments:'I got closer to my target weight', vital:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'02/01/2012',comments:'I got closer to my target weight', vital:'comments'},
-										{type:'provider',expectation:'expectation',author:fullname,dateProvider:'08/14/2012',comments:'Slight weight increase, please be aware.', vital:'comments'},
-										{type:'patient',expectation:'expectation',author:fullname,datePatient:'09/08/2012',comments:'Respiratory rate is normal, but I am not feeling so well.', vital:'comments'}
-									]
-								} 
-							]
-						}	
+						}
+	
 					]
 				);
 			

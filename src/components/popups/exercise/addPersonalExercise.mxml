@@ -113,7 +113,7 @@
 			</s:HGroup>
 		</s:VGroup>
 		<s:VGroup visible="{radioUntrackable.selected}" includeInLayout="{radioUntrackable.selected}" paddingLeft="6">
-			<s:TextInput id="txtName" width="165" text="Name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Name'}" />
+			<s:TextInput id="txtName" width="165" text="Exercise name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Name'}" />
 			<s:HGroup verticalAlign="middle" gap="5">
 				<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
 				<s:HGroup paddingTop="-2" paddingLeft="-3">
