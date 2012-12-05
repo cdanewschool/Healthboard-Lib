@@ -26,6 +26,8 @@
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.CollectionEvent;
+			import mx.events.CollectionEventKind;
 			import mx.events.FlexEvent;
 			import mx.events.ListEvent;
 			import mx.managers.PopUpManager;
@@ -153,24 +155,28 @@
 			{
 				if(dropDownVitalToEdit.selectedIndex == 0) 
 				{
-					for(var i:uint = 0; i < model.vitalSigns[model.vitalIndices.indexOf('Weight')].chart[0].data.length; i++) 
+					for(var i:uint = 0; i < model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.length; i++) 
 					{
-						model.vitalSigns[model.vitalIndices.indexOf('Weight')].chart[0].data[i].expectation = txtWeight.text;
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.getItemAt(i).expectation = parseInt( txtWeight.text );
 					}
 					
-					if(Number(txtWeight.text) > (model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMax - 10)) model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMax = Number(txtWeight.text) + 10;
-					else if(Number(txtWeight.text) < (model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMin + 10)) model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMin = Number(txtWeight.text) - 10;
+					if(Number(txtWeight.text) > (model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMax - 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chartMax = Number(txtWeight.text) + 10;
+					else if(Number(txtWeight.text) < (model.vitalSigns[model.vitalIndices.indexOf('Weight')].chartMin + 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chartMin = Number(txtWeight.text) - 10;
 				}
 				else if(dropDownVitalToEdit.selectedIndex == 1) 
 				{
-					for(var j:uint = 0; j < model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chart[0].data.length; j++) 
+					for(var j:uint = 0; j < model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length; j++) 
 					{
-						model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chart[0].data[j].expectation = txtSystolic.text;
-						model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chart[0].data[j].expectation2 = txtDiastolic.text;
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(j).expectation = txtSystolic.text;
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(j).expectation2 = txtDiastolic.text;
 					}
 					
-					if(Number(txtSystolic.text) > (model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMax - 20)) model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMax = Number(txtSystolic.text) + 20;
-					else if(Number(txtDiastolic.text) < (model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMin + 20)) model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMin = Number(txtDiastolic.text) - 20;
+					if(Number(txtSystolic.text) > (model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMax - 20)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMax = Number(txtSystolic.text) + 20;
+					else if(Number(txtDiastolic.text) < (model.vitalSigns[model.vitalIndices.indexOf('Blood pressure')].chartMin + 20)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMin = Number(txtDiastolic.text) - 20;
 					
 				}
 				

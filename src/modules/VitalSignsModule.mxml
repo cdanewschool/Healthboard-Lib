@@ -992,11 +992,12 @@
 						
 						<mx:LineChart 
 							id="vitalsWeightLineChart"
+							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="395"
 							backgroundElements="{vitalSignsWeightBackground}" seriesFilters="[]" selectionMode="single" 
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsWeight"
 							itemRollOver="weightChartRolloverEventHandler(event)" itemRollOut="weightChartRolloutEventHandler(event)" itemClick="viewVitals(event)"
-							change="event.stopImmediatePropagation()" creationComplete="vitalsWeightLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data">
+							change="event.stopImmediatePropagation()">
 							
 							<mx:series>
 								<mx:LineSeries yField="expectation" xField="date" interactive="false">

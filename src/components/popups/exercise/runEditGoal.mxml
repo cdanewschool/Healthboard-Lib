@@ -46,17 +46,19 @@
 			
 			private function updateGoal():void 
 			{
-				if(goalNext.selected || goalDate.selected) {
+				if(goalNext.selected || goalDate.selected) 
+				{
 					for(var i:uint = 0; i < model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data.length; i++) 
 					{
 						model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data[i].target = sliderGoalPoints.value;
 					}
 					
-					model.exerciseDataByMeasure.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
 					model.exerciseDataByMeasure.refresh();
+					
 					PopUpManager.removePopUp(this);
 				}
-				else {
+				else 
+				{
 					validationError = true;
 				}
 			}
