@@ -137,9 +137,9 @@
 		<s:TextInput id="txtName" width="150" height="24" text="{trackerName}" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
-		<s:Label text="Units:" textAlign="right" width="110" paddingRight="7" />
+		<s:Label text="Unit of Measurement:" textAlign="right" width="110" paddingRight="7" />
 		<s:TextInput id="txtUnits" width="150" height="24" />
-		<s:Label text="example: lbs, %" color="0x666666" />
+		<s:Label text="e.g.: lbs, %" color="0x666666" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
 		<s:Label text="Goal:" textAlign="right" width="110" paddingRight="7" />
@@ -155,11 +155,12 @@
 		</s:Line>
 	</s:HGroup>
 	
-	<s:Label text="Initial Measure" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	<s:Label text="My First Entry" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
 	
 	<s:HGroup paddingTop="10" verticalAlign="middle" gap="5">
 		<s:Label text="Result:" textAlign="right" width="110" paddingRight="7" />
 		<s:TextInput id="txtResult" width="86" height="24" />
+		<s:Label text="{txtUnits.text}" color="0x666666" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
 		<s:Label text="Date:" textAlign="right" width="110" paddingRight="7" />
