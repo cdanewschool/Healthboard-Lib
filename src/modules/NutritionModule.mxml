@@ -698,6 +698,9 @@
 									<s:NumericStepper id="numPortion" maximum="1000" value="1" width="40" />
 									
 									<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="24" width="70">
+										<s:layout>
+											<s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedRowCount="7" />
+										</s:layout>
 										<s:dataProvider>
 											<s:ArrayCollection>
 												<fx:String>cups</fx:String>
@@ -711,7 +714,7 @@
 										</s:dataProvider>
 									</s:DropDownList>
 									
-									<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="35" height="24" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
+									<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="49" height="24" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
 									
 								</s:HGroup>
 								
