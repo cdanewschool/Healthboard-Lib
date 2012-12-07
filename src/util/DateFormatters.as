@@ -38,5 +38,8 @@ package util
 		
 		public static var monthShortDayNumberYearFull:DateFormatter = new DateFormatter();
 		monthShortDayNumberYearFull.formatString = "MMM D, YYYY";
+		
+		public static var monthFullDayNumberYearFull:DateFormatter = new DateFormatter();
+		monthFullDayNumberYearFull.formatString = "MMMM D, YYYY";
 	}
 }

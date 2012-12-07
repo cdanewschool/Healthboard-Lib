@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="323"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="355" height="323"
 			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000" creationComplete="fillUnits()">
 	<fx:Script>
 		<![CDATA[
@@ -133,22 +133,22 @@
 	<s:Label text="Create Your Own Tracker" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
 	
 	<s:HGroup paddingTop="10" verticalAlign="middle" gap="5">
-		<s:Label text="Measurement name:" textAlign="right" width="110" paddingRight="7" />
+		<s:Label text="Tracker name:" textAlign="right" width="116" paddingRight="7" />
 		<s:TextInput id="txtName" width="150" height="24" text="{trackerName}" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
-		<s:Label text="Unit of Measurement:" textAlign="right" width="110" paddingRight="7" />
+		<s:Label text="Unit of Measurement:" textAlign="right" width="116" paddingRight="7" />
 		<s:TextInput id="txtUnits" width="150" height="24" />
 		<s:Label text="e.g.: lbs, %" color="0x666666" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
-		<s:Label text="Goal:" textAlign="right" width="110" paddingRight="7" />
+		<s:Label text="Goal:" textAlign="right" width="116" paddingRight="7" />
 		<s:NumericStepper id="txtGoal" value="0" maximum="100000" width="86" />
 		<s:Label text="{txtUnits.text}" color="0x666666" />
 	</s:HGroup>
 	
 	<s:HGroup paddingTop="11" paddingBottom="9">
-		<s:Line xFrom="0" xTo="356">
+		<s:Line xFrom="0" xTo="326">
 			<s:stroke>
 				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
 			</s:stroke>
@@ -158,12 +158,12 @@
 	<s:Label text="My First Entry" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
 	
 	<s:HGroup paddingTop="10" verticalAlign="middle" gap="5">
-		<s:Label text="Result:" textAlign="right" width="110" paddingRight="7" />
-		<s:TextInput id="txtResult" width="86" height="24" />
+		<s:Label text="Result:" textAlign="right" width="116" paddingRight="7" />
+		<s:TextInput id="txtResult" width="86" height="24" textAlign="right" />
 		<s:Label text="{txtUnits.text}" color="0x666666" />
 	</s:HGroup>
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
-		<s:Label text="Date:" textAlign="right" width="110" paddingRight="7" />
+		<s:Label text="Date:" textAlign="right" width="116" paddingRight="7" />
 		<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />
 		<s:HGroup paddingTop="-2" paddingLeft="-3">
 			<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
@@ -179,7 +179,7 @@
 	</s:HGroup>
 
 	<s:HGroup paddingTop="11" paddingBottom="6">
-		<s:Line xFrom="0" xTo="356">
+		<s:Line xFrom="0" xTo="326">
 			<s:stroke>
 				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
 			</s:stroke>

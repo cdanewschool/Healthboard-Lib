@@ -218,7 +218,7 @@
 				var nextPRT:Date = new Date( today.fullYear, today.month, today.date );
 				nextPRT.time += DateUtil.MONTH * 3;
 				
-				header.actionCount = DateFormatters.dateFormatterDay.format(nextPRT) + '.';
+				header.actionCount = DateFormatters.monthFullDayNumberYearFull.format(nextPRT) + '.';
 				
 				lastExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 1 );
 				previousExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 2 );
@@ -1434,7 +1434,7 @@
 														</mx:LineChart>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="473">
+													<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="497">
 														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
@@ -1472,9 +1472,12 @@
 														</mx:PlotChart>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-														<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
-													</s:VGroup>
+													<s:HGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}"
+															  width="497" height="30" verticalAlign="middle" gap="2" paddingLeft="10" paddingTop="1" fontSize="13" color="0xE6E6E6">
+														<s:Label text="There are" />
+														<s:Label text="{data.chart.getItemAt(0).data.length}" color="0xFF931E" fontWeight="bold" fontStyle="italic" />
+														<s:Label text="comments" />
+													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
 														
@@ -1496,6 +1499,14 @@
 														<s:Label text="Provider Entry" />
 														<s:Label text="Patient Entry" />
 													</s:VGroup>
+													
+													<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}"
+															  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
+														<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+														<s:Label text="{data.chart.getItemAt(0).data.length}" paddingRight="16" />
+														<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+														<s:Label text="0" />
+													</s:HGroup>
 													
 												</mx:HBox>
 												
@@ -2032,7 +2043,7 @@
 														</mx:LineChart>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" width="473">
+													<s:VGroup includeInLayout="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'trackable' &amp;&amp; this.currentState == 'collapsed'}" width="497">
 														<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
@@ -2106,9 +2117,12 @@
 														</mx:PlotChart>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-														<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
-													</s:VGroup>
+													<s:HGroup includeInLayout="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.measure == 'Comments' &amp;&amp; this.currentState == 'collapsed'}"
+															  width="497" height="30" verticalAlign="middle" gap="2" paddingLeft="10" paddingTop="1" fontSize="13" color="0xE6E6E6">
+														<s:Label text="There are" />
+														<s:Label text="{data.chart.getItemAt(0).data.length}" color="0xFF931E" fontWeight="bold" fontStyle="italic" />
+														<s:Label text="comments" />
+													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{data.type == ExerciseType.BIKE &amp;&amp; chartData.length > 0}" visible="{data.type == ExerciseType.BIKE &amp;&amp; chartData.length > 0}" gap="3">
 														<s:HGroup verticalAlign="baseline" gap="4">
@@ -2122,6 +2136,14 @@
 														<s:Label text="Provider Entry" />
 														<s:Label text="Patient Entry" />
 													</s:VGroup>
+													
+													<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.measure == 'Comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.measure == 'Comments'}"
+															  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
+														<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+														<s:Label text="{data.chart.getItemAt(0).data.length}" paddingRight="16" />
+														<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+														<s:Label text="0" />
+													</s:HGroup>
 													
 												</mx:HBox>
 												
