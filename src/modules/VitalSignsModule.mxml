@@ -359,7 +359,7 @@
 			</s:VGroup>
 			
 			<s:HGroup paddingLeft="9" paddingTop="8">
-				<s:Button label="+ Add Tracker" styleName="buttonText" height="24" click="addTracker();" />
+				<s:Button label="+ Add New Tracker" styleName="buttonText" height="24" click="addTracker();" />
 			</s:HGroup>
 			
 		</s:VGroup>
@@ -713,7 +713,6 @@
 														showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewVitalsComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 														
 														<mx:series>
-															
 															<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
 															
 															<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
@@ -721,7 +720,6 @@
 															</mx:LineSeries>
 															
 															<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
-														
 														</mx:series>
 														
 														<mx:horizontalAxis>
@@ -743,9 +741,12 @@
 													</mx:PlotChart>
 												</s:VGroup>
 												
-												<s:VGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-													<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 2 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
-												</s:VGroup>
+												<s:HGroup includeInLayout="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType == 'comments' &amp;&amp; this.currentState == 'collapsed'}"
+														  width="460" height="30" verticalAlign="middle" gap="2" paddingLeft="10" paddingTop="1" fontSize="13" color="0xE6E6E6">
+													<s:Label text="There are" />
+													<s:Label text="{data.chart.getItemAt(0).data.length}" color="0xFF931E" fontWeight="bold" fontStyle="italic" />
+													<s:Label text="comments" />
+												</s:HGroup>
 												
 												<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
 													
@@ -800,6 +801,14 @@
 													<s:Label text="Provider Entry" />
 													<s:Label text="Patient Entry" />
 												</s:VGroup>
+												
+												<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}"
+														  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
+													<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+													<s:Label text="{data.chart.getItemAt(0).data.length - 2}" paddingRight="16" />
+													<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+													<s:Label text="2" />
+												</s:HGroup>
 												
 											</mx:HBox>
 											
