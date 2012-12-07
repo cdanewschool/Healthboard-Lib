@@ -219,10 +219,16 @@
 				nextPRT.time += DateUtil.MONTH * 3;
 				
 				header.actionCount = DateFormatters.dateFormatterDay.format(nextPRT) + '.';
+				
+				lastExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 1 );
+				previousExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 2 );
 			}
 			
 			[Bindable] public var exerciseDataPersonal:ArrayCollection;
 			[Bindable] public var exerciseDataPhysician:ArrayCollection;
+			
+			[Bindable] public var lastExercise:Object;
+			[Bindable] public var previousExercise:Object;
 			
 			private function init():void
 			{
@@ -991,30 +997,30 @@
 								
 								<s:HGroup gap="35">
 									
-									<s:HGroup verticalAlign="middle" gap="13" width="150">
+									<s:HGroup verticalAlign="middle" gap="13">
 										
 										<s:HGroup>
-											<s:Image id="exerciseHappy" source="@Embed('/images/exerciseHappy.png')" creationComplete="exerciseHappy.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value > 55" includeInLayout="{exerciseHappy.visible}" />
-											<s:Image id="exerciseNeutral" source="@Embed('/images/exerciseNeutral.png')" creationComplete="exerciseNeutral.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value &lt; 55" includeInLayout="{exerciseNeutral.visible}" />
-											<s:Image id="exerciseSad" source="@Embed('/images/exerciseSad.png')" creationComplete="exerciseSad.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value &lt; 45" includeInLayout="{exerciseSad.visible}" />
+											<s:Image id="exerciseHappy" source="@Embed('/images/exerciseHappy.png')" visible="{lastExercise.value > 55}" includeInLayout="{exerciseHappy.visible}" />
+											<s:Image id="exerciseNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="{lastExercise.value >= 45 &amp;&amp; lastExercise.value &lt; 55}" includeInLayout="{exerciseNeutral.visible}" />
+											<s:Image id="exerciseSad" source="@Embed('/images/exerciseSad.png')" visible="{lastExercise.value &lt; 45}" includeInLayout="{exerciseSad.visible}" />
 										</s:HGroup>
 										
 										<s:VGroup gap="3">
 											
 											<s:HGroup verticalAlign="baseline" gap="4">
-												<s:Label id="lblExRun" styleName="orangeStandout" creationComplete="lblExRun.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value" />
+												<s:Label id="lblExRun" styleName="orangeStandout" text="{lastExercise.value}" />
 												<s:Label text="points" styleName="whiteText13" />
-												<s:Label id="lblExRunDiff" creationComplete="lblExRunDiff.text='(+' + String(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - 45) + ')'" styleName="greenText13" />
+												<s:Label id="lblExRunDiff" text="{'(+' + String(lastExercise.value - 45) + ')'}" styleName="greenText13" />
 											</s:HGroup>
 											
 											<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xFBB03B">
-												<s:Label id="lblExRunMin" fontWeight="bold" creationComplete="lblExRunMin.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].min" />
+												<s:Label id="lblExRunMin" fontWeight="bold" text="{lastExercise.min}" />
 												<s:Label text="min." />
-												<s:Label id="lblExRunSec" fontWeight="bold" creationComplete="lblExRunSec.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].sec" />
+												<s:Label id="lblExRunSec" fontWeight="bold" text="{lastExercise.sec}" />
 												<s:Label text="sec." />
 											</s:HGroup>
 											
-											<s:Label id="lblExRunDate" creationComplete="lblExRunDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+											<s:Label id="lblExRunDate" text="{DateUtil.formatDateFromString(lastExercise.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 										
 										</s:VGroup>
 									</s:HGroup>
@@ -1022,23 +1028,23 @@
 									<s:HGroup width="174">
 										
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgRunDiffPos" source="@Embed('/images/vitalUpGreen2.png')" creationComplete="imgRunDiffPos.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].value > 0" includeInLayout="{imgRunDiffPos.visible}" />
-											<s:Image id="imgRunDiffNeg" source="@Embed('/images/vitalDownRed.png')" creationComplete="imgRunDiffNeg.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].value &lt; 0" includeInLayout="{imgRunDiffNeg.visible}" />
+											<s:Image id="imgRunDiffPos" source="@Embed('/images/vitalUpGreen2.png')" visible="{lastExercise.value - previousExercise.value > 0}" includeInLayout="{imgRunDiffPos.visible}" />
+											<s:Image id="imgRunDiffNeg" source="@Embed('/images/vitalDownRed.png')" visible="{lastExercise.value - previousExercise.value &lt; 0}" includeInLayout="{imgRunDiffNeg.visible}" />
 										</s:HGroup>	
 										
 										<s:VGroup gap="3">
 											
 											<s:HGroup verticalAlign="baseline" gap="4">
-												<s:Label id="lblRunDiff" styleName="orangeStandout" creationComplete="lblRunDiff.text=String(Math.abs(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].value))" />
-												<s:Label id="lblRunDiffUnits" fontSize="13" creationComplete="lblRunDiffUnits.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].value &lt; 0 ? 'points down' : 'points up'" color="0xFFFFFF" />
+												<s:Label id="lblRunDiff" styleName="orangeStandout" text="{String(Math.abs(lastExercise.value - previousExercise.value))}" />
+												<s:Label id="lblRunDiffUnits" fontSize="13" text="{lastExercise.value - previousExercise.value &lt; 0 ? 'points down' : 'points up'}" color="0xFFFFFF" />
 											</s:HGroup>
 											
 											<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xFBB03B">
-												<s:Label id="lblRunDiffSeconds" fontWeight="bold" creationComplete="lblRunDiffSeconds.text=String(Math.abs(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].sec - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].sec))" />
-												<s:Label id="lblRunDiffSecondsUnits" creationComplete="lblRunDiffSecondsUnits.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].value &lt; 0 ? 'seconds slower' : 'seconds faster'" />
+												<s:Label id="lblRunDiffSeconds" fontWeight="bold" text="{String(Math.abs(lastExercise.sec - previousExercise.sec))}" />
+												<s:Label id="lblRunDiffSecondsUnits" text="{lastExercise.value - previousExercise.value &lt; 0 ? 'seconds slower' : 'seconds faster'}" />
 											</s:HGroup>
 											
-											<s:Label id="lblRunDatePrev" creationComplete="lblRunDatePrev.text='from ' + DateUtil.formatDateFromString(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+											<s:Label id="lblRunDatePrev" text="{'from ' + DateUtil.formatDateFromString(previousExercise.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
 										
 										</s:VGroup>
 										
@@ -1047,14 +1053,14 @@
 									<s:VGroup gap="3" paddingRight="30">
 										
 										<s:HGroup verticalAlign="baseline" gap="4">
-											<s:Label id="lblExRunTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblExRunTarget.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[0].target" />
+											<s:Label id="lblExRunTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).target}" />
 											<s:Label text="points" styleName="whiteText13" />
 										</s:HGroup>
 										
 										<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xAEDEE4">
-											<s:Label id="lblExRunTargetMin" fontWeight="bold" creationComplete="lblExRunTargetMin.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[0].targetMin" />
+											<s:Label id="lblExRunTargetMin" fontWeight="bold" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).targetMin}" />
 											<s:Label text="min." />
-											<s:Label id="lblExRunTargetSec" fontWeight="bold" creationComplete="lblExRunTargetSec.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf( ExerciseType.RUN )).chart[0].data[0].targetSec" />
+											<s:Label id="lblExRunTargetSec" fontWeight="bold" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).targetSec}" />
 											<s:Label text="sec." />
 										</s:HGroup>
 										

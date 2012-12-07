@@ -327,6 +327,7 @@ package controllers
 					]
 				);
 			
+			updateExerciseIndices();
 			updatePAIndices();
 		}
 		
