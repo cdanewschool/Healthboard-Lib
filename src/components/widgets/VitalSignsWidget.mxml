@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enhancedtitlewindow:EnhancedTitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:enhancedtitlewindow="external.collapsibleTitleWindow.components.enhancedtitlewindow.*"
+	creationComplete="init()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import controllers.VitalSignsController;
+			
+			import models.modules.VitalSignsModel;
+			
+			import styles.ChartStyles;
+			
+			[Bindable] public var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
+			[Bindable] public var model:VitalSignsModel = controller.model as VitalSignsModel;
+			[Bindable] public var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] public var collapsedPixels:uint = 0;
+			
+			private function init():void
+			{
+				model.vitalSignsForWidget.source.splice(-2);
+			}
+		]]>
+	</fx:Script>
+	
+	<enhancedtitlewindow:layout>
+		<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="10"/>
+	</enhancedtitlewindow:layout>
+	
+	<mx:DataGrid 
+		id="dgVitalSignsWidget" width="100%" height="{441 - collapsedPixels*58}" dataProvider="{model.vitalSignsForWidget}" selectable="false"
+		color="0xFFFFFF" verticalAlign="middle" 
+		useRollOver="false"
+		headerHeight="0"
+		verticalScrollPolicy="off"
+		borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x3C3C3B]"
+		variableRowHeight="true" 
+		initialize="controller.updateVitalIndices()">
+		
+		<mx:columns>
+			<mx:DataGridColumn dataField="vital">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:VBox horizontalScrollPolicy="off" verticalScrollPolicy="off">
+							<fx:Script>
+								<![CDATA[
+									import ASclasses.Constants;
+									import ASclasses.MyCustomDataTip;
+									
+									import components.itemrenderers.chart.MyCircleItemRenderer;
+									import components.itemrenderers.chart.MyCircleItemRendererOver;
+									
+									import controllers.VitalSignsController;
+									
+									import events.ApplicationEvent;
+									
+									import models.modules.VitalSignsModel;
+									
+									import mx.charts.HitData;
+									import mx.charts.events.ChartItemEvent;
+									import mx.controls.Alert;
+									import mx.events.FlexEvent;
+									
+									import util.DateUtil;
+									
+									[Bindable] public var item:Object;
+									
+									override public function set data(value:Object):void 
+									{
+										super.data = value;
+										
+										if (value.hasOwnProperty("chart"))
+										{
+											chart.dataProvider = value.chart[0].data;
+										}
+										
+										item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+									}
+									
+									private function setState():void
+									{
+										var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true, false, Constants.MODULE_VITAL_SIGNS );
+										dispatchEvent( event );
+									}
+									
+									private function chartRolloverEventHandler(event:ChartItemEvent):void 
+									{
+										//lblTemperature.width = String(data.chart[0].data[event.hitData.chartItem.index].value).length > 2 ? 60 : 40;
+										lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = data.chart[0].data[event.hitData.chartItem.index].value;
+										lblBloodPressure2.text = data.chart[0].data[event.hitData.chartItem.index].value2;
+										lblHeightFeet.text = String(Math.floor(data.chart[0].data[event.hitData.chartItem.index].value / 12));
+										lblHeightInches.text = String(data.chart[0].data[event.hitData.chartItem.index].value % 12);
+										//lblDate.text = DateUtil.formatDateFromString(data.chart[0].data[event.hitData.chartItem.index].date);
+										myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverWidget));
+										myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverWidget));
+									}
+									
+									private function chartRolloutEventHandler(event:ChartItemEvent):void 
+									{
+										//lblTemperature.width = 40;
+										lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = item.value;
+										lblBloodPressure2.text = item.value2;
+										lblHeightFeet.text = String(Math.floor(item.value / 12));
+										lblHeightInches.text = String(item.value % 12);
+										//lblDate.text = DateUtil.formatDateFromString(item.date);
+										myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
+										myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
+									}
+								]]>
+							</fx:Script>
+							
+							<fx:Declarations>
+								<fx:Array id="bge">
+								</fx:Array>
+							</fx:Declarations>
+							
+							<mx:states>
+								<s:State name="expanded" />
+								<s:State name="collapsed" />
+							</mx:states>
+							
+							<!--
+							<mx:transitions>
+							<s:Transition fromState="collapsed">
+							<s:Resize target="{this}" duration="500" />
+							</s:Transition>
+							<s:Transition fromState="expanded">
+							<s:Resize target="{this}" duration="500" />
+							</s:Transition>
+							</mx:transition>
+							-->
+							
+							<s:HGroup width="140" gap="-2">
+								<mx:LinkButton icon.expanded="@Embed(source='/images/smallArrowGray.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsedGray.png')" horizontalGap="10" id="btnVital" label="{data.vital}" fontSize="12" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{if(this.currentState=='expanded') {this.currentState = 'collapsed'; outerDocument.collapsedPixels++;} else {this.currentState = 'expanded'; outerDocument.collapsedPixels--;}}" />
+								<mx:Label text="{'(Last: ' + DateUtil.formatDateFromString(item.date) + ')'}" fontSize="12" color="0x868686" paddingTop="1" />
+							</s:HGroup>
+							
+							<s:Group includeIn="expanded"><!--includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}"-->
+								<s:Line xFrom="0" xTo="280">
+									<s:stroke>
+										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
+									</s:stroke>
+								</s:Line>
+							</s:Group>
+							
+							<s:HGroup includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" width="282" gap="8" verticalAlign="middle">
+								
+								<mx:LineChart 
+									id="chart" width="162" height="45" 
+									backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" 
+									itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="setState()"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+									
+									<mx:series>
+										
+										<mx:LineSeries yField="expectation" xField="date" interactive="false">
+											<mx:lineStroke>
+												<s:SolidColorStroke color="0x86888A" weight="2" alpha=".4" />
+											</mx:lineStroke>
+										</mx:LineSeries>
+										
+										<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="4" adjustedRadius="4" fill="{outerDocument.chartStyles.colorVitalSignsWidgetBlack}" selectedIndex="0"><!--form="curve" -->
+											<mx:lineStroke>
+												<s:SolidColorStroke color="0xFFFFFF" weight="2" />
+											</mx:lineStroke>
+											<mx:stroke>
+												<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
+											</mx:stroke>
+										</mx:LineSeries>
+										
+										<mx:LineSeries yField="expectation2" xField="date" interactive="false" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}">
+											<mx:lineStroke>
+												<s:SolidColorStroke color="0x86888A" weight="2" alpha=".4" />
+											</mx:lineStroke>
+										</mx:LineSeries>
+										
+										<mx:LineSeries id="myLineSeries2" yField="value2" xField="date" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="4" adjustedRadius="4" fill="{outerDocument.chartStyles.colorVitalSignsWidgetBlack}"><!--form="curve" -->
+											<mx:lineStroke>
+												<s:SolidColorStroke color="0xFFFFFF" weight="2" />
+											</mx:lineStroke>
+											<!--<mx:fill>
+											<mx:SolidColor color="0xD78C73"/>
+											</mx:fill>-->
+											<mx:stroke>
+												<mx:SolidColorStroke color="0xFFFFFF" />
+											</mx:stroke>
+										</mx:LineSeries>
+										
+									</mx:series>
+									
+									<mx:horizontalAxis>
+										<mx:DateTimeAxis id="vitalXaxis" minimum="{outerDocument.model.dateMin}" maximum="{outerDocument.model.dateMax}" />
+									</mx:horizontalAxis>
+									
+									<mx:horizontalAxisRenderers>
+										<mx:AxisRenderer axis="{vitalXaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false"  />
+									</mx:horizontalAxisRenderers>
+									
+									<mx:verticalAxis>
+										<mx:LinearAxis id="vitalYaxis" minimum="{data.chartMin}" maximum="{data.chartMax}"  /><!--minimum="60" maximum="140"-->
+									</mx:verticalAxis>
+									
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer axis="{vitalYaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false" />
+									</mx:verticalAxisRenderers>
+									
+								</mx:LineChart>
+								
+								<s:VGroup gap="3" color="0x868686">
+									
+									<s:VGroup includeInLayout="{data.vital == 'Weight'}" visible="{data.vital == 'Weight'}" gap="-3">
+										<s:HGroup verticalAlign="baseline" gap="4">
+											<s:Label id="lblWeight" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+											<s:Label fontSize="12" text="pounds" />
+										</s:HGroup>
+									</s:VGroup>
+									
+									<s:HGroup includeInLayout="{data.vital == 'Blood pressure'}" visible="{data.vital == 'Blood pressure'}" verticalAlign="baseline" gap="0">
+										<s:Label id="lblBloodPressure1" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+										<s:Label fontSize="24" text="/" color="0xFFFFFF" fontWeight="bold" />
+										<s:Label id="lblBloodPressure2" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value2}" />
+										<s:Label fontSize="12" text="mmHg" paddingLeft="3" />
+									</s:HGroup>
+									
+									<s:HGroup includeInLayout="{data.vital == 'Heart rate'}" visible="{data.vital == 'Heart rate'}" verticalAlign="baseline" gap="4">
+										<s:Label id="lblHeartRate" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+										<s:Label fontSize="12" text="beats / minute" />
+									</s:HGroup>
+									
+									<s:HGroup includeInLayout="{data.vital == 'Respiratory'}" visible="{data.vital == 'Respiratory'}" verticalAlign="baseline" gap="4">
+										<s:Label id="lblRespiratory" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+										<s:Label fontSize="12" text="breaths / minute" />
+									</s:HGroup>
+									
+									<s:HGroup includeInLayout="{data.vital == 'Temperature'}" visible="{data.vital == 'Temperature'}" verticalAlign="baseline" gap="1">
+										<s:Label id="lblTemperature" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+										<s:Label fontSize="24" text="°" />
+										<s:Label fontSize="12" text="Fahrenheit" />
+									</s:HGroup>
+									
+									<s:HGroup includeInLayout="{data.vital == 'Height'}" visible="{data.vital == 'Height'}" verticalAlign="baseline" gap="4">
+										<s:Label id="lblHeightFeet" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{Math.floor(item.value / 12)}" />
+										<s:Label fontSize="12" text="feet" />
+										<s:Label id="lblHeightInches" fontSize="24" fontWeight="bold" color="0xFBB03B" text="{item.value % 12}" />
+										<s:Label fontSize="12" text="inches" />
+									</s:HGroup>
+									
+									<!--<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />-->
+								</s:VGroup>
+							</s:HGroup>
+							
+							<s:Group>
+								<s:Line xFrom="0" xTo="280">
+									<s:stroke>
+										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
+									</s:stroke>
+								</s:Line>
+							</s:Group>
+							
+						</mx:VBox>
+						
+					</fx:Component>
+					
+				</mx:itemRenderer>
+				
+			</mx:DataGridColumn>
+			
+		</mx:columns>
+		
+	</mx:DataGrid>
+	
+</enhancedtitlewindow:EnhancedTitleWindow>
