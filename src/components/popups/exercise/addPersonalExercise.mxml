@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="441" height="265"
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="341" height="257"
 			   xmlns:net="flash.net.*"
 			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
 	<fx:Script>
@@ -69,7 +69,7 @@
 	<s:Label text="What would you like to add?" fontWeight="bold" fontSize="16" />
 	
 	<s:HGroup paddingTop="10" paddingBottom="8">
-		<s:VGroup paddingRight="6">
+	<!--<s:VGroup paddingRight="6">
 			<s:HGroup verticalAlign="middle">
 				<s:RadioButton groupName="type" id="radioTrackable" selected="true" />
 				<s:Label text="Trackable Exercise" width="110" />
@@ -85,8 +85,8 @@
 			<s:stroke>
 				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
 			</s:stroke>
-		</s:Line>
-		<s:VGroup visible="{radioTrackable.selected}" includeInLayout="{radioTrackable.selected}" paddingLeft="6" gap="0" paddingTop="-2">
+		</s:Line>-->
+		<s:VGroup id="vgTrackableExercises" paddingLeft="6" gap="0" paddingTop="-2"><!--visible="{radioTrackable.selected}" includeInLayout="{radioTrackable.selected}"-->
 			<s:HGroup gap="-4" verticalAlign="middle">
 				<s:Image source="@Embed('/images/exPersonalIcon.png')" />
 				<mx:LinkButton id="btnRunWalk" label="+ Run/Walk" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnRunWalk.styleName='linkBtnUnderline';" rollOut="btnRunWalk.styleName='linkBtn';" click="addTrackableExercise('Run / Walk')" />
@@ -111,10 +111,17 @@
 				<s:Image source="@Embed('/images/exPersonalIconWeight.png')" />
 				<mx:LinkButton id="btnWeight" label="+ Weight Training" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnWeight.styleName='linkBtnUnderline';" rollOut="btnWeight.styleName='linkBtn';" click="addTrackableExercise('Weight Training')" />
 			</s:HGroup>
+			<s:HGroup paddingLeft="17">
+				<mx:LinkButton id="btnOthers" label="+ Others" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnOthers.styleName='linkBtnUnderline';" rollOut="btnOthers.styleName='linkBtn';" click="{vgTrackableExercises.visible = vgTrackableExercises.includeInLayout = false; vgUntrackableExercise.visible = vgUntrackableExercise.includeInLayout = btnSave.visible = true;}" />
+			</s:HGroup>
 		</s:VGroup>
-		<s:VGroup visible="{radioUntrackable.selected}" includeInLayout="{radioUntrackable.selected}" paddingLeft="6">
-			<s:TextInput id="txtName" width="165" text="Exercise name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Name'}" />
+		<s:VGroup id="vgUntrackableExercise" paddingLeft="6" paddingBottom="16" visible="false" includeInLayout="false"><!--visible="{radioUntrackable.selected}" includeInLayout="{radioUntrackable.selected}"-->
+			<s:HGroup verticalAlign="middle">
+				<s:Label text="Name:" width="33" textAlign="right" />
+				<s:TextInput id="txtName" width="165" text="Exercise name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Exercise name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Exercise name'}" />
+			</s:HGroup>
 			<s:HGroup verticalAlign="middle" gap="5">
+				<s:Label text="Date:" width="33" textAlign="right" />
 				<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
 				<s:HGroup paddingTop="-2" paddingLeft="-3">
 					<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
@@ -128,18 +135,21 @@
 					</s:DropDownList>
 				</s:HGroup>	
 			</s:HGroup>
-			<s:TextArea id="txtComments" width="225" height="71" text="Comments" fontStyle="italic" color="0x999999" focusIn="{if(txtComments.text == 'Comments') txtComments.text = '';}" focusOut="{if(txtComments.text == '') txtComments.text = 'Comments'}" />
+			<s:HGroup>
+				<s:Label text="Notes:" width="33" textAlign="right" paddingTop="6" />
+				<s:TextArea id="txtComments" width="266" height="71" text="Text here" fontStyle="italic" color="0x999999" focusIn="{if(txtComments.text == 'Text here') txtComments.text = '';}" focusOut="{if(txtComments.text == '') txtComments.text = 'Text here'}" />
+			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>
 	
-	<s:Line xFrom="0" xTo="410">
+	<s:Line xFrom="0" xTo="310">
 		<s:stroke>
 			<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
 		</s:stroke>
 	</s:Line>
 	
-	<s:HGroup width="100%" horizontalAlign="right" paddingTop="17">
-		<s:Button label="Save" includeInLayout="{radioUntrackable.selected}" visible="{radioUntrackable.selected}" click="addUntrackableExercise()" styleName="buttonText" height="24" width="55" />
+	<s:HGroup width="100%" horizontalAlign="right" paddingTop="7">
+		<s:Button id="btnSave" label="Save" click="addUntrackableExercise()" styleName="buttonText" height="24" width="55" visible="false" /><!--visible="{radioUntrackable.selected}"-->
 		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
 </s:TitleWindow>
