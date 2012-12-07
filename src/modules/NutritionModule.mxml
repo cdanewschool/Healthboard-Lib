@@ -824,12 +824,12 @@
 							<s:Image source="{!model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial}" />
 						</s:HGroup>
 						
-						<s:Label text="Total Calories" styleName="subtitles" fontWeight="normal" paddingTop="11" paddingBottom="-4" />
+						<s:Label text="Total Calories" styleName="subtitles" fontWeight="normal" paddingTop="11" /><!--paddingBottom="-4"-->
 						<!--<s:Label text="{model.summaryCalories.getItemAt(0).calories + ' cals.'}" fontSize="11" fontStyle="italic" color="0xFF931E" visible="{model.hasMealBeenSubmitted}" />-->
 						
 						<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
 						
-						<mx:BarChart id="nutSummaryCalories" dataProvider="{model.summaryCalories}" type="overlaid" height="28" width="278">
+						<mx:BarChart id="nutSummaryCalories" dataProvider="{model.summaryCalories}" height="28" width="278"><!--type="overlaid"-->
 							
 							<mx:series>
 								
@@ -848,7 +848,7 @@
 								-->
 								
 								<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
-								<mx:BarSeries id="nutCaloriesSeries" yField="type" xField="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal ? 'goal' : 'calories'}">	<!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
+								<mx:BarSeries id="nutCaloriesSeries" yField="type" xField="calories">	<!--xField="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal ? 'goal' : 'calories'}"--><!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
 									<mx:fill>
 										<mx:LinearGradient rotation="90">
 											<mx:entries>
@@ -1461,7 +1461,7 @@
 											
 											<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
 											
-											<mx:BarChart id="nutFoodJournalCalories" dataProvider="{model.dailyCaloriesCurrent}" type="overlaid" height="28" width="278">
+											<mx:BarChart id="nutFoodJournalCalories" dataProvider="{model.dailyCaloriesCurrent}" height="28" width="278"><!--type="overlaid"-->
 												<mx:series>
 													
 													<!--
@@ -1479,7 +1479,7 @@
 													-->
 													
 													<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
-													<mx:BarSeries id="nutJourCaloriesSeries" yField="type" xField="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal ? 'goal' : 'calories'}">	<!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
+													<mx:BarSeries id="nutJourCaloriesSeries" yField="type" xField="calories">	<!--xField="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal ? 'goal' : 'calories'}"--><!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
 														<mx:fill>
 															<mx:LinearGradient rotation="90">
 																<mx:entries>
