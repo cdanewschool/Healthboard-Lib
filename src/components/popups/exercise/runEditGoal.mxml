@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="409"
-			   xmlns:net="flash.net.*"
-			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000">
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:net="flash.net.*"
+	width="385" height="409"
+	skinClass="skins.general.myHeaderlessTitleWindow" 
+	color="0x000000"
+	close="PopUpManager.removePopUp(this);">
+	
 	<fx:Script>
 		<![CDATA[
 			import controllers.ExerciseController;
+			
+			import enum.ExerciseType;
 			
 			import models.modules.ExerciseModel;
 			
@@ -46,11 +53,11 @@
 			
 			private function updateGoal():void 
 			{
-				if(goalNext.selected || goalDate.selected) 
+				if( goalNext.selected || goalDate.selected ) 
 				{
-					for(var i:uint = 0; i < model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data.length; i++) 
+					for(var i:uint = 0; i < model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length; i++) 
 					{
-						model.exerciseDataByMeasure[model.exerciseIndices.indexOf('1.5 Mile Run')].chart[0].data[i].target = sliderGoalPoints.value;
+						model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf(ExerciseType.RUN) ).chart.getItemAt(0).data.getItemAt(i).target = sliderGoalPoints.value;
 					}
 					
 					model.exerciseDataByMeasure.refresh();
@@ -72,16 +79,12 @@
 				else if(points <= 82) return 11;
 				else if(points <= 95) return 10;
 				else return 9;
-				
-				//return points <= 58 ? 15 : 14;
 			}
 			
 			private function getGoalSeconds(points:uint):String 
 			{
 				var arrSeconds:Array = new Array(30,27,24,21,18,15,10,05,55,50,45,42,39,36,33,30,25,15,05,55,45,30,15,05,55,45,30,15,05,55,45,35,30,25,20,15,10,05,55,50,45,40,35,25,20,15,12,09,06,03,00,57,54,51,48,45);
 				return arrSeconds[points-45] < 10 ? '0'+String(arrSeconds[points-45]) : String(arrSeconds[points-45]);
-				
-				//return ((70-points)*5)%60 < 10 ? '0'+((70-points)*5)%60 : String(((70-points)*5)%60);
 			}
 			
 			private function getTimeFromGoal(min:uint,sec:uint):uint
@@ -99,12 +102,6 @@
 				points -= (sec/5);  //approximation
 				
 				return points;
-				
-				/*
-				var points:uint = (min == 14) ? 70 : 58;
-				points -= (sec/5);
-				return points;
-				*/
 			}
 		]]>
 	</fx:Script>
@@ -132,7 +129,7 @@
 			minimum="45" maximum="100"
 			showTrackHighlight="true" showDataTip="false" tickInterval="5" tickOffset="12" tickLength="2"
 			width="357"
-			liveDragging="true" creationComplete="sliderGoalPoints.value=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].target" /><!--dataTipFormatFunction="getSliderLabel"change="rangeUpdateMixed();" -->
+			liveDragging="true" creationComplete="sliderGoalPoints.value=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf(ExerciseType.RUN)).chart[0].data[0].target" />
 		
 	</s:HGroup>
 	
@@ -160,7 +157,9 @@
 	</s:HGroup>
 	
 	<s:HGroup paddingLeft="-6" paddingTop="-7">
+		
 		<s:BorderContainer borderAlpha="{validationError ? 1 : 0}" borderColor="0xE20613" borderWeight="2" backgroundAlpha="0" width="363" height="81">
+			
 			<s:layout>
 				<s:VerticalLayout paddingTop="5" paddingLeft="5" />
 			</s:layout>
@@ -195,7 +194,9 @@
 				</s:HGroup>
 				
 			</s:HGroup>
-		</s:BorderContainer>	
+			
+		</s:BorderContainer>
+		
 	</s:HGroup>
 	
 	<s:HGroup paddingTop="2" paddingBottom="6">

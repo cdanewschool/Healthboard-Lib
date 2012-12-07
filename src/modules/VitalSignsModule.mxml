@@ -1156,12 +1156,13 @@
 						
 						<mx:LineChart 
 							id="vitalsPressureLineChart"
+							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="348"
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
 							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsBloodPressure"
 							change="event.stopImmediatePropagation()" 
-							creationComplete="vitalsPressureLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data; pressureChartRolloutEventHandler()">
+							creationComplete="pressureChartRolloutEventHandler()">
 							
 							<mx:series>
 								

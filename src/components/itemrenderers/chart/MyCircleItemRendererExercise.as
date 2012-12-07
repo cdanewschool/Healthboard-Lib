@@ -115,12 +115,15 @@ package components.itemrenderers.chart
 			var maxDate:String;
 			var model:ExerciseModel = ExerciseModel(AppProperties.getInstance().controller.exerciseController.model);
 			
+			//	TODO:	update to change their state generically...should not have to reference a hard-coded value
+			
 			if(_data.item.measure == 'PRTscore') maxDate = model.PRTscoreMax;
 			else if(_data.item.measure == 'mileRun') maxDate = model.mileRunMax;
 			else if(_data.item.measure == 'curlUps') maxDate = model.curlUpsMax;
 			else if(_data.item.measure == 'pushUps') maxDate = model.pushUpsMax;
 			else if(_data.item.measure == 'runWalk') maxDate = model.runWalkMax;
 			else if(_data.item.measure == 'bike') maxDate = model.bikeMax;
+			else if(_data.item.measure == 'weight') maxDate = model.weightMax;
 			else if(_data.item.measure == 'comments') maxDate = model.exPAcommentsMax;
 			
 			if(_data.item.date != maxDate) {
