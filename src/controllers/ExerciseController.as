@@ -2,6 +2,8 @@ package controllers
 {
 	import controllers.BaseModuleController;
 	
+	import enum.ExerciseType;
+	
 	import models.modules.ExerciseModel;
 	
 	import mx.charts.ChartItem;
@@ -46,7 +48,7 @@ package controllers
 				(
 					[
 						{
-							measure: "Avg. PRT Score", chartMin: 35, chartMax: 100,
+							type: "overview", type: ExerciseType.OVERVIEW, measure: "Overall PRT Score", chartMin: 35, chartMax: 100,
 							chart:  new ArrayCollection
 							(
 								[ 
@@ -68,7 +70,7 @@ package controllers
 						},
 						
 						{
-							measure: "1.5 Mile Run", chartMin: 35, chartMax: 100,
+							measure: "1.5 Mile Run", type: ExerciseType.RUN, chartMin: 35, chartMax: 100,
 							chart: new ArrayCollection
 							(
 								[ 
@@ -90,7 +92,7 @@ package controllers
 						},
 						
 						{
-							measure: "Curl Ups", chartMin: 35, chartMax: 100,
+							measure: "Curl Ups", type: ExerciseType.CURL_UPS, chartMin: 35, chartMax: 100,
 							chart: new ArrayCollection
 							(
 								[ 
@@ -112,7 +114,7 @@ package controllers
 						},
 						
 						{
-							measure: "Push Ups", chartMin: 35, chartMax: 100,
+							measure: "Push Ups", type: ExerciseType.PUSH_UPS, chartMin: 35, chartMax: 100,
 							chart: new ArrayCollection
 							(
 								[ 
@@ -150,7 +152,7 @@ package controllers
 				(
 					[
 						{
-							measure: "Comments", chartType: "comments",
+							type: 'comments', measure: "Comments", category: "Endurance", chartType: "comments",
 							chart: new ArrayCollection
 							(
 								[ 
@@ -162,7 +164,8 @@ package controllers
 												{type:'patient',expectation:'expectation',author:fullname,datePatient:'11/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
 												{type:'patient',expectation:'expectation',author:fullname,datePatient:'12/11/2011',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
 												{type:'patient',expectation:'expectation',author:fullname,datePatient:'01/11/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
-												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
+												{type:'patient',expectation:'expectation',author:fullname,datePatient:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'},
+												{type:'provider',expectation:'expectation',author:fullname,dateProvider:'08/03/2012',comments:'I was feeling fine and enjoying exercising.', measure:'comments'}
 											]
 										)
 									}
@@ -171,7 +174,8 @@ package controllers
 						},
 						
 						{ 
-							measure: "Run / Walk", chartMin:15, chartMax:45,
+							type: ExerciseType.RUN, measure: "Run / Walk", category: "Endurance", unit: "minutes", unit2: "miles",
+							chartType:'trackable', chartMin:15, chartMax:45, 
 							chart: new ArrayCollection
 							(
 								[ 
@@ -179,11 +183,11 @@ package controllers
 										data: new ArrayCollection
 										(
 											[
-												{value:30, expectation:30, date:'10/11/2011',miles:3.0, measure:'runWalk'},
-												{value:32, expectation:30, date:'11/11/2011',miles:3.0, measure:'runWalk'},
-												{value:34, expectation:30, date:'12/11/2011',miles:3.0, measure:'runWalk'},
-												{value:27, expectation:30, date:'01/11/2012',miles:3.0, measure:'runWalk'},
-												{value:30, expectation:30, date:'08/03/2012',miles:3.0, measure:'runWalk'}
+												{value:30, value2: 3.0, expectation:30, date:'10/11/2011', measure:'runWalk'},
+												{value:32, value2: 3.0, expectation:30, date:'11/11/2011', measure:'runWalk'},
+												{value:34, value2: 3.0, expectation:30, date:'12/11/2011', measure:'runWalk'},
+												{value:27, value2: 3.0, expectation:30, date:'01/11/2012', measure:'runWalk'},
+												{value:30, value2: 3.0, expectation:30, date:'08/03/2012', measure:'runWalk'}
 											]
 										)
 									}
@@ -192,7 +196,8 @@ package controllers
 						},
 						
 						{ 
-							measure: "Bike", chartMin:15, chartMax:45,
+							type: ExerciseType.BIKE, measure: "Bike", unit: "minutes", unit2: "miles",
+							chartMin:15, chartMax:45, chartType:'trackable', 
 							chart: new ArrayCollection
 							(
 								[ 
@@ -200,11 +205,11 @@ package controllers
 										data: new ArrayCollection
 										(
 											[
-												{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
-												{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
-												{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
-												{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
-												{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
+												{value:30, value2: 6.5, expectation:30, date:'10/11/2011', measure:'bike'},
+												{value:29, value2: 8, expectation:30, date:'11/11/2011', measure:'bike'},
+												{value:28, value2: 7.5, expectation:30, date:'12/11/2011', measure:'bike'},
+												{value:31, value2: 5.5, expectation:30, date:'01/11/2012', measure:'bike'},
+												{value:34, value2: 6.3, expectation:30, date:'08/03/2012', measure:'bike'}
 											]
 										)
 									}
@@ -235,7 +240,7 @@ package controllers
 				(
 					[
 						{ 
-							measure: "Comments", chartType: 'untrackable',
+							type: 'comments', measure: "Comments", chartType: 'untrackable',
 							chart: new ArrayCollection
 							(
 								[ 
@@ -256,7 +261,7 @@ package controllers
 						},
 						
 						{ 
-							measure: "Bike", chartMin:15, chartMax:45, chartType:'trackable',
+							type: ExerciseType.BIKE, measure: "Bike", chartMin:15, chartMax:45, chartType:'trackable', unit: "minutes", unit2: "miles",
 							chart: new ArrayCollection
 							(
 								[ 
@@ -264,11 +269,11 @@ package controllers
 										data: new ArrayCollection
 										(
 											[
-												{value:30, expectation:30, date:'10/11/2011', measure:'bike'},
-												{value:29, expectation:30, date:'11/11/2011', measure:'bike'},
-												{value:28, expectation:30, date:'12/11/2011', measure:'bike'},
-												{value:31, expectation:30, date:'01/11/2012', measure:'bike'},
-												{value:34, expectation:30, date:'08/03/2012', measure:'bike'}
+												{value:30, value2: 9.1, expectation:30, date:'10/11/2011', measure:'bike'},
+												{value:29, value2: 8.6, expectation:30, date:'11/11/2011', measure:'bike'},
+												{value:28, value2: 7.1, expectation:30, date:'12/11/2011', measure:'bike'},
+												{value:31, value2: 6.5, expectation:30, date:'01/11/2012', measure:'bike'},
+												{value:34, value2: 9.4, expectation:30, date:'08/03/2012', measure:'bike'}
 											]
 										)
 									}
@@ -277,7 +282,7 @@ package controllers
 						},
 						
 						{ 
-							measure: "Hike", chartMin:15, chartMax:45, chartType: 'untrackable',
+							type: ExerciseType.HIKE, measure: "Hike", chartMin:15, chartMax:45, chartType: 'untrackable', unit: "times",
 							chart: new ArrayCollection
 							(
 								[
@@ -300,30 +305,30 @@ package controllers
 					]
 				);
 			
-			model.PAproviderCopy = new ArrayCollection( model.exerciseDataByMeasurePhysicianAssigned.toArray() );
-			model.PERproviderCopy = new ArrayCollection( model.exerciseDataByMeasurePersonal.toArray() );
+			var exercisesProvider:Array = [];
+			var exercisesPatient:Array = [];
 			
+			var exercise:Object;
+			
+			for each(exercise in model.exerciseDataByMeasurePhysicianAssigned)
+				if( exercise.chartType == 'trackable' ) 
+					exercisesProvider.push( exercise );
+				
+			for each(exercise in model.exerciseDataByMeasurePersonal)
+				if( exercise.chartType == 'trackable' ) 
+					exercisesPatient.push( exercise );
+				
 			model.exerciseForWidget = new ArrayCollection
 				(
 					[
-						{ exerciseType: "Most Recent PRT", lastDate: model.exerciseData.getItemAt(3).date, chartType: "normal", chartMin: 155, chartMax: 190, chart: model.exerciseData.getItemAt(3) },
-						{ exerciseType: "Physician-assigned", lastDate: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(0).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(0).chart[0].data.length - 1].date, chartType: "double", chartMin: 40, chartMax: 160, chart: model.PAproviderCopy },
-						{ exerciseType: "Personal", lastDate: model.exerciseDataByMeasurePersonal.getItemAt(0).chart[0].data[model.exerciseDataByMeasurePersonal.getItemAt(0).chart[0].data.length - 1].date, chartType: "normal", chartMin: 40, chartMax: 85, chart: model.PERproviderCopy }	
+						{ exerciseType: "Most Recent PRT", lastDate: model.exerciseData.getItemAt( model.exerciseData.length - 1 ).date, chartType: "normal", chartMin: 155, chartMax: 190, chart: model.exerciseData.getItemAt( model.exerciseData.length - 1 ) },
+						{ exerciseType: "Physician-assigned", lastDate: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(1).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasurePhysicianAssigned.getItemAt(1).chart.getItemAt(0).data.length - 1 ).date, chartType: "double", chartMin: 40, chartMax: 160, chart: exercisesProvider },
+						{ exerciseType: "Personal", lastDate: model.exerciseDataByMeasurePersonal.getItemAt(1).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasurePersonal.getItemAt(1).chart.getItemAt(0).data.length - 1 ).date, chartType: "normal", chartMin: 40, chartMax: 85, chart: exercisesPatient }	
 					]
 				);
 			
+			updateExerciseIndices();
 			updatePAIndices();
-			
-			filterProvidersForWidget();
-		}
-		
-		//	this function removes "Comments" and "Hiking" (untrackable exercise) for the WIDGET
-		public function filterProvidersForWidget():void 
-		{
-			var model:ExerciseModel = model as ExerciseModel;
-			
-			model.PAproviderCopy.source.splice(-1);
-			model.PERproviderCopy.source.splice(-2);
 		}
 		
 		public function updateExerciseIndices():void
@@ -333,7 +338,7 @@ package controllers
 			var exerciseIndicesTemp:Array = new Array();
 			
 			for(var i:uint = 0; i < model.exerciseDataByMeasure.length; i++) {
-				exerciseIndicesTemp.push( model.exerciseDataByMeasure.getItemAt(i).measure );
+				exerciseIndicesTemp.push( model.exerciseDataByMeasure.getItemAt(i).type );
 			}
 			
 			model.exerciseIndices = exerciseIndicesTemp;
@@ -347,7 +352,7 @@ package controllers
 			
 			for(var i:uint = 0; i < model.exerciseDataByMeasurePhysicianAssigned.length; i++) 
 			{
-				exercisePAIndicesTemp.push( model.exerciseDataByMeasurePhysicianAssigned.getItemAt(i).measure );
+				exercisePAIndicesTemp.push( model.exerciseDataByMeasurePhysicianAssigned.getItemAt(i).type );
 			}
 			
 			model.exercisePAIndices = exercisePAIndicesTemp;
@@ -361,7 +366,7 @@ package controllers
 			
 			for(var i:uint = 0; i < model.exerciseDataByMeasurePersonal.length; i++) 
 			{
-				exercisePERIndicesTemp.push( model.exerciseDataByMeasurePersonal.getItemAt(i).measure );
+				exercisePERIndicesTemp.push( model.exerciseDataByMeasurePersonal.getItemAt(i).type );
 			}
 			
 			model.exercisePERIndices = exercisePERIndicesTemp;
@@ -373,6 +378,52 @@ package controllers
 			var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
 			
 			return (item.item.type == 'provider') ? chartStyles.colorVitalSignsProvider : chartStyles.colorVitalSignsPatient;
+		}
+		
+		public function getIconForExercise(data:Object, widget:Boolean = false):Class
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			if( data.type == ExerciseType.BIKE ) return widget ? model.iconBikeWidget : model.iconBike;
+			if( data.type == ExerciseType.CURL_UPS ) return widget ? model.iconCurlUpsWidget : model.iconCurlUps;
+			if( data.type == ExerciseType.ELLIPTICAL ) return widget ? model.iconMachine : model.iconMachine;
+			if( data.type == ExerciseType.PUSH_UPS ) return widget ? model.iconPushUpsWidget : model.iconPushUps;
+			if( data.type == ExerciseType.RUN ) return widget ? model.iconRunWidget : model.iconRun;
+			if( data.type == ExerciseType.SWIM ) return widget ? model.iconSwim : model.iconSwim;
+			if( data.type == ExerciseType.YOGA ) return widget ? model.iconYoga : model.iconYoga;
+			if( data.type == ExerciseType.WEIGHT ) return widget ? model.iconWeightWidget : model.iconWeight;
+			
+			return null;
+		}
+		
+		public function getPerformanceIconForExercise(data:Object):Class
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			if( data.value <= 45 ) return model.performanceIconBad;
+			if( data.value >= 60 ) return model.performanceIconGood;
+			
+			return model.performanceIconNeutral;
+		}
+		
+		public function getPerformanceLabelForExercise(data:Object):String
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			if( data.value <= 45 ) return "Bad";
+			if( data.value >= 60 ) return "Good";
+			
+			return "Satisfactory";
+		}
+		
+		public function getPerformanceLabelColorForExercise(data:Object):uint
+		{
+			var model:ExerciseModel = model as ExerciseModel;
+			
+			if( data.value <= 45 ) return 0xE32426;
+			if( data.value >= 60 ) return 0x349846;
+			
+			return 0xCCCB30;
 		}
 	}
 }

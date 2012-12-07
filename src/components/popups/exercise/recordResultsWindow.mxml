@@ -9,6 +9,8 @@
 		<![CDATA[
 			import controllers.ExerciseController;
 			
+			import enum.ExerciseType;
+			
 			import events.ApplicationEvent;
 			
 			import models.modules.ExerciseModel;
@@ -28,24 +30,6 @@
 			
 			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
 			[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
-			
-			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
-			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
-			/* protected function dropDownCalendar_openHandler(event:DropDownEvent):void 
-			{
-				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
-			}
-			
-			protected function stopPropagation(event:Event):void 
-			{
-				event.stopImmediatePropagation();
-			}
-			
-			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void 
-			{
-				txtDate.text = DateUtil.get10DigitDate(dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear);
-				dropDownCalendar.closeDropDown(true);					
-			} */
 			
 			override protected function commitProperties():void
 			{
@@ -93,18 +77,24 @@
 				
 				if(txtRunWalk.text != "") 
 				{
-					var runWalkStartIndex:int = (new Date(dateChooser.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data[model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.length - 1].date)) ? model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
+					var runWalkStartIndex:int = (new Date(dateChooser.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf( ExerciseType.RUN )].chart[0].data[model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf( ExerciseType.RUN )].chart[0].data.length - 1].date)) ? model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf( ExerciseType.RUN )].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
 					var newRunWalk:Object = new Object();
-					newRunWalk = ({value:txtRunWalk.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[0].expectation, date:dateChooser.text, miles:txtRunWalkMiles.text, measure:'runWalk'});
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.splice(runWalkStartIndex,0,newRunWalk);
+					
+					newRunWalk = ({value:txtRunWalk.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).expectation, date:dateChooser.text, value2:txtRunWalkMiles.text, measure: "runWalk"});
+					model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.addItemAt(newRunWalk,runWalkStartIndex);
 
-					if(Number(txtRunWalk.text) > (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMax - 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMax = Number(txtRunWalk.text) + 10;
-					else if(Number(txtRunWalk.text) < (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMin + 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMin = Number(txtRunWalk.text) - 10;
+					if(Number(txtRunWalk.text) > (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf( ExerciseType.RUN )].chartMax - 10)) 
+						model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.RUN ) ).chartMax = Number(txtRunWalk.text) + 10;
+					else if(Number(txtRunWalk.text) < (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf( ExerciseType.RUN )].chartMin + 10)) 
+						model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.RUN ) ).chartMin = Number(txtRunWalk.text) - 10;
 
 					if(new Date(dateChooser.text) > new Date(model.runWalkMax)) model.runWalkMax = dateChooser.text;
 					
-					if(new Date(dateChooser.text) > model.runWalkChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+					//	here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+					if(new Date(dateChooser.text) > model.runWalkChartMax) 
+					{
 						var myNewDate:Date = new Date(dateChooser.text);
+						
 						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
 						myNewDate.setMonth(myNewDate.getMonth() + 1);
 						model.runWalkChartMax = myNewDate;
@@ -113,20 +103,25 @@
 				
 				if(txtBike.text != "") 
 				{
-					var bikeStartIndex:int = (new Date(dateChooser.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data[model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.length - 1].date)) ? model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
+					var bikeStartIndex:int = (new Date(dateChooser.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chart.getItemAt(0).data.length - 1 ).date)) ? model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
 					var newBike:Object = new Object();
-					newBike = ({value:txtBike.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Bike')).chart[0].data[0].expectation, date:dateChooser.text, miles:txtBikeMiles.text, measure:'bike'});
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.splice(bikeStartIndex,0,newBike);
 					
-					if(Number(txtBike.text) > (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMax - 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMax = Number(txtBike.text) + 10;
-					else if(Number(txtBike.text) < (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMin + 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMin = Number(txtBike.text) - 10;
+					newBike = ({value:txtBike.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE )).chart.getItemAt(0).data.getItemAt(0).expectation, date:dateChooser.text, value2:txtBikeMiles.text, measure: "bike"});
+					model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chart.getItemAt(0).data.addItemAt( newBike, bikeStartIndex );
+					
+					if(Number(txtBike.text) > (model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chartMax - 10)) model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chartMax = Number(txtBike.text) + 10;
+					else if(Number(txtBike.text) < (model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chartMin + 10)) model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( ExerciseType.BIKE ) ).chartMin = Number(txtBike.text) - 10;
 					
 					if(new Date(dateChooser.text) > new Date(model.bikeMax)) model.bikeMax = dateChooser.text;
 					
-					if(new Date(dateChooser.text) > model.bikeChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+					//	here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+					if( new Date(dateChooser.text) > model.bikeChartMax ) 
+					{
 						var myNewDate2:Date = new Date(dateChooser.text);
 						if(myNewDate2.getDate() < 22) myNewDate2.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						
 						myNewDate2.setMonth(myNewDate2.getMonth() + 1);
+						
 						model.bikeChartMax = myNewDate2;
 					}
 				}
@@ -135,15 +130,17 @@
 				{
 					var newComment:Object = new Object();
 					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.fullname,datePatient:dateChooser.text,comments:txtComments.text, measure:'comments'});
-					//var newCommentOP:ObjectProxy = new ObjectProxy(newComment);
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Comments')].chart[0].data.push(newComment);
-					//model.arrVitalSigns.refresh();
-					if(new Date(dateChooser.text) > new Date(model.commentsMax)) model.exPAcommentsMax = dateChooser.text;
+					
+					model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf('comments') ).chart.getItemAt(0).data.push( newComment );
+					
+					if( new Date(dateChooser.text ) > new Date(model.commentsMax)) model.exPAcommentsMax = dateChooser.text;
 				}
 
 				var newChartMax:Date = new Date(dateChooser.text);
-				newChartMax.setDate(newChartMax.getDate() + 8);			
-				var newChartMaxDummy:Date = new Date(model.chartMaxExPA.getFullYear(), model.chartMaxExPA.getMonth(), model.chartMaxExPA.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting model.chartMax (in this case to itself)
+				newChartMax.setDate(newChartMax.getDate() + 8);
+				
+				//	this is a quick and dirty way of forcing the chart to refresh, by resetting model.chartMax (in this case to itself)
+				var newChartMaxDummy:Date = new Date(model.chartMaxExPA.getFullYear(), model.chartMaxExPA.getMonth(), model.chartMaxExPA.getDate());
 				
 				if(new Date(dateChooser.text) > model.chartMaxExPA) model.chartMaxExPA = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
 				else model.chartMaxExPA = newChartMaxDummy;//.setDate(model.chartMax.getDate() + 1);// = model.chartMax;
@@ -152,7 +149,7 @@
 				//if any field is entered?
 				var entryByDate:Object = new Object();
 				entryByDate = {date: DateUtil.get10DigitDate(dateChooser.text), runWalk: txtRunWalk.text, runWalkMiles: txtRunWalkMiles.text, bike: txtBike.text, bikeMiles: txtBikeMiles.text, expectation:'expectation', comments:txtComments.text, type:'patient'};
-				model.exerciseDataPhysicianAssigned.addItem(entryByDate);
+				model.exerciseDataPhysicianAssigned.addItem( entryByDate );
 				
 				model.exerciseDataByMeasurePhysicianAssigned.refresh();
 				model.exerciseDataPhysicianAssigned.refresh();
@@ -161,14 +158,11 @@
 				event.data = "Your exercise has been recorded";
 				AppProperties.getInstance().controller.application.dispatchEvent( event );
 				
-				//model.chartMax = new Date(2012,5,5);*/
 				PopUpManager.removePopUp(this);
 			}
 			
 			private function browseAttachment(evt:MouseEvent):void 
 			{
-				/*var arr:Array = [];
-				arr.push(new FileFilter("Images", "*.gif;*.jpeg;*.jpg;*.png"));*/
 				fileReference.browse();
 			}
 			
@@ -187,9 +181,10 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<net:FileReference id="fileReference"
-						   select="fileReference_select(event);"
-						   complete="fileReference_complete(event);" />
+		<net:FileReference 
+			id="fileReference"
+			select="fileReference_select(event);"
+			complete="fileReference_complete(event);" />
 	</fx:Declarations>
 	
 	<s:layout>
@@ -226,37 +221,24 @@
 		</s:Line>
 		
 	</s:VGroup>
-		
-	<!--<s:HGroup paddingTop="2" verticalAlign="middle" gap="5">
-		<s:Label text="Date collected:" textAlign="right" width="103" paddingRight="7" />
-		<s:TextInput id="txtDate" width="88" height="24" text="{DateUtil.get10DigitDate((new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear())}" />		
-		<s:HGroup paddingTop="-2" paddingLeft="-3">
-			<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
-				<s:dataProvider>
-					<s:ArrayList>
-						<mx:DateChooser id="dateChooser" showToday="true"
-										contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
-										fontSize="11" change="dateChooser_changeHandler(event)" />
-					</s:ArrayList>
-				</s:dataProvider>
-			</s:DropDownList>
-		</s:HGroup>	
-	</s:HGroup>-->
 	
 	<s:HGroup paddingTop="12" verticalAlign="middle" gap="5">
 		<s:Label text="Run / Walk:" textAlign="right" width="103" paddingRight="7" />
 		<s:TextInput id="txtRunWalk" width="62" height="24" />
 		<s:Label text="minutes" color="0x666666" />
 	</s:HGroup>
+	
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5" paddingLeft="108">
 		<s:TextInput id="txtRunWalkMiles" width="62" height="24" />
 		<s:Label text="miles" color="0x666666" />
 	</s:HGroup>
+	
 	<s:HGroup paddingTop="16" verticalAlign="middle" gap="5">
 		<s:Label text="Bike:" textAlign="right" width="103" paddingRight="7" />
 		<s:TextInput id="txtBike" width="62" height="24" />
 		<s:Label text="minutes" color="0x666666" />
 	</s:HGroup>
+	
 	<s:HGroup paddingTop="2" verticalAlign="middle" gap="5" paddingLeft="108">
 		<s:TextInput id="txtBikeMiles" width="62" height="24" />
 		<s:Label text="miles" color="0x666666" />
@@ -287,4 +269,5 @@
 		<s:Button label="Add Record" styleName="buttonText" height="24" click="addRecord()" />
 		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
+	
 </s:TitleWindow>

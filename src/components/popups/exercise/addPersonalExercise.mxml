@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="441" height="265"
-			   xmlns:net="flash.net.*"
-			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D">
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:net="flash.net.*"
+	width="441" height="265"
+	skinClass="skins.general.myHeaderlessTitleWindow" color="0x4D4D4D"
+	close="PopUpManager.removePopUp(this);">
+	
 	<fx:Script>
 		<![CDATA[
 			import controllers.ExerciseController;
+			
+			import enum.ExerciseType;
 			
 			import events.ApplicationEvent;
 			
@@ -45,6 +51,7 @@
 			{
 				var myAddPersonalExerciseTrackable:addPersonalExerciseTrackable = addPersonalExerciseTrackable(PopUpManager.createPopUp(this.parent, addPersonalExerciseTrackable) as spark.components.TitleWindow);
 				myAddPersonalExerciseTrackable.type = type;
+				
 				PopUpManager.centerPopUp(myAddPersonalExerciseTrackable);
 				PopUpManager.removePopUp(this);
 			}
@@ -57,6 +64,7 @@
 				
 				model.exerciseDataByMeasurePersonal.addItemAt({measure: txtName.text, chartMin:15, chartMax:45, chartType: 'untrackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 1);
 				model.exerciseDataByMeasurePersonal.refresh();
+				
 				PopUpManager.removePopUp(this);
 			}
 		]]>
@@ -88,48 +96,55 @@
 		</s:Line>
 		<s:VGroup visible="{radioTrackable.selected}" includeInLayout="{radioTrackable.selected}" paddingLeft="6" gap="0" paddingTop="-2">
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIcon.png')" />
-				<mx:LinkButton id="btnRunWalk" label="+ Run/Walk" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnRunWalk.styleName='linkBtnUnderline';" rollOut="btnRunWalk.styleName='linkBtn';" click="addTrackableExercise('Run / Walk')" />
+				<s:Image source="@Embed('/images/exercise/personal/run.png')" />
+				<mx:LinkButton id="btnRunWalk" label="+ Run/Walk" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnRunWalk.styleName='linkBtnUnderline';" rollOut="btnRunWalk.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.RUN )" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIconBike.png')" />
-				<mx:LinkButton id="btnBike" label="+ Bike" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnBike.styleName='linkBtnUnderline';" rollOut="btnBike.styleName='linkBtn';" click="addTrackableExercise('Bike')" />
+				<s:Image source="@Embed('/images/exercise/personal/bike.png')" />
+				<mx:LinkButton id="btnBike" label="+ Bike" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnBike.styleName='linkBtnUnderline';" rollOut="btnBike.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.BIKE )" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIconSwim.png')" />
-				<mx:LinkButton id="btnSwim" label="+ Swim" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnSwim.styleName='linkBtnUnderline';" rollOut="btnSwim.styleName='linkBtn';" click="addTrackableExercise('Swim')" />
+				<s:Image source="@Embed('/images/exercise/personal/swim.png')" />
+				<mx:LinkButton id="btnSwim" label="+ Swim" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnSwim.styleName='linkBtnUnderline';" rollOut="btnSwim.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.SWIM )" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIconElliptical.png')" />
-				<mx:LinkButton id="btnElliptical" label="+ Elliptical Machine" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnElliptical.styleName='linkBtnUnderline';" rollOut="btnElliptical.styleName='linkBtn';" click="addTrackableExercise('Elliptical Machine')" />
+				<s:Image source="@Embed('/images/exercise/personal/elliptical.png')" />
+				<mx:LinkButton id="btnElliptical" label="+ Elliptical Machine" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnElliptical.styleName='linkBtnUnderline';" rollOut="btnElliptical.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.ELLIPTICAL )" />
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIconYoga.png')" />
-				<mx:LinkButton id="btnYoga" label="+ Yoga" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnYoga.styleName='linkBtnUnderline';" rollOut="btnYoga.styleName='linkBtn';" click="addTrackableExercise('Yoga')"/>
+				<s:Image source="@Embed('/images/exercise/personal/yoga.png')" />
+				<mx:LinkButton id="btnYoga" label="+ Yoga" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnYoga.styleName='linkBtnUnderline';" rollOut="btnYoga.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.YOGA )"/>
 			</s:HGroup>
 			<s:HGroup gap="-4" verticalAlign="middle">
-				<s:Image source="@Embed('/images/exPersonalIconWeight.png')" />
-				<mx:LinkButton id="btnWeight" label="+ Weight Training" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnWeight.styleName='linkBtnUnderline';" rollOut="btnWeight.styleName='linkBtn';" click="addTrackableExercise('Weight Training')" />
+				<s:Image source="@Embed('/images/exercise/personal/weight.png')" />
+				<mx:LinkButton id="btnWeight" label="+ Weight Training" color="0x4D4D4D" textRollOverColor="0x4D4D4D" textSelectedColor="0x4D4D4D" skin="{null}" rollOver="btnWeight.styleName='linkBtnUnderline';" rollOut="btnWeight.styleName='linkBtn';" click="addTrackableExercise( ExerciseType.WEIGHT )" />
 			</s:HGroup>
 		</s:VGroup>
+		
 		<s:VGroup visible="{radioUntrackable.selected}" includeInLayout="{radioUntrackable.selected}" paddingLeft="6">
+			
 			<s:TextInput id="txtName" width="165" text="Exercise name" fontStyle="italic" color="0x999999" focusIn="{if(txtName.text == 'Name') txtName.text = ''}" focusOut="{if(txtName.text == '') txtName.text = 'Name'}" />
+			
 			<s:HGroup verticalAlign="middle" gap="5">
 				<s:TextInput id="txtDate" width="86" height="24" text="{(new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear()}" />		
 				<s:HGroup paddingTop="-2" paddingLeft="-3">
 					<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
 						<s:dataProvider>
 							<s:ArrayList>
-								<mx:DateChooser id="dateChooser" showToday="true"
-												contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
-												fontSize="11" change="dateChooser_changeHandler(event)" />
+								<mx:DateChooser 
+									id="dateChooser" showToday="true"
+									contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+									fontSize="11" change="dateChooser_changeHandler(event)" />
 							</s:ArrayList>
 						</s:dataProvider>
 					</s:DropDownList>
 				</s:HGroup>	
 			</s:HGroup>
+			
 			<s:TextArea id="txtComments" width="225" height="71" text="Comments" fontStyle="italic" color="0x999999" focusIn="{if(txtComments.text == 'Comments') txtComments.text = '';}" focusOut="{if(txtComments.text == '') txtComments.text = 'Comments'}" />
+		
 		</s:VGroup>
+		
 	</s:HGroup>
 	
 	<s:Line xFrom="0" xTo="410">
@@ -142,4 +157,5 @@
 		<s:Button label="Save" includeInLayout="{radioUntrackable.selected}" visible="{radioUntrackable.selected}" click="addUntrackableExercise()" styleName="buttonText" height="24" width="55" />
 		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
+	
 </s:TitleWindow>

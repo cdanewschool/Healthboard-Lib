@@ -5,7 +5,8 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:components="components.*" 
 	xmlns:general="components.general.*" 
-	xmlns:ASclasses="ASclasses.*">
+	xmlns:ASclasses="ASclasses.*" 
+	creationComplete="init()">
 	
 	<fx:Declarations>
 		<fx:Array id="vitalSignsWeightBackground">
@@ -241,12 +242,12 @@
 			
 			private function pressureChartRolloverEventHandler(event:ChartItemEvent):void 
 			{
-				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].value;
-				lblBloodPressure2.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].value2;
-				lblDatePressure.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].date);
-				lblSystolicDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index - 1].value);
-				lblDiastolicDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index - 1].value2);
-				lblDatePressurePrev.text = (event.hitData.chartItem.index == 0) ? '' : 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[event.hitData.chartItem.index - 1].date);
+				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index].value;
+				lblBloodPressure2.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index].value2;
+				lblDatePressure.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index].date);
+				lblSystolicDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].value);
+				lblDiastolicDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].value2);
+				lblDatePressurePrev.text = (event.hitData.chartItem.index == 0) ? '' : 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].date);
 				lblPressureDiffUnits.visible = (event.hitData.chartItem.index != 0);
 				lblDiffDash.visible = (event.hitData.chartItem.index != 0);
 				imgSystolicDiffNeg.visible = imgSystolicDiffNeg.includeInLayout = Number(lblSystolicDiff.text) > 0;
@@ -259,12 +260,12 @@
 			
 			private function pressureChartRolloutEventHandler(event:ChartItemEvent=null):void 
 			{
-				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value;
-				lblBloodPressure2.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2;
-				lblDatePressure.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].date);
-				lblSystolicDiff.text = String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value);
-				lblDiastolicDiff.text = String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].value2);
-				lblDatePressurePrev.text = 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data.length - 2].date);
+				lblBloodPressure1.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1].value;
+				lblBloodPressure2.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1].value2;
+				lblDatePressure.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1].date);
+				lblSystolicDiff.text = String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2].value);
+				lblDiastolicDiff.text = String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1].value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2].value2);
+				lblDatePressurePrev.text = 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2].date);
 				lblPressureDiffUnits.visible = lblDiffDash.visible = true;	
 				imgSystolicDiffNeg.visible = imgSystolicDiffNeg.includeInLayout = Number(lblSystolicDiff.text) > 0;
 				imgSystolicDiffPos.visible = imgSystolicDiffPos.includeInLayout = Number(lblSystolicDiff.text) < 0;
@@ -276,16 +277,16 @@
 			
 			private function weightChartRolloverEventHandler(event:ChartItemEvent):void 
 			{
-				lblWeight.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].value;
-				lblDate.text = lblDate2.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].date);
-				lblWeightDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index - 1].value);
-				lblDatePrev.text = lblDatePrev2.text = (event.hitData.chartItem.index == 0) ? '' : 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index - 1].date);
+				lblWeight.text = model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index].value;
+				lblDate.text = lblDate2.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index].date);
+				lblWeightDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index].value - model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].value);
+				lblDatePrev.text = lblDatePrev2.text = (event.hitData.chartItem.index == 0) ? '' : 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].date);
 				lblWeightDiffUnits.visible = (event.hitData.chartItem.index != 0);
 				lblBMIDiffUnits.visible = (event.hitData.chartItem.index != 0);
 				imgWeightDiffPos.visible = imgWeightDiffPos.includeInLayout = Number(lblWeightDiff.text) < 0;
 				imgWeightDiffNeg.visible = imgWeightDiffNeg.includeInLayout = Number(lblWeightDiff.text) > 0;
-				lblBMI.text = String(int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10);
-				lblBMIDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[event.hitData.chartItem.index - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10)*10)/10);
+				lblBMI.text = String(int(((model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10);
+				lblBMIDiff.text = (event.hitData.chartItem.index == 0) ? '' : String(int((int(((model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data[event.hitData.chartItem.index - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10)*10)/10);
 				imgBMIDiffPos.visible = imgBMIDiffPos.includeInLayout = Number(lblBMIDiff.text) < 0;
 				imgBMIDiffNeg.visible = imgBMIDiffNeg.includeInLayout = Number(lblBMIDiff.text) > 0;
 				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
@@ -293,15 +294,15 @@
 			
 			private function weightChartRolloutEventHandler(event:ChartItemEvent):void 
 			{
-				lblWeight.text = model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value;
-				lblDate.text = lblDate2.text = DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].date);
-				lblWeightDiff.text = String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value);
-				lblDatePrev.text = lblDatePrev2.text = 'from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date);
+				lblWeight.text = currentWeight.value;
+				lblDate.text = lblDate2.text = DateUtil.formatDateFromString(currentWeight.date);
+				lblWeightDiff.text = String(currentWeight.value - previousWeight.value);
+				lblDatePrev.text = lblDatePrev2.text = 'from ' + DateUtil.formatDateFromString(previousWeight.date);
 				lblWeightDiffUnits.visible = lblBMIDiffUnits.visible = true;
 				imgWeightDiffPos.visible = imgWeightDiffPos.includeInLayout = Number(lblWeightDiff.text) < 0;
 				imgWeightDiffNeg.visible = imgWeightDiffNeg.includeInLayout = Number(lblWeightDiff.text) > 0;
-				lblBMI.text = String(int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10);
-				lblBMIDiff.text = String(int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10);
+				lblBMI.text = String(int(((currentWeight.value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10);
+				lblBMIDiff.text = String(int((int(((currentWeight.value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10 - int(((previousWeight.value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 2].value, 2))*10)/10)*10)/10);
 				imgBMIDiffPos.visible = imgBMIDiffPos.includeInLayout = Number(lblBMIDiff.text) < 0;
 				imgBMIDiffNeg.visible = imgBMIDiffNeg.includeInLayout = Number(lblBMIDiff.text) > 0;
 				myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererIndividual));
@@ -323,12 +324,29 @@
 				}
 			}
 			
-			private function dataTipsWeight(hd:HitData):String {
+			private function dataTipsWeight(hd:HitData):String 
+			{
 				return "<FONT SIZE='11'>" + hd.item.value + " pounds on " + hd.item.date + "</FONT>";
 			}
 			
-			private function dataTipsBloodPressure(hd:HitData):String {
+			private function dataTipsBloodPressure(hd:HitData):String 
+			{
 				return "<FONT SIZE='11'>" + hd.item.value + "/" + hd.item.value2 + " mmHg on " + hd.item.date + "</FONT>";
+			}
+			
+			[Bindable] public var currentWeight:Object;
+			[Bindable] public var previousWeight:Object;
+			
+			[Bindable] public var currentBloodPressure:Object;
+			[Bindable] public var previousBloodPressure:Object;
+			
+			private function init():void
+			{
+				currentWeight = model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.length - 1 );
+				previousWeight = model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.length - 2 );
+				
+				currentBloodPressure = model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.length - 1);
+				previousBloodPressure = model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.length - 2) ;
 			}
 		]]>
 	</fx:Script>
@@ -441,76 +459,7 @@
 								<s:SolidColorStroke color="#7C7C7C"/>
 							</s:stroke>
 						</s:Line>
-						
-						<!--
-						<mx:Grid id="myGrid" width="100%" verticalGap="0">
-						<mx:GridRow  id="row1" width="100%" dragEnter="handleDragEnter(event)" dragDrop="handleDragDrop(row1)" dragComplete="handleDragComplete(event)" mouseMove="dragInit(row1,graphData,event,'objFormat')">
-						<mx:GridItem width="100%" backgroundColor="{myGrid.getChildIndex(row1) % 2 == 1 ? 0x4A4A49 : 0x303030}">
-						<s:HGroup>
-						<s:ToggleButton label="Height" click="{vitalHeightExpanded = !vitalHeightExpanded}" />
-						
-						<s:VGroup>
-						<mx:LineChart id="chart" dataProvider="{dpHeight}" height="{vitalHeightExpanded?200:100}" width="300" backgroundElements="{bge}" seriesFilters="[]">
-						<mx:series>
-						<mx:LineSeries yField="Value" form="curve"  >
-						<mx:lineStroke>
-						<s:SolidColorStroke color="0xFFFFFF" weight="4" />
-						</mx:lineStroke>
-						</mx:LineSeries>
-						</mx:series>
-						<mx:horizontalAxis>
-						<mx:LinearAxis id="vitalXaxis" />
-						</mx:horizontalAxis>
-						<mx:horizontalAxisRenderers>
-						<mx:AxisRenderer axis="{vitalXaxis}" showLine="true" showLabels="false" tickPlacement="none" />
-						</mx:horizontalAxisRenderers>
-						<mx:verticalAxis>
-						<mx:LinearAxis id="vitalYaxis" />
-						</mx:verticalAxis>
-						<mx:verticalAxisRenderers>
-						<mx:AxisRenderer axis="{vitalYaxis}" visible="false" />
-						</mx:verticalAxisRenderers>
-						</mx:LineChart>
-						</s:VGroup>
-						
-						</s:HGroup>
-						</mx:GridItem>
-						</mx:GridRow>
-						<mx:GridRow id="row2" width="100%" dragEnter="handleDragEnter(event)" dragDrop="handleDragDrop(row2)" dragComplete="handleDragComplete(event)">
-						<mx:GridItem width="100%" backgroundColor="{myGrid.getChildIndex(row2) % 2 == 1 ? 0x4A4A49 : 0x303030}">
-						<s:HGroup width="100%">
-						<s:ToggleButton label="Weight" click="{vitalWeightExpanded = !vitalWeightExpanded}" />
-						
-						<s:VGroup>
-						<mx:LineChart id="chartWeight" dataProvider="{dpWeight}" height="{vitalWeightExpanded?200:100}" width="300" backgroundElements="{bge}" seriesFilters="[]">
-						<mx:series>
-						<mx:LineSeries yField="Value" form="curve"  >
-						<mx:lineStroke>
-						<s:SolidColorStroke color="0xFFFFFF" weight="4" />
-						</mx:lineStroke>
-						</mx:LineSeries>
-						</mx:series>
-						<mx:horizontalAxis>
-						<mx:LinearAxis id="vitalXaxis2" />
-						</mx:horizontalAxis>
-						<mx:horizontalAxisRenderers>
-						<mx:AxisRenderer axis="{vitalXaxis2}" showLine="true" showLabels="false" tickPlacement="none" />
-						</mx:horizontalAxisRenderers>
-						<mx:verticalAxis>
-						<mx:LinearAxis id="vitalYaxis2" />
-						</mx:verticalAxis>
-						<mx:verticalAxisRenderers>
-						<mx:AxisRenderer axis="{vitalYaxis2}" visible="false" />
-						</mx:verticalAxisRenderers>
-						</mx:LineChart>
-						</s:VGroup>
-						
-						</s:HGroup>
-						</mx:GridItem>
-						</mx:GridRow>
-						</mx:Grid>
-						-->			
-						
+
 						<ASclasses:RowColorDataGrid 
 							id="dgVitalSigns" rowColorFunction="DataGridFunctions.calcCommentsRowColor" width="100%" height="100%" dataProvider="{model.vitalSigns}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
 							color="0xFFFFFF" verticalAlign="middle"
@@ -540,7 +489,8 @@
 														
 														import util.DateUtil;
 														
-														[Bindable] public var item:Object;
+														[Bindable] public var currentItem:Object;
+														[Bindable] public var previousItem:Object;
 														
 														override public function set data(value:Object):void 
 														{
@@ -548,11 +498,13 @@
 															
 															if (value.hasOwnProperty("chart")) 
 															{
-																chart.dataProvider = value.chart[0].data;
-																chartComments.dataProvider = value.chart[0].data;
+																chart.dataProvider = value.chart.getItemAt(0).data;
+																chartComments.dataProvider = value.chart.getItemAt(0).data;
 															}
 															
-															item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+															//	TODO: don't assume there are 2 items...
+															currentItem = data && data.chart && data.chart.length ? data.chart.getItemAt(0).data[data.chart.getItemAt(0).data.length - 1] : null;
+															previousItem = data && data.chart && data.chart.length ? data.chart.getItemAt(0).data[data.chart.getItemAt(0).data.length - 2] : null;
 														}
 														
 														private function switchVitalViewFromRenderer(vital:String):void {
@@ -562,26 +514,26 @@
 														
 														private function chartRolloverEventHandler(event:ChartItemEvent):void 
 														{
-															//lblTemperature.width = String(data.chart[0].data[event.hitData.chartItem.index].value).length > 2 ? 60 : 40;
-															lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = data.chart[0].data[event.hitData.chartItem.index].value;
-															lblBMI.text = String(int(((data.chart[0].data[event.hitData.chartItem.index].value * 703) / Math.pow(outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data[outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10);
-															lblBloodPressure2.text = data.chart[0].data[event.hitData.chartItem.index].value2;
-															lblHeightFeet.text = String(Math.floor(data.chart[0].data[event.hitData.chartItem.index].value / 12));
-															lblHeightInches.text = String(data.chart[0].data[event.hitData.chartItem.index].value % 12);
-															lblDate.text = DateUtil.formatDateFromString(data.chart[0].data[event.hitData.chartItem.index].date);
+															lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = data.chart.getItemAt(0).data[event.hitData.chartItem.index].value;
+															lblBMI.text = String(int(((data.chart.getItemAt(0).data[event.hitData.chartItem.index].value * 703) / Math.pow(outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data[outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart.getItemAt(0).data.length - 1].value, 2))*10)/10);
+															lblBloodPressure2.text = data.chart.getItemAt(0).data[event.hitData.chartItem.index].value2;
+															lblHeightFeet.text = String(Math.floor(data.chart.getItemAt(0).data[event.hitData.chartItem.index].value / 12));
+															lblHeightInches.text = String(data.chart.getItemAt(0).data[event.hitData.chartItem.index].value % 12);
+															lblDate.text = DateUtil.formatDateFromString(data.chart.getItemAt(0).data[event.hitData.chartItem.index].date);
+															
 															myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
 															myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
 														}
 														
 														private function chartRolloutEventHandler(event:ChartItemEvent):void 
 														{
-															//lblTemperature.width = 40;
-															lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = item.value;
-															lblBMI.text = String(int(((item.value * 703) / Math.pow(outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data[outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10);
-															lblBloodPressure2.text = item.value2;
-															lblHeightFeet.text = String(Math.floor(item.value / 12));
-															lblHeightInches.text = String(item.value % 12);
-															lblDate.text = DateUtil.formatDateFromString(item.date);
+															lblWeight.text = lblBloodPressure1.text = lblHeartRate.text = lblRespiratory.text = lblTemperature.text = currentItem.value;
+															lblBMI.text = String(int(((currentItem.value * 703) / Math.pow( outerDocument.model.vitalSigns.getItemAt( outerDocument.model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( outerDocument.model.vitalSigns.getItemAt( outerDocument.model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 1 ).value, 2))*10)/10);
+															lblBloodPressure2.text = currentItem.value2;
+															lblHeightFeet.text = String(Math.floor(currentItem.value / 12));
+															lblHeightInches.text = String(currentItem.value % 12);
+															lblDate.text = DateUtil.formatDateFromString(currentItem.date);
+															
 															myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
 															myLineSeries2.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRenderer));
 														}
@@ -612,22 +564,6 @@
 													<s:State name="expanded" />
 													<s:State name="collapsed" />
 												</mx:states>
-												
-												<!--
-												<mx:transitions>
-												<s:Transition fromState="collapsed">
-												<s:Resize target="{this}" duration="500" />
-												</s:Transition>
-												<s:Transition fromState="expanded">
-												<s:Resize target="{this}" duration="500" />
-												</s:Transition>
-												</mx:transition>
-												-->
-												
-												<!--<s:HGroup width="140">
-													<mx:LinkButton includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" icon.expanded="@Embed(source='/images/smallArrow.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" id="btnVital" label="{data.vital}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-													<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="27" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
-												</s:HGroup>-->
 												
 												<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 													<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
@@ -702,7 +638,7 @@
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="460">
-													<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
+													<mx:Label text="{'Last updated ' + DateUtil.formatDateFromString(currentItem.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" paddingBottom="3" paddingTop="3" width="460">
@@ -752,48 +688,48 @@
 													<s:VGroup includeInLayout="{data.vital == 'Weight'}" visible="{data.vital == 'Weight'}" gap="-3">
 														
 														<s:HGroup verticalAlign="baseline" gap="4">
-															<s:Label id="lblWeight" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+															<s:Label id="lblWeight" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value}" />
 															<s:Label fontSize="13" text="pounds" />
 														</s:HGroup>
 														
 														<s:HGroup verticalAlign="baseline" gap="4" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}">
-															<s:Label id="lblBMI" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" creationComplete="lblBMI.text = String(int(((item.value * 703) / Math.pow(outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data[outerDocument.model.vitalSigns[outerDocument.model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10)" />
+															<s:Label id="lblBMI" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text = "{String(int(((currentItem.value * 703) / Math.pow( outerDocument.model.vitalSigns.getItemAt( outerDocument.model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( outerDocument.model.vitalSigns.getItemAt( outerDocument.model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.length - 1).value, 2))*10)/10)}" />
 															<s:Label fontSize="13" text="BMI" />
 														</s:HGroup>
 														
 													</s:VGroup>
 													
 													<s:HGroup includeInLayout="{data.vital == 'Blood pressure'}" visible="{data.vital == 'Blood pressure'}" verticalAlign="baseline" gap="3">
-														<s:Label id="lblBloodPressure1" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+														<s:Label id="lblBloodPressure1" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value}" />
 														<s:Label fontSize.expanded="36" fontSize.collapsed="13" text="/" />
-														<s:Label id="lblBloodPressure2" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value2}" />
+														<s:Label id="lblBloodPressure2" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value2}" />
 														<s:Label fontSize="13" text="mmHg" />
 													</s:HGroup>
 													
 													<s:HGroup includeInLayout="{data.vital == 'Heart rate'}" visible="{data.vital == 'Heart rate'}" verticalAlign="baseline" gap="4">
-														<s:Label id="lblHeartRate" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+														<s:Label id="lblHeartRate" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value}" />
 														<s:Label fontSize="13" text="beats / minute" />
 													</s:HGroup>
 													
 													<s:HGroup includeInLayout="{data.vital == 'Respiratory'}" visible="{data.vital == 'Respiratory'}" verticalAlign="baseline" gap="4">
-														<s:Label id="lblRespiratory" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+														<s:Label id="lblRespiratory" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value}" />
 														<s:Label fontSize="13" text="breaths / minute" />
 													</s:HGroup>
 													
 													<s:HGroup includeInLayout="{data.vital == 'Temperature'}" visible="{data.vital == 'Temperature'}" verticalAlign="baseline" gap="1">
-														<s:Label id="lblTemperature" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+														<s:Label id="lblTemperature" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value}" />
 														<s:Label fontSize.expanded="36" fontSize.collapsed="13" text="°" />
 														<s:Label fontSize="13" text="degrees Fahrenheit" />
 													</s:HGroup>
 													
 													<s:HGroup includeInLayout="{data.vital == 'Height'}" visible="{data.vital == 'Height'}" verticalAlign="baseline" gap="4">
-														<s:Label id="lblHeightFeet" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{Math.floor(item.value / 12)}" />
+														<s:Label id="lblHeightFeet" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{Math.floor(currentItem.value / 12)}" />
 														<s:Label fontSize="13" text="feet" />
-														<s:Label id="lblHeightInches" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value % 12}" />
+														<s:Label id="lblHeightInches" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{currentItem.value % 12}" />
 														<s:Label fontSize="13" text="inches" />
 													</s:HGroup>
 													
-													<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+													<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(currentItem.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 												</s:VGroup>
 												
 												<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'comments'}" color="0xB3B3B3" fontSize="12.5" gap="11" paddingTop="2">
@@ -809,28 +745,11 @@
 							</ASclasses:columns>
 							
 						</ASclasses:RowColorDataGrid>
-						
-						<!--<messages:RowColorDataGrid id="dgMessages" rowColorFunction="calcRowColor" dataProvider="{acMessagesToDisplay}" creationComplete="showInboxMessages()" buttonMode="true"
-						itemClick="dgMessages_itemClickHandler(event)"
-						width="100%" height="100%"
-						color="0xFFFFFF" verticalAlign="middle"
-						selectable="false"
-						headerHeight="0"
-						borderVisible="false" rowHeight="59" verticalGridLines="false" horizontalGridLines="true" horizontalGridLineColor="0x7C7C7C" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x4A4A49,0x4A4A49]" rowCount="3">--><!--itemClick="dgMessages_itemClickHandler(event)" selectionColor="0x4A4A49" rollOverColor="0x4A4A49" selectionColor="0x00ADEE" rollOverColor="0x286982"-->
-						<!--INITIALLY KEPT THE DATAGRID SELECTABLE, ONLY SO I COULD CALL dgMessages.selectedItem WHEN DELETING A MESSAGE-->
-						
+
 					</s:NavigatorContent>
 					
 					<s:NavigatorContent height="100%">
-						<!--<s:layout>
-						<s:VerticalLayout />
-						</s:layout>
-						
-						<s:HGroup id="hgSearchMedications" visible="false" includeInLayout="false" width="100%" horizontalAlign="center">
-						<s:Label id="lblSearchResultsMedications" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
-						<mx:LinkButton id="btnClearSearchMedications" label="(Clear)" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearchMedications()" rollOver="btnClearSearchMedications.styleName='linkBtnUnderline';" rollOut="btnClearSearchMedications.styleName='linkBtn';" />
-						</s:HGroup>-->
-						
+
 						<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 						<mx:DataGrid 
 							id="vitalSignsList" 
@@ -892,53 +811,77 @@
 							<s:Label text="My Weight" styleName="greenBoldText" />
 							
 							<s:HGroup gap="15">
+								
 								<s:VGroup gap="1" width="125">
+									
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblWeight" styleName="orangeStandout" creationComplete="lblWeight.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value" />
+										<s:Label id="lblWeight" styleName="orangeStandout" text="{currentWeight.value}" />
 										<s:Label fontSize="13" text="pounds" color="0xFFFFFF" />
 									</s:HGroup>
-									<s:Label id="lblDate" creationComplete="lblDate.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									
+									<s:Label id="lblDate" text="{DateUtil.formatDateFromString(currentWeight.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" width="125">
+									
 									<s:HGroup>
+										
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgWeightDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgWeightDiffNeg.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value > 0" includeInLayout="{imgWeightDiffNeg.visible}" />
-											<s:Image id="imgWeightDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgWeightDiffPos.visible=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value &lt; 0" includeInLayout="{imgWeightDiffPos.visible}" />
+											<s:Image 
+												id="imgWeightDiffNeg" 
+												source="@Embed('/images/vitalUpRed.png')" 
+												visible="{currentWeight.value - previousWeight.value > 0}" 
+												includeInLayout="{imgWeightDiffNeg.visible}" />
+											<s:Image 
+												id="imgWeightDiffPos" 
+												source="@Embed('/images/vitalDownGreen2.png')" 
+												visible="{currentWeight.value - previousWeight.value &lt; 0}" 
+												includeInLayout="{imgWeightDiffPos.visible}" />
 										</s:HGroup>
+										
 										<s:HGroup verticalAlign="baseline" gap="4">
-											<s:Label id="lblWeightDiff" styleName="orangeStandout" creationComplete="lblWeightDiff.text=String(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value)" />
+											<s:Label id="lblWeightDiff" styleName="orangeStandout" text="{String(currentWeight.value - previousWeight.value)}" />
 											<s:Label id="lblWeightDiffUnits" fontSize="13" text="pounds" color="0xFFFFFF" />
 										</s:HGroup>
 									</s:HGroup>
-									<s:Label id="lblDatePrev" creationComplete="lblDatePrev.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+									
+									<s:Label id="lblDatePrev" text="{'from ' + DateUtil.formatDateFromString(previousWeight.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" paddingLeft="21" width="125">
+									
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblBMI" styleName="orangeStandout" creationComplete="lblBMI.text=String(int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10)" />
+										<s:Label id="lblBMI" styleName="orangeStandout" text="{String(int(((currentWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 1 ).value, 2))*10)/10)}" />
 										<s:Label fontSize="13" text="BMI" color="0xFFFFFF" />
 									</s:HGroup>
-									<s:Label id="lblDate2" width="105" creationComplete="lblDate2.text=DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									
+									<s:Label id="lblDate2" width="105" text="{DateUtil.formatDateFromString(currentWeight.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" paddingLeft="-8" width="125">
+									
 									<s:HGroup>
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgBMIDiffNeg" source="@Embed('/images/vitalUpRed.png')" creationComplete="imgBMIDiffNeg.visible=int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10 > 0" includeInLayout="{imgBMIDiffNeg.visible}" />
-											<s:Image id="imgBMIDiffPos" source="@Embed('/images/vitalDownGreen2.png')" creationComplete="imgBMIDiffPos.visible=int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10 &lt; 0" includeInLayout="{imgBMIDiffPos.visible}" />
+											<s:Image id="imgBMIDiffNeg" source="@Embed('/images/vitalUpRed.png')" visible="{int((int(((currentWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 1 ).value, 2))*10)/10 - int(((previousWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 2 ).value, 2))*10)/10)*10)/10 > 0}" includeInLayout="{imgBMIDiffNeg.visible}" />
+											<s:Image id="imgBMIDiffPos" source="@Embed('/images/vitalDownGreen2.png')" visible="{int((int(((currentWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 1 ).value, 2))*10)/10 - int(((previousWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 2 ).value, 2))*10)/10)*10)/10 &lt; 0}" includeInLayout="{imgBMIDiffPos.visible}" />
 										</s:HGroup>
+										
 										<s:HGroup verticalAlign="baseline" gap="4">
-											<s:Label id="lblBMIDiff" styleName="orangeStandout" creationComplete="lblBMIDiff.text=String(int((int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 1].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value, 2))*10)/10 - int(((model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].value * 703) / Math.pow(model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[model.vitalIndices.indexOf('Height')].chart[0].data.length - 2].value, 2))*10)/10)*10)/10)" />
+											<s:Label id="lblBMIDiff" styleName="orangeStandout" text="{String(int((int(((currentWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 1 ).value, 2))*10)/10 - int(((previousWeight.value * 703) / Math.pow(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Height') ).chart.getItemAt(0).data.length - 2 ).value, 2))*10)/10)*10)/10)}" />
 											<s:Label id="lblBMIDiffUnits" fontSize="13" text="BMI" color="0xFFFFFF" />
 										</s:HGroup>
 									</s:HGroup>
-									<s:Label id="lblDatePrev2" creationComplete="lblDatePrev2.text='from ' + DateUtil.formatDateFromString(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+									
+									<s:Label id="lblDatePrev2" text="{'from ' + DateUtil.formatDateFromString( previousWeight.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" paddingLeft="21" width="125">
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTarget.text=dropDownVitalSignsWeightReference.selectedIndex == 0 ? String(Math.round(((Number(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data[model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart[0].data.length - 1].value, 2)))*10)/10) : model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation" />
+										<s:Label id="lblTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? String( Math.round(((Number(model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.getItemAt(0).expectation) * 703) / (Math.pow(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.getItemAt( model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.length - 1 ).value, 2)))*10)/10) : model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.getItemAt(0).expectation}" />
 										<s:Label fontSize="13" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'BMI' : 'pounds'}" color="0xFFFFFF" />
 									</s:HGroup>
 									<s:Label id="lblTargetBottom" text="{dropDownVitalSignsWeightReference.selectedIndex == 0 ? 'Goal: BMI' : 'Goal: weight'}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
@@ -974,7 +917,13 @@
 							<s:Label text="Reference:" paddingLeft="1" paddingRight="-5" />
 							
 							<s:HGroup paddingTop="-3">
-								<s:DropDownList id="dropDownVitalSignsWeightReference" selectedIndex="0" width="122" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkin" color="0xAEDBE2" change="vitalsWeightChangeReference()"><!--change="messageSort()"--> 
+								<s:DropDownList 
+									id="dropDownVitalSignsWeightReference" 
+									selectedIndex="0" width="122" 
+									dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" 
+									skinClass="skins.general.MyDropDownListSkin" color="0xAEDBE2" 
+									change="vitalsWeightChangeReference()">
+									
 									<mx:ArrayCollection>
 										<fx:String>Body Mass Index</fx:String>
 										<fx:String>Weight</fx:String>
@@ -992,7 +941,7 @@
 						
 						<mx:LineChart 
 							id="vitalsWeightLineChart"
-							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data}"
+							dataProvider="{model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="395"
 							backgroundElements="{vitalSignsWeightBackground}" seriesFilters="[]" selectionMode="single" 
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsWeight"
@@ -1000,11 +949,13 @@
 							change="event.stopImmediatePropagation()">
 							
 							<mx:series>
+								
 								<mx:LineSeries yField="expectation" xField="date" interactive="false">
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
 									</mx:lineStroke>
 								</mx:LineSeries>
+								
 								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" buttonMode="true" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xFFFFFF" weight="4" /><!--4-->
@@ -1013,6 +964,7 @@
 										<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 									</mx:stroke>
 								</mx:LineSeries>
+								
 							</mx:series>
 							
 							<mx:horizontalAxis>
@@ -1036,6 +988,7 @@
 					</s:NavigatorContent>
 					
 					<s:NavigatorContent>
+						
 						<s:layout>
 							<s:VerticalLayout />
 						</s:layout>
@@ -1044,61 +997,74 @@
 							<s:Label text="My Blood Pressure" styleName="greenBoldText" />
 							
 							<s:HGroup gap="40">
+								
 								<s:VGroup gap="1" width="200">
+									
 									<s:HGroup verticalAlign="baseline" gap="4">
 										<s:Label id="lblBloodPressure1" styleName="orangeStandout"  />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
 										<s:Label id="lblBloodPressure2" styleName="orangeStandout" />
 										<s:Label fontSize="13" text="mmHG" color="0xFFFFFF" />
 									</s:HGroup>
+									
 									<s:Label id="lblDatePressure" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" width="200">
+									
 									<s:HGroup>
+										
 										<s:HGroup paddingTop="11">
 											<s:Image 
 												id="imgSystolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" 
-												visible="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value > 0}" 
+												visible="{currentBloodPressure.value - previousBloodPressure.value > 0}" 
 												includeInLayout="{imgSystolicDiffNeg.visible}" />
 											<s:Image 
 												id="imgSystolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" 
-												visible="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value &lt; 0}" 
+												visible="{currentBloodPressure.value - previousBloodPressure.value &lt; 0}" 
 												includeInLayout="{imgSystolicDiffPos.visible}" />
 										</s:HGroup>
+										
 										<s:HGroup verticalAlign="baseline" gap="4">
 											<s:Label 
 												id="lblSystolicDiff" styleName="orangeStandout" 
-												text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value}" />
+												text="{currentBloodPressure.value - previousBloodPressure.value}" />
 											<s:Label id="lblDiffDash" fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
 										</s:HGroup>
+										
 										<s:HGroup paddingTop="11">
 											<s:Image 
 												id="imgDiastolicDiffNeg" source="@Embed('/images/vitalUpRed.png')" 
-												visible="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value2 > 0}" 
+												visible="{currentBloodPressure.value2 - previousBloodPressure.value2 > 0}" 
 												includeInLayout="{imgDiastolicDiffNeg.visible}" />
 											<s:Image 
 												id="imgDiastolicDiffPos" source="@Embed('/images/vitalDownGreen2.png')" 
-												visible="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value2 &lt; 0}" 
+												visible="{currentBloodPressure.value2 - previousBloodPressure.value2 &lt; 0}" 
 												includeInLayout="{imgDiastolicDiffPos.visible}" />
 										</s:HGroup>
+										
 										<s:HGroup verticalAlign="baseline" gap="4">
 											<s:Label 
 												id="lblDiastolicDiff" styleName="orangeStandout" 
-												text="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).value2 - model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 2).value2}" />
+												text="{currentBloodPressure.value2 - previousBloodPressure.value2}" />
 											<s:Label id="lblPressureDiffUnits" fontSize="13" text="mmHg" color="0xFFFFFF" />
 										</s:HGroup>
 									</s:HGroup>
+									
 									<s:Label id="lblDatePressurePrev" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="215" />
+									
 								</s:VGroup>
 								
 								<s:VGroup gap="1" paddingLeft="-10">
+									
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblTargetPressure" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation" />
+										<s:Label id="lblTargetPressure" fontSize="36" fontWeight="bold" color="0xAEDEE4" text="{model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.getItemAt(0).expectation}" />
 										<s:Label fontSize="36" fontWeight="bold" color="0xFFFFFF" text="/" />
-										<s:Label id="lblTargetPressure2" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblTargetPressure.text=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data[0].expectation2"/>
+										<s:Label id="lblTargetPressure2" fontSize="36" fontWeight="bold" color="0xAEDEE4" text="{model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Blood pressure') ).chart.getItemAt(0).data.getItemAt(0).expectation2}"/>
 										<s:Label fontSize="13" text="mmHg" color="0xFFFFFF" />
 									</s:HGroup>
+									
 									<s:Label id="lblTargetPressureBottom" text="Goal: mmHg" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 							</s:HGroup>
@@ -1156,12 +1122,13 @@
 						
 						<mx:LineChart 
 							id="vitalsPressureLineChart"
+							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="348"
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
 							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsBloodPressure"
 							change="event.stopImmediatePropagation()" 
-							creationComplete="vitalsPressureLineChart.dataProvider=model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart[0].data; pressureChartRolloutEventHandler()">
+							creationComplete="pressureChartRolloutEventHandler()">
 							
 							<mx:series>
 								

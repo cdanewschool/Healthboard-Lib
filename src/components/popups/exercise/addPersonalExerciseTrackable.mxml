@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="341" height="{type != 'Yoga' ? 404 : 378}"
-			   xmlns:net="flash.net.*"
-			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000">
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:net="flash.net.*"
+	width="341" height="{type != ExerciseType.YOGA ? 404 : 378}"
+	skinClass="skins.general.myHeaderlessTitleWindow" color="0x000000"
+	close="PopUpManager.removePopUp(this);">
 	<fx:Script>
 		<![CDATA[
 			import controllers.ExerciseController;
+			
+			import enum.ExerciseType;
 			
 			import events.ApplicationEvent;
 			
@@ -27,76 +32,8 @@
 			
 			private function addRecord():void 
 			{
-				//var chartMax:int = (Number(txtResult.text) > txtGoal.value) ? Number(txtResult.text) + 10 : txtGoal.value + 10;
-				//var chartMin:int = (Number(txtResult.text) < txtGoal.value) ? Number(txtResult.text) - 10 : txtGoal.value - 10;
-				//var newMeasure:Object = new Object();
-				//newMeasure = ({value:30, expectation:30, date:'03/11/2011', measure:type});
-				model.exerciseDataByMeasurePersonal.addItemAt({measure: type, chartMin:15, chartMax:45, chartType:'trackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 2);
+				model.exerciseDataByMeasurePersonal.addItemAt({type: type, chartMin:15, chartMax:45, chartType:'trackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 2);
 				model.exerciseDataByMeasurePersonal.refresh();
-				//model.arrVitalSigns[model.arrVitalSigns.length - 1].chart[0].data.splice(0,0,newMeasure);
-				//model.arrVitalSigns.refresh();
-				
-			/*	model.updateExercisePAIndices();
-				if(txtRunWalk.text != "") {
-					var runWalkStartIndex:int = (new Date(txtDate.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data[model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.length - 1].date)) ? model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
-					var newRunWalk:Object = new Object();
-					newRunWalk = ({value:txtRunWalk.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[0].expectation, date:txtDate.text, miles:txtRunWalkMiles.text, measure:'runWalk'});
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chart[0].data.splice(runWalkStartIndex,0,newRunWalk);
-
-					if(Number(txtRunWalk.text) > (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMax - 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMax = Number(txtRunWalk.text) + 10;
-					else if(Number(txtRunWalk.text) < (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMin + 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Run / Walk')].chartMin = Number(txtRunWalk.text) - 10;
-
-					if(new Date(txtDate.text) > new Date(model.runWalkMax)) model.runWalkMax = txtDate.text;
-					if(new Date(txtDate.text) > model.runWalkChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
-						var myNewDate:Date = new Date(txtDate.text);
-						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
-						myNewDate.setMonth(myNewDate.getMonth() + 1);
-						model.runWalkChartMax = myNewDate;
-					}
-				}
-				if(txtBike.text != "") {
-					var bikeStartIndex:int = (new Date(txtDate.text) >= new Date(model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data[model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.length - 1].date)) ? model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
-					var newBike:Object = new Object();
-					newBike = ({value:txtBike.text, expectation: model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Bike')).chart[0].data[0].expectation, date:txtDate.text, miles:txtBikeMiles.text, measure:'bike'});
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chart[0].data.splice(bikeStartIndex,0,newBike);
-					
-					if(Number(txtBike.text) > (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMax - 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMax = Number(txtBike.text) + 10;
-					else if(Number(txtBike.text) < (model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMin + 10)) model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Bike')].chartMin = Number(txtBike.text) - 10;
-					
-					if(new Date(txtDate.text) > new Date(model.bikeMax)) model.bikeMax = txtDate.text;
-					if(new Date(txtDate.text) > model.bikeChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
-						var myNewDate2:Date = new Date(txtDate.text);
-						if(myNewDate2.getDate() < 22) myNewDate2.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
-						myNewDate2.setMonth(myNewDate.getMonth() + 1);
-						model.bikeChartMax = myNewDate2;
-					}
-				}
-				if(txtComments.text != "") {
-					var newComment:Object = new Object();
-					newComment = ({type:'patient',expectation:'expectation',author:model.fullname,datePatient:txtDate.text,comments:txtComments.text, measure:'comments'});
-					//var newCommentOP:ObjectProxy = new ObjectProxy(newComment);
-					model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Comments')].chart[0].data.push(newComment);
-					//model.arrVitalSigns.refresh();
-					if(new Date(txtDate.text) > new Date(model.commentsMax)) model.exPAcommentsMax = txtDate.text;
-				}
-
-				var newChartMax:Date = new Date(txtDate.text);
-				newChartMax.setDate(newChartMax.getDate() + 8);			
-				var newChartMaxDummy:Date = new Date(model.chartMaxExPA.getFullYear(), model.chartMaxExPA.getMonth(), model.chartMaxExPA.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting model.chartMax (in this case to itself)
-				
-				if(new Date(txtDate.text) > model.chartMaxExPA) model.chartMaxExPA = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
-				else model.chartMaxExPA = newChartMaxDummy;//.setDate(model.chartMax.getDate() + 1);// = model.chartMax;
-				
-				//ADDING TO exerciseDataPhysicianAssigned FOR THE LIST VIEW
-				//if any field is entered?
-				var entryByDate:Object = new Object();
-				entryByDate = {date: model.get10digitDate(txtDate.text), runWalk: txtRunWalk.text, runWalkMiles: txtRunWalkMiles.text, bike: txtBike.text, bikeMiles: txtBikeMiles.text, expectation:'expectation', comments:txtComments.text};
-				model.exerciseDataPhysicianAssigned.addItem(entryByDate);
-				
-				model.exerciseDataByMeasurePhysicianAssigned.refresh();
-				model.exerciseDataPhysicianAssigned.refresh();
-				
-				//model.chartMax = new Date(2012,5,5);*/
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
 				event.data = "Your exercise has been recorded";
@@ -107,8 +44,6 @@
 			
 			private function browseAttachment(evt:MouseEvent):void 
 			{
-				/*var arr:Array = [];
-				arr.push(new FileFilter("Images", "*.gif;*.jpeg;*.jpg;*.png"));*/
 				fileReference.browse();
 			}
 			
@@ -120,9 +55,10 @@
 	</fx:Script>
 	
 	<fx:Declarations>
-		<net:FileReference id="fileReference"
-						   select="fileReference_select(event);"
-						   complete="addRecord();" />
+		<net:FileReference 
+			id="fileReference"
+			select="fileReference_select(event);"
+			complete="addRecord();" />
 	</fx:Declarations>
 
 	<s:layout>
@@ -130,13 +66,14 @@
 	</s:layout>
 
 	<s:Label text="Add Trackable Exercise" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
-	<s:Label text="{type}" color="0x4D4D4D" fontWeight="bold" paddingTop="11" />
+	<s:Label text="{ExerciseType.getLabel(type)}" color="0x4D4D4D" fontWeight="bold" paddingTop="11" />
+	
 	<s:HGroup color="0x4D4D4D" paddingTop="10" paddingBottom="5" gap="2">
 		<s:Label text="Please select data you want to record for" />
-		<s:Label text="{type + ':'}" fontWeight="bold" />
+		<s:Label text="{ExerciseType.getLabel(type) + ':'}" fontWeight="bold" />
 	</s:HGroup>	
 	
-	<s:VGroup visible="{type != 'Swim' &amp;&amp; type != 'Yoga'}" includeInLayout="{type != 'Swim' &amp;&amp; type != 'Yoga'}">
+	<s:VGroup visible="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}" includeInLayout="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}">
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDate" label="Date" />
 		</s:HGroup>
@@ -157,9 +94,12 @@
 		</s:HGroup>
 	</s:VGroup>
 	
-	<s:VGroup visible="{type == 'Swim'}" includeInLayout="{type == 'Swim'}">
+	<s:VGroup visible="{type == ExerciseType.SWIM}" includeInLayout="{type == ExerciseType.SWIM}">
+		
 		<s:HGroup verticalAlign="middle">
+			
 			<s:Label text="Type:" />
+			
 			<s:DropDownList id="dropSwimType" height="24" width="100" styleName="buttonText" selectedIndex="0">
 				<s:dataProvider>
 					<s:ArrayList>
@@ -172,32 +112,38 @@
 				</s:dataProvider>
 			</s:DropDownList>
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDateTime" label="Date / Time" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20" verticalAlign="middle">
 			<s:CheckBox id="checkDistance2" label="Distance" />
 			<s:Label fontStyle="italic" text="(default item for graph view) -" paddingTop="4" paddingRight="-14" />
 			<mx:LinkButton id="btnChange" label="Change" paddingTop="1" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnChange.styleName='linkBtnUnderline';" rollOut="btnChange.styleName='linkBtn';" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDuration2" label="Duration" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkSpeed" label="Speed" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkCalories2" label="Calories Burned" />
 		</s:HGroup>
+		
 	</s:VGroup>
 	
-	<s:VGroup visible="{type == 'Yoga'}" includeInLayout="{type == 'Yoga'}">
+	<s:VGroup visible="{type == ExerciseType.YOGA}" includeInLayout="{type == ExerciseType.YOGA}">
+		
 		<s:HGroup verticalAlign="middle">
+			
 			<s:Label text="Type:" />
+			
 			<s:DropDownList id="dropYogaType" height="24" width="100" styleName="buttonText" selectedIndex="0">
-				<!--<s:layout>
-					<s:VerticalLayout requestedRowCount="8" />
-				</s:layout>-->
 				<s:dataProvider>
 					<s:ArrayList>
 						<fx:Object label="Ashtanga" data="Ashtanga" />
@@ -212,20 +158,25 @@
 				</s:dataProvider>
 			</s:DropDownList>
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDateTime2" label="Date / Time" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20" verticalAlign="middle">
 			<s:CheckBox id="checkDuration3" label="Duration" />
 			<s:Label fontStyle="italic" text="(default item for graph view) -" paddingTop="4" paddingRight="-14" />
 			<mx:LinkButton id="btnChange2" label="Change" paddingTop="1" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnChange.styleName='linkBtnUnderline';" rollOut="btnChange.styleName='linkBtn';" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkPose" label="Number of Pose" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkSequence" label="Number of Sequence" />
 		</s:HGroup>
+		
 	</s:VGroup>
 	
 	<mx:LinkButton paddingLeft="36" id="btnAddMore" label="+ Add More" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnAddMore.styleName='linkBtnUnderline';" rollOut="btnAddMore.styleName='linkBtn';" />
@@ -250,4 +201,5 @@
 		<s:Button label="Add" styleName="buttonText" height="24" click="addRecord()" />
 		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
+	
 </s:TitleWindow>

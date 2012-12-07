@@ -6,9 +6,9 @@
 	xmlns:plus="external.TabBarPlus.plus.*" 
 	xmlns:ASclasses="ASclasses.*" 
 	xmlns:components="components.*" 
-	xmlns:radarchart="fr.kapit.radarchart.*"
 	xmlns:general="components.general.*" 
-	creationComplete="init()">
+	xmlns:performancemeter="skins.general.performancemeter.*"
+	initialize="init()" creationComplete="creationComplete()" >
 	
 	<fx:Declarations>
 		
@@ -16,7 +16,7 @@
 		</fx:Array>
 		
 		<fx:Array id="exerciseMileRunBackground">
-			<s:Image source="@Embed('/images/exerciseMileRunBGnew.jpg')" width="817" height="35" />
+			<s:Image source="@Embed('/images/exercise/runChartBackground.jpg')" width="817" height="35" />
 		</fx:Array>
 		
 	</fx:Declarations>
@@ -30,12 +30,15 @@
 			
 			import controllers.ExerciseController;
 			
+			import enum.ExerciseType;
+			
 			import models.modules.ExerciseModel;
 			
 			import mx.charts.ChartItem;
 			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.LineSeriesItem;
+			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.managers.PopUpManager;
 			
@@ -52,19 +55,7 @@
 			
 			[Bindable] public var showHeader:Boolean = true;
 			
-			private function displayExerciseData(e:ChartItemEvent):void 
-			{
-				var radarChartSeries:Array = myRadarChart.series;
-				var radarChartAxes:Array = myRadarChart.axes;
-				
-				model.exerciseCurrentIndex = e.hitData.item.index;
-				
-				myRadarChart.series = radarChartSeries;
-				myRadarChart.axes = radarChartAxes;
-				
-				exPlotSeriesPatient.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererExSliderOver));
-				exPlotSeriesProvider.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyBoxItemRendererExSliderOver));
-			}
+			public var dateFormatter:DateFormatter;
 			
 			private function editRunGoal():void 
 			{
@@ -82,16 +73,16 @@
 			{
 				viewsExercisePRT.selectedIndex = index;
 				
-				if(index == 0) highlightSelectedExercise('All');
-				else if(index == 2) highlightSelectedExercise('1.5 Mile Run');
+				if(index == 0) highlightSelectedExercise();
+				else if(index == 2) highlightSelectedExercise( ExerciseType.RUN );
 			}
 			
 			public function switchExercisePhyView(index:uint):void 
 			{
 				viewsExercisePA.selectedIndex = index;
 				
-				if(index == 0) highlightSelectedExercisePA('All');
-				else if(index == 2) highlightSelectedExercisePA('Run / Walk');
+				if(index == 0) highlightSelectedExercisePA();
+				else if(index == 2) highlightSelectedExercisePA( ExerciseType.RUN );
 			}
 			
 			public function switchExercisePerView(index:uint):void 
@@ -110,22 +101,21 @@
 				}
 			}
 			
-			private function highlightSelectedExercise(exercise:String = "none"):void 
+			private function highlightSelectedExercise(exercise:String = null):void 
 			{
 				btnExAll.styleName = "messageFolderNotSelected";
 				btnExRun.styleName = "messageFolderNotSelected";
-				//btnVSBloodPressure.styleName = "messageFolderNotSelected";
-				if(exercise == "All") btnExAll.styleName = "messageFolderSelected";
-				else if(exercise == "1.5 Mile Run") btnExRun.styleName = "messageFolderSelected";
-				//else if(vital == "Blood Pressure") btnVSBloodPressure.styleName = "messageFolderSelected";
+				
+				if(!exercise) btnExAll.styleName = "messageFolderSelected";
+				else if(exercise == ExerciseType.RUN) btnExRun.styleName = "messageFolderSelected";
 			}
 			
-			private function highlightSelectedExercisePA(exercise:String = "none"):void 
+			private function highlightSelectedExercisePA(exercise:String = null):void 
 			{
 				btnExEndurance.styleName = "messageFolderNotSelected";
 				btnExRunWalk.styleName = "messageFolderNotSelected";
-				if(exercise == "All") btnExEndurance.styleName = "messageFolderSelected";
-				else if(exercise == "Run / Walk") btnExRunWalk.styleName = "messageFolderSelected";
+				if(!exercise) btnExEndurance.styleName = "messageFolderSelected";
+				else if(exercise == ExerciseType.RUN) btnExRunWalk.styleName = "messageFolderSelected";
 			}
 			
 			public function exerciseLineFillFunction(element:ChartItem, index:Number):IFill 
@@ -137,7 +127,7 @@
 			
 			private function runChartRolloverEventHandler(event:ChartItemEvent):void 
 			{
-				var index:int = model.exerciseIndices.indexOf('1.5 Mile Run');
+				var index:int = model.exerciseIndices.indexOf( ExerciseType.RUN );
 				var item:Object = model.exerciseDataByMeasure.getItemAt( index );
 				
 				lblExRun.text = item.chart[0].data[event.hitData.chartItem.index].value;
@@ -159,8 +149,8 @@
 			
 			private function runChartRolloutEventHandler(event:ChartItemEvent):void
 			{
-				var index:int = model.exerciseIndices.indexOf('1.5 Mile Run');
-				var item:Object = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') );
+				var index:int = model.exerciseIndices.indexOf( ExerciseType.RUN );
+				var item:Object = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) );
 				
 				lblExRun.text = item.chart[0].data[model.exerciseDataByMeasure.getItemAt(index).chart[0].data.length - 1].value;
 				lblExRunDiff.text = '(+' + String(item.chart[0].data[item.chart[0].data.length - 1].value - 45) + ')';
@@ -181,22 +171,22 @@
 			
 			private function runWalkChartRolloverEventHandler(event:ChartItemEvent):void 
 			{
-				lblExDistance.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].miles;
-				lblExDuration.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].value;
-				lblExSpeed.text = String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].miles / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].value) * 60 * 10) / 10);
-				lblExCalories.text = String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].miles));
-				lblExDistanceDate.text = lblExDurationDate.text = lblExSpeedDate.text = lblExCaloriesDate.text = lblExHeartDate.text = lblExWeightDate.text = DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[event.hitData.chartItem.index].date);
+				lblExDistance.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].value2;
+				lblExDuration.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].value;
+				lblExSpeed.text = String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].value2 / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].value) * 60 * 10) / 10);
+				lblExCalories.text = String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].value2));
+				lblExDistanceDate.text = lblExDurationDate.text = lblExSpeedDate.text = lblExCaloriesDate.text = lblExHeartDate.text = lblExWeightDate.text = DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[event.hitData.chartItem.index].date);
 				
 				myLineSeriesRunWalk.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOverIndividual));
 			}
 			
 			private function runWalkChartRolloutEventHandler(event:ChartItemEvent):void 
 			{
-				lblExDistance.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles;
-				lblExDuration.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].value;
-				lblExSpeed.text = String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].value) * 60 * 10) / 10);
-				lblExCalories.text = String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles));
-				lblExDistanceDate.text = lblExDurationDate.text = lblExSpeedDate.text = lblExCaloriesDate.text = lblExHeartDate.text = lblExWeightDate.text = DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date);
+				lblExDistance.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2;
+				lblExDuration.text = model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value;
+				lblExSpeed.text = String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2 / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value) * 60 * 10) / 10);
+				lblExCalories.text = String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2));
+				lblExDistanceDate.text = lblExDurationDate.text = lblExSpeedDate.text = lblExCaloriesDate.text = lblExHeartDate.text = lblExWeightDate.text = DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date);
 				myLineSeriesRunWalk.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererIndividual));
 			}
 			
@@ -206,15 +196,22 @@
 				PopUpManager.centerPopUp(myAddPersonalExercise);
 			}
 			
-			private function dataTipsMileRun(hd:HitData):String {
+			private function dataTipsMileRun(hd:HitData):String 
+			{
 				return "<FONT SIZE='11'>" + hd.item.value + " points on " + hd.item.date + "</FONT>";
 			}
 			
-			private function dataTipsRunWalk(hd:HitData):String {
+			private function dataTipsRunWalk(hd:HitData):String 
+			{
 				return "<FONT SIZE='11'>" + hd.item.value + " minutes on " + hd.item.date + "</FONT>";
 			}
 			
-			private function init():void
+			private function exerciseDataFilterFunction(item:Object):Boolean
+			{
+				return item.chartType == 'trackable';
+			}
+			
+			private function creationComplete():void
 			{
 				var today:Date = AppProperties.getInstance().controller.model.today;
 				
@@ -222,6 +219,29 @@
 				nextPRT.time += DateUtil.MONTH * 3;
 				
 				header.actionCount = DateFormatters.dateFormatterDay.format(nextPRT) + '.';
+				
+				lastExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 1 );
+				previousExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 2 );
+			}
+			
+			[Bindable] public var exerciseDataPersonal:ArrayCollection;
+			[Bindable] public var exerciseDataPhysician:ArrayCollection;
+			
+			[Bindable] public var lastExercise:Object;
+			[Bindable] public var previousExercise:Object;
+			
+			private function init():void
+			{
+				dateFormatter = new DateFormatter();
+				dateFormatter.formatString = "MMMM D, YYYY";
+				
+				exerciseDataPersonal = new ArrayCollection( model.exerciseDataByMeasurePersonal.source );
+				exerciseDataPersonal.filterFunction = exerciseDataFilterFunction;
+				exerciseDataPersonal.refresh();
+				
+				exerciseDataPhysician = new ArrayCollection( model.exerciseDataByMeasurePhysicianAssigned.source );
+				exerciseDataPhysician.filterFunction = exerciseDataFilterFunction;
+				exerciseDataPhysician.refresh();
 			}
 		]]>
 	</fx:Script>
@@ -238,9 +258,9 @@
 	
 	<s:Group>
 		
-		<mx:ViewStack id="viewStackExercise" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" borderVisible="true" borderStyle="solid" x="0" y="22">
+		<mx:ViewStack id="viewStackExercise" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22">
 			
-			<s:NavigatorContent label="Summary"><!--id="mainBox"-->
+			<s:NavigatorContent label="Summary">
 				
 				<s:layout>
 					<s:VerticalLayout gap="0" />
@@ -260,282 +280,415 @@
 					</s:stroke>
 				</s:Line>
 				
-				<s:VGroup gap="26" paddingTop="31" paddingLeft="41" height="565">
+				<s:HGroup gap="26" paddingTop="31" paddingLeft="41" height="565">
 					
-					<s:HGroup gap="17">
+					<s:BorderContainer width="570" height="515" styleName="transparentBorderContainer">
 						
-						<s:BorderContainer width="420" height="288" borderAlpha="0" backgroundAlpha="0">
+						<s:layout>
+							<s:VerticalLayout paddingTop="20" paddingLeft="20" gap="20" />
+						</s:layout>
+						
+						<s:HGroup gap="20">
 							
-							<s:layout>
-								<s:VerticalLayout paddingTop="14" paddingLeft="22" gap="6" />
-							</s:layout>
+							<s:VGroup>
+								<s:Label text="Physical Readiness Test" styleName="greenBoldText" />
+								<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
+							</s:VGroup>
 							
-							<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="greenBoldText" />
-							<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).type == 'provider' ? 'Official PRT Test Results' : 'Diagnostic PRT Test Results'}" color="0xCCCCCC" fontSize="13" fontStyle="italic" />
-							
-							<s:HGroup width="100%" horizontalAlign="center" paddingBottom="-4">
-								
-								<radarchart:RadarChart 
-									id="myRadarChart"
-									seriesField="series" 
-									dataProvider="{model.exerciseData.getItemAt(model.exerciseCurrentIndex)}" 
-									width="215" 
-									height="215" divisions="3" gridAlpha="0.2" axisWidth="1" gridWidth="1" axisNameTextFormat="{new TextFormat('myMyriad',11,'0xFFFFFF')}" graduationTextFormat="{new TextFormat('myMyriad',11,'0xFFFFFF')}"
-									showGraduations="false"
-									showAxesArrow="false">
-									
-									<radarchart:series>
-										<radarchart:RadarChartSeries id="asdf1" name="PRTresults" label="PRTresults" color="0xFBB03B" />
-									</radarchart:series> 
-									
-									<radarchart:axes>
-										<radarchart:RadarChartAxis id="radarAxis1" name="PRTscore" label="Avg. PRT Score" />
-										<radarchart:RadarChartAxis id="radarAxis2" name="mileRun" label="1.5 Mile Run"/>
-										<radarchart:RadarChartAxis id="radarAxis3" name="curlUps" label="Curl Ups"/>
-										<radarchart:RadarChartAxis id="radarAxis4" name="pushUps" label="Push Ups"/>
-										<radarchart:RadarChartAxis id="radarAxis5" name="weight" label="Weight"/>
-									</radarchart:axes>
-									
-								</radarchart:RadarChart>
+							<s:HGroup gap="5">
+								<s:Label text="You're in range" styleName="white13 italic" />
+								<s:Label text="45-49 years old male." styleName="white13 italic" color="0xF69127" />	<!--	TODO: get for real	-->
 							</s:HGroup>
 							
-							<mx:PlotChart 
-								id="chartExercise" width="400" height="26"
-								backgroundElements="{bge}"
-								dataProvider="{model.exerciseData}" itemRollOver="displayExerciseData(event)">
-								
-								<mx:series>
-									<mx:PlotSeries id="exPlotSeriesPatient" xField="datePatient" yField="series" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" fill="{chartStyles.colorExerciseGraySlider}" /><!-- here I didn't set itemRenderer="ASclasses.MyCircleItemRendererExSlider" because the last icon is from the "provider" instead of the "patient", so it's unnecessary to set the last icon's color here... But if users were able to add exercise records dynamically, then I should set this...-->
-									<mx:PlotSeries id="exPlotSeriesProvider" xField="dateProvider" yField="series" itemRenderer="components.itemrenderers.chart.MyBoxItemRendererExSlider" radius="5" fill="{chartStyles.colorExerciseGraySlider}"/>
-									<mx:LineSeries yField="expectation" xField="dateProvider" itemRenderer="{null}" interactive="false">
-										<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
-									</mx:LineSeries>
-								</mx:series>
-								
-								<mx:horizontalAxis>
-									<mx:DateTimeAxis id="exercisePlotXaxis" minimum="{new Date(2011,6,3)}" maximum="{new Date(2012,10,12)}" />
-								</mx:horizontalAxis>
-								
-								<mx:horizontalAxisRenderers>
-									<mx:AxisRenderer axis="{exercisePlotXaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false"/><!-- -->
-								</mx:horizontalAxisRenderers>
-								
-								<mx:verticalAxis>
-									<mx:CategoryAxis id="exercisePlotYaxis" dataProvider="{['expectation','PRTresults']}" />
-								</mx:verticalAxis>
-								
-								<mx:verticalAxisRenderers>
-									<mx:AxisRenderer axis="{exercisePlotYaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false" /><!-- -->
-								</mx:verticalAxisRenderers>
-								
-							</mx:PlotChart>
-							
-						</s:BorderContainer>
+						</s:HGroup>
 						
-						<s:BorderContainer width="440" height="288" styleName="transparentBorderContainer">
+						<s:DataGroup id="exerciseOverview" dataProvider="{model.exerciseDataByMeasure}">
 							
 							<s:layout>
-								<s:VerticalLayout paddingTop="14" paddingLeft="22" gap="6" />
+								<s:VerticalLayout paddingLeft="15" />
 							</s:layout>
 							
-							<s:Label text="Physical Readiness Test" styleName="greenBoldText" />
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:VBox>
+										
+										<fx:Script>
+											<![CDATA[
+												
+												[Bindable] private var exerciseIcon:Class;
+												[Bindable] private var performanceIcon:Class;
+												[Bindable] private var performanceLabel:String;
+												[Bindable] private var performanceLabelColor:uint;
+												
+												[Bindable] private var resultData:Object;
+												
+												[Bindable] private var isOverview:Boolean;
+												
+												override public function set data(value:Object):void
+												{
+													super.data = value;
+													
+													if( data )
+													{
+														exerciseIcon = outerDocument.controller.getIconForExercise( data );
+														
+														if( data.hasOwnProperty('chart') 
+															&& data.chart.length 
+															&& data.chart.getItemAt(0).hasOwnProperty('data') 
+															&& data.chart.getItemAt(0).data.length )
+														{
+															var latestResult:Object = data.chart.getItemAt(0).data.getItemAt(0);
+															
+															for each(var result:Object in data.chart.getItemAt(0).data)
+															{
+																if( new Date( result.date ).time > new Date( latestResult.date ).time )
+																	latestResult = result;
+															}
+															
+															resultData = latestResult;
+															
+															performanceIcon = outerDocument.controller.getPerformanceIconForExercise( resultData );
+															performanceLabel = outerDocument.controller.getPerformanceLabelForExercise( resultData );
+															performanceLabelColor = outerDocument.controller.getPerformanceLabelColorForExercise( resultData );
+														}
+													}
+													
+													isOverview = outerDocument.exerciseOverview.dataProvider.getItemIndex(data) == 0;
+												}
+												
+											]]>
+										</fx:Script>
+										
+										<s:HGroup paddingTop="18" paddingBottom="18">
+											
+											<s:HGroup width="120" verticalAlign="middle" gap="2">
+												<s:Image source="{exerciseIcon}" visible="{exerciseIcon!=null}" includeInLayout="{exerciseIcon!=null}" />
+												<s:Label text="{data.measure}" color="0xAEDFE5" fontSize="{isOverview ? 18 : 13}" fontWeight="bold" width="80" verticalAlign="middle" />
+											</s:HGroup>
+											
+											<s:HGroup width="150" verticalAlign="middle">
+												
+												<s:Image source="{performanceIcon}" />
+												<s:Label text="{resultData.value}" styleName="orangeStandout" />
+												
+												<s:VGroup gap="3" paddingTop="2">
+													<s:Label text="points" styleName="whiteText13" />
+													<s:Label text="{performanceLabel}" color="{performanceLabelColor}" fontSize="13" fontWeight="bold" />
+												</s:VGroup>
+												
+											</s:HGroup>
+											
+											<s:Spacer width="5" />
+											
+											<s:VGroup gap="15" paddingTop="-10">
+												<performancemeter:PerformanceMeter minimum="30" maximum="90" value="{resultData.value}" />
+												<s:Image id="meterRange" source="@Embed('/images/meterRange.png')" visible="{isOverview}" includeInLayout="{isOverview}" />
+											</s:VGroup>
+											
+										</s:HGroup>
+										
+										<s:Group>
+											<s:Line xFrom="0" xTo="530">
+												<s:stroke>
+													<s:SolidColorStroke color="{isOverview ? 0xBCBBBB : 0x4B4A4A}" />
+												</s:stroke>
+											</s:Line>
+										</s:Group>
+										
+									</mx:VBox>
+									
+								</fx:Component>
+								
+							</s:itemRenderer>
 							
-							<s:TileGroup horizontalGap="19" verticalGap="28" paddingTop="15" width="410" height="215" requestedColumnCount="2">
-								
-								<s:HGroup verticalAlign="middle" gap="12" width="200">
-									
-									<s:HGroup paddingTop="-4">
-										<s:Image id="exPRTHappy" source="@Embed('/images/exerciseHappy.png')" />
-										<s:Image id="exPRTNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exPRTSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
-									</s:HGroup>
-									
-									<s:VGroup gap="5">
-										<s:Label text="Average PRT Score" styleName="lightBlueSubtitles" />
-										<s:HGroup gap="9">
-											<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).PRTscore}" styleName="orangeStandout" />
-											<s:VGroup gap="3" paddingTop="2">
-												<s:HGroup gap="3">
-													<s:Label text="points" styleName="whiteText13" />
-													<s:Label text="(+16)" styleName="greenText13" />
-												</s:HGroup>
-												<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-											</s:VGroup>
-										</s:HGroup>
-									</s:VGroup>
-									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="12">
-									
-									<s:HGroup paddingTop="-4">
-										<s:Image id="exPushHappy" source="@Embed('/images/exerciseHappy.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exPushNeutral" source="@Embed('/images/exerciseNeutral.png')" />
-										<s:Image id="exPushSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
-									</s:HGroup>
-									
-									<s:VGroup gap="5">
-										
-										<s:Label text="Push Ups" styleName="lightBlueSubtitles" />
-										
-										<s:HGroup gap="9">
-											<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).pushUps}" styleName="orangeStandout" />
-											<s:VGroup gap="3" paddingTop="2">
-												<s:HGroup gap="3">
-													<s:Label text="points" styleName="whiteText13" />
-													<s:Label text="(+3)" styleName="greenText13" />
-												</s:HGroup>
-												<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-											</s:VGroup>
-										</s:HGroup>
-									</s:VGroup>
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="12">
-									
-									<s:HGroup paddingTop="-4">
-										<s:Image id="exRunHappy" source="@Embed('/images/exerciseHappy.png')" />
-										<s:Image id="exRunNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exRunSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
-									</s:HGroup>
-									
-									<s:VGroup gap="5">
-										
-										<s:Label text="1.5 Mile Run" styleName="lightBlueSubtitles" />
-										
-										<s:HGroup gap="9">
-											
-											<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).mileRun}" styleName="orangeStandout" />
-											
-											<s:VGroup gap="3" paddingTop="2">
-												<s:HGroup gap="3">
-													<s:Label text="points" styleName="whiteText13" />
-													<s:Label text="(+16)" styleName="greenText13" />
-												</s:HGroup>
-												<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-											</s:VGroup>
-											
-										</s:HGroup>
-										
-									</s:VGroup>
-									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="12">
-									
-									<s:HGroup paddingTop="-4">
-										<s:Image id="exWeightHappy" source="@Embed('/images/exerciseHappy.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exWeightNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exWeightSad" source="@Embed('/images/exerciseSad.png')" />
-									</s:HGroup>
-									
-									<s:VGroup gap="5">
-										<s:Label text="Weight" styleName="lightBlueSubtitles" />
-										<s:HGroup gap="9">
-											<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).weight}" styleName="orangeStandout" />
-											<s:VGroup gap="3" paddingTop="2">
-												<s:HGroup gap="3">
-													<s:Label text="pounds" styleName="whiteText13" />
-												</s:HGroup>
-												<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-											</s:VGroup>
-										</s:HGroup>
-									</s:VGroup>
-									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="12">
-									
-									<s:HGroup paddingTop="-4">
-										<s:Image id="exCurlHappy" source="@Embed('/images/exerciseHappy.png')" />
-										<s:Image id="exCurlNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="false" includeInLayout="false" />
-										<s:Image id="exCurlSad" source="@Embed('/images/exerciseSad.png')" visible="false" includeInLayout="false" />
-									</s:HGroup>
-									
-									<s:VGroup gap="5">
-										<s:Label text="Curl Ups" styleName="lightBlueSubtitles" />
-										<s:HGroup gap="9">
-											<s:Label text="{model.exerciseData.getItemAt(model.exerciseCurrentIndex).curlUps}" styleName="orangeStandout" />
-											<s:VGroup gap="3" paddingTop="2">
-												<s:HGroup gap="3">
-													<s:Label text="points" styleName="whiteText13" />
-													<s:Label text="(+15)" styleName="greenText13" />
-												</s:HGroup>
-												<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-											</s:VGroup>
-										</s:HGroup>
-									</s:VGroup>
-									
-								</s:HGroup>
-							</s:TileGroup>
-						</s:BorderContainer>
+						</s:DataGroup>
 						
-					</s:HGroup>
+					</s:BorderContainer>
 					
-					<s:HGroup gap="17">
+					<s:VGroup gap="17" width="305">
 						
-						<s:BorderContainer width="420" height="198" styleName="transparentBorderContainer">
+						<s:BorderContainer width="100%" height="{60 + exerciseOverviewPhysician.height}" styleName="transparentBorderContainer">
 							
 							<s:layout>
-								<s:VerticalLayout paddingTop="14" paddingLeft="22" gap="22" />
+								<s:VerticalLayout paddingLeft="20" paddingTop="20" paddingBottom="20" gap="22" />
 							</s:layout>
 							
-							<s:Label text="Physician-assigned" styleName="greenBoldText" />
+							<s:Label text="Physician-assigned Exercise ({exerciseDataPhysician.length})" styleName="greenBoldText" />
 							
-							<s:VGroup>
-								<s:Label text="Aerobic Exercise: Walk" styleName="lightBlueSubtitles" />
-								<s:HGroup gap="9">
-									<s:Label text="35" styleName="orangeStandout" />
-									<s:VGroup gap="3" paddingTop="2">
-										<s:Label text="minutes" styleName="whiteText13" />
-										<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-									</s:VGroup>
-								</s:HGroup>
-							</s:VGroup>
-							
-							<s:VGroup>
+							<s:DataGroup id="exerciseOverviewPhysician" dataProvider="{exerciseDataPhysician}">
 								
-								<s:Label text="Strength Training: Quadriceps Extensions" styleName="lightBlueSubtitles" />
+								<s:layout>
+									<s:VerticalLayout paddingLeft="8" />
+								</s:layout>
 								
-								<s:HGroup gap="9">
-									<s:Label text="36" styleName="orangeStandout" />
-									<s:VGroup gap="3" paddingTop="2">
-										<s:Label text="times (12 repetitions, 3 sets)" styleName="whiteText13" />
-										<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-									</s:VGroup>
-								</s:HGroup>
-							</s:VGroup>
+								<s:itemRenderer>
+									
+									<fx:Component>
+										
+										<mx:VBox>
+											
+											<fx:Script>
+												<![CDATA[
+													import util.DateFormatters;
+													import util.DateUtil;
+													
+													import mx.collections.ArrayCollection;
+													
+													[Bindable] private var resultData:Object;
+													
+													[Bindable] private var isLast:Boolean;
+													[Bindable] private var comments:ArrayCollection = new ArrayCollection();
+													
+													override public function set data(value:Object):void
+													{
+														super.data = value;
+														
+														if( data.hasOwnProperty('chart') 
+															&& data.chart.length 
+															&& data.chart.getItemAt(0).hasOwnProperty('data') 
+															&& data.chart.getItemAt(0).data.length )
+														{
+															var latestResult:Object = data.chart.getItemAt(0).data.getItemAt(0);
+															
+															for each(var result:Object in data.chart.getItemAt(0).data)
+															{
+																if( new Date( result.date ).time > new Date( latestResult.date ).time )
+																	latestResult = result;
+															}
+															
+															for each(var exercise:Object in outerDocument.model.exerciseDataByMeasurePhysicianAssigned)
+															{
+																if( exercise.measure == "Comments"
+																	&& exercise.hasOwnProperty('chart') 
+																	&& exercise.chart.length
+																	&& exercise.chart.getItemAt(0).hasOwnProperty('data') 
+																	&& exercise.chart.getItemAt(0).data.length )
+																{
+																	for each(var comment:Object in exercise.chart.getItemAt(0).data)
+																	{
+																		if( comment.datePatient == latestResult.date || comment.dateProvider == latestResult.date )
+																		{
+																			comments.addItem( comment );
+																		}
+																	}
+																}
+															}
+															
+															resultData = latestResult;
+															
+															isLast = outerDocument.exerciseDataPhysician.getItemIndex(data) == outerDocument.exerciseDataPhysician.length - 1;
+														}
+													}
+													
+												]]>
+											</fx:Script>
+											
+											<mx:HBox paddingTop="10" paddingBottom="10">
+												
+												<s:VGroup width="100">
+													<s:Label text="{data.category}" styleName="lightBlueSubtitles italic" fontWeight="normal" visible="{data.category!=null}" includeInLayout="{data.category!=null}" />
+													<s:Label text="{data.measure}" styleName="lightBlueSubtitles" />
+												</s:VGroup>
+												
+												<s:HGroup gap="9">
+													
+													<s:Label text="{resultData.value}" styleName="orangeStandout" />
+													
+													<s:VGroup gap="3" paddingTop="2">
+														
+														<s:Label text="{data.unit}" styleName="whiteText13" />
+														<s:Label id="date" styleName="grayNote" creationComplete="date.text=resultData.date?outerDocument.dateFormatter.format( new Date( resultData.date ) ):''" />
+														
+														<s:DataGroup dataProvider="{comments}">
+															
+															<s:layout>
+																<s:HorizontalLayout gap="-5" />
+															</s:layout>
+															
+															<s:itemRenderer>
+																
+																<fx:Component>
+																	
+																	<mx:HBox>
+																		<s:Image source="{data.type == 'provider' ? outerDocument.outerDocument.model.commentIconProvider : outerDocument.outerDocument.model.commentIconPatient}" />
+																	</mx:HBox>
+																	
+																</fx:Component>
+																
+															</s:itemRenderer>
+															
+														</s:DataGroup>
+														
+													</s:VGroup>
+													
+												</s:HGroup>
+												
+											</mx:HBox>
+											
+											<s:Group visible="{!isLast}" includeInLayout="{!isLast}">
+												<s:Line xFrom="0" xTo="265">
+													<s:stroke>
+														<s:SolidColorStroke color="0x4B4A4A" />
+													</s:stroke>
+												</s:Line>
+											</s:Group>
+											
+										</mx:VBox>
+										
+									</fx:Component>
+									
+								</s:itemRenderer>
+								
+							</s:DataGroup>
 							
 						</s:BorderContainer>
 						
-						<s:BorderContainer width="440" height="198" styleName="transparentBorderContainer">
+						<s:BorderContainer width="100%" height="{60 + exerciseOverviewPersonal.height}" styleName="transparentBorderContainer">
 							
 							<s:layout>
-								<s:VerticalLayout paddingTop="14" paddingLeft="22" gap="22" />
+								<s:VerticalLayout paddingLeft="20" paddingTop="20" paddingBottom="20" gap="22" />
 							</s:layout>
 							
-							<s:Label text="Personal" styleName="greenBoldText" />
+							<s:Label id="label" text="Personal Exercise ({exerciseDataPersonal.length})" styleName="greenBoldText" />
 							
-							<s:VGroup>
-								<s:Label text="Tennis" styleName="lightBlueSubtitles" />
-								<s:HGroup gap="9">
-									<s:Label text="45" styleName="orangeStandout" />
-									<s:VGroup gap="3" paddingTop="2">
-										<s:Label text="minutes" styleName="whiteText13" />
-										<s:Label text="{DateUtil.formatDateFromString(model.exerciseData.getItemAt(model.exerciseCurrentIndex).date)}" styleName="grayNote" />
-									</s:VGroup>
-								</s:HGroup>
-							</s:VGroup>
+							<s:DataGroup id="exerciseOverviewPersonal" dataProvider="{exerciseDataPersonal}">
+								
+								<s:layout>
+									<s:VerticalLayout paddingLeft="8" />
+								</s:layout>
+								
+								<s:itemRenderer>
+									
+									<fx:Component>
+										
+										<mx:VBox>
+											
+											<fx:Script>
+												<![CDATA[
+													import util.DateFormatters;
+													import util.DateUtil;
+													
+													import mx.collections.ArrayCollection;
+													
+													[Bindable] private var resultData:Object;
+													
+													[Bindable] private var isLast:Boolean;
+													
+													[Bindable] private var comments:ArrayCollection = new ArrayCollection();
+													
+													override public function set data(value:Object):void
+													{
+														super.data = value;
+														
+														if( data.hasOwnProperty('chart') 
+															&& data.chart.length 
+															&& data.chart.getItemAt(0).hasOwnProperty('data') 
+															&& data.chart.getItemAt(0).data.length )
+														{
+															var latestResult:Object = data.chart.getItemAt(0).data.getItemAt(0);
+															
+															for each(var result:Object in data.chart.getItemAt(0).data)
+															{
+																if( new Date( result.date ).time > new Date( latestResult.date ).time )
+																	latestResult = result;
+															}
+															
+															for each(var exercise:Object in outerDocument.model.exerciseDataByMeasurePersonal)
+															{
+																if( exercise.measure == "Comments"
+																	&& exercise.hasOwnProperty('chart') 
+																	&& exercise.chart.length
+																	&& exercise.chart.getItemAt(0).hasOwnProperty('data') 
+																	&& exercise.chart.getItemAt(0).data.length )
+																{
+																	for each(var comment:Object in exercise.chart.getItemAt(0).data)
+																	{
+																		if( comment.datePatient == latestResult.date || comment.dateProvider == latestResult.date )
+																		{
+																			comments.addItem( comment );
+																		}
+																	}
+																}
+															}
+															
+															resultData = latestResult;
+															
+															isLast = outerDocument.exerciseDataPersonal.getItemIndex(data) == outerDocument.exerciseDataPersonal.length - 1;
+														}
+													}
+													
+												]]>
+											</fx:Script>
+											
+											<mx:HBox paddingTop="10" paddingBottom="10">
+												
+												<s:VGroup width="100">
+													<s:Label text="{data.category}" styleName="lightBlueSubtitles italic" fontWeight="normal" visible="{data.category!=null}" includeInLayout="{data.category!=null}" />
+													<s:Label text="{data.measure}" styleName="lightBlueSubtitles" />
+												</s:VGroup>
+												
+												<s:HGroup gap="9">
+													
+													<s:Label text="{resultData.value}" styleName="orangeStandout" />
+													
+													<s:VGroup gap="3" paddingTop="2">
+														
+														<s:Label text="{data.unit}" styleName="whiteText13" />
+														<s:Label id="date" styleName="grayNote" creationComplete="date.text=resultData.date?outerDocument.dateFormatter.format( new Date( resultData.date ) ):''" />
+														
+														<s:DataGroup dataProvider="{comments}">
+															
+															<s:layout>
+																<s:HorizontalLayout gap="-5" />
+															</s:layout>
+															
+															<s:itemRenderer>
+																
+																<fx:Component>
+																	
+																	<mx:HBox>
+																		<s:Image source="{data.type == 'provider' ? outerDocument.outerDocument.model.commentIconProvider : outerDocument.outerDocument.model.commentIconPatient}" />
+																	</mx:HBox>
+																	
+																</fx:Component>
+																
+															</s:itemRenderer>
+																
+														</s:DataGroup>
+														
+													</s:VGroup>
+													
+												</s:HGroup>
+												
+											</mx:HBox>
+											
+											<s:Group visible="{!isLast}" includeInLayout="{!isLast}">
+												<s:Line xFrom="0" xTo="265">
+													<s:stroke>
+														<s:SolidColorStroke color="0x4B4A4A" />
+													</s:stroke>
+												</s:Line>
+											</s:Group>
+											
+										</mx:VBox>
+										
+									</fx:Component>
+									
+								</s:itemRenderer>
+								
+							</s:DataGroup>
 							
 						</s:BorderContainer>
 						
-					</s:HGroup>
+					</s:VGroup>
 					
-				</s:VGroup>	
+				</s:HGroup>	
 				
 			</s:NavigatorContent>
 			
-			<s:NavigatorContent label="Physical Readiness Test"><!--id="mainBox"-->
+			<s:NavigatorContent label="Physical Readiness Test">
 				
 				<s:layout>
 					<s:VerticalLayout gap="0" />
@@ -555,7 +708,7 @@
 					
 					<s:HGroup color="0xFFFFFF" gap="2"><!--!!!-->
 						<s:Label text="Time Range:" paddingTop="6" />
-						<general:customLinkButton id="btnEx1" label="since last PRT" paddingLeft="2" paddingRight="2" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" /><!--click="handleMedicationsDateRange('1d')" -->
+						<general:customLinkButton id="btnEx1" label="since last PRT" paddingLeft="2" paddingRight="2" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
 						<general:customLinkButton id="btnEx2" label="since last 2" paddingLeft="2" paddingRight="2" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
 						<general:customLinkButton id="btnEx3" label="since last 3" paddingLeft="2" paddingRight="2" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
 						<general:customLinkButton id="btnExViewAll" label="All" paddingLeft="2" paddingRight="2" toggle="true" selected="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" />
@@ -622,13 +775,15 @@
 							</s:Line>
 							
 							<ASclasses:RowColorDataGrid 
-								id="dgExercisePRT" width="100%" height="100%" dataProvider="{model.exerciseDataByMeasure}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
+								id="dgExercisePRT" 
+								width="100%" height="100%" 
+								dataProvider="{model.exerciseDataByMeasure}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
 								color="0xFFFFFF" verticalAlign="middle"
 								dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragComplete="controller.updateExerciseIndices()"
 								selectionDuration="2000" useRollOver="false" selectionColor="{dgExercisePRT.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
 								headerHeight="0"
 								borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x4A4A49]"
-								variableRowHeight="true" initialize="controller.updateExerciseIndices()"><!--rowColorFunction="calcCommentsRowColor" selectionColor="{dgVitalSigns.selectedItem == arrVitalSigns[6] ? 0x000000 : dgVitalSigns.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}" rowCount="7"-->
+								variableRowHeight="true" initialize="controller.updateExerciseIndices()">
 								
 								<ASclasses:columns>
 									<mx:DataGridColumn dataField="measure">
@@ -637,6 +792,8 @@
 												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off">
 													<fx:Script>
 														<![CDATA[
+															import enum.ExerciseType;
+															
 															import components.itemrenderers.chart.MyCircleItemRenderer;
 															import components.itemrenderers.chart.MyCircleItemRendererOver;
 															import ASclasses.MyCustomDataTip;
@@ -667,8 +824,9 @@
 																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
 															}	
 															
-															private function switchExerciseViewFromRenderer(measure:String):void {
-																if(measure == "1.5 Mile Run") outerDocument.switchExerciseView(2);
+															private function switchExerciseViewFromRenderer(type:String):void 
+															{
+																if(type == ExerciseType.RUN) outerDocument.switchExerciseView(2);
 															}
 															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
@@ -678,6 +836,7 @@
 																lblMin.text = data.chart[0].data[event.hitData.chartItem.index].min;
 																lblSec.text = data.chart[0].data[event.hitData.chartItem.index].sec;
 																lblTimes.text = data.chart[0].data[event.hitData.chartItem.index].times;
+																
 																myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
 															}
 															
@@ -688,16 +847,9 @@
 																lblMin.text = item.min;
 																lblSec.text = item.sec;
 																lblTimes.text = item.times;
+																
 																myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererExercise));
 															}
-															
-															/*			private function applyCustomDataTipsVitalSigns():void {
-															chartComments.setStyle("dataTipRenderer",MyCustomDataTip);    
-															}
-															
-															private function dataTipsVitalSignsComments(hd:HitData):String {
-															return hd.item.type == 'patient' ? hd.item.datePatient : hd.item.dateProvider;
-															}*/
 															
 															private var myViewExercisesPopup:viewExercisesWindow;
 															
@@ -706,15 +858,9 @@
 																myViewExercisesPopup = viewExercisesWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesWindow) as spark.components.TitleWindow);
 																myViewExercisesPopup.date = e.hitData.item.date;
 																myViewExercisesPopup.populateEntry();
+																
 																PopUpManager.centerPopUp(myViewExercisesPopup);
 															}
-															
-															/*private function viewVitalsComments(e:ChartItemEvent):void {
-															myViewVitalsPopup = viewVitalsWindow(PopUpManager.createPopUp(this, viewVitalsWindow) as spark.components.TitleWindow);
-															myViewVitalsPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
-															myViewVitalsPopup.populateEntry();
-															PopUpManager.centerPopUp(myViewVitalsPopup);
-															}*/
 														]]>
 													</fx:Script>
 													
@@ -732,14 +878,14 @@
 														
 														<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 															<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-															<mx:LinkButton visible="{data.measure == 'Avg. PRT Score'}" includeInLayout="{data.measure == 'Avg. PRT Score'}" icon.expanded="@Embed(source='/images/exercisePRT2.png')" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
-															<mx:LinkButton visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}" icon.expanded="@Embed(source='/images/exerciseRun2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
-															<mx:LinkButton visible="{data.measure == 'Curl Ups'}" includeInLayout="{data.measure == 'Curl Ups'}" icon.expanded="@Embed(source='/images/exerciseCurlUps2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
-															<mx:LinkButton visible="{data.measure == 'Push Ups'}" includeInLayout="{data.measure == 'Push Ups'}" icon.expanded="@Embed(source='/images/exercisePushUps2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+															<mx:LinkButton visible="{data.type == ExerciseType.OVERVIEW}" includeInLayout="{data.type == ExerciseType.OVERVIEW}" icon.expanded="{outerDocument.model.iconOverview}" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+															<mx:LinkButton visible="{data.type == ExerciseType.RUN}" includeInLayout="{data.type == ExerciseType.RUN}" icon.expanded="{outerDocument.model.iconRun}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+															<mx:LinkButton visible="{data.type == ExerciseType.CURL_UPS}" includeInLayout="{data.type == ExerciseType.CURL_UPS}" icon.expanded="{outerDocument.model.iconCurlUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+															<mx:LinkButton visible="{data.type == ExerciseType.PUSH_UPS}" includeInLayout="{data.type == ExerciseType.PUSH_UPS}" icon.expanded="{outerDocument.model.iconPushUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 														</s:HGroup>
 														
-														<s:HGroup paddingTop="-8" visible="{data.measure == '1.5 Mile Run'}" includeInLayout="{data.measure == '1.5 Mile Run'}">
-															<s:DropDownList id="dropDownERBookmarks" prompt="Switch   ▼" change="{dropDownERBookmarks.selectedIndex = -1}" width="150" horizontalScrollPolicy="off" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkinNoButton" color="0xAEDBE2"> <!--layoutDirection="rtl" change="messageSort()"-->
+														<s:HGroup paddingTop="-8" visible="{data.type == ExerciseType.RUN}" includeInLayout="{data.type == ExerciseType.RUN}">
+															<s:DropDownList id="dropDownERBookmarks" prompt="Switch   ▼" change="{dropDownERBookmarks.selectedIndex = -1}" width="150" horizontalScrollPolicy="off" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkinNoButton" color="0xAEDBE2">
 																<mx:ArrayCollection>
 																	<fx:String>1.5 Mile Run</fx:String>
 																	<fx:String>500 Yard/450 Meter Swim</fx:String>
@@ -753,7 +899,7 @@
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" width="450">
 														
-														<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewExercises(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+														<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewExercises(event)">
 															<mx:series>
 																<mx:LineSeries yField="expectation" xField="date" interactive="false">
 																	<mx:lineStroke>
@@ -807,13 +953,13 @@
 																<s:Label fontSize="13" text="points" />
 																<s:Label fontSize="13" text="(+16)" styleName="greenText13" />
 															</s:HGroup>
-															<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{data.measure == '1.5 Mile Run'}" visible="{data.measure == '1.5 Mile Run'}" fontSize="13" color="0xFBB03B">
+															<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{data.type == ExerciseType.RUN}" visible="{data.type == ExerciseType.RUN}" fontSize="13" color="0xFBB03B">
 																<s:Label id="lblMin" fontWeight="bold" text="{item.min}" />
 																<s:Label text="min." />
 																<s:Label id="lblSec" fontWeight="bold" text="{item.sec}" />
 																<s:Label text="sec." />
 															</s:HGroup>
-															<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{data.measure == 'Curl Ups' || data.measure == 'Push Ups'}" visible="{data.measure == 'Curl Ups' || data.measure == 'Push Ups'}" fontSize="13" color="0xFBB03B">
+															<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{data.type == ExerciseType.CURL_UPS || data.type == ExerciseType.PUSH_UPS}" visible="{data.type == ExerciseType.CURL_UPS || data.type == ExerciseType.PUSH_UPS}" fontSize="13" color="0xFBB03B">
 																<s:Label id="lblTimes" fontWeight="bold" text="{item.times}" />
 																<s:Label text="times" />
 															</s:HGroup>
@@ -851,30 +997,30 @@
 								
 								<s:HGroup gap="35">
 									
-									<s:HGroup verticalAlign="middle" gap="13" width="150">
+									<s:HGroup verticalAlign="middle" gap="13">
 										
 										<s:HGroup>
-											<s:Image id="exerciseHappy" source="@Embed('/images/exerciseHappy.png')" creationComplete="exerciseHappy.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value > 55" includeInLayout="{exerciseHappy.visible}" />
-											<s:Image id="exerciseNeutral" source="@Embed('/images/exerciseNeutral.png')" creationComplete="exerciseNeutral.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value >= 45 &amp;&amp; model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 55" includeInLayout="{exerciseNeutral.visible}" />
-											<s:Image id="exerciseSad" source="@Embed('/images/exerciseSad.png')" creationComplete="exerciseSad.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value &lt; 45" includeInLayout="{exerciseSad.visible}" />
+											<s:Image id="exerciseHappy" source="@Embed('/images/exerciseHappy.png')" visible="{lastExercise.value > 55}" includeInLayout="{exerciseHappy.visible}" />
+											<s:Image id="exerciseNeutral" source="@Embed('/images/exerciseNeutral.png')" visible="{lastExercise.value >= 45 &amp;&amp; lastExercise.value &lt; 55}" includeInLayout="{exerciseNeutral.visible}" />
+											<s:Image id="exerciseSad" source="@Embed('/images/exerciseSad.png')" visible="{lastExercise.value &lt; 45}" includeInLayout="{exerciseSad.visible}" />
 										</s:HGroup>
 										
 										<s:VGroup gap="3">
 											
 											<s:HGroup verticalAlign="baseline" gap="4">
-												<s:Label id="lblExRun" styleName="orangeStandout" creationComplete="lblExRun.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value" />
+												<s:Label id="lblExRun" styleName="orangeStandout" text="{lastExercise.value}" />
 												<s:Label text="points" styleName="whiteText13" />
-												<s:Label id="lblExRunDiff" creationComplete="lblExRunDiff.text='(+' + String(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - 45) + ')'" styleName="greenText13" />
+												<s:Label id="lblExRunDiff" text="{'(+' + String(lastExercise.value - 45) + ')'}" styleName="greenText13" />
 											</s:HGroup>
 											
 											<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xFBB03B">
-												<s:Label id="lblExRunMin" fontWeight="bold" creationComplete="lblExRunMin.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].min" />
+												<s:Label id="lblExRunMin" fontWeight="bold" text="{lastExercise.min}" />
 												<s:Label text="min." />
-												<s:Label id="lblExRunSec" fontWeight="bold" creationComplete="lblExRunSec.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].sec" />
+												<s:Label id="lblExRunSec" fontWeight="bold" text="{lastExercise.sec}" />
 												<s:Label text="sec." />
 											</s:HGroup>
 											
-											<s:Label id="lblExRunDate" creationComplete="lblExRunDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+											<s:Label id="lblExRunDate" text="{DateUtil.formatDateFromString(lastExercise.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 										
 										</s:VGroup>
 									</s:HGroup>
@@ -882,23 +1028,23 @@
 									<s:HGroup width="174">
 										
 										<s:HGroup paddingTop="11">
-											<s:Image id="imgRunDiffPos" source="@Embed('/images/vitalUpGreen2.png')" creationComplete="imgRunDiffPos.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value > 0" includeInLayout="{imgRunDiffPos.visible}" />
-											<s:Image id="imgRunDiffNeg" source="@Embed('/images/vitalDownRed.png')" creationComplete="imgRunDiffNeg.visible=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0" includeInLayout="{imgRunDiffNeg.visible}" />
+											<s:Image id="imgRunDiffPos" source="@Embed('/images/vitalUpGreen2.png')" visible="{lastExercise.value - previousExercise.value > 0}" includeInLayout="{imgRunDiffPos.visible}" />
+											<s:Image id="imgRunDiffNeg" source="@Embed('/images/vitalDownRed.png')" visible="{lastExercise.value - previousExercise.value &lt; 0}" includeInLayout="{imgRunDiffNeg.visible}" />
 										</s:HGroup>	
 										
 										<s:VGroup gap="3">
 											
 											<s:HGroup verticalAlign="baseline" gap="4">
-												<s:Label id="lblRunDiff" styleName="orangeStandout" creationComplete="lblRunDiff.text=String(Math.abs(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value))" />
-												<s:Label id="lblRunDiffUnits" fontSize="13" creationComplete="lblRunDiffUnits.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0 ? 'points down' : 'points up'" color="0xFFFFFF" />
+												<s:Label id="lblRunDiff" styleName="orangeStandout" text="{String(Math.abs(lastExercise.value - previousExercise.value))}" />
+												<s:Label id="lblRunDiffUnits" fontSize="13" text="{lastExercise.value - previousExercise.value &lt; 0 ? 'points down' : 'points up'}" color="0xFFFFFF" />
 											</s:HGroup>
 											
 											<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xFBB03B">
-												<s:Label id="lblRunDiffSeconds" fontWeight="bold" creationComplete="lblRunDiffSeconds.text=String(Math.abs(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].sec - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].sec))" />
-												<s:Label id="lblRunDiffSecondsUnits" creationComplete="lblRunDiffSecondsUnits.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 1].value - model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].value &lt; 0 ? 'seconds slower' : 'seconds faster'" />
+												<s:Label id="lblRunDiffSeconds" fontWeight="bold" text="{String(Math.abs(lastExercise.sec - previousExercise.sec))}" />
+												<s:Label id="lblRunDiffSecondsUnits" text="{lastExercise.value - previousExercise.value &lt; 0 ? 'seconds slower' : 'seconds faster'}" />
 											</s:HGroup>
 											
-											<s:Label id="lblRunDatePrev" creationComplete="lblRunDatePrev.text='from ' + DateUtil.formatDateFromString(model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data.length - 2].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
+											<s:Label id="lblRunDatePrev" text="{'from ' + DateUtil.formatDateFromString(previousExercise.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" width="130" />
 										
 										</s:VGroup>
 										
@@ -907,14 +1053,14 @@
 									<s:VGroup gap="3" paddingRight="30">
 										
 										<s:HGroup verticalAlign="baseline" gap="4">
-											<s:Label id="lblExRunTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" creationComplete="lblExRunTarget.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].target" />
+											<s:Label id="lblExRunTarget" fontSize="36" fontWeight="bold" color="0xAEDEE4" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).target}" />
 											<s:Label text="points" styleName="whiteText13" />
 										</s:HGroup>
 										
 										<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" fontSize="13" color="0xAEDEE4">
-											<s:Label id="lblExRunTargetMin" fontWeight="bold" creationComplete="lblExRunTargetMin.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].targetMin" />
+											<s:Label id="lblExRunTargetMin" fontWeight="bold" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).targetMin}" />
 											<s:Label text="min." />
-											<s:Label id="lblExRunTargetSec" fontWeight="bold" creationComplete="lblExRunTargetSec.text=model.exerciseDataByMeasure.getItemAt(model.exerciseIndices.indexOf('1.5 Mile Run')).chart[0].data[0].targetSec" />
+											<s:Label id="lblExRunTargetSec" fontWeight="bold" text="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt(0).targetSec}" />
 											<s:Label text="sec." />
 										</s:HGroup>
 										
@@ -1000,7 +1146,7 @@
 							<mx:LineChart 
 								id="exerciseMileRunLineChart"
 								paddingLeft="-3" paddingTop="-6" width="817" height="342"
-								dataProvider="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf('1.5 Mile Run') ).chart.getItemAt(0).data}"
+								dataProvider="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data}"
 								backgroundElements="{exerciseMileRunBackground}" seriesFilters="[]" selectionMode="single" 
 								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsMileRun"
 								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
@@ -1111,15 +1257,19 @@
 							</s:layout>
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="31" horizontalAlign="right" verticalAlign="middle">
+								
 								<s:Line xFrom="0" xTo="24">
 									<s:stroke>
 										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
 									</s:stroke>
 								</s:Line>
+								
 								<s:Label text="Goal" paddingRight="10" />
+								
 								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
 								</mx:Legend>
+								
 							</s:HGroup>
 							
 							<s:Line xFrom="0" xTo="816">
@@ -1144,6 +1294,10 @@
 												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{if(data.chartType == 'comments') this.currentState = 'collapsed'}">
 													<fx:Script>
 														<![CDATA[
+															import enum.ExerciseType;
+															import enum.ExerciseType;
+															import enum.ExerciseType;
+															import enum.ExerciseType;
 															import ASclasses.MyCustomDataTip;
 															
 															import components.itemrenderers.chart.MyCircleItemRenderer;
@@ -1161,6 +1315,7 @@
 															import util.DateUtil;
 															
 															[Bindable] public var item:Object;
+															[Bindable] public var defaultItem:Object;
 															
 															override public function set data(value:Object):void 
 															{
@@ -1172,26 +1327,24 @@
 																	chartComments.dataProvider = value.chart[0].data;
 																}
 																
-																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+																item = defaultItem = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
 															}	
 															
-															private function switchExerciseViewFromRenderer(measure:String):void {
-																if(measure == "Run / Walk") outerDocument.switchExercisePhyView(2);
+															private function switchExerciseViewFromRenderer(type:String):void {
+																if(type == ExerciseType.RUN) outerDocument.switchExercisePhyView(2);
 															}
 															
 															private function chartRolloverEventHandler(event:ChartItemEvent):void 
 															{
-																lblValue.text = data.chart[0].data[event.hitData.chartItem.index].value;
-																lblDate.text = DateUtil.formatDateFromString(data.chart[0].data[event.hitData.chartItem.index].date);
-																lblMiles.text = data.chart[0].data[event.hitData.chartItem.index].miles;
+																item = data.chart[0].data[event.hitData.chartItem.index];
+																
 																myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererOver));
 															}
 															
 															private function chartRolloutEventHandler(event:ChartItemEvent):void 
 															{
-																lblValue.text = item.value;
-																lblDate.text = DateUtil.formatDateFromString(item.date);
-																lblMiles.text = item.miles;
+																item = defaultItem;
+															
 																myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererExercise));
 															}
 															
@@ -1235,16 +1388,10 @@
 														<s:State name="collapsed" />
 													</mx:states>
 													
-													<!--<s:VGroup width="100">
-														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='/images/exerciseRun.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='/images/exBike.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="27" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
-													</s:VGroup>-->
-													
 													<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 														<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:LinkButton visible="{data.measure == 'Run / Walk'}" includeInLayout="{data.measure == 'Run / Walk'}" icon.expanded="@Embed(source='/images/exerciseRun2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
-														<mx:LinkButton visible="{data.measure == 'Bike'}" includeInLayout="{data.measure == 'Bike'}" icon.expanded="@Embed(source='/images/exerciseBike2.png')" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
+														<mx:LinkButton visible="{data.type == ExerciseType.RUN}" includeInLayout="{data.type == ExerciseType.RUN}" icon.expanded="{outerDocument.model.iconRun}" horizontalGap="2" label="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+														<mx:LinkButton visible="{data.type == ExerciseType.BIKE}" includeInLayout="{data.type == ExerciseType.BIKE}" icon.expanded="{outerDocument.model.iconBike}" horizontalGap="2" label="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 														<mx:Label includeInLayout="{data.chartType == 'comments'}" visible="{data.chartType == 'comments'}" paddingLeft="8" text="Comments" fontSize="13" fontWeight="bold" color="0x999999" />
 													</s:HGroup>
 													
@@ -1331,14 +1478,14 @@
 													
 													<s:VGroup includeInLayout="{data.chartType != 'comments'}" visible="{data.chartType != 'comments'}" gap="3">
 														
-														<s:HGroup verticalAlign="baseline" gap="4">
-															<s:Label id="lblValue" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
-															<s:Label fontSize="13" text="minutes" />
+														<s:HGroup verticalAlign="baseline" gap="4" includeInLayout="{item.value!='' &amp;&amp;this.currentState != 'collapsed'}" visible="{item.value!='' &amp;&amp;this.currentState != 'collapsed'}">
+															<s:Label id="value" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
+															<s:Label fontSize="13" text="{data.unit}" />
 														</s:HGroup>
 														
-														<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{data.measure == 'Run / Walk' &amp;&amp; this.currentState != 'collapsed'}" visible="{data.measure == 'Run / Walk' &amp;&amp; this.currentState != 'collapsed'}" fontSize="13" color="0xFBB03B">
-															<s:Label id="lblMiles" fontWeight="bold" text="{item.miles}" />
-															<s:Label text="miles" />
+														<s:HGroup paddingTop="-4" paddingBottom="4" gap="3" includeInLayout="{item.value2!='' &amp;&amp;this.currentState != 'collapsed'}" visible="{item.value2!='' &amp;&amp;this.currentState != 'collapsed'}" fontSize="13" color="0xFBB03B">
+															<s:Label id="value2" fontWeight="bold" text="{item.value2}" />
+															<s:Label text="{data.unit2}" />
 														</s:HGroup>
 														
 														<s:Label id="lblDate" includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" text="{DateUtil.formatDateFromString(item.date)}" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
@@ -1404,37 +1551,37 @@
 								<s:VGroup gap="3" width="110">
 									<s:Label text="Distance:" styleName="greenSubtitle" />
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblExDistance" styleName="orangeStandout" creationComplete="lblExDistance.text=model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles" />
+										<s:Label id="lblExDistance" styleName="orangeStandout" creationComplete="lblExDistance.text=model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2" />
 										<s:Label text="miles" styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExDistanceDate" creationComplete="lblExDistanceDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExDistanceDate" creationComplete="lblExDistanceDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 								<s:VGroup gap="3" width="110">
 									<s:Label text="Duration:" styleName="greenSubtitle" />
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblExDuration" styleName="orangeStandout" creationComplete="lblExDuration.text=model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].value" />
+										<s:Label id="lblExDuration" styleName="orangeStandout" creationComplete="lblExDuration.text=model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value" />
 										<s:Label text="min." styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExDurationDate" creationComplete="lblExDurationDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExDurationDate" creationComplete="lblExDurationDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 								<s:VGroup gap="3" width="110">
 									<s:Label text="Average Speed:" styleName="greenSubtitle" />
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblExSpeed" styleName="orangeStandout" creationComplete="lblExSpeed.text=String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].value) * 60 * 10) / 10)" />
+										<s:Label id="lblExSpeed" styleName="orangeStandout" creationComplete="lblExSpeed.text=String(int((model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2 / model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value) * 60 * 10) / 10)" />
 										<s:Label text="miles/hr" styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExSpeedDate" creationComplete="lblExSpeedDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExSpeedDate" creationComplete="lblExSpeedDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 								<s:VGroup gap="3" width="110" paddingRight="12">
 									<s:Label text="Calories Burned:" styleName="greenSubtitle" />
 									<s:HGroup verticalAlign="baseline" gap="4">
-										<s:Label id="lblExCalories" styleName="orangeStandout" creationComplete="lblExCalories.text=String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].miles))" />
+										<s:Label id="lblExCalories" styleName="orangeStandout" creationComplete="lblExCalories.text=String(Math.round(180 * .3 * model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].value2))" />
 										<s:Label text="cal." styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExCaloriesDate" creationComplete="lblExCaloriesDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExCaloriesDate" creationComplete="lblExCaloriesDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 								<s:Line yFrom="0" yTo="68">
@@ -1449,7 +1596,7 @@
 										<s:Label id="lblExHeart" styleName="orangeStandout" text="120" />
 										<s:Label text="beats/min" styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExHeartDate" creationComplete="lblExHeartDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExHeartDate" creationComplete="lblExHeartDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 								<s:VGroup gap="3" width="110">
@@ -1458,7 +1605,7 @@
 										<s:Label id="lblExWeight" styleName="orangeStandout" text="180" />
 										<s:Label text="pounds" styleName="whiteText13" />
 									</s:HGroup>
-									<s:Label id="lblExWeightDate" creationComplete="lblExWeightDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+									<s:Label id="lblExWeightDate" creationComplete="lblExWeightDate.text=DateUtil.formatDateFromString(model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data[model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart[0].data.length - 1].date)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
 								</s:VGroup>
 								
 							</s:HGroup>
@@ -1508,7 +1655,7 @@
 							
 							<mx:LineChart 
 								id="exerciseRunWalkLineChart"
-								dataProvider="{model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf('Run / Walk')).chart.getItemAt(0).data}"
+								dataProvider="{model.exerciseDataByMeasurePhysicianAssigned.getItemAt(model.exercisePAIndices.indexOf( ExerciseType.RUN )).chart.getItemAt(0).data}"
 								paddingLeft="-3" paddingTop="-6" width="817" height="195"
 								backgroundElements="[]" seriesFilters="[]" selectionMode="single" 
 								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsRunWalk"
@@ -1663,11 +1810,33 @@
 							<s:HorizontalLayout gap="0" />
 						</s:layout>
 						
-						<s:VGroup gap="6" styleName="whiteText13" paddingLeft="12" paddingTop="15" width="157">
-							<mx:LinkButton id="btnExPerBike" label="Bike" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" /><!--click="switchExercisePhyView(0);" rollOver="{btnExPRT.styleName='linkBtnUnderline';}" rollOut="btnExPRT.styleName='linkBtn';"--><!--click="switchVitalView(0);" -->
-							<mx:LinkButton id="btnExPerHike" label="Hike" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" /><!--click="switchExercisePhyView(2);" rollOver="{btnExPRT.styleName='linkBtnUnderline';}" rollOut="btnExPRT.styleName='linkBtn';"--><!--click="switchVitalView(0);" -->
-							<!--I should have some mechanism for adding more buttons dynamically, when the user adds them-->
-						</s:VGroup>
+						<s:DataGroup width="157" styleName="whiteText13" dataProvider="{model.exerciseDataByMeasurePersonal}">
+							
+							<s:layout>
+								<s:VerticalLayout gap="6" paddingLeft="12" paddingTop="15" />
+							</s:layout>
+							
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:HBox>
+										
+										<fx:Script>
+											<![CDATA[
+												import enum.ExerciseType;
+											]]>
+										</fx:Script>
+										
+										<mx:LinkButton label="{ExerciseType.getLabel(data.type)}" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
+										
+									</mx:HBox>
+									
+								</fx:Component>
+								
+							</s:itemRenderer>
+							
+						</s:DataGroup>
 						
 						<s:Line yFrom="0" yTo="564">
 							<s:stroke>
@@ -1700,13 +1869,16 @@
 							</s:Line>
 							
 							<ASclasses:RowColorDataGrid 
-								id="dgExercisePER" rowColorFunction="DataGridFunctions.calcCommentsRowColor" width="100%" height="100%" dataProvider="{model.exerciseDataByMeasurePersonal}" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
+								id="dgExercisePER" 
+								width="100%" height="100%" 
+								dataProvider="{model.exerciseDataByMeasurePersonal}" 
+								rowColorFunction="DataGridFunctions.calcCommentsRowColor" dropIndicatorSkin="skins.general.myDropIndicatorSkin"
 								color="0xFFFFFF" verticalAlign="middle"
 								dragEnabled="true" dropEnabled="true" dragMoveEnabled="true" dragComplete="controller.updateExercisePERIndices()"
 								selectionDuration="2000" useRollOver="false" selectionColor="{(dgExercisePER.selectedItem.chartType == 'untrackable') ? 0x000000 : dgExercisePER.selectedIndex % 2 == 0 ? 0x3C3C3B : 0x4A4A49}"
 								headerHeight="0"
 								borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x4A4A49]"
-								variableRowHeight="true" initialize="controller.updateExercisePERIndices()"><!--rowCount="7"-->
+								variableRowHeight="true" initialize="controller.updateExercisePERIndices()">
 								
 								<ASclasses:columns>
 									<mx:DataGridColumn dataField="measure">
@@ -1715,6 +1887,10 @@
 												<mx:HBox verticalAlign="middle" paddingLeft="20" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="{if(data.measure == 'Comments') this.currentState = 'collapsed'}">
 													<fx:Script>
 														<![CDATA[
+															import enum.ExerciseType;
+															import enum.ExerciseType;
+															import enum.ExerciseType;
+															import enum.ExerciseType;
 															import ASclasses.MyCustomDataTip;
 															
 															import components.itemrenderers.chart.MyCircleItemRenderer;
@@ -1741,22 +1917,10 @@
 																}
 																
 																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
-															}	
+															}
 															
-															/* [Bindable] [Embed("/images/exBike.png")] public var iconBike:Class;
-															[Bindable] [Embed("/images/exerciseRun.png")] public var iconRun:Class;
-															[Bindable] [Embed("/images/exPERswim.png")] public var iconSwim:Class;
-															[Bindable] [Embed("/images/exPERmachine.png")] public var iconMachine:Class;
-															[Bindable] [Embed("/images/exPERyoga.png")] public var iconYoga:Class;
-															[Bindable] [Embed("/images/exPERweight.png")] public var iconWeight:Class; */
-															[Bindable] [Embed("/images/exerciseBike2.png")] public var iconBike:Class;
-															[Bindable] [Embed("/images/exerciseRun2.png")] public var iconRun:Class;
-															[Bindable] [Embed("/images/exPERswim2.png")] public var iconSwim:Class;
-															[Bindable] [Embed("/images/exPERmachine2.png")] public var iconMachine:Class;
-															[Bindable] [Embed("/images/exPERyoga2.png")] public var iconYoga:Class;
-															[Bindable] [Embed("/images/exPERweight2.png")] public var iconWeight:Class;
-															
-															private function switchExerciseViewFromRenderer(measure:String):void {
+															private function switchExerciseViewFromRenderer(type:String):void 
+															{
 																//
 															}
 															
@@ -1820,15 +1984,10 @@
 														<s:State name="collapsed" />
 													</mx:states>
 													
-													<!--<s:VGroup width="100">
-														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" icon.collapsed="@Embed(source='/images/smallArrowCollapsed.png')" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="27" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
-													</s:VGroup>-->
-													
 													<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 														<s:Image buttonMode="true" visible="{data.chartType == 'trackable' || data.measure == 'Comments'}" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{data.measure == 'Bike' ? iconBike : data.measure == 'Run / Walk' ? iconRun : data.measure == 'Swim' ? iconSwim : data.measure == 'Elliptical Machine' ? iconMachine : data.measure == 'Yoga' ? iconYoga : iconWeight}" horizontalGap="10" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.measure)" />
-														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="8" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
+														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{outerDocument.controller.getIconForExercise(data)}" horizontalGap="10" label="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="8" text="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" color="0x999999" />
 													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" width="497">
@@ -1890,7 +2049,7 @@
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>
 																
-																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="@Embed(source='/images/exerciseUntrackableIcon.png')" radius="8" fill="{outerDocument.chartStyles.colorExerciseUntrackable}" />
+																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="@Embed(source='/images/exercise/untrackable.png')" radius="8" fill="{outerDocument.chartStyles.colorExerciseUntrackable}" />
 																
 															</mx:series>
 															
@@ -1951,7 +2110,7 @@
 														<mx:Label text="{data.chart.getItemAt(0).data.length + ' total comments, 0 provider comments'}" fontSize="13" fontStyle="italic" color="0x999999" paddingTop="4" paddingBottom="4" paddingLeft="8"/>
 													</s:VGroup>
 													
-													<s:VGroup includeInLayout="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" visible="{data.measure == 'Bike' &amp;&amp; chartData.length > 0}" gap="3">
+													<s:VGroup includeInLayout="{data.type == ExerciseType.BIKE &amp;&amp; chartData.length > 0}" visible="{data.type == ExerciseType.BIKE &amp;&amp; chartData.length > 0}" gap="3">
 														<s:HGroup verticalAlign="baseline" gap="4">
 															<s:Label id="lblValue" fontSize.expanded="36" fontSize.collapsed="13" fontWeight="bold" color="0xFBB03B" text="{item.value}" />
 															<s:Label fontSize="13" text="minutes" />
@@ -1979,32 +2138,26 @@
 					</s:NavigatorContent>
 					
 					<s:NavigatorContent height="100%">
-						<!--<s:layout>
-						<s:VerticalLayout />
-						</s:layout>
-						
-						<s:HGroup id="hgSearchMedications" visible="false" includeInLayout="false" width="100%" horizontalAlign="center">
-						<s:Label id="lblSearchResultsMedications" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
-						<mx:LinkButton id="btnClearSearchMedications" label="(Clear)" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearchMedications()" rollOver="btnClearSearchMedications.styleName='linkBtnUnderline';" rollOut="btnClearSearchMedications.styleName='linkBtn';" />
-						</s:HGroup>-->
 						
 						<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 						<mx:DataGrid 
-							id="exercisePerList" dataProvider="{model.exerciseDataPersonal}" fontFamily="myMyriadNoCFF" 
+							id="exercisePerList" 
+							dataProvider="{model.exerciseDataPersonal}" 
+							fontFamily="myMyriadNoCFF" 
 							width="100%" height="100%"
 							alternatingItemColors="[0x303030,0x3c3c3b]" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"
 							color="0xFFFFFF" fontSize="10" verticalAlign="middle"
 							headerBackgroundSkin="skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="30" paddingTop="6" headerStyleName="dataGridHeaderAlternative"
 							borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--itemClick="showMedicationDetailsDG(event)" defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+						
 							<mx:columns>
 								<mx:DataGridColumn dataField="date" headerText="Date" paddingLeft="5" width="100" /><!--labelFunction="lblMedicationsNameDose" -->
 								<mx:DataGridColumn dataField="activity" headerText="Activity" paddingLeft="5" width="150" />
 								<mx:DataGridColumn dataField="comments" headerText="Comments" paddingLeft="5" width="575" color="0xAEDEE4" />
 							</mx:columns> 
+							
 						</mx:DataGrid>
 						
-						<!--<mx:Text id="lblNoVitalSigns" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
-						htmlText="{'There are no matching search results for the requested search.&lt;br&gt;Please make sure all words are spelled correctly, or try different keywords.'}" />-->
 					</s:NavigatorContent>
 					
 				</mx:ViewStack>
