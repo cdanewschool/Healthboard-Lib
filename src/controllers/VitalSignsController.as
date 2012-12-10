@@ -198,7 +198,8 @@ package controllers
 				);
 			
 			var vitalSignsForWidgetSource:Array = VitalSignsModel(model).vitalSigns.source.slice();
-			vitalSignsForWidgetSource.splice(-2);
+			vitalSignsForWidgetSource.pop();		//remove height		//vitalSignsForWidgetSource.splice(-2);
+			vitalSignsForWidgetSource.shift();		//remove comments
 			
 			VitalSignsModel(model).vitalSignsForWidget = new ArrayCollection( vitalSignsForWidgetSource );
 		}
