@@ -10,6 +10,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import components.AlertNavigatorContent;
+			
 			import external.TabBarPlus.plus.TabPlus;
 			private var cornerRadius:Number = 4;
 			
@@ -35,6 +37,16 @@
 					//border.topRightRadiusX = cornerRadius;
 					//highlight.topLeftRadiusX = cornerRadius;
 					//highlight.topRightRadiusX = cornerRadius;
+				}
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( alertIcon )
+				{
+					alertIcon.visible = alertIcon.includeInLayout = hostComponent.hasOwnProperty('data') && hostComponent['data'] is AlertNavigatorContent && AlertNavigatorContent(hostComponent['data']).showAlert;
 				}
 			}
 			
@@ -157,8 +169,10 @@
 		</s:stroke>
 	</s:Path>
 	
+	<s:Image id="alertIcon" source="@Embed('/images/redMark.png')" top="0" right="0" />
 	
 	<!-- layer 8: text -->
+	
 	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
 	<s:Label id="labelDisplay"
 			 verticalAlign="middle"
