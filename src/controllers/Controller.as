@@ -25,6 +25,7 @@ package controllers
 	import models.ModuleMappable;
 	import models.NextStep;
 	import models.Preferences;
+	import models.UserModel;
 	import models.modules.AppointmentsModel;
 	import models.modules.ExerciseModel;
 	import models.modules.ImmunizationsModel;
@@ -70,7 +71,10 @@ package controllers
 		
 		private var sessionTimer:Timer;
 		
-		protected var persistentData:SharedObject;
+		public var persistentData:SharedObject;
+		
+		//	TODO: move to model
+		[Bindable] public var user:UserModel;	//	logged-in user, i.e. Dr. Berg
 		
 		public function Controller()
 		{

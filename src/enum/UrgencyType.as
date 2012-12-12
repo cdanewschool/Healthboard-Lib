@@ -2,6 +2,9 @@ package enum
 {
 	public class UrgencyType
 	{
+		[Bindable] [Embed(source="/images/messagesUrgentSmall.png")] public static var iconUrgent:Class;
+		[Bindable] [Embed(source="/images/messagesSomewhatUrgentSmall.png")] public static var iconSomewhatUrgent:Class;
+		
 		public static const URGENT:int = 2;
 		public static const SOMEWHAT_URGENT:int = 1;
 		public static const NOT_URGENT:int = 0;

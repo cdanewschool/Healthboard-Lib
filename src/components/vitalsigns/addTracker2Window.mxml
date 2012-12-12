@@ -11,6 +11,7 @@
 			
 			import models.modules.VitalSignsModel;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.controls.LinkButton;
 			import mx.events.CalendarLayoutChangeEvent;
@@ -63,54 +64,26 @@
 				var newVital2:Object = new Object();
 				newVital2 = ({value:Number(txtResult.text), expectation:txtGoal.value, date: DateUtil.get10DigitDate(txtDate.text), type:'patient', vital:txtName.text}); 
 				
-				var vital:Object = {vital: txtName.text, chartType: "normal", chartMin: chartMin, chartMax: chartMax, units: txtUnits.text, chart:[{ data:[]}]};
+				var vital:Object = 
+					{
+						vital: txtName.text, 
+						chartType: "normal", 
+						chartMin: chartMin, chartMax: chartMax, 
+						units: txtUnits.text, 
+						chart: new ArrayCollection
+						( 
+							[
+								{ 
+									data: new ArrayCollection()
+								}
+							]
+						)
+					};
 				
-				model.vitalSigns.addItemAt(vital, model.vitalSigns.length - 1);
+				model.vitalSigns.addItemAt( vital, model.vitalSigns.length );
 				model.vitalSigns.refresh();
-				model.vitalSigns[model.vitalSigns.length - 2].chart[0].data.splice(0,0,newVital,newVital2);
+				model.vitalSigns.getItemAt( model.vitalSigns.length - 2 ).chart.getItemAt(0).data.source.splice(0,0,newVital,newVital2);
 				model.vitalSigns.refresh();				
-				
-/*				parentApplication.updateVitalIndices();
-				if(txtWeight.text != "") {
-					var weightStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data[model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length - 1].date)) ? model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
-					var newWeight:Object = new Object();
-					newWeight = ({value:txtWeight.text, expectation:model.vitalSigns.getItemAt(parentApplication.vitalIndices.indexOf('Weight')).chart[0].data[0].expectation, date:txtDate.text, type:'patient', vital:'weight'});
-					model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chart[0].data.splice(weightStartIndex,0,newWeight);
-					
-					if(Number(txtWeight.text) > (model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax - 10)) model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMax = Number(txtWeight.text) + 10;
-					else if(Number(txtWeight.text) < (model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin + 10)) model.vitalSigns[parentApplication.vitalIndices.indexOf('Weight')].chartMin = Number(txtWeight.text) - 10;
-					
-					if(new Date(txtDate.text) > new Date(parentApplication.weightMax)) parentApplication.weightMax = txtDate.text;
-					if(new Date(txtDate.text) > parentApplication.weightChartMax) {	//here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
-						var myNewDate:Date = new Date(txtDate.text);
-						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
-						myNewDate.setMonth(myNewDate.getMonth() + 1);
-						parentApplication.weightChartMax = myNewDate;
-					}
-				}
-
-
-				var newChartMax:Date = new Date(txtDate.text);
-				newChartMax.setDate(newChartMax.getDate() + 8);			
-				var newChartMaxDummy:Date = new Date(parentApplication.chartMax.getFullYear(), parentApplication.chartMax.getMonth(), parentApplication.chartMax.getDate());		//this is a quick and dirty way of forcing the chart to refresh, by resetting parentApplication.chartMax (in this case to itself)
-				
-				if(new Date(txtDate.text) > parentApplication.chartMax) parentApplication.chartMax = newChartMax;		//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
-				else parentApplication.chartMax = newChartMaxDummy;//.setDate(parentApplication.chartMax.getDate() + 1);// = parentApplication.chartMax;
-				
-				//ADDING TO arrVitalSignsByDate FOR THE LIST VIEW
-				//if any field is entered?
-				var entryByDate:Object = new Object();
-				var myNewHeight:String = txtHeightFeet.text != "" ? txtHeightFeet.text + "'" + txtHeightInches.text + "''" : "";
-				var myNewHeightInInches:uint = txtHeightFeet.text != "" ? int(txtHeightFeet.text) * 12 + int(txtHeightInches.text) : model.vitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data[model.vitalSigns[parentApplication.vitalIndices.indexOf('Height')].chart[0].data.length - 1].value;
-				var myNewWeightBMI:String = txtWeight.text == '' ? '' : txtWeight.text + ' / ' + String(int(((int(txtWeight.text) * 703) / Math.pow(myNewHeightInInches, 2))*10)/10);
-				var myNewBloodPressure:String = txtBloodPressure1.text == '' ? '' : txtBloodPressure1.text + '/' + txtBloodPressure2.text;
-				entryByDate = {Date: parentApplication.get10digitDate(txtDate.text), WeightBMI: myNewWeightBMI, BloodPressure: myNewBloodPressure, HeartRate: txtHeartRate.text, Respiratory: txtRespiratory.text, Temperature: txtTemperature.text, Height: myNewHeight, Comments: txtComments.text, RecordedBy: 'You'};
-				model.vitalSignsByDate.addItem(entryByDate);
-				
-				model.vitalSigns.refresh();
-				model.vitalSignsByDate.refresh();
-				
-				//parentApplication.chartMax = new Date(2012,5,5);*/
 				
 				var event:VitalsEvent = new VitalsEvent( VitalsEvent.ADD_TRACKER, true );
 				event.data = vital
