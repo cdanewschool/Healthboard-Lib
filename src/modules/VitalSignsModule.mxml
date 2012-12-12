@@ -1146,7 +1146,7 @@
 							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="348"
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
-							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
+							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" itemClick="viewVitals(event)"
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsBloodPressure"
 							change="event.stopImmediatePropagation()" 
 							creationComplete="pressureChartRolloutEventHandler()">
