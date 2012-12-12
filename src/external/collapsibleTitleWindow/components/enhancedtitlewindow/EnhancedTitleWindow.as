@@ -80,6 +80,8 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		
 		[Bindable] public var showDropDown:Boolean = false;
 		[Bindable] public var dropDownDataProvider:ArrayCollection;
+		[Bindable] public var dropDownChangeCallback:Function;
+		
 		[Bindable] public var displayWarning:Boolean = false;
 		[Bindable] public var warningToolTip:String = new String();
 		

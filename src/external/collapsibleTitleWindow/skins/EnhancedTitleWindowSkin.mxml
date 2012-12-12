@@ -314,12 +314,12 @@ in accordance with the terms of the license agreement accompanying it.
 					<!--- @copy spark.components.TitleWindow#closeButton -->
 					<s:Image id="arrow" source="@Embed('/images/btnWidgetArrow.png')" visible="{isWidgetClickable}" includeInLayout="{isWidgetClickable}" buttonMode="true" rollOver="{arrow.source=myArrowOver;}" rollOut="{arrow.source=myArrow;}" click="handleHeaderClick()" width="22" height="13" />	<!--adding link on header's arrow-->
 					<s:HGroup paddingTop="-6" paddingLeft="-9" visible="{hostComponent.showDropDown}" includeInLayout="{hostComponent.showDropDown}">
-						<s:DropDownList id="dropDownView" dropShadowVisible="false" dataProvider="{hostComponent.dropDownDataProvider}" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12" /><!--change="dropDownView_changeHandler(event)"-->
+						<s:DropDownList id="dropDownView" dropShadowVisible="false" dataProvider="{hostComponent.dropDownDataProvider}" change="{hostComponent.dropDownChangeCallback(event)}" skinClass="skins.general.HealthFocusOptionsDropDownListSkin" color="0x074F72" rollOverColor="0xAEDBE2" selectionColor="0xAEDBE2" width="19" fontSize="12" /><!--change="dropDownView_changeHandler(event)"-->
 					</s:HGroup>
+					
 				</s:Group>
 				
 			</s:Group>
-			
 			<!--
 			Note: setting the minimum size to 0 here so that changes to the host component's
 			size will not be thwarted by this skin part's minimum size.   This is a compromise,
