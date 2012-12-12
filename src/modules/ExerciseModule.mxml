@@ -27,6 +27,8 @@
 			import components.popups.exercise.addPersonalExercise;
 			import components.popups.exercise.recordResultsWindow;
 			import components.popups.exercise.runEditGoal;
+			import components.popups.exercise.viewExercisesPAWindow;
+			import components.popups.exercise.viewExercisesWindow;
 			
 			import controllers.ExerciseController;
 			
@@ -219,7 +221,7 @@
 				var nextPRT:Date = new Date( today.fullYear, today.month, today.date );
 				nextPRT.time += DateUtil.MONTH * 3;
 				
-				header.actionCount = DateFormatters.monthFullDayNumberYearFull.format(nextPRT) + '.';
+				header.actionCount = DateFormatters.monthFullDayNumberYearFull.format(nextPRT) + '<font color="#FFFFFF">.</font>';
 				
 				lastExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 1 );
 				previousExercise = model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.getItemAt( model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data.length - 2 );
@@ -236,6 +238,34 @@
 				exerciseDataPersonal = new ArrayCollection( model.exerciseDataByMeasurePersonal.source );
 				exerciseDataPersonal.filterFunction = exerciseDataFilterFunction;
 				exerciseDataPersonal.refresh();
+			}
+			
+			private var myViewExercisesPopup:viewExercisesWindow;
+			private var myViewExercisesPhysicianAssignedPopup:viewExercisesPAWindow;
+			
+			public function viewExercises(e:ChartItemEvent):void 
+			{
+				myViewExercisesPopup = viewExercisesWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesWindow) as spark.components.TitleWindow);
+				myViewExercisesPopup.date = e.hitData.item.date;
+				myViewExercisesPopup.populateEntry();
+				
+				PopUpManager.centerPopUp(myViewExercisesPopup);
+			}
+			
+			public function viewExercisesPhysicianAssigned(e:ChartItemEvent):void 
+			{
+				myViewExercisesPhysicianAssignedPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
+				myViewExercisesPhysicianAssignedPopup.date = e.hitData.item.date;
+				myViewExercisesPhysicianAssignedPopup.populateEntry();
+				PopUpManager.centerPopUp(myViewExercisesPhysicianAssignedPopup);
+			}
+			
+			public function viewExercisesComments(e:ChartItemEvent):void 
+			{
+				myViewExercisesPhysicianAssignedPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
+				myViewExercisesPhysicianAssignedPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
+				myViewExercisesPhysicianAssignedPopup.populateEntry();
+				PopUpManager.centerPopUp(myViewExercisesPhysicianAssignedPopup);
 			}
 			
 			private function init():void
@@ -805,7 +835,6 @@
 															import components.itemrenderers.chart.MyCircleItemRendererOver;
 															import ASclasses.MyCustomDataTip;
 															
-															import components.popups.exercise.viewExercisesWindow;
 															import components.vitalsigns.viewVitalsWindow;
 															
 															import mx.charts.HitData;
@@ -857,17 +886,6 @@
 																
 																myLineSeries.setStyle("itemRenderer",new ClassFactory(components.itemrenderers.chart.MyCircleItemRendererExercise));
 															}
-															
-															private var myViewExercisesPopup:viewExercisesWindow;
-															
-															private function viewExercises(e:ChartItemEvent):void 
-															{
-																myViewExercisesPopup = viewExercisesWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesWindow) as spark.components.TitleWindow);
-																myViewExercisesPopup.date = e.hitData.item.date;
-																myViewExercisesPopup.populateEntry();
-																
-																PopUpManager.centerPopUp(myViewExercisesPopup);
-															}
 														]]>
 													</fx:Script>
 													
@@ -906,7 +924,7 @@
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded'}" visible="{this.currentState == 'expanded'}" width="450">
 														
-														<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewExercises(event)">
+														<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="outerDocument.viewExercises(event)">
 															<mx:series>
 																<mx:LineSeries yField="expectation" xField="date" interactive="false">
 																	<mx:lineStroke>
@@ -1156,7 +1174,7 @@
 								dataProvider="{model.exerciseDataByMeasure.getItemAt( model.exerciseIndices.indexOf( ExerciseType.RUN ) ).chart.getItemAt(0).data}"
 								backgroundElements="{exerciseMileRunBackground}" seriesFilters="[]" selectionMode="single" 
 								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsMileRun"
-								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)"> <!--itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
+								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)" itemClick="viewExercises(event)">
 								
 								<mx:series>
 									<mx:LineSeries yField="target" xField="date" interactive="false">
@@ -1364,24 +1382,6 @@
 															{
 																return hd.item.type == 'patient' ? hd.item.datePatient : hd.item.dateProvider;
 															}
-															
-															private var myViewExercisesPopup:viewExercisesPAWindow;
-															
-															private function viewExercises(e:ChartItemEvent):void 
-															{
-																myViewExercisesPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
-																myViewExercisesPopup.date = e.hitData.item.date;
-																myViewExercisesPopup.populateEntry();
-																PopUpManager.centerPopUp(myViewExercisesPopup);
-															}
-															
-															private function viewExercisesComments(e:ChartItemEvent):void 
-															{
-																myViewExercisesPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
-																myViewExercisesPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
-																myViewExercisesPopup.populateEntry();
-																PopUpManager.centerPopUp(myViewExercisesPopup);
-															}
 														]]>
 													</fx:Script>
 													
@@ -1404,7 +1404,7 @@
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType != 'comments'}" width="497">
 														
-														<mx:LineChart id="chart" width="465" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewExercises(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+														<mx:LineChart id="chart" width="465" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="outerDocument.viewExercisesPhysicianAssigned(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
 															
 															<mx:series>
 																<mx:LineSeries yField="expectation" xField="date" interactive="false">
@@ -1450,7 +1450,7 @@
 														<mx:PlotChart 
 															id="chartComments" width="465" height="45" 
 															backgroundElements="{bge}"
-															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
+															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
 																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
@@ -1509,9 +1509,9 @@
 													
 													<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}"
 															  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
-														<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+														<s:Image source="@Embed('/images/vitalSignsCommentPatient.png')" />
 														<s:Label text="{data.chart.getItemAt(0).data.length}" paddingRight="16" />
-														<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+														<s:Image source="@Embed('/images/vitalSignsCommentProvider.png')" />
 														<s:Label text="0" />
 													</s:HGroup>
 													
@@ -1677,7 +1677,7 @@
 								paddingLeft="-3" paddingTop="-6" width="817" height="195"
 								backgroundElements="[]" seriesFilters="[]" selectionMode="single" 
 								showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsRunWalk"
-								itemRollOver="runWalkChartRolloverEventHandler(event)" itemRollOut="runWalkChartRolloutEventHandler(event)"> <!-- itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
+								itemRollOver="runWalkChartRolloverEventHandler(event)" itemRollOut="runWalkChartRolloutEventHandler(event)" itemClick="viewExercisesPhysicianAssigned(event)"> <!-- itemClick="viewVitals(event)" itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" -->
 								
 								<mx:series>
 									
@@ -1973,22 +1973,6 @@
 																return "Comments:\n\n" + hd.item.value + "\n<I><FONT COLOR='#4D4D4D'>- " + AppProperties.getInstance().controller.model.fullname + ", " + hd.item.date + "</FONT></I>";
 															}
 															
-															//private var myViewExercisesPopup:viewExercisesPAWindow;
-															private function viewExercises(e:ChartItemEvent):void 
-															{
-																/*		myViewExercisesPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this, viewExercisesPAWindow) as spark.components.TitleWindow);
-																myViewExercisesPopup.date = e.hitData.item.date;
-																myViewExercisesPopup.populateEntry();
-																PopUpManager.centerPopUp(myViewExercisesPopup);*/
-															}
-															
-															private function viewExercisesComments(e:ChartItemEvent):void 
-															{
-																/*			myViewExercisesPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this, viewExercisesPAWindow) as spark.components.TitleWindow);
-																myViewExercisesPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
-																myViewExercisesPopup.populateEntry();
-																PopUpManager.centerPopUp(myViewExercisesPopup);*/
-															}
 														]]>
 													</fx:Script>
 													
@@ -2010,7 +1994,7 @@
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" width="497">
 														
-														<mx:LineChart id="chart" width="465" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="viewExercises(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
+														<mx:LineChart id="chart" width="465" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="outerDocument.viewExercises(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
 															
 															<mx:series>
 																
@@ -2059,7 +2043,7 @@
 														<mx:PlotChart 
 															id="chartUntrackable" width="465" height="45" 
 															backgroundElements="{bge}"
-															showDataTips="true" dataTipFunction="dataTipsUntrackableExercise" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
+															showDataTips="true" dataTipFunction="dataTipsUntrackableExercise" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
 																
@@ -2095,7 +2079,7 @@
 														<mx:PlotChart 
 															id="chartComments" width="465" height="45" 
 															backgroundElements="{bge}"
-															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
+															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
 																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
@@ -2146,9 +2130,9 @@
 													
 													<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.measure == 'Comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.measure == 'Comments'}"
 															  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
-														<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+														<s:Image source="@Embed('/images/vitalSignsCommentPatient.png')" />
 														<s:Label text="{data.chart.getItemAt(0).data.length}" paddingRight="16" />
-														<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+														<s:Image source="@Embed('/images/vitalSignsCommentProvider.png')" />
 														<s:Label text="0" />
 													</s:HGroup>
 													

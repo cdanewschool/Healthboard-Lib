@@ -3,7 +3,7 @@
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
 	xmlns:mx="library://ns.adobe.com/flex/mx"
-	height="40" width="100%" xmlns:components="components.*">
+	height="40" width="100%" xmlns:components="components.*" xmlns:general="components.general.*">
 	
 	<fx:Metadata>
 		[Event(name="navigate", type="events.ApplicationEvent")]
@@ -92,18 +92,20 @@
 	
 	<s:VGroup paddingLeft="30" verticalAlign="middle" visible="{status.statusMessage==null}" includeInLayout="{status.statusMessage==null}">
 		
-		<s:HGroup visible="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}" includeInLayout="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}">
+		<s:HGroup gap="5" visible="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}" includeInLayout="{(actionCount is String ? actionCount != null : actionCount>0) || showActionsIfNone}">
 			
-			<s:Label text="{actionPrefix}" styleName="moduleSubtitleItalic" />
-			<s:Label text="{(actionCount is String ? actionCount != null : actionCount>0)?actionCount:'no'}" styleName="moduleSubtitleItalic {(actionCount is String ? actionCount != null : actionCount>0)?'moduleSubtitleNumber':null}" />
-			<s:Label text="{actionSuffix?actionSuffix:''}" styleName="moduleSubtitleItalic" />
+			<s:HGroup gap="5">
+				<general:HTMLLabel text="{actionPrefix}" styleName="moduleSubtitleItalic" />
+				<general:HTMLLabel text="{(actionCount is String ? actionCount != null : actionCount>0)?actionCount:'no'}" styleName="moduleSubtitleItalic {(actionCount is String ? actionCount != null : actionCount>0)?'moduleSubtitleNumber':null}" paddingLeft="0" paddingRight="0" />
+				<general:HTMLLabel text="{actionSuffix?actionSuffix:''}" styleName="moduleSubtitleItalic" visible="{actionSuffix!=''}" includeInLayout="{actionSuffix!=''}" />
+			</s:HGroup>
 			
-			<s:HGroup 
+			<s:HGroup gap="5" 
 				visible="{secondaryActionCount>0 || showSecondaryActionsIfNone}" 
 				includeInLayout="{secondaryActionCount>0 || showSecondaryActionsIfNone}">
-				<s:Label text="{secondaryActionPrefix}" styleName="moduleSubtitleItalic" />
-				<s:Label text="{secondaryActionCount>0?secondaryActionCount:'no'}" styleName="moduleSubtitleItalic {secondaryActionCount>0?'moduleSubtitleNumber':null}" />
-				<s:Label text="{secondaryActionSuffix?secondaryActionSuffix:''}" styleName="moduleSubtitleItalic" />
+				<general:HTMLLabel text="{secondaryActionPrefix}" styleName="moduleSubtitleItalic" />
+				<general:HTMLLabel text="{secondaryActionCount>0?secondaryActionCount:'no'}" styleName="moduleSubtitleItalic {secondaryActionCount>0?'moduleSubtitleNumber':null}" paddingLeft="0" paddingRight="0" />
+				<general:HTMLLabel text="{secondaryActionSuffix?secondaryActionSuffix:''}" styleName="moduleSubtitleItalic" />
 			</s:HGroup>
 			
 		</s:HGroup>

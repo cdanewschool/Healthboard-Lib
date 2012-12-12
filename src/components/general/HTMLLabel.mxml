@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:RichEditableText 
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	focusEnabled="false"
+	selectable="false"
+	editable="false">
+	
+	<fx:Script>
+		<![CDATA[
+			import flashx.textLayout.conversion.TextConverter;
+			
+			override public function set text(value:String):void 
+			{
+				super.textFlow = TextConverter.importToFlow(value, TextConverter.TEXT_FIELD_HTML_FORMAT);
+			}
+		]]>
+	</fx:Script>
+	
+</s:RichEditableText>
