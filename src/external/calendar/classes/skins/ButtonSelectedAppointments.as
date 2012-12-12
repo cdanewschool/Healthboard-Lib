@@ -16,7 +16,7 @@ package external.calendar.classes.skins { // Use unnamed package if this skin is
 		// Constructor.
 		public function ButtonSelectedAppointments() {
 			// Set default values.
-			backgroundFillColor = 0x00ADEE; 		//0xEDA006;
+			backgroundFillColor = 0xEDA006; 		//0x00ADEE;
 		}
 		
 		override protected function updateDisplayList(w:Number, h:Number):void {
@@ -24,16 +24,16 @@ package external.calendar.classes.skins { // Use unnamed package if this skin is
 			
 			switch (name) {
 				case "upSkin":
-					backgroundFillColor = 0x00ADEE; 		//0xEDA006;
+					backgroundFillColor = 0xEDA006; 		//0x00ADEE;
 					break;
 				case "overSkin":
-					backgroundFillColor = 0x00ADEE; 		//0xEDA006;
+					backgroundFillColor = 0xEDA006; 		//0x00ADEE;
 					break;
 				case "downSkin":
-					backgroundFillColor = 0x00ADEE; 		//0xEDA006;
+					backgroundFillColor = 0xEDA006; 		//0x00ADEE;
 					break;
 				case "disabledSkin":
-					backgroundFillColor = 0x00ADEE; 		//0xEDA006;
+					backgroundFillColor = 0xEDA006; 		//0x00ADEE;
 					//alpha = 0;
 					break;
 			}

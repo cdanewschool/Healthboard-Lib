@@ -395,6 +395,13 @@
 													isOverview = outerDocument.exerciseOverview.dataProvider.getItemIndex(data) == 0;
 												}
 												
+												private function handleExerciseClick(measure:String):void {
+													if(measure == '1.5 Mile Run') {
+														outerDocument.viewStackExercise.selectedIndex = 1;
+														outerDocument.switchExercisePhyView(2);		//NOAH PLEASE REVISE
+													}
+												}
+												
 											]]>
 										</fx:Script>
 										
@@ -402,7 +409,7 @@
 											
 											<s:HGroup width="120" verticalAlign="middle" gap="2">
 												<s:Image source="{exerciseIcon}" visible="{exerciseIcon!=null}" includeInLayout="{exerciseIcon!=null}" />
-												<s:Label text="{data.measure}" color="0xAEDFE5" fontSize="{isOverview ? 18 : 13}" fontWeight="bold" width="80" verticalAlign="middle" />
+												<s:Label text="{data.measure}" color="{isOverview ? 0xFFFFFF : 0xAEDFE5}" fontSize="{isOverview ? 18 : 13}" fontWeight="bold" width="80" verticalAlign="middle" buttonMode="{isOverview ? false : true}" click="{handleExerciseClick(data.measure)}" />
 											</s:HGroup>
 											
 											<s:HGroup width="150" verticalAlign="middle">

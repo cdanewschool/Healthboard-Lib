@@ -73,7 +73,7 @@
 							)
 					};
 				
-				model.exerciseDataByMeasurePersonal.addItemAt( exercise, model.exerciseDataByMeasurePersonal.length - 1 );
+				model.exerciseDataByMeasurePersonal.addItem( exercise );
 				model.exerciseDataByMeasurePersonal.refresh();
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
