@@ -289,6 +289,14 @@ s|TextArea {
 	color: "0xBED63A";
 }
 
+/*NUTRITION*/
+.greenSubtitleLarge {
+	fontSize: 16;
+	fontWeight: bold;
+	color: "0xBED63A";
+	paddingLeft: 6;
+}
+
 /*THIS IS USED AS THE TEXT FOR THE USER PROFILE, MESSAGES' MAILBOXES, EXERCISE AND TEAM PROFILE */
 .whiteText13 {	/*profileFormText*/
 	font-size: 13;
@@ -470,6 +478,13 @@ s|FormItem {
 /*EDUCATIONAL RESOURCES*/
 .transparentBorderContainer {
 	borderColor: "0xBDBCBC";
+	cornerRadius: 5;
+	backgroundAlpha: 0;
+}
+
+/*NUTRITION*/
+.transparentBorderContainerLight {
+	borderColor: "0x666666";
 	cornerRadius: 5;
 	backgroundAlpha: 0;
 }
