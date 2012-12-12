@@ -752,9 +752,9 @@
 												
 												<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}"
 														  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
-													<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+													<s:Image source="@Embed('/images/vitalSignsCommentPatient.png')" />
 													<s:Label text="{data.chart.getItemAt(0).data.length - 2}" paddingRight="16" />
-													<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+													<s:Image source="@Embed('/images/vitalSignsCommentProvider.png')" />
 													<s:Label text="2" />
 												</s:HGroup>
 												
@@ -1146,7 +1146,7 @@
 							dataProvider="{model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data}"
 							paddingLeft="-3" paddingTop="-6" width="823" height="348"
 							backgroundElements="{vitalSignsPressureSystolicBackground}" seriesFilters="[]" selectionMode="single" 
-							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" 
+							itemRollOver="pressureChartRolloverEventHandler(event)" itemRollOut="pressureChartRolloutEventHandler(event)" itemClick="viewVitals(event)"
 							showDataTips="true" showDataTipTargets="false" dataTipFunction="dataTipsBloodPressure"
 							change="event.stopImmediatePropagation()" 
 							creationComplete="pressureChartRolloutEventHandler()">
