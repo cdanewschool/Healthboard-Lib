@@ -502,9 +502,21 @@
 																chartComments.dataProvider = value.chart.getItemAt(0).data;
 															}
 															
-															//	TODO: don't assume there are 2 items...
-															currentItem = data && data.chart && data.chart.length ? data.chart.getItemAt(0).data[data.chart.getItemAt(0).data.length - 1] : null;
-															previousItem = data && data.chart && data.chart.length ? data.chart.getItemAt(0).data[data.chart.getItemAt(0).data.length - 2] : null;
+															if( data 
+																&& data.hasOwnProperty('chart') 
+																&& data['chart'].length 
+																&& data['chart'].getItemAt(0).hasOwnProperty('data') 
+																&& data['chart'].getItemAt(0).data 
+																&& data['chart'].getItemAt(0).data.length )
+															{
+																currentItem = data.chart.getItemAt(0).data.getItemAt( data.chart.getItemAt(0).data.length - 1 );
+																previousItem = data.chart.getItemAt(0).data.getItemAt( data.chart.getItemAt(0).data.length - 2 );
+															}
+															else
+															{
+																currentItem = null;
+																previousItem = null;
+															}
 														}
 														
 														private function switchVitalViewFromRenderer(vital:String):void {
