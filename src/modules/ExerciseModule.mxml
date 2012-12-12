@@ -38,6 +38,7 @@
 			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.LineSeriesItem;
+			import mx.events.CollectionEvent;
 			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.managers.PopUpManager;
@@ -230,14 +231,20 @@
 			[Bindable] public var lastExercise:Object;
 			[Bindable] public var previousExercise:Object;
 			
+			private function onExerciseDataByMeasurePersonalUpdate(event:CollectionEvent=null):void
+			{
+				exerciseDataPersonal = new ArrayCollection( model.exerciseDataByMeasurePersonal.source );
+				exerciseDataPersonal.filterFunction = exerciseDataFilterFunction;
+				exerciseDataPersonal.refresh();
+			}
+			
 			private function init():void
 			{
 				dateFormatter = new DateFormatter();
 				dateFormatter.formatString = "MMMM D, YYYY";
 				
-				exerciseDataPersonal = new ArrayCollection( model.exerciseDataByMeasurePersonal.source );
-				exerciseDataPersonal.filterFunction = exerciseDataFilterFunction;
-				exerciseDataPersonal.refresh();
+				model.exerciseDataByMeasurePersonal.addEventListener( CollectionEvent.COLLECTION_CHANGE, onExerciseDataByMeasurePersonalUpdate );
+				onExerciseDataByMeasurePersonalUpdate();
 				
 				exerciseDataPhysician = new ArrayCollection( model.exerciseDataByMeasurePhysicianAssigned.source );
 				exerciseDataPhysician.filterFunction = exerciseDataFilterFunction;
@@ -636,7 +643,7 @@
 													<s:VGroup gap="3" paddingTop="2">
 														
 														<s:Label text="{data.unit}" styleName="whiteText13" />
-														<s:Label id="date" styleName="grayNote" creationComplete="date.text=resultData.date?outerDocument.dateFormatter.format( new Date( resultData.date ) ):''" />
+														<s:Label id="date" styleName="grayNote" creationComplete="date.text=resultData &amp;&amp; resultData.date?outerDocument.dateFormatter.format( new Date( resultData.date ) ):''" />
 														
 														<s:DataGroup dataProvider="{comments}">
 															
@@ -1828,7 +1835,7 @@
 											]]>
 										</fx:Script>
 										
-										<mx:LinkButton label="{ExerciseType.getLabel(data.type)}" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
+										<mx:LinkButton label="{data.chartType == 'untrackable' ? data.measure : ExerciseType.getLabel(data.type)}" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
 										
 									</mx:HBox>
 									
@@ -1916,7 +1923,7 @@
 																	chart.dataProvider = chartUntrackable.dataProvider = chartComments.dataProvider = chartData;
 																}
 																
-																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+																item = data && data.hasOwnProperty("chart") && data['chart'].length && data['chart'][0].hasOwnProperty('data') && data['chart'][0]['data'].length ? data['chart'][0].data[ data['chart'][0].data.length - 1 ] : null;
 															}
 															
 															private function switchExerciseViewFromRenderer(type:String):void 
@@ -1987,7 +1994,7 @@
 													<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 														<s:Image buttonMode="true" visible="{data.chartType == 'trackable' || data.measure == 'Comments'}" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
 														<mx:LinkButton id="btnTrackable" visible="{data.chartType == 'trackable'}" includeInLayout="{data.chartType == 'trackable'}" icon.expanded="{outerDocument.controller.getIconForExercise(data)}" horizontalGap="10" label="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
-														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="8" text="{ExerciseType.getLabel(data.type)}" fontSize="13" fontWeight="bold" color="0x999999" />
+														<mx:Label includeInLayout="{data.chartType == 'untrackable'}" visible="{data.chartType == 'untrackable'}" paddingLeft="8" text="{data.measure}" fontSize="13" fontWeight="bold" color="0x999999" />
 													</s:HGroup>
 													
 													<s:VGroup includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" visible="{this.currentState == 'expanded' &amp;&amp; data.chartType == 'trackable'}" width="497">

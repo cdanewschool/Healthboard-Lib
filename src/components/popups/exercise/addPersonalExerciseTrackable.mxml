@@ -17,6 +17,7 @@
 			
 			import models.modules.ExerciseModel;
 			
+			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.events.CalendarLayoutChangeEvent;
 			import mx.managers.PopUpManager;
@@ -32,7 +33,20 @@
 			
 			private function addRecord():void 
 			{
-				model.exerciseDataByMeasurePersonal.addItemAt({type: type, chartMin:15, chartMax:45, chartType:'trackable', chart:[{ data:[]}]}, model.exerciseDataByMeasurePersonal.length - 2);
+				var exercise:Object = 
+					{
+						type: type, chartMin:15, chartMax:45, chartType:'trackable', 
+						chart: new ArrayCollection
+						(
+							[
+								{ 
+									data: new ArrayCollection()
+								}
+							]
+						)
+					};
+				
+				model.exerciseDataByMeasurePersonal.addItem( exercise );
 				model.exerciseDataByMeasurePersonal.refresh();
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
@@ -74,24 +88,31 @@
 	</s:HGroup>	
 	
 	<s:VGroup visible="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}" includeInLayout="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}">
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDate" label="Date" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDistance" label="Distance" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkDuration" label="Duration" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkMaxSpeed" label="Max Speed" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkMinSpeed" label="Min Speed" />
 		</s:HGroup>
+		
 		<s:HGroup paddingLeft="20">
 			<s:CheckBox id="checkCalories" label="Calories Burned" />
 		</s:HGroup>
+		
 	</s:VGroup>
 	
 	<s:VGroup visible="{type == ExerciseType.SWIM}" includeInLayout="{type == ExerciseType.SWIM}">
