@@ -929,7 +929,7 @@
 															
 															[Bindable] private var mealSaved:Boolean;
 															
-															protected function showSaveMealPrompt():void 
+															 /* protected function showSaveMealPrompt():void 
 															{
 																var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as TitleWindow);
 																mySaveMealWindow.addEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
@@ -961,7 +961,21 @@
 																window.removeEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
 																
 																PopUpManager.removePopUp( window );
-															}
+															}  */
+															
+															private function saveMeal():void
+															{
+																 
+																var item:Object = outerDocument.nutritionJournal.selectedItem;
+																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
+																outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( outerDocument.model.foodJournal.getItemAt(index).meal ) ].addItem( outerDocument.model.foodJournal.getItemAt(index).ingredients );
+																
+																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																evt.data = "Your meal has been saved as a favorite";
+																AppProperties.getInstance().controller.application.dispatchEvent( evt );
+																
+																update();
+															} 
 															
 															private function removeSavedMeal():void
 															{
@@ -983,7 +997,7 @@
 													</fx:Script>
 													
 													<mx:Image source="@Embed(source='/images/nutritionFavorite.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
-													<mx:Image source="@Embed(source='/images/nutritionFavoriteNOT.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="showSaveMealPrompt()" />
+													<mx:Image source="@Embed(source='/images/nutritionFavoriteNOT.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="saveMeal()" />
 													
 												</mx:HBox>
 											</fx:Component>
@@ -1319,7 +1333,7 @@
 								
 								<s:HGroup verticalAlign="middle" gap="7" paddingTop="18">
 									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sodium" />
-									<s:Image source="@Embed('images/nutritionNewSodiumLG.png')" />
+									<s:Image source="@Embed('/images/nutritionNewSodiumLG.png')" />
 									<s:VGroup gap="1" paddingTop="-10">
 										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2,000 mg" />
 										<s:Image id="imgSodiumChart" source="{!model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1}" />
@@ -1328,7 +1342,7 @@
 								
 								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
 									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="{'Fats\n&amp; Oils'}" />
-									<s:Image source="@Embed('images/nutritionNewFatsOilsLG.png')" />
+									<s:Image source="@Embed('/images/nutritionNewFatsOilsLG.png')" />
 									<s:VGroup gap="1" paddingTop="-10">
 										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2 - 3 servings" />
 										<s:Image id="imgFatsOilsChart" source="{!model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1}" />
@@ -1337,7 +1351,7 @@
 								
 								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
 									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sugar" />
-									<s:Image source="@Embed('images/nutritionNewSugarLG.png')" />
+									<s:Image source="@Embed('/images/nutritionNewSugarLG.png')" />
 									<s:VGroup gap="1" paddingTop="-10">
 										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 1 serving" />
 										<s:Image id="imgSugarChart" source="{!model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1}" />
@@ -1346,7 +1360,7 @@
 								
 								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
 									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Alcohol" />
-									<s:Image source="@Embed('images/nutritionNewAlcoholLG.png')" />
+									<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
 									<s:VGroup gap="1" paddingTop="-10">
 										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
 										<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
