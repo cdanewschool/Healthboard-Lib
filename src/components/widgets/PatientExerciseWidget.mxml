@@ -28,7 +28,7 @@
 	</enhancedtitlewindow:layout>
 	
 	<mx:DataGrid 
-		id="dgExerciseWidget" width="100%" height="{550 - collapsedPixels}" dataProvider="{model.exerciseForWidget}" selectable="false"
+		id="dgExerciseWidget" width="100%" height="{544 - collapsedPixels}" dataProvider="{model.exerciseForWidget}" selectable="false"
 		color="0xFFFFFF" verticalAlign="middle" 
 		useRollOver="false"
 		headerHeight="0"
@@ -75,16 +75,8 @@
 								<s:State name="collapsed" />
 							</mx:states>
 							
-							<s:Group includeIn="expanded" visible="{data.exerciseType != 'Most Recent PRT'}">
-								<s:Line xFrom="0" xTo="280">
-									<s:stroke>
-										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
-									</s:stroke>
-								</s:Line>
-							</s:Group>
-							
 							<s:HGroup width="140" gap="-2">
-								<mx:LinkButton icon.expanded="@Embed(source='/images/smallArrowGray.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsedGray.png')" horizontalGap="10" id="btnVital" label="{data.exerciseType}" fontSize="12" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{if(this.currentState=='expanded') {this.currentState = 'collapsed'; outerDocument.collapsedPixels+= (data.exerciseType == 'Most Recent PRT') ? 210 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);} else {this.currentState = 'expanded'; outerDocument.collapsedPixels-= (data.exerciseType == 'Most Recent PRT') ? 210 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);}}" />
+								<mx:LinkButton icon.expanded="@Embed(source='/images/smallArrowGray.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsedGray.png')" horizontalGap="10" id="btnVital" label="{data.exerciseType}" fontSize="12" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{if(this.currentState=='expanded') {this.currentState = 'collapsed'; outerDocument.collapsedPixels+= (data.exerciseType == 'Most Recent PRT') ? 253 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);} else {this.currentState = 'expanded'; outerDocument.collapsedPixels-= (data.exerciseType == 'Most Recent PRT') ? 253 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);}}" />
 								<mx:Label text="{'(Last: ' + DateUtil.formatDateFromString(data.lastDate) + ')'}" fontSize="12" color="0x868686" paddingTop="1" />
 							</s:HGroup>
 							
@@ -97,25 +89,25 @@
 							</s:Group>
 							
 							<s:VGroup 
-								width="100%" horizontalAlign="left" paddingBottom="-4" gap="5"
+								width="100%" horizontalAlign="left" paddingTop="3" gap="12"
 								visible="{this.currentState == 'expanded' &amp;&amp; data.exerciseType == 'Most Recent PRT'}" 
 								includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.exerciseType == 'Most Recent PRT'}">
 								
 								<s:HGroup gap="15" verticalAlign="middle">
 									
-									<s:Label text="Overal PRT Score" color="0xFFFFFF" fontSize="12" fontWeight="bold" width="55" />
+									<s:Label text="Overall PRT Score" color="0xFFFFFF" fontSize="12" fontWeight="bold" width="55" />
 									
 									<s:HGroup width="150" verticalAlign="middle">
 										
 										<s:Image source="{outerDocument.controller.getPerformanceIconForExercise( {value:data.chart.PRTscore} )}" />
 										
-										<s:Label text="{data.chart.PRTscore}" styleName="orangeStandout" fontSize="32" paddingTop="5" />
+										<s:Label text="{data.chart.PRTscore}" styleName="orangeStandout" fontSize="32" paddingTop="5" paddingLeft="5" />
 										
-										<s:VGroup gap="0" paddingTop="2">
+										<s:VGroup gap="2" paddingTop="0">
 											
-											<s:Label text="points" styleName="whiteText13" />
+											<s:Label text="points" styleName="whiteText12" />
 											<s:Label 
-												fontSize="13" fontWeight="bold" 
+												fontSize="12" fontWeight="bold" 
 												text="{outerDocument.controller.getPerformanceLabelForExercise( {value:data.chart.PRTscore} )}" 
 												color="{outerDocument.controller.getPerformanceLabelColorForExercise( {value:data.chart.PRTscore} )}" />
 											
@@ -125,7 +117,7 @@
 									
 								</s:HGroup>
 								
-								<s:VGroup paddingTop="-10">
+								<s:VGroup paddingTop="-6">
 									<performancemeter:PerformanceMeter value="{data.chart.PRTscore}" width="280" />
 								</s:VGroup>
 								
@@ -206,9 +198,9 @@
 														
 														<s:Image source="{performanceIcon}" />
 														
-														<s:Label text="{resultData.value}" styleName="orangeStandout" fontSize="32" paddingTop="5" />
+														<s:Label text="{resultData.value}" styleName="orangeStandout" fontSize="32" paddingTop="5" paddingLeft="5" />
 														
-														<s:VGroup gap="0" paddingTop="2">
+														<s:VGroup gap="2" paddingTop="0">
 															<s:Label text="points" styleName="whiteText12" />
 															<s:Label text="{performanceLabel}" color="{performanceLabelColor}" fontSize="12" fontWeight="bold" />
 														</s:VGroup>
@@ -371,6 +363,14 @@
 								</mx:columns>
 								
 							</mx:DataGrid>
+							
+							<s:Group>
+								<s:Line xFrom="0" xTo="280">
+									<s:stroke>
+										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
+									</s:stroke>
+								</s:Line>
+							</s:Group>
 							
 						</mx:VBox>
 						

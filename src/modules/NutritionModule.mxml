@@ -23,6 +23,8 @@
 
 	<fx:Script>
 		<![CDATA[
+			import mx.graphics.LinearGradient;
+			import mx.graphics.GradientEntry;
 			import mx.collections.SortField;
 			import ASclasses.Constants;
 			
@@ -55,6 +57,7 @@
 			
 			[Bindable] [Embed("/images/nutritionPlateEmpty.png")] public var plateEmpty:Class;
 			[Bindable] [Embed("/images/nutritionPlateFull.png")] public var plateFull:Class;
+			[Bindable] [Embed("/images/nutritionPlateAlmostFull.png")] public var plateAlmostFull:Class;
 			[Bindable] [Embed("/images/nutritionPlatePartial.png")] public var platePartial:Class;
 			[Bindable] [Embed("/images/nutritionPlateAlternative.png")] public var plateAlternative:Class;
 			[Bindable] [Embed('/images/nutritionFoodJournalEmpty.png')] public var bigPlateEmpty:Class;
@@ -75,6 +78,22 @@
 			[Bindable] [Embed("/images/nutritionBigWaterPartial.png")] public var bigWaterPartial:Class;
 			[Bindable] [Embed("/images/nutritionBigWaterFull.png")] public var bigWaterFull:Class;
 			[Bindable] [Embed("/images/nutritionBigWaterVeryFull.png")] public var bigWaterVeryFull:Class;
+			[Bindable] [Embed('/images/nutritionGauge0.png')] public var gaugeEmpty:Class;
+			[Bindable] [Embed('/images/nutritionGauge1.png')] public var gaugePartial:Class;
+			[Bindable] [Embed('/images/nutritionGauge2.png')] public var gaugeFull:Class;
+			[Bindable] [Embed('/images/nutritionGauge3.png')] public var gaugeAlmostFull:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium0.png')] public var newChartSodium0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium1.png')] public var newChartSodium1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium2.png')] public var newChartSodium2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils0.png')] public var newChartFatsOils0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils1.png')] public var newChartFatsOils1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils2.png')] public var newChartFatsOils2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar0.png')] public var newChartSugar0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar1.png')] public var newChartSugar1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar2.png')] public var newChartSugar2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol0.png')] public var newChartAlcohol0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol1.png')] public var newChartAlcohol1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol2.png')] public var newChartAlcohol2:Class;
 			
 			[Bindable] private var controller:NutritionController = AppProperties.getInstance().controller.nutritionController as NutritionController;
 			[Bindable] public var model:NutritionModel = controller.model as NutritionModel;
@@ -85,11 +104,11 @@
 			
 			[Bindable] public var showHeader:Boolean = true;
 			
-			private const NUTLABELS500:String = "0                  100                200                300                400                500";
+			/* private const NUTLABELS500:String = "0                  100                200                300                400                500";
 			private const NUTLABELS600:String = "0              100            200            300            400            500            600";
 			
 			[Bindable] private var nutLabelsToday:String = NUTLABELS500;
-			[Bindable] private var nutLabelsCurrent:String = NUTLABELS500;
+			[Bindable] private var nutLabelsCurrent:String = NUTLABELS500; */
 			
 			[Bindable] private var currentDayDiff:int = 0;
 			[Bindable] private var currentWeekDiff:int = 0;
@@ -164,15 +183,18 @@
 					
 					model.summaryCalories.getItemAt(0).calories = 1700;
 					model.summaryCalories.getItemAt(0).caloriesFromExtras = 515;
+					model.summaryCalories.getItemAt(0).extrasFats = 165;
+					model.summaryCalories.getItemAt(0).extrasSugar = 150;
+					model.summaryCalories.getItemAt(0).extrasAlcohol = 200;
 					
-					nutCaloriesXaxisMaximumToday = 600;
+					/* nutCaloriesXaxisMaximumToday = 600;
 					nutLabelsToday = NUTLABELS600;
 					
 					if(currentDayDiff == 0) 
 					{
 						nutCaloriesXaxisMaximumCurrent = 600;
 						nutLabelsCurrent = NUTLABELS600;
-					}
+					} */
 				}
 				else 
 				{
@@ -180,15 +202,18 @@
 					
 					model.summaryCalories.getItemAt(0).calories = 532;
 					model.summaryCalories.getItemAt(0).caloriesFromExtras = 230;
+					model.summaryCalories.getItemAt(0).extrasFats = 150;
+					model.summaryCalories.getItemAt(0).extrasSugar = 80;
+					model.summaryCalories.getItemAt(0).extrasAlcohol = 0;
 					
-					nutCaloriesXaxisMaximumToday = 500;
+					/* nutCaloriesXaxisMaximumToday = 500;
 					nutLabelsToday = NUTLABELS500;
 					
 					if(currentDayDiff == 0) 
 					{
 						nutCaloriesXaxisMaximumCurrent = 500;
 						nutLabelsCurrent = NUTLABELS500;
-					}
+					} */
 				}
 				
 				model.summaryCalories.refresh();
@@ -254,12 +279,12 @@
 				if( model.dateRange == DateRanges.DAY ) 
 				{
 					viewsNutritionJournal.selectedIndex = 0;
-					txtMyPlateSubtext.text = currentDayDiff == 0 ? "Today so far" : "This day";
+					//txtMyPlateSubtext.text = currentDayDiff == 0 ? "Today so far" : "This day";
 					
 					showJournalPlate(currentDailyPlate);
 					showCurrentDay();
 					
-					lblWhatIHaveEaten.text = currentDayDiff == 0 ? "What I Have Eaten Today" : "What I Have Eaten This Day";
+					//lblWhatIHaveEaten.text = currentDayDiff == 0 ? "What I Have Eaten Today" : "What I Have Eaten This Day";
 					
 					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -271,12 +296,12 @@
 				else if( model.dateRange == DateRanges.WEEK ) 
 				{
 					viewsNutritionJournal.selectedIndex = 1;
-					txtMyPlateSubtext.text = "Daily average";
+					//txtMyPlateSubtext.text = "Daily average";
 					
 					showJournalPlate(currentWeeklyPlate);
 					showCurrentWeek();
 					
-					lblWhatIHaveEaten.text = "What I Have Eaten This Week";
+					//lblWhatIHaveEaten.text = "What I Have Eaten This Week";
 					
 					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -288,12 +313,12 @@
 				else if( model.dateRange == DateRanges.MONTH ) 
 				{
 					viewsNutritionJournal.selectedIndex = 2;
-					txtMyPlateSubtext.text = "Daily average";
+					//txtMyPlateSubtext.text = "Daily average";
 					
 					showJournalPlate(currentMonthlyPlate);
 					showCurrentMonth();
 					
-					lblWhatIHaveEaten.text = "What I Have Eaten This Month";
+					//lblWhatIHaveEaten.text = "What I Have Eaten This Month";
 					
 					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -309,8 +334,13 @@
 				//	today's intake
 				if(plate == 0) 
 				{
-					imgNutJournalMyPlate.source = !model.hasMealBeenSubmitted ? bigPlateEmpty : model.mealType == 'full' ? bigPlateFull : bigPlatePartial;
-					imgNutJournalSodium.source = !model.hasMealBeenSubmitted ? bigSodiumEmpty : model.mealType == 'full' ? bigSodiumFullRed : bigSodiumPartial;
+					imgNutJournalMyPlate.source = !model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial;		//imgNutJournalMyPlate.source = !model.hasMealBeenSubmitted ? bigPlateEmpty : model.mealType == 'full' ? bigPlateFull : bigPlatePartial;
+					imgSodiumChart.source = !model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1;
+					imgFatsOilsChart.source = !model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1;
+					imgSugarChart.source = !model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1;
+					imgAlcoholChart.source = !model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0;
+					
+					/* imgNutJournalSodium.source = !model.hasMealBeenSubmitted ? bigSodiumEmpty : model.mealType == 'full' ? bigSodiumFullRed : bigSodiumPartial;
 					lblNutJournalSodium.text = !model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '2,000 mg.' : '600 mg.';
 					imgNutJournalFatsOils.source = !model.hasMealBeenSubmitted ? bigFatsOilsEmpty : model.mealType == 'full' ? bigFatsOilsFull : bigFatsOilsPartial;
 					lblNutJournalFatsOils.text = !model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving';
@@ -319,14 +349,19 @@
 					imgNutJournalAlcohol.source = !model.hasMealBeenSubmitted ? bigAlcoholEmpty : model.mealType == 'full' ? bigAlcoholFull : bigAlcoholPartial;
 					lblNutJournalAlcohol.text= !model.hasMealBeenSubmitted ? '0 drinks' : model.mealType == 'full' ? 'more than\n3 drinks' : 'less than\n2 drinks';
 					imgNutJournalWater.source = glassesTaken == 0 ? bigWaterEmpty : glassesTaken == 8 ? bigWaterVeryFull : glassesTaken > 4 ? bigWaterFull : bigWaterPartial;
-					lblNutJournalWater.text = glassesTaken + ' cups';
+					lblNutJournalWater.text = glassesTaken + ' cups'; */
 				}
 				
 				//	alternative intake 1
 				else if(plate == 1)
 				{
-					imgNutJournalMyPlate.source = bigPlateAlmostFull;
-					imgNutJournalSodium.source = bigSodiumFull;
+					imgNutJournalMyPlate.source = plateAlmostFull;		//imgNutJournalMyPlate.source = bigPlateAlmostFull;
+					imgSodiumChart.source = newChartSodium1;
+					imgFatsOilsChart.source = newChartFatsOils1;
+					imgSugarChart.source = newChartSugar1;
+					imgAlcoholChart.source = newChartAlcohol1;
+					
+					/* imgNutJournalSodium.source = bigSodiumFull;
 					lblNutJournalSodium.text = '1,800 mg.';
 					imgNutJournalFatsOils.source = bigFatsOilsFull;
 					lblNutJournalFatsOils.text = '2 - 3\nservings';
@@ -335,14 +370,19 @@
 					imgNutJournalAlcohol.source = bigAlcoholPartial;
 					lblNutJournalAlcohol.text= 'less than\n2 drinks';
 					imgNutJournalWater.source = bigWaterVeryFull;
-					lblNutJournalWater.text = '8+ cups';		
+					lblNutJournalWater.text = '8+ cups'; */		
 				}
 				
 				//	alternative intake 2
 				else 
 				{
-					imgNutJournalMyPlate.source = bigPlateFull;
-					imgNutJournalSodium.source = bigSodiumFullRed;
+					imgNutJournalMyPlate.source = plateFull;			//imgNutJournalMyPlate.source = bigPlateFull;
+					imgSodiumChart.source = newChartSodium2;
+					imgFatsOilsChart.source = newChartFatsOils2;
+					imgSugarChart.source = newChartSugar2;
+					imgAlcoholChart.source = newChartAlcohol2;
+					
+					/* imgNutJournalSodium.source = bigSodiumFullRed;
 					lblNutJournalSodium.text = '2,000 mg.';
 					imgNutJournalFatsOils.source = bigFatsOilsFull;
 					lblNutJournalFatsOils.text = '2 - 3\nservings';
@@ -351,7 +391,7 @@
 					imgNutJournalAlcohol.source = bigAlcoholFull;
 					lblNutJournalAlcohol.text= 'more than\n3 drinks';
 					imgNutJournalWater.source = bigWaterFull;
-					lblNutJournalWater.text = '7 cups';		
+					lblNutJournalWater.text = '7 cups';	 */	
 				}
 			}
 			
@@ -409,7 +449,7 @@
 				return nutJourWeeklyCalExcessSeries.items[index].xNumber <= 2000 ? lgBlue : lgRed;
 			}
 			
-			private function nutCaloriesFromExtrasFillFunction(element:ChartItem, index:Number):IFill 
+			/*private function nutCaloriesFromExtrasFillFunction(element:ChartItem, index:Number):IFill 
 			{
 				return nutCaloriesFromExtrasSeries.items[index].xNumber <= 500 ? lgBlue : lgRed;
 			}
@@ -417,7 +457,7 @@
 			private function nutJournalCaloriesFromExtrasFillFunction(element:ChartItem, index:Number):IFill 
 			{
 				return nutJournalCaloriesFromExtrasSeries.items[index].xNumber <= 500 ? lgBlue : lgRed;
-			}
+			} */
 			
 			private function nutNavigateDate(direction:String):void 
 			{
@@ -502,28 +542,31 @@
 				if( set == 'today' ) 
 				{
 					model.dailyCaloriesCurrent = model.summaryCalories;
+					imgNutGauge.source = !model.hasMealBeenSubmitted ? gaugeEmpty : model.mealType == 'full' ? gaugeFull : gaugePartial;
 					
-					txtMyPlateSubtext.text = "Today so far";
-					lblWhatIHaveEaten.text = "What I Have Eaten Today";
+					//txtMyPlateSubtext.text = "Today so far";
+					//lblWhatIHaveEaten.text = "What I Have Eaten Today";
 				}
 				else if( set == 'alt1' ) 
 				{
 					model.dailyCaloriesCurrent = model.dailyCaloriesAlt1;
+					imgNutGauge.source = gaugeAlmostFull;
 					
-					txtMyPlateSubtext.text = "This day";
-					lblWhatIHaveEaten.text = "What I Have Eaten This Day";
+					//txtMyPlateSubtext.text = "This day";
+					//lblWhatIHaveEaten.text = "What I Have Eaten This Day";
 				}
 				else if(set == 'alt2' ) 
 				{
 					model.dailyCaloriesCurrent = model.dailyCaloriesAlt2;
+					imgNutGauge.source = gaugeFull;
 					
-					txtMyPlateSubtext.text = "This day";
-					lblWhatIHaveEaten.text = "What I Have Eaten This Day";
+					//txtMyPlateSubtext.text = "This day";
+					//lblWhatIHaveEaten.text = "What I Have Eaten This Day";
 				}
 				
 				model.dailyCaloriesCurrent.refresh();
 				
-				if( model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras > 500 ) 
+				/* if( model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras > 500 ) 
 				{
 					nutCaloriesXaxisMaximumCurrent = 600;
 					nutLabelsCurrent = NUTLABELS600;
@@ -544,7 +587,7 @@
 						nutCaloriesXaxisMaximumToday = 500;
 						nutLabelsToday = NUTLABELS500;
 					}
-				}
+				} */
 			}
 			
 			private function updateNutritionDatesWeek(set:String):void 
@@ -635,16 +678,41 @@
 		
 		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height="606">
 			
-			<s:NavigatorContent label="Summary"><!--id="mainBox"-->
+			<s:NavigatorContent label="My Food Journal" creationPolicy="all">
 				
 				<s:layout>
 					<s:VerticalLayout gap="0" />
 				</s:layout>
 				
 				<s:BorderContainer height="40" width="100%" backgroundColor="0x706F6F">
+					
 					<s:layout>
 						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
 					</s:layout>
+					
+					<s:Button label="Print" styleName="buttonText" height="24" />
+					
+					<s:Spacer width="100%" />
+					
+					<s:HGroup color="0xFFFFFF" gap="2">
+						<s:Label text="Time Range:" paddingTop="6" />
+						<general:customLinkButton id="btnNut1d" label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut1wk" label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut1mo" label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut3mo" label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="0" />
+						<general:customLinkButton id="btnMedCustom" label="Custom" paddingLeft="2" paddingRight="2" />
+					</s:HGroup>
+					
+					<s:HGroup gap="-1" visible="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" includeInLayout="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" paddingLeft="4" paddingRight="4">
+						<s:Button id="btnNutLeft" width="28" height="24" icon="@Embed('/images/arrowLeft.png')" click="nutNavigateDate('prev')" />
+						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('/images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
+					</s:HGroup>
+					
+					<s:HGroup gap="0">
+						<s:Button id="btnNutChart" width="29" height="24" icon="@Embed('/images/btnNutritionChart.png')" chromeColor="0xFF931E" /><!--click="switchExercisePerView(0);"-->
+						<s:Button id="btnNutList" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" styleName="buttonText" /><!--click="switchExercisePerView(1);" click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
+					</s:HGroup>
+					
 				</s:BorderContainer>
 				
 				<s:Line xFrom="0" xTo="974">
@@ -653,23 +721,22 @@
 					</s:stroke>
 				</s:Line>
 				
-				<s:Label text="{DateUtil.formatDateFromString((new Date().getMonth() + 1) + '/' + (new Date().getDate()) + '/' + (new Date().getFullYear()))}" styleName="greenBoldText" paddingTop="20" paddingBottom="12" paddingLeft="14" />
+				<s:Label id="nutJournalDate" text="{DateUtil.formatDateFromString((new Date().getMonth() + 1) + '/' + (new Date().getDate()) + '/' + (new Date().getFullYear()))}" styleName="greenBoldText" paddingTop="12" paddingBottom="16" paddingLeft="14" />
 				
 				<s:HGroup gap="10" paddingLeft="13">
 					
-					<s:VGroup gap="10">
+					<s:VGroup gap="7">
 						
-						<s:BorderContainer width="281" height="265" styleName="transparentBorderContainer">
+						<s:HGroup verticalAlign="middle">
+							<s:Label text="Record a Meal" styleName="greenSubtitleLarge" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp()" />
+						</s:HGroup>
+						
+						<s:BorderContainer width="277" height="256" styleName="transparentBorderContainerLight" fontSize="13">
 							
 							<s:layout>
 								<s:VerticalLayout paddingTop="8" paddingLeft="13" paddingRight="13" />
 							</s:layout>
-							
-							<s:HGroup width="100%" verticalAlign="middle">
-								<s:Label text="Record a Meal" styleName="lightBlueSubtitles" fontSize="12" />
-								<s:Spacer width="100%" />
-								<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp()" />
-							</s:HGroup>
 							
 							<s:HGroup gap="10">
 								<s:DropDownList id="dropDownNutritionMealType" selectedIndex="0" styleName="buttonText" height="24" width="101"><!--change="dropDownVitalToEdit_changeHandler(event)"-->
@@ -682,22 +749,21 @@
 										</s:ArrayCollection>							
 									</s:dataProvider>
 								</s:DropDownList>
-								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a saved meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex) as ArrayCollection}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+								<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a favorite meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex) as ArrayCollection}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
 							</s:HGroup>
 							
-							<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="5" paddingBottom="-4" />
+							<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
 							
 							<s:TextInput id="nutritionFoodSearch" text="Search" fontStyle="italic" color="0x4D4D4D" height="24" click="{if(nutritionFoodSearch.text == 'Search') nutritionFoodSearch.text = ''}" width="253" />
 							
-							<s:VGroup paddingTop="2" visible="{dropDownNutritionSavedMeal.selectedIndex > -1 || (nutritionFoodSearch.text != 'Search' &amp;&amp; nutritionFoodSearch.text != '')}">
+							<s:VGroup visible="{dropDownNutritionSavedMeal.selectedIndex > -1 || (nutritionFoodSearch.text != 'Search' &amp;&amp; nutritionFoodSearch.text != '')}">
+								<s:Label text="What portion?" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
 								
 								<s:HGroup verticalAlign="middle" gap="10">
 									
-									<s:Label text="What portion?" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="3" />
+									<s:NumericStepper id="numPortion" maximum="1000" value="1" width="40" height="23" />
 									
-									<s:NumericStepper id="numPortion" maximum="1000" value="1" width="40" />
-									
-									<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="24" width="70">
+									<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="23" width="96">
 										<s:layout>
 											<s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedRowCount="7" />
 										</s:layout>
@@ -714,14 +780,14 @@
 										</s:dataProvider>
 									</s:DropDownList>
 									
-									<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="49" height="24" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
+									<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="97" height="23" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
 									
 								</s:HGroup>
 								
-								<s:Label text="Comments (optional):" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="5" paddingBottom="-4" />
+								<s:Label text="Comments (optional):" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
 								
 								<s:TextArea id="nutComments" width="253" height="46" fontStyle="italic" color="0x4D4D4D" text="Enter when, where, and why you had the meal." click="{if(nutComments.text == 'Enter when, where, and why you had the meal.') nutComments.text = ''}" />
-							
+								
 							</s:VGroup>
 							
 							<s:HGroup paddingTop="4">
@@ -738,13 +804,13 @@
 							
 						</s:BorderContainer>
 						
-						<s:BorderContainer width="281" height="94" styleName="transparentBorderContainer">
+						<s:Label text="Record Water Intake" styleName="greenSubtitleLarge" paddingTop="14" />
+						
+						<s:BorderContainer width="281" height="82" styleName="transparentBorderContainerLight">
 							
 							<s:layout>
-								<s:VerticalLayout paddingTop="12" paddingLeft="13" />
+								<s:VerticalLayout paddingTop="21" paddingLeft="13" />
 							</s:layout>
-							
-							<s:Label text="Record Water Intake" styleName="lightBlueSubtitles" fontSize="12" />
 							
 							<s:HGroup paddingTop="4" gap="10">
 								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 1;}" visible="{glassesTaken &lt; 1}" includeInLayout="{glassesTaken &lt; 1}" />
@@ -769,328 +835,740 @@
 							
 						</s:BorderContainer>
 						
-						<s:BorderContainer width="281" height="126" styleName="transparentBorderContainer" color="0xFFFFFF" fontSize="11">
+					</s:VGroup>
+					
+					<s:VGroup>
+						<s:Label text="Your Meal List" styleName="greenSubtitleLarge" paddingTop="1" paddingBottom="1" />
+						
+						<s:BorderContainer width="650" styleName="transparentBorderContainerLight">
 							
 							<s:layout>
-								<s:VerticalLayout paddingTop="12" paddingLeft="13"  />
+								<s:VerticalLayout paddingTop="1" paddingLeft="1" paddingRight="1" />
 							</s:layout>
 							
-							<s:Label text="My Health Focus" styleName="lightBlueSubtitles" fontSize="12" paddingBottom="-2" />
-							
-							<s:VGroup gap="-1">
+							<mx:DataGrid 
+								id="nutritionJournal" 
+								width="100%"
+								dataProvider="{model.foodJournal}" 
+								styleName="standardDataGrid"
+								rowCount="3"
+								fontSize="12"
+								headerHeight="27" paddingTop="4"
+								rowHeight="27" horizontalGridLines="false" 
+								itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2" 
+								creationComplete="nutritionJournal.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE,true,false,1))">
 								
-								<s:HGroup verticalAlign="middle">
-									<s:Label text="Did you take your" paddingTop="2" />
-									<mx:LinkButton id="btnNutMedications" label="Medications" fontStyle="italic" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" paddingLeft="-6" paddingRight="-6" rollOver="{btnNutMedications.styleName='linkBtnUnderline';}" rollOut="btnNutMedications.styleName='linkBtn';" click="setState( Constants.MODULE_MEDICATIONS );" />
-									<s:Label text="today?" paddingTop="2" />
-								</s:HGroup>
-								
-								<s:HGroup>
-									<s:Label text="Last update:" color="0xB3B3B3" fontStyle="italic" />
-									<s:Label text="Today – 08:45 am" />
-								</s:HGroup>
-								
-							</s:VGroup>
-							
-							<s:HGroup verticalAlign="middle">
-								<s:Label text="Did you exercise today? Log your" paddingTop="2" />
-								<mx:LinkButton id="btnNutExercise" label="Exercise" fontStyle="italic" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" paddingLeft="-6" rollOver="{btnNutExercise.styleName='linkBtnUnderline';}" rollOut="btnNutExercise.styleName='linkBtn';" click="setState( Constants.MODULE_EXERCISE );" />
-							</s:HGroup>
-							
-							<s:HGroup verticalAlign="middle">
-								<s:Label text="Check or view your weight in" paddingTop="2" />
-								<mx:LinkButton id="btnNutVitalSigns" label="Vital Signs" fontStyle="italic" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" paddingLeft="-6" rollOver="{btnNutVitalSigns.styleName='linkBtnUnderline';}" rollOut="btnNutVitalSigns.styleName='linkBtn';" click="setState( Constants.MODULE_VITAL_SIGNS );" />
-							</s:HGroup>
+								<mx:columns> 
+									<mx:DataGridColumn dataField="meal" headerText="Type" paddingLeft="5" width="70" />
+									<mx:DataGridColumn dataField="ingredients" headerText="Food" width="184" paddingLeft="5" fontFamily="myMyriad">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="184" paddingTop="-3" horizontalScrollPolicy="off">
+													
+													<fx:Script>
+														<![CDATA[
+															import events.ApplicationEvent;
+															
+															protected function deleteMeal():void 
+															{
+																var item:Object = outerDocument.nutritionJournal.selectedItem;
+																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
+																
+																outerDocument.model.foodJournal.removeItemAt(index);
+																
+																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																evt.data = "Your meal has been deleted";
+																dispatchEvent( evt );
+															}
+														]]>
+													</fx:Script>
+													
+													<mx:Label width="122" text="{data.ingredients}" fontSize="12" paddingTop="1" color="0xFFFFFF" selectable="false"/>
+													
+													<!--
+													<general:MainLinkButton 
+													label="Info" 
+													color="0xAEDEE4" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" 
+													paddingLeft="0" 
+													toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" 
+													visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}" />
+													-->
+													
+													<s:VGroup paddingTop="4" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}">
+														<s:Image source="@Embed('/images/info.png')" toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" />
+													</s:VGroup>
+													
+													<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
+														<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
+													</s:VGroup>
+													
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
+									<mx:DataGridColumn dataField="calories" headerText="Calories" width="63" paddingLeft="5" />
+									<mx:DataGridColumn dataField="comments" headerText="Comments" width="266" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
+									<mx:DataGridColumn dataField="meal" headerText="Favorite" width="70">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center">
+													<fx:Script>
+														<![CDATA[
+															import components.popups.nutrition.saveMealWindow;
+															
+															import events.ApplicationEvent;
+															
+															import mx.controls.Alert;
+															import mx.controls.CheckBox;
+															import mx.events.CloseEvent;
+															import mx.managers.PopUpManager;
+															import mx.collections.ArrayCollection;
+															
+															import spark.components.TitleWindow;
+															
+															[Bindable] private var mealSaved:Boolean;
+															
+															protected function showSaveMealPrompt():void 
+															{
+																var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as TitleWindow);
+																mySaveMealWindow.addEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
+																
+																var item:Object = outerDocument.nutritionJournal.selectedItem;
+																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
+																
+																mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
+																mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
+																
+																PopUpManager.centerPopUp(mySaveMealWindow);
+															}
+															
+															private function onSaveMealPromptClose(event:CloseEvent):void
+															{
+																var window:saveMealWindow = event.currentTarget as saveMealWindow;
+																
+																if( event.detail == Alert.YES )
+																{
+																	outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( window.mealType ) ].addItem( window.mealIngredients );
+																	
+																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																	evt.data = "Your meal has been saved";
+																	AppProperties.getInstance().controller.application.dispatchEvent( evt );
+																	
+																	update();
+																}
+																
+																window.removeEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
+																
+																PopUpManager.removePopUp( window );
+															}
+															
+															private function removeSavedMeal():void
+															{
+																var index:int = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients );
+																
+																if( index > -1 )
+																{
+																	ArrayCollection( outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ) ).removeItemAt( index );
+																}
+																
+																update();
+															}
+															
+															private function update():void
+															{
+																mealSaved = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients ) > -1;
+															}
+														]]>
+													</fx:Script>
+													
+													<mx:Image source="@Embed(source='/images/nutritionFavorite.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
+													<mx:Image source="@Embed(source='/images/nutritionFavoriteNOT.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="showSaveMealPrompt()" />
+													
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+								</mx:columns> 
+							</mx:DataGrid>
 							
 						</s:BorderContainer>
 						
-					</s:VGroup>
-					
-					<s:BorderContainer width="321" height="505" styleName="transparentBorderContainer">
-						
-						<s:layout>
-							<s:VerticalLayout paddingTop="11" paddingLeft="15" />
-						</s:layout>
-						
-						<s:Label text="My Food Journal" styleName="lightBlueSubtitles" fontSize="12" />
-						
-						<s:Label text="Today" color="0xB3B3B3" fontStyle="italic" fontSize="11" paddingTop="-2" paddingBottom="6" />
-						
-						<s:Label text="My Plate" styleName="subtitles" fontWeight="normal" paddingBottom="-8" />
-						
-						<mx:LinkButton id="btnNutReadComment" visible="false" label="Read Comment" icon="{iconComment}" fontSize="11" fontStyle="italic" paddingLeft="0" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" rollOver="{btnNutReadComment.styleName='linkBtnUnderline';}" rollOut="btnNutReadComment.styleName='linkBtn';" />
-						
-						<s:HGroup paddingTop="-18" width="100%" horizontalAlign="center">
-							<s:Image source="{!model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial}" />
-						</s:HGroup>
-						
-						<s:Label text="Total Calories" styleName="subtitles" fontWeight="normal" paddingTop="11" /><!--paddingBottom="-4"-->
-						<!--<s:Label text="{model.summaryCalories.getItemAt(0).calories + ' cals.'}" fontSize="11" fontStyle="italic" color="0xFF931E" visible="{model.hasMealBeenSubmitted}" />-->
-						
-						<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
-						
-						<mx:BarChart id="nutSummaryCalories" dataProvider="{model.summaryCalories}" height="28" width="278"><!--type="overlaid"-->
-							
-							<mx:series>
-								
-								<!--
-								<mx:BarSeries id="nutCalExcessSeries" yField="type" xField="calories" visible="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal}">
-									<mx:fill>
-										<mx:LinearGradient rotation="90">
-											<mx:entries>
-												<mx:GradientEntry color="0xFFFF9F" ratio="0.00" />
-												<mx:GradientEntry color="0xFFC500" ratio="0.5" />
-												<mx:GradientEntry color="0xF5FFB2" ratio="1" />
-											</mx:entries>
-										</mx:LinearGradient>
-									</mx:fill>
-								</mx:BarSeries>
-								-->
-								
-								<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
-								<mx:BarSeries id="nutCaloriesSeries" yField="type" xField="calories">	<!--xField="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal ? 'goal' : 'calories'}"--><!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
-									<mx:fill>
-										<mx:LinearGradient rotation="90">
-											<mx:entries>
-												<mx:GradientEntry color="0xC2E1DF" ratio="0.00" />
-												<mx:GradientEntry color="0x51B6B2" ratio="0.5" />
-												<mx:GradientEntry color="0x6FD2B2" ratio="1" />
-											</mx:entries>
-										</mx:LinearGradient>
-									</mx:fill>
-								</mx:BarSeries>
-								
-							</mx:series>
-							
-							<mx:verticalAxis>
-								<mx:CategoryAxis id="nutSummaryCaloriesYaxis" categoryField="type" />
-							</mx:verticalAxis>
-							
-							<mx:verticalAxisRenderers>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesYaxis}" showLabels="false" showLine="false" />
-								<mx:AxisRenderer axis="{nutSummaryCaloriesYaxis}" showLabels="false" placement="right">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-							</mx:verticalAxisRenderers>
-							
-							<mx:horizontalAxis>
-								<mx:LinearAxis id="nutSummaryCaloriesXaxis" minimum="0" maximum="2000" interval="400" />
-							</mx:horizontalAxis>
-							
-							<mx:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-							</mx:horizontalAxisRenderers>
-							
-						</mx:BarChart>
-						
-						<s:HGroup paddingTop="11" paddingBottom="-4" gap="2">
-							<s:Label text="Calories from Extras" styleName="subtitles" fontWeight="normal" />
-							<s:Label text="(fats &amp; oils, sugars, and alcohol)" fontSize="12" fontStyle="italic" color="0xCCCCCC" />
-						</s:HGroup>
-						
-						<s:Label 
-							text="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? model.summaryCalories.getItemAt(0).caloriesFromExtras + ' cals.' : model.summaryCalories.getItemAt(0).caloriesFromExtras + ' cals. I\'m exceeding my calories budget from extras.'}" 
-							fontSize="11" fontStyle="italic" color="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? 0xFF931E : 0xDD0000}" 
-							fontWeight="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? 'normal' : 'bold'}" 
-							visible="{model.hasMealBeenSubmitted}" />
-						
-						<s:Label id="lblNutSummaryLabels" text="{nutLabelsToday}" color="#FFFFFF" fontSize="11" paddingBottom="-6" />
-						
-						<mx:BarChart id="nutSummaryCaloriesFromExtras" dataProvider="{model.summaryCalories}" height="20" width="278" paddingBottom="-8">
-							
-							<mx:series>
-								<mx:BarSeries id="nutCaloriesFromExtrasSeries" yField="type" xField="caloriesFromExtras" fillFunction="nutCaloriesFromExtrasFillFunction" />
-							</mx:series>
-							
-							<mx:verticalAxis>
-								<mx:CategoryAxis id="nutSummaryCaloriesFromExtrasYaxis" categoryField="type" />
-							</mx:verticalAxis>
-							
-							<mx:verticalAxisRenderers>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasYaxis}" showLabels="false" showLine="false" />
-								<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasYaxis}" showLabels="false" placement="right">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-							</mx:verticalAxisRenderers>
-							
-							<mx:horizontalAxis>
-								<mx:LinearAxis id="nutSummaryCaloriesFromExtrasXaxis" minimum="0" maximum="{nutCaloriesXaxisMaximumToday}" interval="100" />
-							</mx:horizontalAxis>
-							
-							<mx:horizontalAxisRenderers>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-								<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
-									<mx:axisStroke>
-										<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-									</mx:axisStroke>
-								</mx:AxisRenderer>
-							</mx:horizontalAxisRenderers>
-						</mx:BarChart>
-						
-						<mx:LinkButton 
-							id="btnNutEducational" 
-							label="Learn how to improve your diet »" 
-							color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" 
-							paddingLeft="0" 
-							rollOver="{btnNutEducational.styleName='linkBtnUnderline';}" 
-							rollOut="btnNutEducational.styleName='linkBtn';" 
-							visible="{model.summaryCalories.getItemAt(0).caloriesFromExtras > 500}" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
-						
-						<s:HGroup gap="16" paddingLeft="-12" paddingTop="6">
-							<s:VGroup horizontalAlign="center" width="64">
-								<s:Label text="Sodium" styleName="subtitles" fontWeight="normal" />
-								<s:Image source="{!model.hasMealBeenSubmitted ? model.sodiumEmpty : model.mealType == 'full' ? model.sodiumFull : model.sodiumPartial}" />
-								<s:Label text="{!model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '3,500 mg.' : '2,000 mg.'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" />
+						<s:HGroup paddingTop="14" gap="14">
+							<s:VGroup>
+								<s:Label text="Total Calories Taken" styleName="greenSubtitleLarge" />
+								<mx:ViewStack id="viewsNutritionJournal" height="308" creationPolicy="all">
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="18" paddingTop="16" paddingLeft="12" paddingBottom="15">
+											<s:VGroup>
+												<s:Image id="imgNutGauge" source="{!model.hasMealBeenSubmitted ? gaugeEmpty : model.mealType == 'full' ? gaugeFull : gaugePartial}" />
+											</s:VGroup>
+											<s:VGroup gap="0" paddingTop="-4">
+												<s:HGroup>
+													<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).calories}" styleName="orangeStandout" />
+													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
+												</s:HGroup>
+												<s:Label color="0xFFFFFF" fontSize="14" text="Daily Budget: 2,000 Calories" />
+											</s:VGroup>
+										</s:HGroup>
+										
+										<s:VGroup gap="2">
+											<s:Line xFrom="0" xTo="309">
+												<s:stroke>
+													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
+												</s:stroke>
+											</s:Line>
+											<s:Line xFrom="0" xTo="309">
+												<s:stroke>
+													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
+												</s:stroke>
+											</s:Line>
+										</s:VGroup>
+										
+										<s:VGroup width="253" paddingLeft="28">
+											<s:HGroup color="0xFFFFFF" paddingTop="14" paddingLeft="24">
+												<s:Image source="@Embed('/images/nutritionJournalFood.png')" />
+												<s:Label text="{'+ ' + model.dailyCaloriesCurrent.getItemAt(0).calories}" textAlign="right" width="57" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. Taken" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="2" paddingBottom="1" paddingLeft="24">
+												<s:Image source="@Embed('/images/nutritionJournalExercise.png')" />
+												<s:Label text="- 0" textAlign="right" width="57" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. Burned" fontSize="14" />
+											</s:HGroup>
+											
+											<s:Line xFrom="0" xTo="253">
+												<s:stroke>
+													<s:SolidColorStroke color="#666666" />
+												</s:stroke>
+											</s:Line>
+											
+											<s:HGroup paddingTop="-6" paddingBottom="31">
+												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" color="0xFFFFFF" width="253" height="37" fontWeight="bold">
+													<s:layout>
+														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="13" />
+													</s:layout>
+													<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).calories}" fontSize="24" width="85" textAlign="right" />
+													<s:Label text="Total Calories Taken" fontSize="14" paddingTop="7" />
+												</s:BorderContainer>
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewFatsOilsSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasFats}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Fats &amp; Oils" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="1" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewSugarsSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasSugar}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Sugar" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="1" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewAlcoholSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasAlcohol}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Alcohol" fontSize="14" />
+											</s:HGroup>
+											
+											<s:Line xFrom="0" xTo="253">
+												<s:stroke>
+													<s:SolidColorStroke color="#666666" />
+												</s:stroke>
+											</s:Line>
+											
+											<s:HGroup paddingTop="-6">
+												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" color="0xFFFFFF" width="253" height="37" fontWeight="bold">
+													<s:layout>
+														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="13" />
+													</s:layout>
+													<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras}" fontSize="24" width="85" textAlign="right" />
+													<s:Label text="Calories from Extra" fontSize="14" paddingTop="7" />
+												</s:BorderContainer>
+											</s:HGroup>
+											
+											<!--<s:HGroup paddingTop="38" gap="2">
+											<s:Label text="Calories from Extras" styleName="greenBoldText" />
+											<s:Label text="(fats &amp; oils, sugars, and alcohol)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
+											</s:HGroup>
+											
+											<s:HGroup fontSize="13" color="0xFFFFFF" gap="3" visible="{model.dailyCaloriesCurrent.getItemAt(0).calories > 0}" includeInLayout="{model.dailyCaloriesCurrent.getItemAt(0).calories > 0}">
+											<s:Label text="Of" />
+											<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).calories + ' total calories'}" fontWeight="bold" fontStyle="italic" color="0xFF931E" />
+											<s:Label text="," paddingLeft="-3" />
+											<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras + ' calories'}" fontWeight="bold" fontStyle="italic" color="0xFF931E" />
+											<s:Label text="are from extras." />
+											</s:HGroup>
+											
+											<s:Label id="lblNutJournalLabels" text="{nutLabelsCurrent}" color="#FFFFFF" fontSize="11" paddingTop="10" paddingBottom="-6" />
+											
+											<mx:BarChart id="nutJournalCaloriesFromExtras" dataProvider="{model.dailyCaloriesCurrent}" height="20" width="278" paddingBottom="-8">
+											
+											<mx:series>
+											<mx:BarSeries id="nutJournalCaloriesFromExtrasSeries" yField="type" xField="caloriesFromExtras" fillFunction="nutJournalCaloriesFromExtrasFillFunction" />
+											</mx:series>
+											
+											<mx:verticalAxis>
+											<mx:CategoryAxis id="nutJournalCaloriesFromExtrasYaxis" categoryField="type" />
+											</mx:verticalAxis>
+											
+											<mx:verticalAxisRenderers>
+											<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasYaxis}" showLabels="false" showLine="false" />
+											<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasYaxis}" showLabels="false" placement="right">
+											<mx:axisStroke>
+											<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+											</mx:AxisRenderer>
+											</mx:verticalAxisRenderers>
+											
+											<mx:horizontalAxis>
+											<mx:LinearAxis id="nutJournalCaloriesFromExtrasXaxis" minimum="0" maximum="{nutCaloriesXaxisMaximumCurrent}" interval="100" />
+											</mx:horizontalAxis>
+											
+											<mx:horizontalAxisRenderers>
+											<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
+											<mx:axisStroke>
+											<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+											</mx:AxisRenderer>
+											<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
+											<mx:axisStroke>
+											<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+											</mx:AxisRenderer>
+											</mx:horizontalAxisRenderers>
+											
+											</mx:BarChart>	-->
+										</s:VGroup>
+										
+									</s:NavigatorContent>
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="3" fontSize="13" paddingBottom="11">
+											<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
+											<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
+										</s:HGroup>
+										
+										<s:Label text="0                400              800             1200           1600        2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" paddingLeft="39" />
+										
+										<mx:BarChart id="nutFoodJournalWeeklyCalories" dataProvider="{model.weeklyCaloriesCurrent}" type="overlaid" height="165" width="314" showDataTips="true"><!--backgroundElements="{nutritionJournalBGE}"-->
+											<mx:series>
+												<mx:BarSeries id="nutJourWeeklyCalExcessSeries" yField="day" xField="calories" fillFunction="nutCaloriesExcessFillFunction">
+													<!--<mx:fill>
+													<mx:LinearGradient rotation="90">
+													<mx:entries>
+													<mx:GradientEntry color="0xF6AF95" ratio="0.00" />
+													<mx:GradientEntry color="0xB71918" ratio="0.5" />
+													<mx:GradientEntry color="0xF6A763" ratio="1" />
+													</mx:entries>
+													</mx:LinearGradient>
+													</mx:fill>-->
+												</mx:BarSeries>
+												<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
+												<mx:BarSeries id="nutJourWeeklyCaloriesSeries" yField="day" xField="limit" fillFunction="nutCaloriesFillFunction" interactive="false"><!--fillFunction="nutCaloriesFillFunction"-->
+													<!--<mx:fill>
+													<mx:LinearGradient rotation="90">
+													<mx:entries>
+													<mx:GradientEntry color="0xC2E1DF" ratio="0.00" />
+													<mx:GradientEntry color="0x51B6B2" ratio="0.5" />
+													<mx:GradientEntry color="0x6FD2B2" ratio="1" />
+													</mx:entries>
+													</mx:LinearGradient>
+													</mx:fill>-->
+												</mx:BarSeries>
+												<!--<mx:BarSeries id="dummy" xField="calories">
+												<mx:fill>
+												<s:SolidColor alpha="0" />
+												</mx:fill>
+												</mx:BarSeries>-->
+											</mx:series>
+											
+											<mx:verticalAxis>
+												<mx:CategoryAxis id="nutJourSummaryWeeklyCaloriesYaxis" categoryField="day" />
+											</mx:verticalAxis>
+											
+											<mx:verticalAxisRenderers>
+												<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesYaxis}" showLine="false" color="0xFFFFFF" fontSize="13" />
+												<!--<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesYaxis}" showLabels="false" placement="right">
+												<mx:axisStroke>
+												<mx:SolidColorStroke color="#FF0000" weight="1" caps="none" />
+												</mx:axisStroke>
+												</mx:AxisRenderer>-->
+											</mx:verticalAxisRenderers>
+											
+											<mx:horizontalAxis>
+												<mx:LinearAxis id="nutJourSummaryWeeklyCaloriesXaxis" minimum="0" maximum="2200" interval="400" />
+											</mx:horizontalAxis>
+											
+											<mx:horizontalAxisRenderers>
+												<!--<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
+												<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" alpha=".7" caps="none" />
+												</mx:axisStroke>
+												</mx:AxisRenderer>
+												<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
+												<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" alpha=".7" caps="none" />
+												</mx:axisStroke>
+												</mx:AxisRenderer>-->
+												<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" showLine="false" tickPlacement="none" minorTickPlacement="none" />
+											</mx:horizontalAxisRenderers>
+										</mx:BarChart>
+										
+										<s:VGroup paddingTop="20">
+											<s:BorderContainer width="305" height="43" backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false">
+												<s:layout>
+													<s:HorizontalLayout paddingLeft="38" verticalAlign="middle" gap="9" paddingTop="2" />
+												</s:layout>
+												<s:Label id="lblNutWeeklyAvgValue" text="{avg(new Array(model.weeklyCaloriesCurrent.getItemAt(0).calories,model.weeklyCaloriesCurrent.getItemAt(1).calories,model.weeklyCaloriesCurrent.getItemAt(2).calories,model.weeklyCaloriesCurrent.getItemAt(3).calories,model.weeklyCaloriesCurrent.getItemAt(4).calories,model.weeklyCaloriesCurrent.getItemAt(5).calories,model.weeklyCaloriesCurrent.getItemAt(6).calories))}" styleName="orangeStandout" />
+												<s:Label text="{'Average daily calories\nconsumed for this week'}" color="0xFFFFFF" fontSize="14" />
+											</s:BorderContainer>
+										</s:VGroup>
+										
+									</s:NavigatorContent>
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="3" fontSize="13" paddingBottom="11">
+											<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
+											<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
+										</s:HGroup>
+										
+										<s:HGroup paddingLeft="-50" verticalAlign="middle">
+											
+											<mx:LineChart id="nutFoodJournalMonthlyCalories" dataProvider="{model.monthlyCalories}" showDataTips="true" height="176" width="348" backgroundElements="{bge}" seriesFilters="[]">
+												<mx:series>
+													<mx:LineSeries yField="goal" xField="day" interactive="false">
+														<mx:lineStroke>
+															<s:SolidColorStroke color="0xFF0000" weight="2" alpha="0.45" />
+														</mx:lineStroke>
+													</mx:LineSeries>
+													<mx:LineSeries yField="calories" xField="day">
+														<mx:lineStroke>
+															<s:SolidColorStroke color="0x51B6B2" weight="3" />
+														</mx:lineStroke>
+													</mx:LineSeries>
+												</mx:series>
+												<mx:horizontalAxis>
+													<mx:DateTimeAxis id="nutJourMonthlyCaloriesXAxis" />
+												</mx:horizontalAxis>
+												<mx:horizontalAxisRenderers>
+													<mx:AxisRenderer axis="{nutJourMonthlyCaloriesXAxis}" color="0xFFFFFF" fontSize="12" tickPlacement="none" />
+												</mx:horizontalAxisRenderers>
+												<mx:verticalAxis>
+													<mx:LinearAxis id="nutJourMonthlyCaloriesYaxis" maximum="3500" minimum="0" />
+												</mx:verticalAxis>
+												<mx:verticalAxisRenderers>
+													<mx:AxisRenderer axis="{nutJourMonthlyCaloriesYaxis}" visible="false" />
+												</mx:verticalAxisRenderers>
+											</mx:LineChart>
+											<s:Label text="{'2000\ncals.'}" color="0xFFFFFF" fontSize="13" lineHeight="13" paddingTop="-34" paddingLeft="-25" />
+										</s:HGroup>
+										
+										<s:VGroup paddingTop="20">
+											<s:BorderContainer width="305" height="43" backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false">
+												<s:layout>
+													<s:HorizontalLayout paddingLeft="38" verticalAlign="middle" gap="9" paddingTop="2" />
+												</s:layout>
+												<s:Label id="lblNutMonthlyAvgValue" text="{avg(arrMonthlyCalories1)}" styleName="orangeStandout" />
+												<s:Label id="lblNutMonthlyAvg" text="{'Average daily calories for\nthe month of September'}" color="0xFFFFFF" fontSize="14" />
+											</s:BorderContainer>
+										</s:VGroup>
+										
+									</s:NavigatorContent>
+									
+								</mx:ViewStack>
 							</s:VGroup>
-							<s:VGroup horizontalAlign="center" width="64">
-								<s:Label text="Fats &amp; Oils" styleName="subtitles" fontWeight="normal" />
-								<s:Image source="{!model.hasMealBeenSubmitted ? model.fatsOilsEmpty : model.fatsOilsPartial}" />
-								<s:Label text="{!model.hasMealBeenSubmitted ? '0 servings' : '2 - 3 servings'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" />
-							</s:VGroup>
-							<s:VGroup horizontalAlign="center" width="64">
-								<s:Label text="Sugars" styleName="subtitles" fontWeight="normal" />
-								<s:Image source="{!model.hasMealBeenSubmitted ? model.sugarsEmpty : model.sugarsFull}" />
-								<s:Label text="{!model.hasMealBeenSubmitted ? 'less than\n1 serving' : '2 - 3 servings'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" textAlign="center" lineHeight="11" />
-							</s:VGroup>
-							<s:VGroup horizontalAlign="center" width="64">
-								<s:Label text="Alcohol" styleName="subtitles" fontWeight="normal" />
-								<s:Image source="{!model.hasMealBeenSubmitted ? model.alcoholEmpty : model.alcoholFull}" />
-								<s:Label text="{!model.hasMealBeenSubmitted ? '0 drinks' : 'less than\n2 drinks'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" textAlign="center" lineHeight="11" />
-							</s:VGroup>
-						</s:HGroup>
-					</s:BorderContainer>
-					
-					<s:BorderContainer width="321" height="505" styleName="transparentBorderContainer" fontSize="12" color="0xFFFFFF">
-						
-						<s:layout>
-							<s:VerticalLayout paddingTop="8" paddingLeft="15" paddingRight="15" gap="7" />
-						</s:layout>
-						
-						<s:HGroup width="100%" verticalAlign="middle">
-							<s:Label text="My Food Plan" styleName="lightBlueSubtitles" fontSize="12" />
-							<s:Spacer width="100%" />
-							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" />
-						</s:HGroup>
-						
-						<s:Label text="My Goal is to:" />
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionGrains}" />
-							<s:Label text="Grains:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="7-8" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionVegetables}" />
-							<s:Label text="Vegetables:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="4-5" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionFruits}" />
-							<s:Label text="Fruits:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="4-5" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionDairy}" />
-							<s:Label text="Low-fat or fat-free dairy:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="2-3" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionProteins}" />
-							<s:Label text="Meat, poultry and fish:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="2 or less" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionProteins}" />
-							<s:Label text="Nuts, seeds &amp; dry beans:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="4-5" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="servings per week" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionFats}" />
-							<s:Label text="Fats and oils:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="2-3" fontStyle="italic" color="0xFF931E" paddingRight="-4" />
-							<s:Label text="daily servings" />
-						</s:HGroup>
-						
-						<s:HGroup verticalAlign="middle">
-							<mx:LegendItem legendMarkerRenderer="mx.charts.renderers.BoxItemRenderer" markerHeight="8" markerWidth="8" fill="{chartStyles.colorNutritionSweets}" />
-							<s:Label text="Sweets:" fontWeight="bold" paddingLeft="-12" />
-							<s:Label text="limit to" />
-							<s:Label text="less than 5" fontStyle="italic" color="0xFF931E" paddingRight="-4" paddingLeft="-3" />
-							<s:Label text="servings per week" />
-						</s:HGroup>
-						
-						<s:HGroup paddingTop="11">
-							<s:Line xFrom="0" xTo="288">
+							
+							<s:Line yFrom="0" yTo="361">
 								<s:stroke>
-									<s:SolidColorStroke color="0x4D4D4D" />
+									<s:SolidColorStroke color="#666666"/>
 								</s:stroke>
 							</s:Line>
+							
+							<s:VGroup>
+								<s:Label text="Your Food Plate" styleName="greenSubtitleLarge" />
+								
+								<mx:LinkButton id="btnNutReadComment" visible="false" label="Read Comment" icon="{iconComment}" fontSize="11" fontStyle="italic" paddingLeft="0" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" rollOver="{btnNutReadComment.styleName='linkBtnUnderline';}" rollOut="btnNutReadComment.styleName='linkBtn';" />
+								
+								<s:HGroup paddingTop="-18" width="100%" horizontalAlign="center">
+									<s:Image id="imgNutJournalMyPlate" source="{!model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial}" />
+								</s:HGroup>
+								
+								<s:HGroup verticalAlign="middle" gap="7" paddingTop="18">
+									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sodium" />
+									<s:Image source="@Embed('images/nutritionNewSodiumLG.png')" />
+									<s:VGroup gap="1" paddingTop="-10">
+										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2,000 mg" />
+										<s:Image id="imgSodiumChart" source="{!model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1}" />
+									</s:VGroup>
+								</s:HGroup>
+								
+								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="{'Fats\n&amp; Oils'}" />
+									<s:Image source="@Embed('images/nutritionNewFatsOilsLG.png')" />
+									<s:VGroup gap="1" paddingTop="-10">
+										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2 - 3 servings" />
+										<s:Image id="imgFatsOilsChart" source="{!model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1}" />
+									</s:VGroup>
+								</s:HGroup>
+								
+								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sugar" />
+									<s:Image source="@Embed('images/nutritionNewSugarLG.png')" />
+									<s:VGroup gap="1" paddingTop="-10">
+										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 1 serving" />
+										<s:Image id="imgSugarChart" source="{!model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1}" />
+									</s:VGroup>
+								</s:HGroup>
+								
+								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Alcohol" />
+									<s:Image source="@Embed('images/nutritionNewAlcoholLG.png')" />
+									<s:VGroup gap="1" paddingTop="-10">
+										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
+										<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
+									</s:VGroup>
+								</s:HGroup>
+								
+								<!--<s:Label text="Total Calories" styleName="subtitles" fontWeight="normal" paddingTop="11" />
+								
+								<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
+								
+								<mx:BarChart id="nutSummaryCalories" dataProvider="{model.summaryCalories}" height="28" width="278">--><!--type="overlaid"-->
+									
+									<!--<mx:series>-->
+										
+										<!--
+										<mx:BarSeries id="nutCalExcessSeries" yField="type" xField="calories" visible="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal}">
+										<mx:fill>
+										<mx:LinearGradient rotation="90">
+										<mx:entries>
+										<mx:GradientEntry color="0xFFFF9F" ratio="0.00" />
+										<mx:GradientEntry color="0xFFC500" ratio="0.5" />
+										<mx:GradientEntry color="0xF5FFB2" ratio="1" />
+										</mx:entries>
+										</mx:LinearGradient>
+										</mx:fill>
+										</mx:BarSeries>
+										-->
+										
+										<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
+										<!--<mx:BarSeries id="nutCaloriesSeries" yField="type" xField="calories">-->	<!--xField="{model.summaryCalories.getItemAt(0).calories > model.summaryCalories.getItemAt(0).goal ? 'goal' : 'calories'}"--><!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
+							<!--				<mx:fill>
+												<mx:LinearGradient rotation="90">
+													<mx:entries>
+														<mx:GradientEntry color="0xC2E1DF" ratio="0.00" />
+														<mx:GradientEntry color="0x51B6B2" ratio="0.5" />
+														<mx:GradientEntry color="0x6FD2B2" ratio="1" />
+													</mx:entries>
+												</mx:LinearGradient>
+											</mx:fill>
+										</mx:BarSeries>
+										
+									</mx:series>
+									
+									<mx:verticalAxis>
+										<mx:CategoryAxis id="nutSummaryCaloriesYaxis" categoryField="type" />
+									</mx:verticalAxis>
+									
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesYaxis}" showLabels="false" showLine="false" />
+										<mx:AxisRenderer axis="{nutSummaryCaloriesYaxis}" showLabels="false" placement="right">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+									</mx:verticalAxisRenderers>
+									
+									<mx:horizontalAxis>
+										<mx:LinearAxis id="nutSummaryCaloriesXaxis" minimum="0" maximum="2000" interval="400" />
+									</mx:horizontalAxis>
+									
+									<mx:horizontalAxisRenderers>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+									</mx:horizontalAxisRenderers>
+									
+								</mx:BarChart>
+								
+								<s:HGroup paddingTop="11" paddingBottom="-4" gap="2">
+									<s:Label text="Calories from Extras" styleName="subtitles" fontWeight="normal" />
+									<s:Label text="(fats &amp; oils, sugars, and alcohol)" fontSize="12" fontStyle="italic" color="0xCCCCCC" />
+								</s:HGroup>
+								
+								<s:Label 
+									text="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? model.summaryCalories.getItemAt(0).caloriesFromExtras + ' cals.' : model.summaryCalories.getItemAt(0).caloriesFromExtras + ' cals. I\'m exceeding my calories budget from extras.'}" 
+									fontSize="11" fontStyle="italic" color="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? 0xFF931E : 0xDD0000}" 
+									fontWeight="{model.summaryCalories.getItemAt(0).caloriesFromExtras &lt;= 500 ? 'normal' : 'bold'}" 
+									visible="{model.hasMealBeenSubmitted}" />
+								
+								<s:Label id="lblNutSummaryLabels" text="{nutLabelsToday}" color="#FFFFFF" fontSize="11" paddingBottom="-6" />
+								
+								<mx:BarChart id="nutSummaryCaloriesFromExtras" dataProvider="{model.summaryCalories}" height="20" width="278" paddingBottom="-8">
+									
+									<mx:series>
+										<mx:BarSeries id="nutCaloriesFromExtrasSeries" yField="type" xField="caloriesFromExtras" fillFunction="nutCaloriesFromExtrasFillFunction" />
+									</mx:series>
+									
+									<mx:verticalAxis>
+										<mx:CategoryAxis id="nutSummaryCaloriesFromExtrasYaxis" categoryField="type" />
+									</mx:verticalAxis>
+									
+									<mx:verticalAxisRenderers>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasYaxis}" showLabels="false" showLine="false" />
+										<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasYaxis}" showLabels="false" placement="right">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+									</mx:verticalAxisRenderers>
+									
+									<mx:horizontalAxis>
+										<mx:LinearAxis id="nutSummaryCaloriesFromExtrasXaxis" minimum="0" maximum="{nutCaloriesXaxisMaximumToday}" interval="100" />
+									</mx:horizontalAxis>
+									
+									<mx:horizontalAxisRenderers>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+										<mx:AxisRenderer axis="{nutSummaryCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
+											<mx:axisStroke>
+												<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
+											</mx:axisStroke>
+										</mx:AxisRenderer>
+									</mx:horizontalAxisRenderers>
+								</mx:BarChart>
+								
+								<mx:LinkButton 
+									id="btnNutEducational" 
+									label="Learn how to improve your diet »" 
+									color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" 
+									paddingLeft="0" 
+									rollOver="{btnNutEducational.styleName='linkBtnUnderline';}" 
+									rollOut="btnNutEducational.styleName='linkBtn';" 
+									visible="{model.summaryCalories.getItemAt(0).caloriesFromExtras > 500}" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
+								
+								<s:HGroup gap="16" paddingLeft="-12" paddingTop="6">
+									<s:VGroup horizontalAlign="center" width="64">
+										<s:Label text="Sodium" styleName="subtitles" fontWeight="normal" />
+										<s:Image source="{!model.hasMealBeenSubmitted ? model.sodiumEmpty : model.mealType == 'full' ? model.sodiumFull : model.sodiumPartial}" />
+										<s:Label text="{!model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '3,500 mg.' : '2,000 mg.'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" />
+									</s:VGroup>
+									<s:VGroup horizontalAlign="center" width="64">
+										<s:Label text="Fats &amp; Oils" styleName="subtitles" fontWeight="normal" />
+										<s:Image source="{!model.hasMealBeenSubmitted ? model.fatsOilsEmpty : model.fatsOilsPartial}" />
+										<s:Label text="{!model.hasMealBeenSubmitted ? '0 servings' : '2 - 3 servings'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" />
+									</s:VGroup>
+									<s:VGroup horizontalAlign="center" width="64">
+										<s:Label text="Sugars" styleName="subtitles" fontWeight="normal" />
+										<s:Image source="{!model.hasMealBeenSubmitted ? model.sugarsEmpty : model.sugarsFull}" />
+										<s:Label text="{!model.hasMealBeenSubmitted ? 'less than\n1 serving' : '2 - 3 servings'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" textAlign="center" lineHeight="11" />
+									</s:VGroup>
+									<s:VGroup horizontalAlign="center" width="64">
+										<s:Label text="Alcohol" styleName="subtitles" fontWeight="normal" />
+										<s:Image source="{!model.hasMealBeenSubmitted ? model.alcoholEmpty : model.alcoholFull}" />
+										<s:Label text="{!model.hasMealBeenSubmitted ? '0 drinks' : 'less than\n2 drinks'}" fontSize="11" color="0xCCCCCC" fontStyle="italic" textAlign="center" lineHeight="11" />
+									</s:VGroup>
+								</s:HGroup>-->
+							</s:VGroup>
 						</s:HGroup>
 						
-						<s:Label text="What can I eat?" styleName="lightBlueSubtitles" fontSize="12" paddingTop="6" paddingBottom="2" />
-						<s:Label text="{'Remember, get most of calories from fruits,\nvegetables and starches.'}" />
-						
-						<s:HGroup width="100%" verticalAlign="middle" paddingTop="14" paddingBottom="-2">
-							<s:Image source="@Embed('/images/iconGreenCircle.png')" />
-							<s:Label text="Food to Increase" styleName="subtitles" fontWeight="normal" />
-							<s:Spacer width="100%" />
-							<mx:LinkButton id="btnNutViewMore1" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore1.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore1.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
-						</s:HGroup>
-						
-						<s:HGroup gap="2">
-							<s:Image source="@Embed('/images/nutrition/foods/bread.jpg')" toolTip="Bread" />
-							<s:Image source="@Embed('/images/nutrition/foods/berries.jpg')" toolTip="Berries" />
-							<s:Image source="@Embed('/images/nutrition/foods/vegetables.jpg')" toolTip="Vegetables" />
-							<s:Image source="@Embed('/images/nutrition/foods/grapes.jpg')" toolTip="Grapes" />
-							<s:Image source="@Embed('/images/nutrition/foods/lettuce.jpg')" toolTip="Lettuce" />
-						</s:HGroup>
-						
-						<s:HGroup width="100%" verticalAlign="middle" paddingTop="20" paddingBottom="-2">
-							<s:Image source="@Embed('/images/iconRedCross.png')" />
-							<s:Label text="Food to Limit" styleName="subtitles" fontWeight="normal" />
-							<s:Spacer width="100%" />
-							<mx:LinkButton id="btnNutViewMore2" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore2.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore2.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
-						</s:HGroup>
-						
-						<s:HGroup gap="2">
-							<s:Image source="@Embed('/images/nutrition/foods/cheese.jpg')" toolTip="Cheese" />
-							<s:Image source="@Embed('/images/nutrition/foods/redmeat.jpg')" toolTip="Red Meat" />
-							<s:Image source="@Embed('/images/nutrition/foods/icecream.jpg')" toolTip="Ice Cream" />
-							<s:Image source="@Embed('/images/nutrition/foods/friedchicken.jpg')" toolTip="Fried Chicken" />
-							<s:Image source="@Embed('/images/nutrition/foods/hamburgers.jpg')" toolTip="Hamburgers" />
-						</s:HGroup>
-						
-					</s:BorderContainer>
-				</s:HGroup>
+					</s:VGroup>
+				</s:HGroup>	
+				
+				
+				
+				<!-- ******* -->
+					<!--		<s:VGroup>
+									
+									<s:Label text="My Plate" styleName="greenBoldText" />
+									
+									<s:Label id="txtMyPlateSubtext" text="Today so far" color="0xBDBCBC" fontStyle="italic" fontSize="13" paddingTop="-2" paddingBottom="6" />
+									
+									<s:HGroup paddingTop="-25" paddingLeft="19">
+										<s:Image id="imgNutJournalMyPlate" source="{!model.hasMealBeenSubmitted ? bigPlateEmpty : model.mealType == 'full' ? bigPlateFull : bigPlatePartial}" />
+									</s:HGroup>
+									
+									<s:HGroup gap="19" paddingLeft="11" paddingTop="18">
+										
+										<s:VGroup horizontalAlign="center" width="64">
+											<s:Label text="Sodium" styleName="greenBoldText" />
+											<s:VGroup height="43">
+												<s:Image id="imgNutJournalSodium" source="{!model.hasMealBeenSubmitted ? bigSodiumEmpty : model.mealType == 'full' ? bigSodiumFullRed : bigSodiumPartial}" />
+											</s:VGroup>
+											<s:Label id="lblNutJournalSodium" text="{!model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '2,000 mg.' : '600 mg.'}" fontSize="13" color="0xFFFFFF" />
+										</s:VGroup>
+										
+										<s:VGroup horizontalAlign="center" width="64">
+											<s:Label text="Fats &amp; Oils" styleName="greenBoldText" />
+											<s:VGroup height="43">
+												<s:Image id="imgNutJournalFatsOils" source="{!model.hasMealBeenSubmitted ? bigFatsOilsEmpty : model.mealType == 'full' ? bigFatsOilsFull : bigFatsOilsPartial}" />
+											</s:VGroup>
+											<s:Label id="lblNutJournalFatsOils" text="{!model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
+										</s:VGroup>
+										
+										<s:VGroup horizontalAlign="center" width="64">
+											<s:Label text="Sugars" styleName="greenBoldText" />
+											<s:VGroup height="43">
+												<s:Image id="imgNutJournalSugars" source="{!model.hasMealBeenSubmitted ? model.sugarsEmpty : model.mealType == 'full' ? model.sugarsFull : model.sugarsPartial}" />
+											</s:VGroup>
+											<s:Label id="lblNutJournalSugars" text="{!model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
+										</s:VGroup>
+										
+										<s:VGroup horizontalAlign="center" width="64">
+											<s:Label text="Alcohol" styleName="greenBoldText" />
+											<s:VGroup height="43">
+												<s:Image id="imgNutJournalAlcohol" source="{!model.hasMealBeenSubmitted ? bigAlcoholEmpty : model.mealType == 'full' ? bigAlcoholFull : bigAlcoholPartial}" />
+											</s:VGroup>
+											<s:Label id="lblNutJournalAlcohol" text="{!model.hasMealBeenSubmitted ? '0 drinks' : model.mealType == 'full' ? 'more than\n3 drinks' : 'less than\n2 drinks'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
+										</s:VGroup>
+										
+										<s:VGroup horizontalAlign="center" width="64">
+											<s:Label text="Water" styleName="lightBlueSubtitles" />
+											<s:VGroup height="43">
+												<s:Image id="imgNutJournalWater" source="{glassesTaken == 0 ? bigWaterEmpty : glassesTaken == 8 ? bigWaterVeryFull : glassesTaken > 4 ? bigWaterFull : bigWaterPartial}" />
+											</s:VGroup>
+											<s:Label id="lblNutJournalWater" text="{glassesTaken + ' cups'}" fontSize="13" color="0xFFFFFF" />
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+								</s:VGroup>
+							-->
+
 			</s:NavigatorContent>
 			
 			<s:NavigatorContent label="My Food Plan">
@@ -1319,605 +1797,6 @@
 					</s:VGroup>
 					
 				</s:Scroller>
-				
-			</s:NavigatorContent>
-			
-			<s:NavigatorContent label="My Food Journal" creationPolicy="all">
-				
-				<s:layout>
-					<s:VerticalLayout gap="0" />
-				</s:layout>
-				
-				<s:BorderContainer height="40" width="100%" backgroundColor="0x706F6F">
-					
-					<s:layout>
-						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
-					</s:layout>
-					
-					<s:Button label="+ Record Food Journal" styleName="buttonText" height="24" />
-					<s:Button label="Print" styleName="buttonText" height="24" />
-					
-					<s:Spacer width="100%" />
-					
-					<s:HGroup color="0xFFFFFF" gap="2">
-						<s:Label text="Time Range:" paddingTop="6" />
-						<general:customLinkButton id="btnNut1d" label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
-						<general:customLinkButton id="btnNut1wk" label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
-						<general:customLinkButton id="btnNut1mo" label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
-						<general:customLinkButton id="btnNut3mo" label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="0" />
-						<general:customLinkButton id="btnMedCustom" label="Custom" paddingLeft="2" paddingRight="2" />
-					</s:HGroup>
-					
-					<s:HGroup gap="-1" visible="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" includeInLayout="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" paddingLeft="4" paddingRight="4">
-						<s:Button id="btnNutLeft" width="28" height="24" icon="@Embed('/images/arrowLeft.png')" click="nutNavigateDate('prev')" />
-						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('/images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
-					</s:HGroup>
-					
-					<s:HGroup gap="0">
-						<s:Button id="btnNutChart" width="29" height="24" icon="@Embed('/images/btnNutritionChart.png')" chromeColor="0xFF931E" /><!--click="switchExercisePerView(0);"-->
-						<s:Button id="btnNutList" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" styleName="buttonText" /><!--click="switchExercisePerView(1);" click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
-					</s:HGroup>
-					
-				</s:BorderContainer>
-				
-				<s:Line xFrom="0" xTo="974">
-					<s:stroke>
-						<s:SolidColorStroke color="#3F3E3D"/>
-					</s:stroke>
-				</s:Line>
-				
-				<s:Scroller width="100%" height="563">
-					
-					<s:VGroup>
-					
-						<s:VGroup width="805" paddingLeft="68" paddingTop="19" paddingBottom="10">
-							
-							<s:Label id="nutJournalDate" text="{DateUtil.formatDateFromString((new Date().getMonth()+1)+'/'+new Date().getDate()+'/'+new Date().getFullYear())}" styleName="greenBoldText" paddingBottom="7" />
-							
-							<s:BorderContainer width="805" height="390" styleName="transparentBorderContainer">
-								
-								<s:layout>
-									<s:HorizontalLayout paddingTop="20" paddingLeft="20" gap="20" />
-								</s:layout>
-								
-								<s:VGroup>
-									
-									<s:Label text="My Plate" styleName="greenBoldText" />
-									
-									<s:Label id="txtMyPlateSubtext" text="Today so far" color="0xBDBCBC" fontStyle="italic" fontSize="13" paddingTop="-2" paddingBottom="6" />
-									
-									<s:HGroup paddingTop="-25" paddingLeft="19">
-										<s:Image id="imgNutJournalMyPlate" source="{!model.hasMealBeenSubmitted ? bigPlateEmpty : model.mealType == 'full' ? bigPlateFull : bigPlatePartial}" />
-									</s:HGroup>
-									
-									<s:HGroup gap="19" paddingLeft="11" paddingTop="18">
-										
-										<s:VGroup horizontalAlign="center" width="64">
-											<s:Label text="Sodium" styleName="greenBoldText" />
-											<s:VGroup height="43">
-												<s:Image id="imgNutJournalSodium" source="{!model.hasMealBeenSubmitted ? bigSodiumEmpty : model.mealType == 'full' ? bigSodiumFullRed : bigSodiumPartial}" />
-											</s:VGroup>
-											<s:Label id="lblNutJournalSodium" text="{!model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '2,000 mg.' : '600 mg.'}" fontSize="13" color="0xFFFFFF" />
-										</s:VGroup>
-										
-										<s:VGroup horizontalAlign="center" width="64">
-											<s:Label text="Fats &amp; Oils" styleName="greenBoldText" />
-											<s:VGroup height="43">
-												<s:Image id="imgNutJournalFatsOils" source="{!model.hasMealBeenSubmitted ? bigFatsOilsEmpty : model.mealType == 'full' ? bigFatsOilsFull : bigFatsOilsPartial}" />
-											</s:VGroup>
-											<s:Label id="lblNutJournalFatsOils" text="{!model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
-										</s:VGroup>
-										
-										<s:VGroup horizontalAlign="center" width="64">
-											<s:Label text="Sugars" styleName="greenBoldText" />
-											<s:VGroup height="43">
-												<s:Image id="imgNutJournalSugars" source="{!model.hasMealBeenSubmitted ? model.sugarsEmpty : model.mealType == 'full' ? model.sugarsFull : model.sugarsPartial}" />
-											</s:VGroup>
-											<s:Label id="lblNutJournalSugars" text="{!model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
-										</s:VGroup>
-										
-										<s:VGroup horizontalAlign="center" width="64">
-											<s:Label text="Alcohol" styleName="greenBoldText" />
-											<s:VGroup height="43">
-												<s:Image id="imgNutJournalAlcohol" source="{!model.hasMealBeenSubmitted ? bigAlcoholEmpty : model.mealType == 'full' ? bigAlcoholFull : bigAlcoholPartial}" />
-											</s:VGroup>
-											<s:Label id="lblNutJournalAlcohol" text="{!model.hasMealBeenSubmitted ? '0 drinks' : model.mealType == 'full' ? 'more than\n3 drinks' : 'less than\n2 drinks'}" fontSize="13" color="0xFFFFFF" textAlign="center" />
-										</s:VGroup>
-										
-										<s:VGroup horizontalAlign="center" width="64">
-											<s:Label text="Water" styleName="lightBlueSubtitles" />
-											<s:VGroup height="43">
-												<s:Image id="imgNutJournalWater" source="{glassesTaken == 0 ? bigWaterEmpty : glassesTaken == 8 ? bigWaterVeryFull : glassesTaken > 4 ? bigWaterFull : bigWaterPartial}" />
-											</s:VGroup>
-											<s:Label id="lblNutJournalWater" text="{glassesTaken + ' cups'}" fontSize="13" color="0xFFFFFF" />
-										</s:VGroup>
-										
-									</s:HGroup>
-									
-								</s:VGroup>
-								
-								<s:Line yFrom="0" yTo="347">
-									<s:stroke>
-										<s:SolidColorStroke color="#828282"/>
-									</s:stroke>
-								</s:Line>
-								
-								<s:VGroup paddingLeft="5">
-									
-									<s:Label text="Total Calories" styleName="greenBoldText" />
-									
-									<mx:ViewStack id="viewsNutritionJournal" height="308" creationPolicy="all">
-										
-										<s:NavigatorContent creationPolicy="all">
-											
-											<s:layout>
-												<s:VerticalLayout />
-											</s:layout>
-											
-											<s:HGroup gap="3" fontSize="13" paddingBottom="11">
-												<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
-												<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
-											</s:HGroup>
-											
-											<s:Label text="0                  400                800               1200             1600          2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" />
-											
-											<mx:BarChart id="nutFoodJournalCalories" dataProvider="{model.dailyCaloriesCurrent}" height="28" width="278"><!--type="overlaid"-->
-												<mx:series>
-													
-													<!--
-													<mx:BarSeries id="nutJourCalExcessSeries" yField="type" xField="calories" visible="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal}">
-														<mx:fill>
-															<mx:LinearGradient rotation="90">
-																<mx:entries>
-																	<mx:GradientEntry color="0xFFFF9F" ratio="0.00" />
-																	<mx:GradientEntry color="0xFFC500" ratio="0.5" />
-																	<mx:GradientEntry color="0xF5FFB2" ratio="1" />
-																</mx:entries>
-															</mx:LinearGradient>
-														</mx:fill>
-													</mx:BarSeries>
-													-->
-													
-													<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
-													<mx:BarSeries id="nutJourCaloriesSeries" yField="type" xField="calories">	<!--xField="{model.dailyCaloriesCurrent.getItemAt(0).calories > model.dailyCaloriesCurrent.getItemAt(0).goal ? 'goal' : 'calories'}"--><!--if calories exceeds the goal, then we show this blue bar only up to the goal (and the rest are separate extra calories), else we show the calories number-->
-														<mx:fill>
-															<mx:LinearGradient rotation="90">
-																<mx:entries>
-																	<mx:GradientEntry color="0xC2E1DF" ratio="0.00" />
-																	<mx:GradientEntry color="0x51B6B2" ratio="0.5" />
-																	<mx:GradientEntry color="0x6FD2B2" ratio="1" />
-																</mx:entries>
-															</mx:LinearGradient>
-														</mx:fill>
-													</mx:BarSeries>
-													
-												</mx:series>
-												
-												<mx:verticalAxis>
-													<mx:CategoryAxis id="nutJourSummaryCaloriesYaxis" categoryField="type" />
-												</mx:verticalAxis>
-												
-												<mx:verticalAxisRenderers>
-													<mx:AxisRenderer axis="{nutJourSummaryCaloriesYaxis}" showLabels="false" showLine="false" />
-													<mx:AxisRenderer axis="{nutJourSummaryCaloriesYaxis}" showLabels="false" placement="right">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-												</mx:verticalAxisRenderers>
-												
-												<mx:horizontalAxis>
-													<mx:LinearAxis id="nutJourSummaryCaloriesXaxis" minimum="0" maximum="2000" interval="400" />
-												</mx:horizontalAxis>
-												
-												<mx:horizontalAxisRenderers>
-													<mx:AxisRenderer axis="{nutJourSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-													<mx:AxisRenderer axis="{nutJourSummaryCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-												</mx:horizontalAxisRenderers>
-												
-											</mx:BarChart>
-											
-											<s:HGroup fontSize="14" color="0xFFFFFF" paddingTop="14" paddingLeft="35" gap="13">
-												<s:Image source="@Embed('/images/nutritionJournalFood.png')" />
-												<s:Label text="{'+ ' + model.dailyCaloriesCurrent.getItemAt(0).calories}" textAlign="right" width="53" />
-												<s:Label text="calories consumed" />
-											</s:HGroup>
-											
-											<s:HGroup fontSize="14" color="0xFFFFFF" paddingTop="2" paddingBottom="1" paddingLeft="35" gap="13">
-												<s:Image source="@Embed('/images/nutritionJournalExercise.png')" />
-												<s:Label text="- 0" textAlign="right" width="53" />
-												<s:Label text="calories burned" />
-											</s:HGroup>
-											
-											<s:Line xFrom="0" xTo="271">
-												<s:stroke>
-													<s:SolidColorStroke color="#BDBCBC" weight="2" alpha=".5" />
-												</s:stroke>
-											</s:Line>
-											
-											<s:HGroup paddingTop="2">
-												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" width="271" height="43">
-													<s:layout>
-														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="9" />
-													</s:layout>
-													<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).calories}" styleName="orangeStandout" width="109" textAlign="right" />
-													<s:Label text="{'Total calories\nconsumed today'}" color="0xFFFFFF" fontSize="14" />
-												</s:BorderContainer>
-											</s:HGroup>
-											
-											<s:HGroup paddingTop="38" gap="2">
-												<s:Label text="Calories from Extras" styleName="greenBoldText" />
-												<s:Label text="(fats &amp; oils, sugars, and alcohol)" fontSize="13" fontStyle="italic" color="0xCCCCCC" />
-											</s:HGroup>
-											
-											<s:HGroup fontSize="13" color="0xFFFFFF" gap="3" visible="{model.dailyCaloriesCurrent.getItemAt(0).calories > 0}" includeInLayout="{model.dailyCaloriesCurrent.getItemAt(0).calories > 0}">
-												<s:Label text="Of" />
-												<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).calories + ' total calories'}" fontWeight="bold" fontStyle="italic" color="0xFF931E" />
-												<s:Label text="," paddingLeft="-3" />
-												<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras + ' calories'}" fontWeight="bold" fontStyle="italic" color="0xFF931E" />
-												<s:Label text="are from extras." />
-											</s:HGroup>
-											
-											<s:Label id="lblNutJournalLabels" text="{nutLabelsCurrent}" color="#FFFFFF" fontSize="11" paddingTop="10" paddingBottom="-6" />
-											
-											<mx:BarChart id="nutJournalCaloriesFromExtras" dataProvider="{model.dailyCaloriesCurrent}" height="20" width="278" paddingBottom="-8">
-												
-												<mx:series>
-													<mx:BarSeries id="nutJournalCaloriesFromExtrasSeries" yField="type" xField="caloriesFromExtras" fillFunction="nutJournalCaloriesFromExtrasFillFunction" />
-												</mx:series>
-												
-												<mx:verticalAxis>
-													<mx:CategoryAxis id="nutJournalCaloriesFromExtrasYaxis" categoryField="type" />
-												</mx:verticalAxis>
-												
-												<mx:verticalAxisRenderers>
-													<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasYaxis}" showLabels="false" showLine="false" />
-													<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasYaxis}" showLabels="false" placement="right">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-												</mx:verticalAxisRenderers>
-												
-												<mx:horizontalAxis>
-													<mx:LinearAxis id="nutJournalCaloriesFromExtrasXaxis" minimum="0" maximum="{nutCaloriesXaxisMaximumCurrent}" interval="100" />
-												</mx:horizontalAxis>
-												
-												<mx:horizontalAxisRenderers>
-													<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-													<mx:AxisRenderer axis="{nutJournalCaloriesFromExtrasXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
-														<mx:axisStroke>
-															<mx:SolidColorStroke color="#B3B3B3" weight="1" caps="none" />
-														</mx:axisStroke>
-													</mx:AxisRenderer>
-												</mx:horizontalAxisRenderers>
-												
-											</mx:BarChart>
-										
-										</s:NavigatorContent>
-										
-										<s:NavigatorContent creationPolicy="all">
-											
-											<s:layout>
-												<s:VerticalLayout />
-											</s:layout>
-											
-											<s:HGroup gap="3" fontSize="13" paddingBottom="11">
-												<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
-												<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
-											</s:HGroup>
-											
-											<s:Label text="0                400              800             1200           1600        2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" paddingLeft="39" />
-											
-											<mx:BarChart id="nutFoodJournalWeeklyCalories" dataProvider="{model.weeklyCaloriesCurrent}" type="overlaid" height="165" width="314" showDataTips="true"><!--backgroundElements="{nutritionJournalBGE}"-->
-												<mx:series>
-													<mx:BarSeries id="nutJourWeeklyCalExcessSeries" yField="day" xField="calories" fillFunction="nutCaloriesExcessFillFunction">
-														<!--<mx:fill>
-														<mx:LinearGradient rotation="90">
-														<mx:entries>
-														<mx:GradientEntry color="0xF6AF95" ratio="0.00" />
-														<mx:GradientEntry color="0xB71918" ratio="0.5" />
-														<mx:GradientEntry color="0xF6A763" ratio="1" />
-														</mx:entries>
-														</mx:LinearGradient>
-														</mx:fill>-->
-													</mx:BarSeries>
-													<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
-													<mx:BarSeries id="nutJourWeeklyCaloriesSeries" yField="day" xField="limit" fillFunction="nutCaloriesFillFunction" interactive="false"><!--fillFunction="nutCaloriesFillFunction"-->
-														<!--<mx:fill>
-														<mx:LinearGradient rotation="90">
-														<mx:entries>
-														<mx:GradientEntry color="0xC2E1DF" ratio="0.00" />
-														<mx:GradientEntry color="0x51B6B2" ratio="0.5" />
-														<mx:GradientEntry color="0x6FD2B2" ratio="1" />
-														</mx:entries>
-														</mx:LinearGradient>
-														</mx:fill>-->
-													</mx:BarSeries>
-													<!--<mx:BarSeries id="dummy" xField="calories">
-													<mx:fill>
-													<s:SolidColor alpha="0" />
-													</mx:fill>
-													</mx:BarSeries>-->
-												</mx:series>
-												
-												<mx:verticalAxis>
-													<mx:CategoryAxis id="nutJourSummaryWeeklyCaloriesYaxis" categoryField="day" />
-												</mx:verticalAxis>
-												
-												<mx:verticalAxisRenderers>
-													<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesYaxis}" showLine="false" color="0xFFFFFF" fontSize="13" />
-													<!--<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesYaxis}" showLabels="false" placement="right">
-													<mx:axisStroke>
-													<mx:SolidColorStroke color="#FF0000" weight="1" caps="none" />
-													</mx:axisStroke>
-													</mx:AxisRenderer>-->
-												</mx:verticalAxisRenderers>
-												
-												<mx:horizontalAxis>
-													<mx:LinearAxis id="nutJourSummaryWeeklyCaloriesXaxis" minimum="0" maximum="2200" interval="400" />
-												</mx:horizontalAxis>
-												
-												<mx:horizontalAxisRenderers>
-													<!--<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="top">
-													<mx:axisStroke>
-													<mx:SolidColorStroke color="#B3B3B3" weight="1" alpha=".7" caps="none" />
-													</mx:axisStroke>
-													</mx:AxisRenderer>
-													<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" tickPlacement="none" minorTickPlacement="none" placement="bottom">
-													<mx:axisStroke>
-													<mx:SolidColorStroke color="#B3B3B3" weight="1" alpha=".7" caps="none" />
-													</mx:axisStroke>
-													</mx:AxisRenderer>-->
-													<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" showLine="false" tickPlacement="none" minorTickPlacement="none" />
-												</mx:horizontalAxisRenderers>
-											</mx:BarChart>
-											
-											<s:VGroup paddingTop="20">
-												<s:BorderContainer width="305" height="43" backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false">
-													<s:layout>
-														<s:HorizontalLayout paddingLeft="38" verticalAlign="middle" gap="9" paddingTop="2" />
-													</s:layout>
-													<s:Label id="lblNutWeeklyAvgValue" text="{avg(new Array(model.weeklyCaloriesCurrent.getItemAt(0).calories,model.weeklyCaloriesCurrent.getItemAt(1).calories,model.weeklyCaloriesCurrent.getItemAt(2).calories,model.weeklyCaloriesCurrent.getItemAt(3).calories,model.weeklyCaloriesCurrent.getItemAt(4).calories,model.weeklyCaloriesCurrent.getItemAt(5).calories,model.weeklyCaloriesCurrent.getItemAt(6).calories))}" styleName="orangeStandout" />
-													<s:Label text="{'Average daily calories\nconsumed for this week'}" color="0xFFFFFF" fontSize="14" />
-												</s:BorderContainer>
-											</s:VGroup>
-											
-										</s:NavigatorContent>
-										
-										<s:NavigatorContent creationPolicy="all">
-											
-											<s:layout>
-												<s:VerticalLayout />
-											</s:layout>
-											
-											<s:HGroup gap="3" fontSize="13" paddingBottom="11">
-												<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
-												<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
-											</s:HGroup>
-											
-											<s:HGroup paddingLeft="-50" verticalAlign="middle">
-												
-												<mx:LineChart id="nutFoodJournalMonthlyCalories" dataProvider="{model.monthlyCalories}" showDataTips="true" height="176" width="348" backgroundElements="{bge}" seriesFilters="[]">
-													<mx:series>
-														<mx:LineSeries yField="goal" xField="day" interactive="false">
-															<mx:lineStroke>
-																<s:SolidColorStroke color="0xFF0000" weight="2" alpha="0.45" />
-															</mx:lineStroke>
-														</mx:LineSeries>
-														<mx:LineSeries yField="calories" xField="day">
-															<mx:lineStroke>
-																<s:SolidColorStroke color="0x51B6B2" weight="3" />
-															</mx:lineStroke>
-														</mx:LineSeries>
-													</mx:series>
-													<mx:horizontalAxis>
-														<mx:DateTimeAxis id="nutJourMonthlyCaloriesXAxis" />
-													</mx:horizontalAxis>
-													<mx:horizontalAxisRenderers>
-														<mx:AxisRenderer axis="{nutJourMonthlyCaloriesXAxis}" color="0xFFFFFF" fontSize="12" tickPlacement="none" />
-													</mx:horizontalAxisRenderers>
-													<mx:verticalAxis>
-														<mx:LinearAxis id="nutJourMonthlyCaloriesYaxis" maximum="3500" minimum="0" />
-													</mx:verticalAxis>
-													<mx:verticalAxisRenderers>
-														<mx:AxisRenderer axis="{nutJourMonthlyCaloriesYaxis}" visible="false" />
-													</mx:verticalAxisRenderers>
-												</mx:LineChart>
-												<s:Label text="{'2000\ncals.'}" color="0xFFFFFF" fontSize="13" lineHeight="13" paddingTop="-34" paddingLeft="-25" />
-											</s:HGroup>
-											
-											<s:VGroup paddingTop="20">
-												<s:BorderContainer width="305" height="43" backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false">
-													<s:layout>
-														<s:HorizontalLayout paddingLeft="38" verticalAlign="middle" gap="9" paddingTop="2" />
-													</s:layout>
-													<s:Label id="lblNutMonthlyAvgValue" text="{avg(arrMonthlyCalories1)}" styleName="orangeStandout" />
-													<s:Label id="lblNutMonthlyAvg" text="{'Average daily calories for\nthe month of September'}" color="0xFFFFFF" fontSize="14" />
-												</s:BorderContainer>
-											</s:VGroup>
-											
-										</s:NavigatorContent>
-										
-									</mx:ViewStack>
-									
-									<mx:LinkButton id="btnNutEducational2" label="Learn How to Cut Calories »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="0" rollOver="{btnNutEducational2.styleName='linkBtnUnderline';}" rollOut="btnNutEducational2.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
-								
-								</s:VGroup>
-								
-							</s:BorderContainer>
-							
-							<s:Label id="lblWhatIHaveEaten" text="What I Have Eaten Today" styleName="greenBoldText" paddingTop="17" paddingBottom="6" />
-							
-							<s:BorderContainer width="805" styleName="transparentBorderContainer">
-								
-								<s:layout>
-									<s:VerticalLayout paddingTop="1" paddingLeft="1" paddingRight="1" />
-								</s:layout>
-								
-								<mx:DataGrid 
-									id="nutritionJournal" 
-									width="100%" height="100%"
-									dataProvider="{model.foodJournal}" 
-									styleName="standardDataGrid"
-									rowCount="{model.foodJournal.length}"
-									fontSize="12"
-									headerHeight="27" paddingTop="4"
-									rowHeight="27" horizontalGridLines="false" 
-									itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2" 
-									creationComplete="nutritionJournal.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE,true,false,1))">
-									
-									<mx:columns> 
-										<mx:DataGridColumn dataField="meal" headerText="Saved" paddingLeft="5" width="70">
-											<mx:itemRenderer>
-												<fx:Component>
-													<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center" paddingTop="0">
-														<fx:Script>
-															<![CDATA[
-																import components.popups.nutrition.saveMealWindow;
-																
-																import events.ApplicationEvent;
-																
-																import mx.controls.Alert;
-																import mx.controls.CheckBox;
-																import mx.events.CloseEvent;
-																import mx.managers.PopUpManager;
-																import mx.collections.ArrayCollection;
-																
-																import spark.components.TitleWindow;
-																
-																[Bindable] private var mealSaved:Boolean;
-																
-																protected function showSaveMealPrompt():void 
-																{
-																	var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as TitleWindow);
-																	mySaveMealWindow.addEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
-																	
-																	var item:Object = outerDocument.nutritionJournal.selectedItem;
-																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
-																	
-																	mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
-																	mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
-																	
-																	PopUpManager.centerPopUp(mySaveMealWindow);
-																}
-																
-																private function onSaveMealPromptClose(event:CloseEvent):void
-																{
-																	var window:saveMealWindow = event.currentTarget as saveMealWindow;
-																	
-																	if( event.detail == Alert.YES )
-																	{
-																		outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( window.mealType ) ].addItem( window.mealIngredients );
-																		
-																		var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-																		evt.data = "Your meal has been saved";
-																		AppProperties.getInstance().controller.application.dispatchEvent( evt );
-																		
-																		update();
-																	}
-																	
-																	window.removeEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
-																	
-																	PopUpManager.removePopUp( window );
-																}
-																
-																private function removeSavedMeal():void
-																{
-																	var index:int = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients );
-																	
-																	if( index > -1 )
-																	{
-																		ArrayCollection( outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ) ).removeItemAt( index );
-																	}
-																	
-																	update();
-																}
-																
-																private function update():void
-																{
-																	mealSaved = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients ) > -1;
-																}
-															]]>
-														</fx:Script>
-														
-														<mx:Image source="@Embed(source='/images/medIconTaken2.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
-														<mx:Image source="@Embed(source='/images/medIconNotTaken2.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="showSaveMealPrompt()" />
-														
-													</mx:HBox>
-												</fx:Component>
-											</mx:itemRenderer>
-										</mx:DataGridColumn>
-										<mx:DataGridColumn dataField="meal" headerText="Meal" paddingLeft="5" width="70" />
-										<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
-										<mx:DataGridColumn dataField="ingredients" headerText="Ingredients" width="275" paddingLeft="5" fontFamily="myMyriad">
-											<mx:itemRenderer>
-												<fx:Component>
-													<mx:HBox width="100%" paddingTop="-3" horizontalScrollPolicy="off">
-														
-														<fx:Script>
-															<![CDATA[
-																import events.ApplicationEvent;
-																
-																protected function deleteMeal():void 
-																{
-																	var item:Object = outerDocument.nutritionJournal.selectedItem;
-																	var index:int = outerDocument.model.foodJournal.getItemIndex(item);
-																	
-																	outerDocument.model.foodJournal.removeItemAt(index);
-																	
-																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-																	evt.data = "Your meal has been deleted";
-																	dispatchEvent( evt );
-																}
-															]]>
-														</fx:Script>
-														
-														<mx:Label text="{data.ingredients}" fontSize="12" paddingTop="1" color="0xFFFFFF" />
-														
-														<s:Spacer width="100%" />
-														
-														<general:MainLinkButton 
-															label="Info" 
-															color="0xAEDEE4" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" 
-															paddingLeft="0" 
-															toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" 
-															visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}" />
-														
-														<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
-															<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
-														</s:VGroup>
-														
-													</mx:HBox>
-												</fx:Component>
-											</mx:itemRenderer>
-										</mx:DataGridColumn>
-										<mx:DataGridColumn dataField="calories" headerText="Calories" width="63" paddingLeft="5" />
-										<mx:DataGridColumn dataField="date" headerText="Date" width="68" paddingLeft="5" />
-										<mx:DataGridColumn dataField="comments" headerText="Comments" width="266" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
-									</mx:columns> 
-								</mx:DataGrid>
-								
-							</s:BorderContainer>
-							
-						</s:VGroup>
-						
-					</s:VGroup>
-					
-				</s:Scroller>
-				
 			</s:NavigatorContent>
 			
 		</mx:ViewStack>

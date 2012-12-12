@@ -51,21 +51,21 @@ package controllers
 			model.summaryCalories = new ArrayCollection
 				(
 					[
-						{type: "calories", calories: 0, goal: 1600, caloriesFromExtras: 0}
+						{type: "calories", calories: 0, goal: 1600, caloriesFromExtras: 0, extrasFats: 0, extrasSugar: 0, extrasAlcohol: 0}
 					]
 				);
 			
 			model.dailyCaloriesAlt1 = new ArrayCollection
 				(
 					[
-						{type: "calories", calories: 1550, goal: 1600, caloriesFromExtras: 450}
+						{type: "calories", calories: 1550, goal: 1600, caloriesFromExtras: 450, extrasFats: 160, extrasSugar: 150, extrasAlcohol: 140}
 					]
 				);
 			
 			model.dailyCaloriesAlt2 = new ArrayCollection
 				(
 					[
-						{type: "calories", calories: 1700, goal: 1600, caloriesFromExtras: 515}
+						{type: "calories", calories: 1700, goal: 1600, caloriesFromExtras: 515, extrasFats: 165, extrasSugar: 150, extrasAlcohol: 200}
 					]
 				);
 			
