@@ -752,9 +752,9 @@
 												
 												<s:HGroup includeInLayout="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}" visible="{this.currentState == 'collapsed' &amp;&amp; data.chartType == 'comments'}"
 														  verticalAlign="middle" color="0xB3B3B3" fontSize="13">
-													<s:Image source="@Embed('images/vitalSignsCommentPatient.png')" />
+													<s:Image source="@Embed('/images/vitalSignsCommentPatient.png')" />
 													<s:Label text="{data.chart.getItemAt(0).data.length - 2}" paddingRight="16" />
-													<s:Image source="@Embed('images/vitalSignsCommentProvider.png')" />
+													<s:Image source="@Embed('/images/vitalSignsCommentProvider.png')" />
 													<s:Label text="2" />
 												</s:HGroup>
 												
