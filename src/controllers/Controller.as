@@ -363,15 +363,9 @@ package controllers
 		{
 			var evt:Event;
 			
-			var module:String;
+			var module:String = item.moduleID;
 			
-			if( item.area == ExerciseModel.ID )
-				module = Constants.MODULE_EXERCISE;
-			else if( item.area == MedicationsModel.ID )
-				module = Constants.MODULE_MEDICATIONS;
-			else if( item.area == NutritionModel.ID )
-				module = Constants.MODULE_NUTRITION;
-			else if( item.area == AppointmentsModel.ID )
+			if( module == Constants.MODULE_APPOINTMENTS )
 			{
 				if( item is NextStep 
 					&& (item as NextStep).recommendation )
@@ -382,16 +376,10 @@ package controllers
 						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
 					
 					AppProperties.getInstance().controller.application.dispatchEvent( evt );
+					
+					return;
 				}
-				else
-				{
-					module = Constants.MODULE_APPOINTMENTS;
-				}						
 			}
-			else if( item.area == VitalSignsModel.ID )
-				module = Constants.MODULE_VITAL_SIGNS;
-			else if( item.area == MedicalRecordsModel.ID )
-				module = Constants.MODULE_MEDICAL_RECORDS;
 			
 			if( module )
 			{
