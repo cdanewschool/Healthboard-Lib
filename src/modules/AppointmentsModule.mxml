@@ -14,7 +14,7 @@
 	
 	<s:states>
 		<s:State name="default" />
-		<s:State name="simple" />
+		<s:State name="provider" />
 	</s:states>
 	
 	<fx:Script>
@@ -61,7 +61,7 @@
 			import util.DateUtil;
 			
 			private static const STATE_DEFAULT:String = "default";
-			private static const STATE_SIMPLE:String = "simple";
+			private static const STATE_PROVIDER:String = "provider";
 			
 			[Bindable] private var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController as AppointmentsController;
 			[Bindable] public var model:AppointmentsModel = controller.model as AppointmentsModel;
@@ -79,7 +79,7 @@
 			{
 				super.currentState = value;
 				
-				if( currentState == STATE_SIMPLE )
+				if( currentState == STATE_PROVIDER )
 				{
 					DataHolder.getInstance().dataProvider.filterFunction = filterByDate;
 					
@@ -98,7 +98,7 @@
 			{
 				super.commitProperties();
 				
-				appointmentsList.setStyle( 'alternatingItemColors', currentState == STATE_SIMPLE ? [0x303030,0x303030] : [0x303030,0x3c3c3b]);
+				appointmentsList.setStyle( 'alternatingItemColors', currentState == STATE_PROVIDER ? [0x303030,0x303030] : [0x303030,0x3c3c3b]);
 			}
 			
 			private function showAppointment():void
@@ -436,11 +436,6 @@
 				{
 					selectedAppointment.selected = true;
 					
-					if( selectedAppointment.status == AppointmentStatus.COMPLETED ) 
-					{
-						//MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingIndex = selectedAppointment.medRecIndex;
-					}
-					
 					var obj:Object = selectedAppointment;
 					
 					if( appointmentDateStart ) appointmentDateStart.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins);
@@ -459,6 +454,12 @@
 			
 			private function viewMedicalRecord():void 
 			{
+				if( currentState == STATE_PROVIDER 
+					&& selectedAppointment.status == AppointmentStatus.COMPLETED ) 
+				{
+					MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingIndex = selectedAppointment.medRecIndex;
+				}
+				
 				setApplicationState( Constants.MODULE_MEDICAL_RECORDS );
 			}
 			
@@ -676,7 +677,7 @@
 					
 				</s:BorderContainer>
 				
-				<s:BorderContainer height="37" width="100%" borderVisible="false" backgroundColor="0x706F6F" includeIn="simple">
+				<s:BorderContainer height="37" width="100%" borderVisible="false" backgroundColor="0x706F6F" includeIn="provider">
 					
 					<s:layout>
 						<s:HorizontalLayout paddingTop="6" paddingLeft="6" paddingRight="6" />
@@ -708,7 +709,7 @@
 					
 				</s:BorderContainer>
 				
-				<mx:ViewStack id="stackViews" width="100%" height="100%" creationPolicy="all" creationComplete="{stackViews.selectedIndex = currentState=='simple'?2:0}">	<!--setting creationPolicy="all" so that we can set appointmentsList.selectedItem when selecting an appointment from MonthView-->
+				<mx:ViewStack id="stackViews" width="100%" height="100%" creationPolicy="all" creationComplete="{stackViews.selectedIndex = currentState==STATE_PROVIDER?2:0}">	<!--setting creationPolicy="all" so that we can set appointmentsList.selectedItem when selecting an appointment from MonthView-->
 					
 					<views:MonthView id="monthView" label="Month View" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="monthView.currentMonth=model.currentDate.month;monthView.currentYear=model.currentDate.fullYear" showEffect="WipeDown" hideEffect="WipeUp" width="100%" />
 					<views:WeekViewTimeSlots id="weekView" timeSlots="{model.timeSlots}" currentDate="{model.currentDate}" label="Week View" x="0" y="0" horizontalScrollPolicy="off" showEffect="WipeDown" hideEffect="WipeUp" />
@@ -847,7 +848,7 @@
 				</s:HGroup>
 				
 				<s:HGroup id="hgViewMedRec" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED}" includeInLayout="{selectedAppointment.status == AppointmentStatus.COMPLETED}">
-					<mx:LinkButton id="btnViewMedicalRecord" label="View Medical Record" click="{ viewMedicalRecord() }" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnViewMedicalRecord.styleName='linkBtnUnderline';}" rollOut="btnViewMedicalRecord.styleName='linkBtn';" />
+					<mx:LinkButton id="btnViewMedicalRecord" label="View Medical Record" click="viewMedicalRecord()" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="btnViewMedicalRecord.styleName='linkBtnUnderline';" rollOut="btnViewMedicalRecord.styleName='linkBtn';" />
 				</s:HGroup>
 				
 				<s:HGroup id="hgCancelAppt" horizontalAlign="center" width="100%" paddingTop="15">
