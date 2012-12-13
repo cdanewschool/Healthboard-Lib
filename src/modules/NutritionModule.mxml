@@ -854,14 +854,14 @@
 								styleName="standardDataGrid"
 								rowCount="3"
 								fontSize="12"
-								headerHeight="27" paddingTop="4"
-								rowHeight="27" horizontalGridLines="false" 
+								paddingTop="4"
+								headerHeight="27" rowHeight="27" horizontalGridLines="false" 
 								itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2" 
 								creationComplete="nutritionJournal.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE,true,false,1))">
 								
 								<mx:columns> 
 									<mx:DataGridColumn dataField="meal" headerText="Type" paddingLeft="5" width="70" />
-									<mx:DataGridColumn dataField="ingredients" headerText="Food" width="184" paddingLeft="5" fontFamily="myMyriad">
+									<mx:DataGridColumn dataField="ingredients" headerText="Food" width="164" paddingLeft="5" fontFamily="myMyriad">
 										<mx:itemRenderer>
 											<fx:Component>
 												<mx:HBox width="184" paddingTop="-3" horizontalScrollPolicy="off">
@@ -886,19 +886,6 @@
 													
 													<mx:Label width="122" text="{data.ingredients}" fontSize="12" paddingTop="1" color="0xFFFFFF" selectable="false"/>
 													
-													<!--
-													<general:MainLinkButton 
-													label="Info" 
-													color="0xAEDEE4" textRollOverColor="0xFFFFFF" textSelectedColor="0xFFFFFF" 
-													paddingLeft="0" 
-													toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" 
-													visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}" />
-													-->
-													
-													<s:VGroup paddingTop="4" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex &amp;&amp; (data.ingredients == 'Spinach quiche')}">
-														<s:Image source="@Embed('/images/info.png')" toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" />
-													</s:VGroup>
-													
 													<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
 														<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
 													</s:VGroup>
@@ -909,7 +896,18 @@
 									</mx:DataGridColumn>
 									<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
 									<mx:DataGridColumn dataField="calories" headerText="Calories" width="63" paddingLeft="5" />
-									<mx:DataGridColumn dataField="comments" headerText="Comments" width="266" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
+									<mx:DataGridColumn dataField="comments" headerText="Comments" width="216" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
+									<mx:DataGridColumn headerText="Facts" width="70" paddingLeft="5" fontFamily="myMyriad">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="184" paddingTop="-3" horizontalScrollPolicy="off" horizontalAlign="center">
+													<s:VGroup paddingTop="4" paddingLeft="-7" paddingRight="7" visible="{data.ingredients == 'Spinach quiche'}">
+														<s:Image source="@Embed('/images/info.png')" toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" />
+													</s:VGroup>
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
 									<mx:DataGridColumn dataField="meal" headerText="Favorite" width="70">
 										<mx:itemRenderer>
 											<fx:Component>
@@ -929,40 +927,6 @@
 															import spark.components.TitleWindow;
 															
 															[Bindable] private var mealSaved:Boolean;
-															
-															 /* protected function showSaveMealPrompt():void 
-															{
-																var mySaveMealWindow:saveMealWindow = saveMealWindow(PopUpManager.createPopUp(outerDocument.nutritionJournal, saveMealWindow) as TitleWindow);
-																mySaveMealWindow.addEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
-																
-																var item:Object = outerDocument.nutritionJournal.selectedItem;
-																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
-																
-																mySaveMealWindow.mealType = outerDocument.model.foodJournal.getItemAt(index).meal;
-																mySaveMealWindow.mealIngredients = outerDocument.model.foodJournal.getItemAt(index).ingredients;
-																
-																PopUpManager.centerPopUp(mySaveMealWindow);
-															}
-															
-															private function onSaveMealPromptClose(event:CloseEvent):void
-															{
-																var window:saveMealWindow = event.currentTarget as saveMealWindow;
-																
-																if( event.detail == Alert.YES )
-																{
-																	outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( window.mealType ) ].addItem( window.mealIngredients );
-																	
-																	var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
-																	evt.data = "Your meal has been saved";
-																	AppProperties.getInstance().controller.application.dispatchEvent( evt );
-																	
-																	update();
-																}
-																
-																window.removeEventListener( CloseEvent.CLOSE, onSaveMealPromptClose );
-																
-																PopUpManager.removePopUp( window );
-															}  */
 															
 															private function saveMeal():void
 															{
