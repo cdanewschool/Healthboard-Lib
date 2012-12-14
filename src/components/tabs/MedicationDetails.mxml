@@ -39,7 +39,8 @@
 				super.commitProperties();
 				
 				if( medicationData
-					&& currentState == "provider" )
+					&& currentState == "provider" 
+					&& container )
 				{
 					var isPending:Boolean = medicationData.renewalStatus == "Pending";
 					container.backgroundFill = isPending ? gradientFill : null;
@@ -95,7 +96,7 @@
 		<s:VerticalLayout gap="0" />
 	</s:layout>
 	
-	<s:BorderContainer id="container" height="37" width="100%" backgroundColor="0x706F6F">
+	<s:BorderContainer id="container" height="37" width="100%" backgroundColor="0x706F6F" creationComplete="invalidateProperties();">
 		
 		<s:layout>
 			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" />
@@ -103,7 +104,7 @@
 
 		<s:Button label="Record Intake" height="24" styleName="buttonText" visible = "{currentState=='default'}" includeInLayout = "{currentState=='default'}" click="controller.onRecordIntakeClick(medicationData)" />
 		<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="requestRenewal()" />
-		<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
+		<s:Button id="showRequests" label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
 		<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 		<s:Button label="Export" height="24" width="51" styleName="buttonText" />
 		

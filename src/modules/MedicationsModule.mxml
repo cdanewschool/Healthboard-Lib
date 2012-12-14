@@ -49,6 +49,9 @@
 			import events.ApplicationDataEvent;
 			import events.ApplicationEvent;
 			
+			import external.TabBarPlus.plus.TabPlus;
+			
+			import models.ApplicationModel;
 			import models.modules.MedicationsModel;
 			
 			import mx.charts.ChartItem;
@@ -169,12 +172,11 @@
 						myChartPopup.medName = e.hitData.item.name;
 						
 						var myDate:String;
-						/*if(e.hitData.item.dateP != null) myDate = e.hitData.item.dateP;
-						else if(e.hitData.item.dateO != null) myDate = e.hitData.item.dateO;
-						else if(e.hitData.item.dateS != null) myDate = e.hitData.item.dateS;
-						else if(e.hitData.item.dateH != null) myDate = e.hitData.item.dateH;*/
-						if(e.hitData.item.dateAN != null) myDate = e.hitData.item.dateAN;
-						else if(e.hitData.item.date != null) myDate = e.hitData.item.date;
+						
+						if(e.hitData.item.dateAN != null) 
+							myDate = e.hitData.item.dateAN;
+						else if(e.hitData.item.date != null) 
+							myDate = e.hitData.item.date;
 						
 						var date:Date = new Date( myDate );
 						
@@ -370,7 +372,24 @@
 			private function addMedication():void 
 			{
 				var myAddMedication1:myAddMedication1Window = myAddMedication1Window( PopUpManager.createPopUp( AppProperties.getInstance().controller.application, myAddMedication1Window ) as TitleWindow);
+				myAddMedication1.currentState = currentState;
 				PopUpManager.centerPopUp(myAddMedication1);
+			}
+			
+			private function showAllRenewalRequests():void
+			{
+				var alerts:ArrayCollection = ApplicationModel( AppProperties.getInstance().controller.model ).patientAlerts;
+				
+				for each(var alert:Object in alerts)
+				{
+					var type:String = alert.type;
+					
+					if( type == "Medications" 
+						&& alert.alert == "Renewal Request" )
+					{
+						showMedicationDetailsByName( alert.description );
+					}
+				}
 			}
 			
 			private function onTreeItemClick( event:ListEvent ):void
@@ -426,11 +445,21 @@
 					var medicationDetails:MedicationDetails = new MedicationDetails();
 					medicationDetails.currentState = currentState;
 					medicationDetails.medicationData = service;
+					medicationDetails.addEventListener( MouseEvent.CLICK, onMedicationDetailsClick);
 					viewStackMedications.addChild(medicationDetails);
 					
 					tabsMedications.selectedIndex = viewStackMedications.length - 1;
 					
 					model.openTabs.push(service.name);
+				}
+			}
+			
+			private function onMedicationDetailsClick(event:MouseEvent):void
+			{
+				if( event.target is Button 
+					&& Button(event.target).id == 'showRequests' )
+				{
+					showAllRenewalRequests();
 				}
 			}
 			
@@ -478,6 +507,15 @@
 				updateToday();
 			}
 			
+			private function onCloseTab( event:ListEvent ):void
+			{
+				var index:int = event.rowIndex;
+				
+				model.openTabs.splice( index-1,1 );
+				
+				invalidateDisplayList();
+			}
+			
 			private function init():void
 			{
 				if( !model.dataLoaded )
@@ -495,6 +533,8 @@
 				
 				if( currentState != 'provider' )
 					showTip();
+				
+				tabsMedications.addEventListener( TabPlus.CLOSE_TAB_EVENT, onCloseTab );
 			}
 		]]>
 	</fx:Script>
@@ -531,7 +571,7 @@
 						<s:HGroup gap="3">
 							
 							<s:Button label="+ Add Medication" height="24" styleName="buttonText" click="addMedication()" />
-							<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}" />
+							<s:Button label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}" click="showAllRenewalRequests()" />
 							<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 							<s:Button label="Export" height="24" width="51" styleName="buttonText" />	
 							
@@ -644,51 +684,6 @@
 										
 									</mx:horizontalAxisRenderers>
 									
-									<!--<mx:verticalAxisRenderers>
-									<mx:AxisRenderer includeInLayout="false" visible="false" id="vAxisRendMedications" axis="{vAxisMedications}" tickPlacement="outside" tickLength="155" minorTickPlacement="inside" minorTickLength="637" labelGap="-155">--> <!--labelAlign="bottom"-->
-									<!--		<mx:tickStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:tickStroke>
-									<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
-									<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:axisStroke>-->
-									<!--http://help.adobe.com/en_US/flex/using/WS02f7d8d4857b1677355f601a126b41ed60e-8000.html-->
-									<!--		<mx:labelRenderer>
-									<fx:Component>
-									<mx:LinkButton click="outerDocument.showMedicationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" paddingLeft="-3" paddingRight="2">
-									<fx:Script><![CDATA[
-									[Bindable] private var myTip:String;
-									[Bindable] private var myColor:uint;
-									[Bindable] private var myWeight:String;
-									[Bindable] private var myStyle:String;
-									
-									override public function set data(value:Object):void{
-									if(value == null)
-									return;
-									myTip = outerDocument.getLabelDataTipMedications(value.value);		//myTip = outerDocument.immunizationsData[value.value].description;		//this is buggy... it should match the immunizationsCategory number... fix...		//value.text;
-									label = value.text;		//text = value.text;
-									//text = value.text.toString().length > 20 ? value.text.toString().substr(0, 20) + "..." : value.text;
-									
-									if(value.text == "Prescription Drugs" || value.text == "Over-The-Counter Drugs" || value.text == "Supplements" || value.text == "Herbal Medicines") {
-									myColor = 0xBED63A;	//0xAEDEE4;
-									//myWeight = "bold";
-									//text = "> " + value.text;
-									//myStyle = "italic";
-									label += ":";
-									}
-									else {
-									myColor = 0xAEDEE4;	//0xFFFFFF;
-									//myWeight = "normal";
-									//text = value.text;
-									//myStyle = "normal";
-									}
-									}
-									]]></fx:Script>
-									</mx:LinkButton>	
-									
-									</fx:Component>
-									</mx:labelRenderer>
-									
-									</mx:AxisRenderer>
-									</mx:verticalAxisRenderers>-->
-									
 									<!--ADDING THIS AXIS RENDERER ONLY SO WE CAN HAVE THE HORIZONTAL LINES IN THE CHART (ie minorTicks)-->
 									<mx:verticalAxisRenderers>
 										<mx:AxisRenderer id="vAxisRendMedications" axis="{vAxisMedications}" tickPlacement="none" minorTickPlacement="inside" minorTickLength="637"> <!--labelAlign="bottom"-->
@@ -702,34 +697,18 @@
 									</mx:horizontalAxis>
 									
 									<mx:verticalAxis>
-										<!--LINEAR AXIS-->
-										<!--<mx:LinearAxis id="vAxisMedicalRecords" interval="1" maximum="{immunizationsCategories.length}" labelFunction="lblVAxisImmunizations" />-->
-										
-										<!--CATEGORY AXIS-->
 										<mx:CategoryAxis id="vAxisMedications" dataProvider="{model.medicationsCategories}" labelFunction="verticalAxisNullLabelFunction" /><!--we could replace the labelFunction with a simple showLabels='false' on the axis renderer, but that's messing up the alignmnet due the labels' position in the x axis-->
-									</mx:verticalAxis> <!-- categoryField="name" --> <!--dataFunction="catFunc"--> <!--labelFunction="lblVAxisImmunizations"-->
+									</mx:verticalAxis>
 									
 									<mx:series>
-										<!--<mx:PlotSeries xField="dateP" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
-										<mx:PlotSeries xField="dateO" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
-										<mx:PlotSeries xField="dateS" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="6" selectable="true" stroke="{whiteStroke}" />
-										<mx:PlotSeries xField="dateH" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="7.5" selectable="true" stroke="{whiteStroke}" />-->
 										<chart:CustomPlotSeries xField="date" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomRenderer" radius="7" selectable="true" stroke="{chartStyles.whiteStroke}" />
 										<chart:CustomPlotSeries xField="dateAN" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="ASclasses.MyMedicationsCustomCircleRenderer" radius="7.5" selectable="true" stroke="{chartStyles.whiteStroke}" />
 										<chart:CustomPlotSeries xField="dateX" yField="name" visible="false" />	<!-- this invisible point exists only so we can create the blue stripe -->
-										<!--<mx:PlotSeries xField="datePpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.BoxItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
-										<mx:PlotSeries xField="dateOpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.TriangleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
-										<mx:PlotSeries xField="dateSpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.CircleItemRenderer" radius="3" selectable="true" stroke="{grayStroke}" />
-										<mx:PlotSeries xField="dateHpast" yField="name" displayName="Medication" fillFunction="controller.medicationsFillFunction" itemRenderer="mx.charts.renderers.DiamondItemRenderer" radius="4" selectable="true" stroke="{grayStroke}" />-->
 									</mx:series>
 								</mx:PlotChart>
 							</s:HGroup>
 							
 							<mx:Legend id="legendMedications" direction="horizontal" color="0xFFFFFF" paddingLeft="155" fontFamily="myMyriadNoCFF">
-								<!--<mx:LegendItem label="Prescription Drugs" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsOutpatient}"  stroke="{whiteStroke}" />
-								<mx:LegendItem label="Over-The-Counter Drugs" legendMarkerRenderer="mx.charts.renderers.TriangleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicationsOverTheCounterDrugs}" stroke="{whiteStroke}" />
-								<mx:LegendItem label="Supplements" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{colorMedicalRecordsInpatient}"  stroke="{whiteStroke}" />
-								<mx:LegendItem label="Herbal Medicines" legendMarkerRenderer="mx.charts.renderers.DiamondItemRenderer" markerAspectRatio="1" markerHeight="15" markerWidth="15" fill="{colorMedicationsHerbalMedicines}" stroke="{whiteStroke}" />-->
 								<mx:LegendItem label="Scheduled" markerAspectRatio="1" markerHeight="14" markerWidth="14" legendMarkerRenderer="@Embed(source='/images/medIconTakenBorder.png')" /><!--fill="{chartStyles.colorMedicalRecordsOutpatient}" -->
 								<mx:LegendItem label="As needed" legendMarkerRenderer="@Embed(source='/images/medIconTakenANBorder.png')" markerAspectRatio="1" markerHeight="14" markerWidth="14" /><!--legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" fill="{chartStyles.colorMedicalRecordsInpatient}"-->
 								<mx:LegendItem label="Overdose/underdose" legendMarkerRenderer="@Embed(source='/images/medIconOverdoseGrayBG.png')" markerAspectRatio="1" markerWidth="16" markerHeight="14" />
@@ -742,15 +721,7 @@
 						</s:NavigatorContent>
 						
 						<s:NavigatorContent height="100%">
-							<!--<s:layout>
-							<s:VerticalLayout />
-							</s:layout>
-							
-							<s:HGroup id="hgSearchMedications" visible="false" includeInLayout="false" width="100%" horizontalAlign="center">
-							<s:Label id="lblSearchResultsMedications" paddingTop="2" color="0xFFFFFF" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
-							<mx:LinkButton id="btnClearSearchMedications" label="(Clear)" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearchMedications()" rollOver="btnClearSearchMedications.styleName='linkBtnUnderline';" rollOut="btnClearSearchMedications.styleName='linkBtn';" />
-							</s:HGroup>-->
-							
+
 							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 							<mx:DataGrid 
 								id="medicationsList" 
@@ -771,22 +742,7 @@
 										<mx:itemRenderer>
 											<fx:Component>
 												<mx:HBox width="100%" paddingTop="0" toolTip="{data.refillsLeft.substr(0,1) == '0' ? 'No refills left.' : ''}" horizontalScrollPolicy="off">
-													<mx:Label text="{data.refillsLeft}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}">
-														<fx:Script>		
-															<![CDATA[
-																/**
-																 * This function is necessary to be able to display the tooltip, since we're in an itemRenderer and the DataGridColumn's "showDataTips=true" won't do
-																 * http://flexonblog.wordpress.com/2008/07/09/tooltip-for-datagrid-column-elements/
-																 */
-																//REPLACED WITH THE ABOVE TOOLTOP (in HBox), SO I HAVE THE TOOLTIP IN ONE PLACE INSTEAD OF TWO
-																/*override public function set data(value:Object):void {
-																super.data = value;
-																if(data.Warning) this.toolTip = "Abnormal result. Contact your provider for more information.";
-																super.invalidateDisplayList();
-																}*/
-															]]>
-														</fx:Script>
-													</mx:Label>
+													<mx:Label text="{data.refillsLeft}" fontSize="9" paddingTop="1" color="{data.status == 'inactive' ? 0x999999 : 0xFFFFFF}" />
 													<s:Spacer width="100%" />
 													<s:VGroup paddingTop="-6">
 														<s:Image source="@Embed('/images/redMark.png')" visible="{data.refillsLeft.substr(0,1) == '0'}" />	<!--toolTip="Abnormal result. Contact your provider for more information." -->

@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="320" height="200"
-			   close="PopUpManager.removePopUp(this);" skinClass="skins.general.myHeaderlessTitleWindow" xmlns:components="external.flashcommander.components.*" >
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:components="external.flashcommander.components.*" 
+	skinClass="skins.general.myHeaderlessTitleWindow" 
+	width="320" height="200"
+	close="PopUpManager.removePopUp(this);" >
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import controllers.MedicationsController;
@@ -22,6 +32,8 @@
 				myAddMedication2.medTypeLabel = dropMedicationType.selectedItem.label;
 				myAddMedication2.medTypeData = dropMedicationType.selectedItem.data;
 				myAddMedication2.medName = txtMedName.text;
+				myAddMedication2.currentState = currentState;
+				
 				PopUpManager.centerPopUp(myAddMedication2);
 				PopUpManager.removePopUp(this);
 			}
