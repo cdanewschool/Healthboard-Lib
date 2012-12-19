@@ -22,6 +22,9 @@
 			
 			[Bindable] public var confirmationText:String = "Are you sure you want to delete this item?";
 			
+			[Bindable] public var yesText:String = "Delete this item";
+			[Bindable] public var noText:String = "Do not delete this item";
+			
 			public var data:*;
 			
 			private function close():void
@@ -52,8 +55,8 @@
 	<s:Label width="100%" text="{confirmationText}" styleName="darkGrayBold16" textAlign="center" paddingTop="10" />
 	
 	<s:HGroup horizontalAlign="center" width="100%" bottom="10">
-		<s:Button label="Delete this item" click="close()" />
-		<s:Button label="Do not delete this item" click="cancel()" />
+		<s:Button label="{yesText}" click="close()" />
+		<s:Button label="{noText}" click="cancel()" />
 	</s:HGroup>
 	
 </s:TitleWindow>
