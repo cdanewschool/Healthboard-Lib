@@ -14,6 +14,7 @@ package controllers
 	
 	import external.TabBarPlus.plus.TabPlus;
 	
+	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -34,7 +35,9 @@ package controllers
 	import models.modules.NutritionModel;
 	import models.modules.VitalSignsModel;
 	
+	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
+	import mx.core.IChildList;
 	import mx.core.IFlexDisplayObject;
 	import mx.core.UIComponent;
 	import mx.events.FlexEvent;
@@ -240,8 +243,6 @@ package controllers
 			{
 				var classID:String = event.data;
 				
-				//if( !appointmentsController.model.initialized ) this.onApplicationStart();
-				
 				if( event.data == 'Gentle Chair Yoga Class' ) 
 				{
 					classID = 'yogaGentle';
@@ -311,10 +312,13 @@ package controllers
 			CursorManager.removeAllCursors();
 			
 			//	close all popups
-			for (var i:int = application.systemManager.popUpChildren.numChildren - 1; i >= 0; i--)
+			var popups:ArrayCollection = getAllPopups();
+			for each(var popup:IFlexDisplayObject in popups)
 			{
-				var popup:IFlexDisplayObject = IFlexDisplayObject(application.systemManager.popUpChildren.getChildAt(i));
-				PopUpManager.removePopUp(popup);
+				if( popup && popup.parent )
+				{
+					PopUpManager.removePopUp(popup);
+				}
 			}
 			
 			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
@@ -401,6 +405,33 @@ package controllers
 			if( module == Constants.MODULE_VITAL_SIGNS ) return "Vital Signs";
 			
 			return null;
+		}
+		
+		private function getAllPopups(applicationInstance: Object = null, onlyVisible: Boolean = false):ArrayCollection
+		{
+			var result: ArrayCollection = new ArrayCollection();
+			
+			if (applicationInstance == null)
+			{
+				applicationInstance = FlexGlobals.topLevelApplication;
+			}
+			
+			var rawChildren:IChildList = applicationInstance.systemManager.rawChildren;
+			
+			for (var i: int = 0; i < rawChildren.numChildren; i++)
+			{
+				var currRawChild:DisplayObject = rawChildren.getChildAt(i);
+				
+				if ((currRawChild is UIComponent) && UIComponent(currRawChild).isPopUp)
+				{
+					if (!onlyVisible || UIComponent(currRawChild).visible)
+					{
+						result.addItem(currRawChild);
+					}
+				}
+			}
+			
+			return result;
 		}
 		
 		protected function get id():String
