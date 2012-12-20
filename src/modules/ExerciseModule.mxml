@@ -21,6 +21,11 @@
 		
 	</fx:Declarations>
 	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
 			import components.itemrenderers.chart.MyCircleItemRendererIndividual;
@@ -267,14 +272,25 @@
 				myViewExercisesPhysicianAssignedPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
 				myViewExercisesPhysicianAssignedPopup.date = e.hitData.item.date;
 				myViewExercisesPhysicianAssignedPopup.populateEntry();
+				
 				PopUpManager.centerPopUp(myViewExercisesPhysicianAssignedPopup);
 			}
 			
 			public function viewExercisesComments(e:ChartItemEvent):void 
 			{
+				myViewExercisesPopup = viewExercisesWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesWindow) as spark.components.TitleWindow);
+				myViewExercisesPhysicianAssignedPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
+				myViewExercisesPopup.populateEntry();
+				
+				PopUpManager.centerPopUp(myViewExercisesPopup);
+			}
+			
+			public function viewExercisesCommentsPhysicianAssigned(e:ChartItemEvent):void 
+			{
 				myViewExercisesPhysicianAssignedPopup = viewExercisesPAWindow(PopUpManager.createPopUp(this.parentApplication as DisplayObject, viewExercisesPAWindow) as spark.components.TitleWindow);
 				myViewExercisesPhysicianAssignedPopup.date = (e.hitData.item.type == 'provider') ? e.hitData.item.dateProvider : e.hitData.item.datePatient;
 				myViewExercisesPhysicianAssignedPopup.populateEntry();
+				
 				PopUpManager.centerPopUp(myViewExercisesPhysicianAssignedPopup);
 			}
 			
@@ -306,6 +322,11 @@
 						pendingIndex = -1;
 					}
 				}
+			}
+			
+			protected function setActivities():void
+			{
+				
 			}
 			
 			private function init():void
@@ -791,7 +812,7 @@
 						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
 					</s:layout>
 					
-					<s:Button label="+ Record Results" styleName="buttonText" height="24" /><!--click="recordVitals()"-->
+					<s:Button label="+ Record Results" styleName="buttonText" height="24" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
 					
 					<s:Button label="Edit Goal" styleName="buttonText" height="24" visible="{viewsExercisePRT.selectedIndex > 1}" click="editRunGoal()" />
 					
@@ -1284,7 +1305,8 @@
 						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
 					</s:layout>
 					
-					<s:Button label="+ Record Results" styleName="buttonText" height="24" click="recordExResults()"/>
+					<s:Button label="+ Record Results" styleName="buttonText" height="24" click="recordExResults()" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
+					<s:Button label="+ Set Activities" styleName="buttonText" height="24" click="setActivities()" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" />
 					
 					<s:Spacer width="100%" />
 					
@@ -1504,10 +1526,10 @@
 														<mx:PlotChart 
 															id="chartComments" width="465" height="45" 
 															backgroundElements="{bge}"
-															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
+															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesCommentsPhysicianAssigned(event)">
 															
 															<mx:series>
-																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
+																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" />
 																<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>

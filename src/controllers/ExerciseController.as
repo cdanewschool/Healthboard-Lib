@@ -5,6 +5,8 @@ package controllers
 	import enum.ExerciseType;
 	
 	import models.modules.ExerciseModel;
+	import models.modules.exercise.ExerciseActivity;
+	import models.modules.exercise.ExerciseActivityGroup;
 	
 	import mx.charts.ChartItem;
 	import mx.charts.series.items.LineSeriesItem;
@@ -302,6 +304,31 @@ package controllers
 							)
 						}
 						
+					]
+				);
+			
+			model.exerciseDataPhysicianAssigned2 =  new ArrayCollection
+				(
+					[
+						new ExerciseActivityGroup
+						(
+							"Endurance", 
+							"Exercises to enhance endurance",
+							new ArrayCollection
+							(
+								[
+									new ExerciseActivity( "Run/Walk", "assets/images/exercise/run.png", null, null, 3, 'weeks' ),
+									new ExerciseActivity( "Bike", "assets/images/exercise/bike.png", null, null, 1, 'weeks' ),
+									new ExerciseActivity( "Elliptical Machine", "assets/images/exercise/elliptical.png", null, null, 1, 'weeks' ),
+									new ExerciseActivity( "Swim", "assets/images/exercise/swim.png", null, null, 1, 'weeks' ),
+								]
+							)
+						),
+						new ExerciseActivityGroup( "Flexibility" ),
+						new ExerciseActivityGroup( "Strength" ),
+						new ExerciseActivityGroup( "Diabetes" ),
+						new ExerciseActivityGroup( "Exercise" ),
+						new ExerciseActivityGroup( "Pregnant" )
 					]
 				);
 			

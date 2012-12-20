@@ -40,6 +40,7 @@ package models.modules
 		public var exerciseDataByMeasurePhysicianAssigned:ArrayCollection;
 		public var exerciseDataPersonal:ArrayCollection;	//	for list view
 		public var exerciseDataPhysicianAssigned:ArrayCollection;
+		public var exerciseDataPhysicianAssigned2:ArrayCollection;
 		
 		/**
 		 * TODO: 

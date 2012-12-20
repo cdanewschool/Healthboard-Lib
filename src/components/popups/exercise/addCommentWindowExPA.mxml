@@ -7,6 +7,8 @@
 		<![CDATA[
 			import controllers.ExerciseController;
 			
+			import enum.AppContext;
+			
 			import models.modules.ExerciseModel;
 			
 			import mx.managers.PopUpManager;
@@ -29,10 +31,6 @@
 				
 				for(var i:uint = 0; i < model.exerciseDataPhysicianAssigned.length; i++) 
 				{
-					/* if(model.exerciseDataPhysicianAssigned.getItemAt(i).PRTscore != '') currentRunWalk = model.exerciseDataPhysicianAssigned.getItemAt(i).runWalk;
-					if(model.exerciseDataPhysicianAssigned.getItemAt(i).mileRun != '') currentRunWalkMiles = model.exerciseDataPhysicianAssigned.getItemAt(i).runWalkMiles;
-					if(model.exerciseDataPhysicianAssigned.getItemAt(i).min != '') currentBike = model.exerciseDataPhysicianAssigned.getItemAt(i).bike; */
-					
 					if(model.exerciseDataPhysicianAssigned.getItemAt(i).date == date) 
 					{
 						if(model.exerciseDataPhysicianAssigned.getItemAt(i).runWalk != '') 
@@ -65,11 +63,22 @@
 			
 			private function addComment():void 
 			{
-				var newComment:Object = new Object();
-				newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.fullname,datePatient:date,comments:txtComments.text, measure:'comments'});
+				var newComment:Object = { comments: txtComments.text, expectation: 'expectation', measure: 'comments' };
 				
-				//var newCommentOP:ObjectProxy = new ObjectProxy(newComment);
-				model.exerciseDataByMeasurePhysicianAssigned[model.exercisePAIndices.indexOf('Comments')].chart[0].data.push(newComment);
+				if( AppProperties.getInstance().controller.model.context == AppContext.PROVIDER )
+				{
+					newComment.author = AppProperties.getInstance().controller.user.fullName;					
+					newComment.dateProvider = date;
+					newComment.type = 'provider';
+				}
+				else
+				{
+					newComment.author = AppProperties.getInstance().controller.model.fullname;
+					newComment.datePatient = date;
+					newComment.type = 'patient';
+				}
+				
+				model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf( 'comments' ) ).chart.getItemAt(0).data.addItem( newComment );
 				model.exerciseDataByMeasurePhysicianAssigned.refresh();
 				
 				for(var i:uint = 0; i < model.exerciseDataPhysicianAssigned.length; i++) 
@@ -107,6 +116,7 @@
 		<s:Label id="lblRunWalkMiles1" text=", with" paddingLeft="-2" />
 		<s:Label id="lblRunWalkMiles2" text="{currentRunWalkMiles + ' miles.'}" fontWeight="bold" />
 	</mx:HBox>
+	
 	<mx:HBox id="hbBike" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
 		<s:Label text="The time for bike is" paddingLeft="7" />
 		<s:Label text="{currentBike + ' minutes'}" fontWeight="bold" />
@@ -129,4 +139,5 @@
 		<s:Button label="Add Comment" click="addComment()" styleName="orangeButton" fontSize="11" height="24" />
 		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
 	</s:HGroup>
+	
 </s:TitleWindow>
