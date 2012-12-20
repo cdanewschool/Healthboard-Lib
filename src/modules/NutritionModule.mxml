@@ -5,8 +5,10 @@
 	xmlns:mx="library://ns.adobe.com/flex/mx" 
 	xmlns:components="components.*" 
 	xmlns:plus="external.TabBarPlus.plus.*"
+	xmlns:general="components.general.*"
 	initialize="updateNutritionDatesMonth('thisMonth');" 
-	creationComplete="showTip(); initFills();" xmlns:general="components.general.*">
+	creationComplete="init();" >
+	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.Sort;
@@ -21,8 +23,14 @@
 		</fx:Array>
 	</fx:Declarations>
 
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
 	<fx:Script>
 		<![CDATA[
+			import spark.components.TitleWindow;
 			import mx.graphics.LinearGradient;
 			import mx.graphics.GradientEntry;
 			import mx.collections.SortField;
@@ -104,12 +112,6 @@
 			
 			[Bindable] public var showHeader:Boolean = true;
 			
-			/* private const NUTLABELS500:String = "0                  100                200                300                400                500";
-			private const NUTLABELS600:String = "0              100            200            300            400            500            600";
-			
-			[Bindable] private var nutLabelsToday:String = NUTLABELS500;
-			[Bindable] private var nutLabelsCurrent:String = NUTLABELS500; */
-			
 			[Bindable] private var currentDayDiff:int = 0;
 			[Bindable] private var currentWeekDiff:int = 0;
 			[Bindable] private var currentMonthDiff:int = 0;
@@ -186,15 +188,6 @@
 					model.summaryCalories.getItemAt(0).extrasFats = 165;
 					model.summaryCalories.getItemAt(0).extrasSugar = 150;
 					model.summaryCalories.getItemAt(0).extrasAlcohol = 200;
-					
-					/* nutCaloriesXaxisMaximumToday = 600;
-					nutLabelsToday = NUTLABELS600;
-					
-					if(currentDayDiff == 0) 
-					{
-						nutCaloriesXaxisMaximumCurrent = 600;
-						nutLabelsCurrent = NUTLABELS600;
-					} */
 				}
 				else 
 				{
@@ -205,15 +198,6 @@
 					model.summaryCalories.getItemAt(0).extrasFats = 150;
 					model.summaryCalories.getItemAt(0).extrasSugar = 80;
 					model.summaryCalories.getItemAt(0).extrasAlcohol = 0;
-					
-					/* nutCaloriesXaxisMaximumToday = 500;
-					nutLabelsToday = NUTLABELS500;
-					
-					if(currentDayDiff == 0) 
-					{
-						nutCaloriesXaxisMaximumCurrent = 500;
-						nutLabelsCurrent = NUTLABELS500;
-					} */
 				}
 				
 				model.summaryCalories.refresh();
@@ -279,12 +263,9 @@
 				if( model.dateRange == DateRanges.DAY ) 
 				{
 					viewsNutritionJournal.selectedIndex = 0;
-					//txtMyPlateSubtext.text = currentDayDiff == 0 ? "Today so far" : "This day";
 					
 					showJournalPlate(currentDailyPlate);
 					showCurrentDay();
-					
-					//lblWhatIHaveEaten.text = currentDayDiff == 0 ? "What I Have Eaten Today" : "What I Have Eaten This Day";
 					
 					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -296,12 +277,9 @@
 				else if( model.dateRange == DateRanges.WEEK ) 
 				{
 					viewsNutritionJournal.selectedIndex = 1;
-					//txtMyPlateSubtext.text = "Daily average";
 					
 					showJournalPlate(currentWeeklyPlate);
 					showCurrentWeek();
-					
-					//lblWhatIHaveEaten.text = "What I Have Eaten This Week";
 					
 					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -313,12 +291,9 @@
 				else if( model.dateRange == DateRanges.MONTH ) 
 				{
 					viewsNutritionJournal.selectedIndex = 2;
-					//txtMyPlateSubtext.text = "Daily average";
 					
 					showJournalPlate(currentMonthlyPlate);
 					showCurrentMonth();
-					
-					//lblWhatIHaveEaten.text = "What I Have Eaten This Month";
 					
 					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
 					
@@ -339,17 +314,6 @@
 					imgFatsOilsChart.source = !model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1;
 					imgSugarChart.source = !model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1;
 					imgAlcoholChart.source = !model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0;
-					
-					/* imgNutJournalSodium.source = !model.hasMealBeenSubmitted ? bigSodiumEmpty : model.mealType == 'full' ? bigSodiumFullRed : bigSodiumPartial;
-					lblNutJournalSodium.text = !model.hasMealBeenSubmitted ? '0 mg.' : model.mealType == 'full' ? '2,000 mg.' : '600 mg.';
-					imgNutJournalFatsOils.source = !model.hasMealBeenSubmitted ? bigFatsOilsEmpty : model.mealType == 'full' ? bigFatsOilsFull : bigFatsOilsPartial;
-					lblNutJournalFatsOils.text = !model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving';
-					imgNutJournalSugars.source = !model.hasMealBeenSubmitted ? model.sugarsEmpty : model.mealType == 'full' ? model.sugarsFull : model.sugarsPartial;
-					lblNutJournalSugars.text = !model.hasMealBeenSubmitted ? '0 servings' : model.mealType == 'full' ? '2 - 3\nservings' : '1 serving';
-					imgNutJournalAlcohol.source = !model.hasMealBeenSubmitted ? bigAlcoholEmpty : model.mealType == 'full' ? bigAlcoholFull : bigAlcoholPartial;
-					lblNutJournalAlcohol.text= !model.hasMealBeenSubmitted ? '0 drinks' : model.mealType == 'full' ? 'more than\n3 drinks' : 'less than\n2 drinks';
-					imgNutJournalWater.source = glassesTaken == 0 ? bigWaterEmpty : glassesTaken == 8 ? bigWaterVeryFull : glassesTaken > 4 ? bigWaterFull : bigWaterPartial;
-					lblNutJournalWater.text = glassesTaken + ' cups'; */
 				}
 				
 				//	alternative intake 1
@@ -360,17 +324,6 @@
 					imgFatsOilsChart.source = newChartFatsOils1;
 					imgSugarChart.source = newChartSugar1;
 					imgAlcoholChart.source = newChartAlcohol1;
-					
-					/* imgNutJournalSodium.source = bigSodiumFull;
-					lblNutJournalSodium.text = '1,800 mg.';
-					imgNutJournalFatsOils.source = bigFatsOilsFull;
-					lblNutJournalFatsOils.text = '2 - 3\nservings';
-					imgNutJournalSugars.source = model.sugarsFull;
-					lblNutJournalSugars.text = '2 - 3\nservings';
-					imgNutJournalAlcohol.source = bigAlcoholPartial;
-					lblNutJournalAlcohol.text= 'less than\n2 drinks';
-					imgNutJournalWater.source = bigWaterVeryFull;
-					lblNutJournalWater.text = '8+ cups'; */		
 				}
 				
 				//	alternative intake 2
@@ -381,17 +334,6 @@
 					imgFatsOilsChart.source = newChartFatsOils2;
 					imgSugarChart.source = newChartSugar2;
 					imgAlcoholChart.source = newChartAlcohol2;
-					
-					/* imgNutJournalSodium.source = bigSodiumFullRed;
-					lblNutJournalSodium.text = '2,000 mg.';
-					imgNutJournalFatsOils.source = bigFatsOilsFull;
-					lblNutJournalFatsOils.text = '2 - 3\nservings';
-					imgNutJournalSugars.source = model.sugarsFull;
-					lblNutJournalSugars.text = '2 - 3\nservings';
-					imgNutJournalAlcohol.source = bigAlcoholFull;
-					lblNutJournalAlcohol.text= 'more than\n3 drinks';
-					imgNutJournalWater.source = bigWaterFull;
-					lblNutJournalWater.text = '7 cups';	 */	
 				}
 			}
 			
@@ -431,6 +373,10 @@
 				event.toolTip = myToolTip;
 			}
 			
+			protected function onSetFoodPlanClick(event:MouseEvent):void
+			{
+			}
+			
 			private function downloadWorksheet():void 
 			{
 				var myDownloadWorksheet:downloadWorksheetWindow = downloadWorksheetWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, downloadWorksheetWindow) as spark.components.TitleWindow );
@@ -448,16 +394,6 @@
 			{
 				return nutJourWeeklyCalExcessSeries.items[index].xNumber <= 2000 ? lgBlue : lgRed;
 			}
-			
-			/*private function nutCaloriesFromExtrasFillFunction(element:ChartItem, index:Number):IFill 
-			{
-				return nutCaloriesFromExtrasSeries.items[index].xNumber <= 500 ? lgBlue : lgRed;
-			}
-			
-			private function nutJournalCaloriesFromExtrasFillFunction(element:ChartItem, index:Number):IFill 
-			{
-				return nutJournalCaloriesFromExtrasSeries.items[index].xNumber <= 500 ? lgBlue : lgRed;
-			} */
 			
 			private function nutNavigateDate(direction:String):void 
 			{
@@ -543,51 +479,19 @@
 				{
 					model.dailyCaloriesCurrent = model.summaryCalories;
 					imgNutGauge.source = !model.hasMealBeenSubmitted ? gaugeEmpty : model.mealType == 'full' ? gaugeFull : gaugePartial;
-					
-					//txtMyPlateSubtext.text = "Today so far";
-					//lblWhatIHaveEaten.text = "What I Have Eaten Today";
 				}
 				else if( set == 'alt1' ) 
 				{
 					model.dailyCaloriesCurrent = model.dailyCaloriesAlt1;
 					imgNutGauge.source = gaugeAlmostFull;
-					
-					//txtMyPlateSubtext.text = "This day";
-					//lblWhatIHaveEaten.text = "What I Have Eaten This Day";
 				}
 				else if(set == 'alt2' ) 
 				{
 					model.dailyCaloriesCurrent = model.dailyCaloriesAlt2;
 					imgNutGauge.source = gaugeFull;
-					
-					//txtMyPlateSubtext.text = "This day";
-					//lblWhatIHaveEaten.text = "What I Have Eaten This Day";
 				}
 				
 				model.dailyCaloriesCurrent.refresh();
-				
-				/* if( model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras > 500 ) 
-				{
-					nutCaloriesXaxisMaximumCurrent = 600;
-					nutLabelsCurrent = NUTLABELS600;
-					
-					if(set == 'today') 
-					{
-						nutCaloriesXaxisMaximumToday = 600;
-						nutLabelsToday = NUTLABELS600;
-					}
-				}
-				else 
-				{
-					nutCaloriesXaxisMaximumCurrent = 500;
-					nutLabelsCurrent = NUTLABELS500;
-					
-					if(set == 'today') 
-					{
-						nutCaloriesXaxisMaximumToday = 500;
-						nutLabelsToday = NUTLABELS500;
-					}
-				} */
 			}
 			
 			private function updateNutritionDatesWeek(set:String):void 
@@ -654,12 +558,14 @@
 				PopUpManager.centerPopUp(myTipWindow);
 			}
 			
-			private function initFills():void 
+			private function init():void 
 			{
 				lgBlue.entries = [ge1, ge2, ge3];
 				lgBlue.rotation = 90;
 				lgRed.entries = [ge4, ge5, ge6];
 				lgRed.rotation = 90;
+				
+				if( currentState == "default" ) showTip();
 			}
 		]]>
 	</fx:Script>
@@ -690,6 +596,7 @@
 						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
 					</s:layout>
 					
+					<s:Button label="Set Food Plan" styleName="buttonText" height="24" click="onSetFoodPlanClick(event)" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}" />
 					<s:Button label="Print My Food Journal" styleName="buttonText" height="24" />
 					<s:Button label="Download Worksheet" styleName="buttonText" height="24" click="downloadWorksheet()" />
 					
