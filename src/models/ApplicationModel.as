@@ -14,6 +14,8 @@ package models
 	[Bindable]
 	public class ApplicationModel extends EventDispatcher
 	{
+		public var context:String;
+		
 		public var fullname:String;
 		
 		public var patientAlerts:ArrayCollection;
@@ -32,9 +34,11 @@ package models
 		
 		public var supportedLanguages:ArrayCollection;
 		
-		public function ApplicationModel()
+		public function ApplicationModel( context:String )
 		{
 			super();
+			
+			this.context = context;
 			
 			patientAlerts = new ArrayCollection();
 			

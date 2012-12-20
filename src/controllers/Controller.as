@@ -81,8 +81,6 @@ package controllers
 		
 		public function Controller()
 		{
-			_model = new ApplicationModel();
-			
 			appointmentsController = new AppointmentsController();
 			exerciseController = new ExerciseController();
 			immunizationsController = new ImmunizationsController();
