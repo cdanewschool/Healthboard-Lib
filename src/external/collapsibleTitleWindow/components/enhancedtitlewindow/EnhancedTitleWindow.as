@@ -43,8 +43,7 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		 */
 		public var subTitleDisplay:IDisplayText;
 		
-		[Bindable]
-		public var module:String;
+		private var _module:String;
 		
 		public var headerClickable:Boolean;
 		
@@ -85,6 +84,19 @@ package external.collapsibleTitleWindow.components.enhancedtitlewindow
 		[Bindable] public var displayWarning:Boolean = false;
 		[Bindable] public var warningToolTip:String = new String();
 		
+		[Bindable]
+		public function get module():String
+		{
+			return _module;
+		}
+
+		public function set module(value:String):void
+		{
+			_module = value;
+			
+			if( skin ) skin.invalidateProperties();
+		}
+
 		[Bindable]
 		public function get expanded():Boolean
 		{
