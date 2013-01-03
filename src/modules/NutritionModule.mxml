@@ -30,6 +30,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import models.UserModel;
 			import spark.components.TitleWindow;
 			import mx.graphics.LinearGradient;
 			import mx.graphics.GradientEntry;
@@ -134,6 +135,8 @@
 			[Bindable] public var nutritionRollOverRowIndex:int = -2;
 			
 			[Bindable] public var mealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
+			
+			public var patient:UserModel;
 			
 			[Bindable]
 			public function get glassesTaken():uint
@@ -1566,12 +1569,12 @@
 										</s:HGroup>
 										
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('/images/nutrition/foods/bread.jpg')" toolTip="Whole wheat bread" />
-											<s:Image source="@Embed('/images/nutrition/foods/berries.jpg')" toolTip="Berries" />
-											<s:Image source="@Embed('/images/nutrition/foods/vegetables.jpg')" toolTip="Vegetables" />
-											<s:Image source="@Embed('/images/nutrition/foods/grapes.jpg')" toolTip="Grapes" />
-											<s:Image source="@Embed('/images/nutrition/foods/lettuce.jpg')" toolTip="Lettuce" />
-											<s:Image source="@Embed('/images/nutrition/foods/water.jpg')" toolTip="Water" />
+											<s:Image source="assets/images/nutrition/foods/bread.jpg" toolTip="Whole wheat bread" />
+											<s:Image source="assets/images/nutrition/foods/berries.jpg" toolTip="Berries" />
+											<s:Image source="assets/images/nutrition/foods/vegetables.jpg" toolTip="Vegetables" />
+											<s:Image source="assets/images/nutrition/foods/grapes.jpg" toolTip="Grapes" />
+											<s:Image source="assets/images/nutrition/foods/lettuce.jpg" toolTip="Lettuce" />
+											<s:Image source="assets/images/nutrition/foods/water.jpg" toolTip="Water" />
 										</s:HGroup>
 										
 									</s:VGroup>
@@ -1592,12 +1595,12 @@
 										</s:HGroup>
 										
 										<s:HGroup gap="2">
-											<s:Image source="@Embed('/images/nutrition/foods/cheese.jpg')" toolTip="Cheese" />
-											<s:Image source="@Embed('/images/nutrition/foods/redmeat.jpg')" toolTip="Red meat" />
-											<s:Image source="@Embed('/images/nutrition/foods/icecream.jpg')" toolTip="Ice cream" />
-											<s:Image source="@Embed('/images/nutrition/foods/friedchicken.jpg')" toolTip="Fried chicken" />
-											<s:Image source="@Embed('/images/nutrition/foods/hamburgers.jpg')" toolTip="Hamburgers" />
-											<s:Image source="@Embed('/images/nutrition/foods/soda.jpg')" toolTip="Soda" />
+											<s:Image source="assets//images/nutrition/foods/cheese.jpg" toolTip="Cheese" />
+											<s:Image source="assets/images/nutrition/foods/redmeat.jpg" toolTip="Red meat" />
+											<s:Image source="assets/images/nutrition/foods/icecream.jpg" toolTip="Ice cream" />
+											<s:Image source="assets/images/nutrition/foods/friedchicken.jpg" toolTip="Fried chicken" />
+											<s:Image source="assets/images/nutrition/foods/hamburgers.jpg" toolTip="Hamburgers" />
+											<s:Image source="assets/images/nutrition/foods/soda.jpg" toolTip="Soda" />
 										</s:HGroup>
 										
 									</s:VGroup>
