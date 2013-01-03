@@ -84,8 +84,10 @@
 				cartesianCanvas.moveTo( dateValue, model.immunizationsCategories[0] );
 				cartesianCanvas.lineTo( dateValue, model.immunizationsCategories[model.immunizationsCategories.length-1] );
 				
+				var width:Number = measureText(todayLabel.text).width;
+				
 				var coords:Point = cartesianCanvas.dataToLocal( dateValue );
-				todayLabel.x = coords.x - measureText(todayLabel.text).width/2 - 7;
+				todayLabel.x = coords.x - width/2 - 7;
 			}
 			
 			private function checkImmunizationsRequired_clickHandler(event:IndexChangeEvent):void 
@@ -357,6 +359,8 @@
 				
 				model.immunizationsData.filterFunction = filterFunction;
 				model.immunizationsData.refresh();
+				
+				callLater( updateToday );
 			}
 			
 			private function init():void
