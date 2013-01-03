@@ -9,6 +9,12 @@ package models.modules
 	{
 		public static const ID:String = "nutrition";
 		
+		[Embed("/images/nutrition/food_groups/alcohol.png")] public var iconAlcohol:Class;
+		[Embed("/images/nutrition/food_groups/fats_and_oils.png")] public var iconFatsAndOils:Class;
+		[Embed("/images/nutrition/food_groups/sodium.png")] public var iconSodium:Class;
+		[Embed("/images/nutrition/food_groups/sugars.png")] public var iconSugars:Class;
+		[Embed("/images/nutrition/food_groups/water.png")] public var iconWater:Class;
+		
 		//	images shared by module and widget
 		[Embed("/images/nutritionAlcoholEmpty.png")] public var alcoholEmpty:Class;
 		[Embed("/images/nutritionAlcoholFull.png")] public var alcoholFull:Class;
@@ -20,6 +26,7 @@ package models.modules
 		[Embed("/images/nutritionSugarsEmpty.png")] public var sugarsEmpty:Class;
 		[Embed("/images/nutritionSugarsFull.png")] public var sugarsFull:Class;
 		[Embed("/images/nutritionSugarsPartial.png")] public var sugarsPartial:Class;
+		[Embed("/images/nutritionBigWaterEmpty.png")] public var waterEmpty:Class;
 		
 		public var mealType:String;
 		
