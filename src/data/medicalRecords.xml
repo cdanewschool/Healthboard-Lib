@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <medicalRecords>
-	<medicalRecord inpdate="*/07/*" name="Surgeries" order="1.5" classification="Inpatient" reason="Appendectomy" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord inpdate="*/07/*" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord inpdate="-3/07/*" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord date="-2/11/*" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond">
+	<medicalRecord inpdate="-1/07/*" name="Surgeries" order="1.5" classification="Inpatient" reason="Appendectomy" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord inpdate="-1/07/*" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord inpdate="-4/07/*" name="Procedures" order="0.5" classification="Inpatient" reason="Nasal Procedure" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord date="-3/11/*" name="Clinical Tests" order="2.5" classification="Outpatient" reason="Cardiac Stress Test" provider="Dr. Hammond">
 		<nextSteps task="Exercise for 40 minutes a day with running" completed="true" removed="true" recommendation="Exercise for 40 minutes a day with running" urgency="0" area="exercise"/>
 		<nextSteps task="Limit alcohol intake; 2 drinks a week maximum" completed="true" removed="true" recommendation="Limit alcohol intake; 2 drinks a week maximum" urgency="0" area="nutrition" />
 		<nextSteps task="Take Weight Management Basics class" completed="true" removed="true" recommendation="Take Weight Management Basics class" urgency="0" area="appointments" type="class" actionId="hLifeWeight" />
 	</medicalRecord>
-	<medicalRecord date="-2/11/*" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein">
+	<medicalRecord date="-3/11/*" name="Labs" order="2.5" classification="Outpatient" reason="Blood Test" provider="Dr. Rothstein">
 		<nextSteps task="Make an appointment for MRI" completed="true" removed="true" recommendation="Make an appointment for MRI" urgency="2" area="appointments" />
 		<nextSteps task="Start a new food plan to lower cholesterol" completed="true" removed="true" recommendation="Start a new food plan to lower cholesterol" urgency="2" area="nutrition" />
 	</medicalRecord>
-	<medicalRecord date="-1/16/*" name="Radiology" order="3.5" classification="Outpatient" reason="MRI" provider="Dr. Berg">
+	<medicalRecord date="-2/16/*" name="Radiology" order="3.5" classification="Outpatient" reason="MRI" provider="Dr. Berg">
 		<nextSteps task="Tetanus Vaccination" completed="false" removed="false" recommendation="Tetanus Vaccination" urgency="2" area="appointments" />
 	</medicalRecord>
-	<medicalRecord inpdate="*/16/*" name="Radiology" order="3.5" classification="Inpatient" reason="MRI" provider="Dr. Berg" />
+	<medicalRecord inpdate="-1/16/*" name="Radiology" order="3.5" classification="Inpatient" reason="MRI" provider="Dr. Berg" />
 	<medicalRecord name="Tests" order="4.5" classification="Outpatient" reason="Tests" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord date="-2/11/*" name="ER" order="5.5" classification="Outpatient" reason="Brain Surgery" provider="Dr. Berg"></medicalRecord>
-	<medicalRecord date="-2/11/*" name="Specialist" order="6.5" classification="Outpatient" reason="Consultation" provider="Dr. Hammond"></medicalRecord>
-	<medicalRecord date="-1/16/*" name="Primary Care" order="7.5" classification="Outpatient" reason="Physician Examination" provider="Dr. Berg">
+	<medicalRecord date="-3/11/*" name="ER" order="5.5" classification="Outpatient" reason="Brain Surgery" provider="Dr. Berg"></medicalRecord>
+	<medicalRecord date="-3/11/*" name="Specialist" order="6.5" classification="Outpatient" reason="Consultation" provider="Dr. Hammond"></medicalRecord>
+	<medicalRecord date="-2/16/*" name="Primary Care" order="7.5" classification="Outpatient" reason="Physician Examination" provider="Dr. Berg">
 		<nextSteps task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="appointments" type="class" actionId="yogaGentle"/>
 		<nextSteps task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Continue to check blood sugar twice daily - Set a Reminder" date="17:23, October 7, 2012" area="vitalsigns" />		
 	</medicalRecord>
