@@ -301,13 +301,6 @@
 			{
 				var isAnyCheckboxSelected:Boolean = false;
 				
-				for(var i:uint = 0; i < model.messages.length; i++) 
-				{
-					/*if(dgMessages.rendererArray[i + 1][1].messageCheckbox.selected) {
-					isAnyCheckboxSelected = true;
-					break;
-					}*/
-				}
 				areMessageButtonsEnabled = isAnyCheckboxSelected;
 			}
 			
@@ -350,21 +343,10 @@
 						
 						controller.updateMessageCounts();
 						
-						/*
-						if(messageCount == '') {
-						lblMessagesNumber.text = "no";
-						lblMessagesNumber.setStyle("color","0xFFFFFF");
-						lblMessagesNumber.setStyle("fontWeight","normal");
-						lblMessagesNumber.setStyle("paddingLeft",-3);
-						lblMessagesNumber.setStyle("paddingRight",-3);
-						}
-						else lblMessagesNumber.text = messageCount.substr(2,1);
-						*/
-						
 						dgMessages.invalidateList();
-						//lblMessagesNumber.text = (getUnreadMessagesCount() == '') ? 'no' : getUnreadMessagesCount().substr(2,1);	
 					}
-					else {													//if it's a new message draft
+					else 
+					{
 						openDraftMessage(myData);
 					}
 				}
@@ -391,17 +373,6 @@
 						model.messagesTrash.addItem( model.messages.removeItemAt(model.messages.getItemIndex(event.itemRenderer.data) ) );
 						
 						controller.updateMessageCounts();
-						
-						/*
-						if(messageCount == '') {
-						lblMessagesNumber.text = "no";
-						lblMessagesNumber.setStyle("color","0xFFFFFF");
-						lblMessagesNumber.setStyle("fontWeight","normal");
-						lblMessagesNumber.setStyle("paddingLeft",-3);
-						lblMessagesNumber.setStyle("paddingRight",-3);
-						}
-						else lblMessagesNumber.text = messageCount.substr(2,1);
-						*/
 						
 						refreshDisplayedMessages();
 						
@@ -607,17 +578,6 @@
 					
 					controller.updateMessageCounts();
 					
-					/*
-					if(messageCount == '') {
-					lblMessagesNumber.text = "no";
-					lblMessagesNumber.setStyle("color","0xFFFFFF");
-					lblMessagesNumber.setStyle("fontWeight","normal");
-					lblMessagesNumber.setStyle("paddingLeft",-3);
-					lblMessagesNumber.setStyle("paddingRight",-3);
-					}
-					else lblMessagesNumber.text = messageCount.substr(2,1);
-					*/
-					
 					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
 					evt.data = "Your message has been deleted";
 					dispatchEvent( evt );
@@ -796,13 +756,11 @@
 			
 			private function compareUrgencies(itemA:Object, itemB:Object):int 
 			{
-				//var arrUrgencies:Array = ["Not urgent", "Somewhat urgent", "Urgent"];
 				var urgency1:String = itemA.messages[itemA.messages.length - 1].urgency;
 				var urgency2:String = itemB.messages[itemB.messages.length - 1].urgency;
-				return ObjectUtil.stringCompare(urgency1, urgency2) * -1;								//this is the "shortcut" way of doing this... (we're using it since "Urgent", "Somewhat urgent", and "Not urgent" happen to be inversely alphabetically arranged)
-				//if(arrUrgencies.indexOf(urgency1) == arrUrgencies.indexOf(urgency2)) return 0;		//this would be the proper way...
-				//else if(arrUrgencies.indexOf(urgency1) < arrUrgencies.indexOf(urgency2)) return 1;
-				//else return -1;
+				
+				//	this is the "shortcut" way of doing this... (we're using it since "Urgent", "Somewhat urgent", and "Not urgent" happen to be inversely alphabetically arranged)
+				return ObjectUtil.stringCompare(urgency1, urgency2) * -1;
 			}
 			
 			private function searchFilter():void 
@@ -856,8 +814,6 @@
 					lblSearchResults.visible = btnClearSearch.visible = true;
 				}
 				else lblSearchResults.visible = btnClearSearch.visible = false;
-				//if(messagesSearch.text != "") mainBox.label = "Search Results: " + messagesSearch.text;
-				//else mainBox.label = currentMainBox;
 				
 				/**
 				 * resetting all selections to avoid conflicts (i.e. if the user filters only "abc" messages while 
@@ -910,6 +866,8 @@
 			
 			private function show():void
 			{
+				if( !container.initialized ) return;
+				
 				if( model.pendingMessage )
 				{
 					openMessage(model.pendingMessage);
@@ -953,7 +911,7 @@
 				
 				// Set first and last tabs as non-closable
 				tabsMessages.setTabClosePolicy(0, false);
-				tabsMessages.setTabClosePolicy(1, false);	//tabsMessages.setTabClosePolicy(viewStackMessages.length - 1, false);	
+				tabsMessages.setTabClosePolicy(1, false);
 				
 				showMessages( MessagesModel.INBOX );
 				
@@ -962,7 +920,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup creationComplete="init()" width="100%" paddingTop="{currentState=='provider'?0:10}">
+	<s:VGroup id="container" creationComplete="init()" width="100%" paddingTop="{currentState=='provider'?0:10}">
 		
 		<components:ModuleHeader 
 			id="messagesHeader"
