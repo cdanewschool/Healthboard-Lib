@@ -208,6 +208,7 @@ s|TextArea {
 	skin: ClassReference(null);
 	color: "0xAEDEE4";
 	textRollOverColor: "0xAEDEE4";
+	textSelectedColor: "0xAEDEE4";
 	paddingLeft: 0;
 	paddingTop:0;
 	paddingRight:0;
@@ -228,7 +229,8 @@ s|TextArea {
 .linkBtnDarkBlue {
 	skin: ClassReference(null);
 	color: "0x064E71";
-	textRollOverColor: "0xAEDEE4";
+	textRollOverColor: "0x064E71";	/*"0xAEDEE4";*/
+	textSelectedColor: "0x064E71";
 	paddingLeft: 0;
 	paddingTop:0;
 	paddingRight:0;
@@ -239,6 +241,7 @@ s|TextArea {
 	skin: ClassReference(null);
 	color: "0xFFFFFF";
 	textRollOverColor: "0xFFFFFF";
+	textSelectedColor: "0xFFFFFF";
 	fontFamily: "myMyriad";
 	paddingLeft: 0;
 	paddingTop:0;
