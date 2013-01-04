@@ -807,11 +807,11 @@
 									<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
 									<mx:DataGridColumn dataField="calories" headerText="Calories" width="63" paddingLeft="5" />
 									<mx:DataGridColumn dataField="comments" headerText="Comments" width="216" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
-									<mx:DataGridColumn headerText="Facts" width="70" paddingLeft="5" fontFamily="myMyriad">
+									<mx:DataGridColumn headerText="Nutr. Facts" width="77" paddingLeft="5" fontFamily="myMyriad">
 										<mx:itemRenderer>
 											<fx:Component>
-												<mx:HBox width="184" paddingTop="-3" horizontalScrollPolicy="off" horizontalAlign="center">
-													<s:VGroup paddingTop="4" paddingLeft="-7" paddingRight="7" visible="{data.ingredients == 'Spinach quiche'}">
+												<mx:HBox width="77" horizontalScrollPolicy="off" horizontalAlign="center">
+													<s:VGroup visible="{data.ingredients == 'Spinach quiche'}" paddingTop="-1" paddingLeft="-3">
 														<s:Image source="@Embed('/images/info.png')" toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" />
 													</s:VGroup>
 												</mx:HBox>
@@ -821,7 +821,7 @@
 									<mx:DataGridColumn dataField="meal" headerText="Favorite" width="70">
 										<mx:itemRenderer>
 											<fx:Component>
-												<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center">
+												<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center" dataChange="update()">
 													<fx:Script>
 														<![CDATA[
 															import components.popups.nutrition.saveMealWindow;
@@ -939,7 +939,7 @@
 												</s:stroke>
 											</s:Line>
 											
-											<s:HGroup paddingTop="-6" paddingBottom="31">
+											<s:HGroup paddingTop="-6" paddingBottom="19">
 												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" color="0xFFFFFF" width="253" height="37" fontWeight="bold">
 													<s:layout>
 														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="13" />
