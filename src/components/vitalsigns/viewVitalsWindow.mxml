@@ -42,7 +42,7 @@
 			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
 			[Bindable] public var model:VitalSignsModel = controller.model as VitalSignsModel;
 			
-			[Bindable] private var item:Object;
+			[Bindable] public var item:Object;
 			
 			private var sort:Sort;
 			private var count:int;
@@ -290,7 +290,7 @@
 							<s:Label visible="{data.comment != ''}" text="{'– ' + data.author + ', ' + data.date}" fontStyle="italic" color="0x4D4D4D" />
 						</s:VGroup>
 						
-						<s:Spacer width="100%" />
+						<s:Spacer width="{outerDocument.item.comments.length > 1 ? -15 : 0}" />
 						
 						<s:HGroup paddingTop="-5" gap="5" visible="{data.comment != '' &amp;&amp; data.author == 'You'}" includeInLayout="{data.comment != '' &amp;&amp; data.author == 'You'}" horizontalAlign="right">
 							<general:MainLinkButton styleName="linkBtnDarkBlue" label="Edit" />
