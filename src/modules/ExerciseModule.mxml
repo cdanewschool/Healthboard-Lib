@@ -477,7 +477,7 @@
 											
 											<s:HGroup width="120" verticalAlign="middle" gap="2">
 												<s:Image source="{exerciseIcon}" visible="{exerciseIcon!=null}" includeInLayout="{exerciseIcon!=null}" />
-												<s:Label text="{data.measure}" color="{isOverview ? 0xFFFFFF : 0xAEDFE5}" fontSize="{isOverview ? 18 : 13}" fontWeight="bold" width="80" verticalAlign="middle" buttonMode="{isOverview ? false : true}" click="handleExerciseClick(data.measure)" />
+												<s:Label text="{data.measure}" color="{isOverview ? 0xFFFFFF : 0xAEDFE5}" fontSize="{isOverview ? 18 : 13}" fontWeight="bold" width="80" verticalAlign="middle" buttonMode="{isOverview ? false : true}" click="{if(!isOverview) handleExerciseClick(data.measure)}" />
 											</s:HGroup>
 											
 											<s:HGroup width="150" verticalAlign="middle">
@@ -978,7 +978,7 @@
 														
 														<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 															<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-															<mx:LinkButton visible="{data.type == ExerciseType.OVERVIEW}" includeInLayout="{data.type == ExerciseType.OVERVIEW}" icon.expanded="{outerDocument.model.iconOverview}" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnWhite" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
+															<mx:LinkButton visible="{data.type == ExerciseType.OVERVIEW}" includeInLayout="{data.type == ExerciseType.OVERVIEW}" icon.expanded="{outerDocument.model.iconOverview}" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnWhite" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" buttonMode="false" />
 															<mx:LinkButton visible="{data.type == ExerciseType.RUN}" includeInLayout="{data.type == ExerciseType.RUN}" icon.expanded="{outerDocument.model.iconRun}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 															<mx:LinkButton visible="{data.type == ExerciseType.CURL_UPS}" includeInLayout="{data.type == ExerciseType.CURL_UPS}" icon.expanded="{outerDocument.model.iconCurlUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 															<mx:LinkButton visible="{data.type == ExerciseType.PUSH_UPS}" includeInLayout="{data.type == ExerciseType.PUSH_UPS}" icon.expanded="{outerDocument.model.iconPushUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
