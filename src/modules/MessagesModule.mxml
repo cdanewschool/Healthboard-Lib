@@ -962,7 +962,7 @@
 		]]>
 	</fx:Script>
 	
-	<s:VGroup creationComplete="init()" width="100%">
+	<s:VGroup creationComplete="init()" width="100%" paddingTop="{currentState=='provider'?0:10}">
 		
 		<components:ModuleHeader 
 			id="messagesHeader"
