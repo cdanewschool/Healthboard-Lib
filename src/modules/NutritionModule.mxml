@@ -142,22 +142,29 @@
 			
 			[Bindable] public var mealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
 			
-			private var _patient:UserModel;
-			
 			private var _foodPlan:FoodPlan;
 			
-			public function get foodPlan():FoodPlan{ return _foodPlan; }
-			[Bindable] public function set foodPlan(value:FoodPlan):void{ _foodPlan = value; }
+			public function get foodPlan():FoodPlan
+			{ 
+				return _foodPlan; 
+			}
+			
+			[Bindable] 
+			public function set foodPlan(value:FoodPlan):void
+			{ 
+				if( _foodPlan) _foodPlan.removeEventListener( Event.CHANGE, onFoodPlanChange );
+				
+				_foodPlan = value; 
+				
+				if( _foodPlan ) _foodPlan.addEventListener( Event.CHANGE, onFoodPlanChange );
+			}
 			
 			override protected function commitProperties():void
 			{
 				super.commitProperties();
 				
-				if( patient
-					&& patient.hasOwnProperty('foodPlan') )
+				if( foodPlan )
 				{
-					foodPlan = patient['foodPlan'] as FoodPlan;
-					
 					if( planStartDate ) planStartDate.text = DateFormatters.monthShortDayNumberYearFull.format( foodPlan.startingDate );
 					
 					if( fruitsLabel) fruitsLabel.serving = foodPlan.getFoodGroupById( FoodServing.FRUITS );
@@ -191,19 +198,6 @@
 					event.data = "Your water intake has been recorded";
 					dispatchEvent( event );
 				}
-			}
-
-			public function get patient():UserModel
-			{
-				return _patient;
-			}
-			
-			public function set patient(value:UserModel):void
-			{
-				_patient = value;
-				
-				if( _patient && _patient.hasOwnProperty('foodPlan') && _patient['foodPlan'] is EventDispatcher )
-					EventDispatcher(_patient['foodPlan']).addEventListener( Event.CHANGE, onFoodPlanChange );
 			}
 			
 			private function onNutritionRollOver(event:ListEvent):void
