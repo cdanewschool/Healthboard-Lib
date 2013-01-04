@@ -54,8 +54,6 @@ package models.modules
 		
 		public var foodJournal:ArrayCollection;
 		
-		public var notes:ArrayCollection;
-		
 		public var dateRange:String;
 		
 		public var hasMealBeenSubmitted:Boolean = false;

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TileGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	orientation="rows" verticalAlign="bottom" 
+	requestedRowCount="1" horizontalGap="3" verticalGap="-10" >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import enum.DietClassQuantifier;
+			
+			import models.modules.nutrition.FoodServing;
+			
+			[Bindable] public var serving:FoodServing;
+		]]>
+	</fx:Script>
+	
+	<s:HGroup verticalAlign="bottom" >
+		<s:Label id="quantifier" fontSize="13" color="0xFBB03B" text="{serving.quantifier}" visible="{serving.quantifier != DietClassQuantifier.EXACTLY}" includeInLayout="{serving.quantifier != DietClassQuantifier.EXACTLY}" />
+		<s:Label id="servingSize" styleName="orangeStandout" fontSize="32" paddingBottom="-6" text="{serving.servingSize}" />
+	</s:HGroup>
+	
+	<s:Label id="servingSizeUnits" styleName="white13" fontSize="13" text="{serving.unit}" />
+	
+</s:TileGroup>

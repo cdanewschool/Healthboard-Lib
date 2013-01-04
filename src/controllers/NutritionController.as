@@ -137,14 +137,6 @@ package controllers
 						{meal:'Dinner', portion:'1 plate', ingredients:'Fish with mashed potatoes', calories:500, date: DateUtil.get10DigitDate((today.getMonth()+1)+'/'+today.getDate()+'/'+today.getFullYear()), comments:'Delicious!'}
 					]
 				);
-			
-			model.notes = new ArrayCollection
-				(
-					[
-						{note: "Try to avoid any salty food to decrease sodium.", completed:false, removed:false, recommendation:"Nutrition Workshop", date:"17:22, October 7, 2011"},
-						{note: "Start the day with a whole grain cereal – wheat flakes, toasted O’s, or oatmeal are some examples.", completed:false, removed:false, recommendation:"Set a Reminder", date:"17:23, October 7, 2011"}
-					]
-				);
 		}
 	}
 }
