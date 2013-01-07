@@ -28,12 +28,9 @@ package controllers
 	import models.Preferences;
 	import models.UserModel;
 	import models.modules.AppointmentsModel;
-	import models.modules.ExerciseModel;
 	import models.modules.ImmunizationsModel;
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
-	import models.modules.NutritionModel;
-	import models.modules.VitalSignsModel;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
@@ -62,13 +59,12 @@ package controllers
 		[Bindable] public var medicationsController:MedicationsController;
 		[Bindable] public var messagesController:MessagesController;
 		[Bindable] public var nutritionController:NutritionController;
+		[Bindable] public var patientsController:PatientsController;
 		[Bindable] public var vitalSignsController:VitalSignsController;
 		
  		private var _model:ApplicationModel;
 		
 		public var application:Application;
-		
-		protected var initialized:Boolean;
 		
 		protected var lastActivity:int;
 		
@@ -76,8 +72,7 @@ package controllers
 		
 		public var persistentData:SharedObject;
 		
-		//	TODO: move to model
-		[Bindable] public var user:UserModel;	//	logged-in user, i.e. Dr. Berg
+		protected var controllersInitialized:Boolean;
 		
 		public function Controller()
 		{
@@ -88,6 +83,7 @@ package controllers
 			medicationsController = new MedicationsController();
 			messagesController = new MessagesController();
 			nutritionController = new NutritionController();
+			patientsController = new PatientsController();
 			vitalSignsController = new VitalSignsController();
 			
 			application = FlexGlobals.topLevelApplication as Application;
@@ -102,10 +98,31 @@ package controllers
 			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
 			application.addEventListener( MouseEvent.CLICK, onActivity );
 			
+			patientsController.model.addEventListener( ApplicationDataEvent.LOADED, onPatientsLoaded );
+			
 			sessionTimer = new Timer( 5000 );
 			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
 			
 			persistentData = SharedObject.getLocal( id );
+		}
+		
+		protected function init():void
+		{
+			patientsController.model.dataService.send();
+		}
+		
+		protected function get initialized():Boolean
+		{
+			return patientsController.model.dataLoaded;
+		}
+		
+		protected function onInitialized():void
+		{
+		}
+		
+		protected function onPatientsLoaded(event:ApplicationDataEvent):void 
+		{
+			onInitialized();
 		}
 		
 		[Bindable]
@@ -164,7 +181,7 @@ package controllers
 		
 		protected function onAuthenticated(event:AuthenticationEvent):void
 		{
-			if( !initialized )
+			if( !controllersInitialized )
 			{
 				appointmentsController.init();
 				exerciseController.init();
@@ -173,9 +190,10 @@ package controllers
 				medicationsController.init();
 				messagesController.init();
 				nutritionController.init();
+				patientsController.init();
 				vitalSignsController.init();
 				
-				initialized = true;
+				controllersInitialized = true;
 			}
 			
 			lastActivity = getTimer();
@@ -194,16 +212,6 @@ package controllers
 		private function onApplicationComplete(event:FlexEvent):void
 		{
 			init();
-		}
-		
-		protected function init():void
-		{
-			if( Constants.DEBUG ) 
-			{
-				model.fullname = "Isaac Goodman";
-				
-				application.dispatchEvent( new AuthenticationEvent( AuthenticationEvent.SUCCESS, true ) );
-			}
 		}
 		
 		protected function onLoadDataRequest(event:ApplicationDataEvent):void
@@ -359,6 +367,11 @@ package controllers
 		
 		public function selectSetting( event:IndexChangeEvent ):void
 		{
+		}
+		
+		public function validate( username:String, password:String ):UserModel
+		{
+			return null;
 		}
 		
 		public function processModuleMappable( item:ModuleMappable ):void

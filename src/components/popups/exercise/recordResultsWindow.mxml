@@ -129,7 +129,7 @@
 				if(txtComments.text != "") 
 				{
 					var newComment:Object = new Object();
-					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.fullname,datePatient:dateChooser.text,comments:txtComments.text, measure:'comments'});
+					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.user.fullName,datePatient:dateChooser.text,comments:txtComments.text, measure:'comments'});
 					
 					model.exerciseDataByMeasurePhysicianAssigned.getItemAt( model.exercisePAIndices.indexOf('comments') ).chart.getItemAt(0).data.push( newComment );
 					

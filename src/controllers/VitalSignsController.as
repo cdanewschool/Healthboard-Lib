@@ -17,7 +17,7 @@ package controllers
 		
 		override public function init():void
 		{
-			var fullname:String = AppProperties.getInstance().controller.model.fullname;
+			var fullname:String = "Isaac Goodman";
 			
 			//	TODO: merge vitalSigns and vitalSigns by date into one array
 			

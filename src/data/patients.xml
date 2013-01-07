@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<patients>
+
+	<patient id="131" lastName="Anderson" firstName="Fred" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected" />
+		</advisories>
+		
+		<location state="Washington DC" latitude="38.895112" longitude="-77.036366" />
+		
+		<relations>
+			<relation lastName="Anderson" firstName="Lisa" type="spouse" />
+		</relations>
+		
+		<contact email="fred.anderson@gmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Specialist" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Healthy" lastVisit="12/10/2011" team="1" urgency="0" />
+		
+	</patient>
+	
+	<patient id="132" lastName="Arnolds" firstName="Richard" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location state="Washington DC" latitude="38.89636" longitude="-77.04227" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Healthy" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="133" lastName="Barrett" firstName="John" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location city="Arlington" state="Virginia" latitude="38.87997" longitude="-77.10677" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Healthy" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="134" lastName="Brick" firstName="Christina" birthdate="10/03/1973" sex="0" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location state="Washington DC" latitude="38.904192" longitude="-77.059093" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Laryngitis" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="135" lastName="Brooke" firstName="Michael" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location city="Reisterstown" state="Maryland" latitude="39.469549" longitude="-76.829421" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="136" lastName="Burg" firstName="Andre" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location city="Arlington" state="Virginia" latitude="38.879007" longitude="-77.086945" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="130" lastName="Chang" firstName="Anne W." birthdate="01/01/1965" sex="0" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="anne.chang@aol.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia"  latitude="38.894974" longitude="-77.088747" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="127" lastName="Cloud" firstName="John S." birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="john.cloud@gmail.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.897045" longitude="-77.115269" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Laryngitis" lastVisit="12/10/2011" team="1" urgency="1" />
+	</patient>
+	
+	<patient id="137" lastName="Colleen" firstName="Wallace" birthdate="10/03/1973" sex="0" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected" />
+		</advisories>
+		<location city="Arlington" state="Virginia" latitude="38.876468" longitude="-77.182131" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private First Class" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="Knee pain" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="138" lastName="Cook" firstName="Adrian" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="04/27/2012">
+			<advisory advisoryId="1" riskLevel="affected" />
+		</advisories>
+		<location city="Reisterstown" state="Maryland" latitude="39.466878" longitude="-76.833379" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="139" lastName="Einstein" firstName="Ashley" birthdate="10/03/1973" sex="0" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="high"  />
+		</advisories>
+		<location city="Baltimore" state="Maryland" latitude="39.287977" longitude="-76.598954" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="140" lastName="Faust" firstName="Nicholas" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="routine"  />
+		</advisories>
+		<location city="Arlington" state="Virginia" latitude="38.858625" longitude="-77.200842" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Specialist" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="2" urgency="0" />
+	</patient>
+	
+	<patient id="141" lastName="Frankenstein" firstName="John" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="routine"  />
+		</advisories>
+		<location city="Towson" state="Maryland" latitude="39.397121" longitude="-76.601400" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="2" urgency="0" />
+	</patient>
+	
+	<patient id="142" lastName="Giovanni" firstName="Richard" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="1" riskLevel="affected"  />
+		</advisories>
+		<location city="Towson" state="Maryland" latitude="39.391499" longitude="-76.59241" />
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Specialist" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="2" urgency="0" />
+	</patient>
+	
+	<patient id="126" lastName="Glover" firstName="Walter" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="gloverw@hotmail.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.825801" longitude="-77.204704" />
+		<occupation professionalTitle="IT" serviceBranch="Army" serviceRank="Specialist" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
+	</patient>
+	
+	<patient id="123" lastName="Goodman" firstName="Isaac" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		
+		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.82774" longitude="-77.158098" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="2" />
+		
+		<riskFactors>
+		
+			<type name="Cardiovascular" quantifiable="true">
+				
+				<update value="30" date="03/30/2011" riskLevel="high" />
+				<update value="15" date="02/01/2011" riskLevel="low" />
+				<update value="0" date="01/01/2011" riskLevel="none" />
+				
+				<type name="Blood Pressure" meanValue="190" dual="true">
+					<update value="155" value2="120" date="03/30/2011" riskLevel="high" />
+					<update value="120" value2="80" date="01/01/2011" riskLevel="high"/>
+				</type>
+				
+				<type name="Blood Sugar" meanValue="105">
+					<update value="125" date="03/30/2011" type="patient" riskLevel="high"/>
+					<update value="105" date="01/01/2011" riskLevel="high"/>
+				</type>
+				
+				<type name="Cholesterol" meanValue="190">
+					<update value="250" date="03/30/2011" riskLevel="high">
+						<detail name="Total cholesterol" value="217" />
+						<detail name="LDL" value="161" />
+						<detail name="HDL" value="60" />
+						<detail name="Triglycerides" value="153" />
+					</update>
+					<update value="240" date="03/01/2011" riskLevel="high"/>
+					<update value="190" date="01/01/2011" riskLevel="high"/>
+				</type>
+				
+				<type name="Smoking" meanValue="0">
+					<update value="6" date="03/30/2011" type="patient" riskLevel="high"/>
+					<update value="0" date="01/01/2011" riskLevel="high"/>
+				</type>
+				
+				<type name="Weight" meanValue="170">
+					<update value="190" date="03/30/2011" riskLevel="high"/>
+					<update value="170" date="01/01/2011" riskLevel="high"/>
+				</type>
+				
+				<experts>
+					<expert name="Dr. John Cane" expertise="Cardiologist" location="NMMC" />
+					<expert name="Dr. Ben Christie" expertise="Cardiologist" location="NMMC" />
+					<expert name="Dr. Jonathan Cross" expertise="Cardiologist" location="NMMC" />
+					<expert name="Dr. Jessica Edwards" expertise="Cardiac Surgeon" location="NMMC" />
+					<expert name="Dr. Dwight Greenhill" expertise="Cardiac Surgeon" location="NMMC" />
+					<expert name="Dr. Susanna Kemp" expertise="Internal Medicine" location="NMMC" />
+				</experts>
+				
+				<treatments>
+					<treatment method="Physical checkup" type="Appointments" area="teamappointments" description="Schedule patient for checkup" />
+					<treatment method="Lipitor" type="Medications" area="medications" description="Prevent Cardiovascular disease" />
+					<treatment method="Food moderation" type="Nutrition" area="nutrition" description="Diet management" />
+					<treatment method="Stop smoking" type="Habits" />
+				</treatments>
+				
+			</type>
+			
+			<type name="Deployment">
+			
+				<location country="Thailand" />
+				
+				<update date="02/01/2011" riskLevel="low" />
+				
+				<type name="Dengue">
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
+				</type>
+				
+				<type name="Filariasis">
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
+				</type>
+				
+				<type name="Malaria">
+				
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia">
+						<incidence latitude="18.796464" longitude="98.660059" value="24867"/><!-- chiang mai, thailand -->
+						<incidence latitude="18.684809" longitude="100.800005" value="996"/><!-- nan, thailand -->
+						<incidence latitude="15.251389" longitude="104.870278" value="11256"/><!-- ubon ratchathani, thailand -->
+						<incidence latitude="12.976667" longitude="100.913333" value="3568"/><!-- bang lumong, thailand -->
+						<incidence latitude="13.752222" longitude="100.493889" value="17565"/><!-- bangkok, thailand -->
+						<incidence latitude="12.492948" longitude="99.678689" value="78"/><!-- hua hin, thailand -->
+						<incidence latitude="7.984311" longitude="98.330747" value="18996"/><!-- phuket, thailand -->
+						<incidence latitude="16.429647" longitude="102.837332" value="2568"/><!-- yaia, thailand -->
+					</update>
+					
+					<experts>
+						<expert name="Dr. Pedro Alonso" expertise="Internal Medicine" location="CRESI" />
+						<expert name="Dr. Awa-Marie Coll-Seck " expertise="Infectious Disease" location="MMV" />
+						<expert name="Dr. Carlos Morel" expertise="Tropical Disease" location="GMP,WHO" />
+						<expert name="Dr. Robert Newman" expertise="Public Health" location="MMV" />
+						<expert name="Dr. Dennis Schmatz" expertise="Infectious Disease" location="MMV" />
+					</experts>
+					
+					<treatments>
+						<treatment method="Antimalarials" type="Medications" area="medications" description="Malaria prevention" />
+						<treatment method="CDC Prevention" type="Document" description="Prevention methods" />
+						<treatment method="CDC Treatment" type="Document" description="Guidelines for treatment" />
+					</treatments>
+					
+				</type>
+				
+				<type name="Schistosomiasis">
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
+				</type>
+				
+			</type>
+			
+		</riskFactors>
+		
+		<recentActivity>
+			<activity summary="Chronic pain" date="*/*/* 15:45" area="messages" />
+			<activity summary="Updated glucose levels" date="*/-1/*" area="vitalsigns" />
+			<activity summary="Recorded a meal" date="*/-1/*" area="nutrition" />
+			<activity summary="Requested renewal" date="-1/-3/*" area="medications" />
+			<activity summary="Updated personal" date="-1/-4/*" area="exercise" />
+			<activity summary="Requested renewal" date="-1/-8/*" area="medications" />
+		</recentActivity>
+		
+	</patient>
+	
+	<patient id="129" lastName="Lee" firstName="Berg" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="blee@hotmail.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.812694" longitude="-77.097158" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private First Class" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="2" urgency="2" />
+	</patient>
+	
+	<patient id="125" lastName="Roberts" firstName="Lance" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="lrobinson@aol.com" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.823594" longitude="-77.056818" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="1" />
+	</patient>
+	
+	<patient id="124" lastName="Robinson" firstName="Michael" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="robinson.michael@gmail.com" phone="(212) 111-2222" />
+		<location city="Groveton" state="Virginia" latitude="38.771886" longitude="-77.093983" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="2" />
+	</patient>
+	
+	<patient id="128" lastName="Wunderlich" firstName="Michael" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<contact email="wunderlich@comcast.net" phone="(212) 111-2222" />
+		<location city="Arlington" state="Virginia" latitude="38.813229" longitude="-77.071838" />
+		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private First Class" serviceStatus="Commissioned" />
+		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="2" urgency="0" />
+	</patient>
+	
+</patients>

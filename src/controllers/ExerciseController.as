@@ -30,7 +30,7 @@ package controllers
 			
 			var model:ExerciseModel = model as ExerciseModel;
 			
-			var fullname:String = AppProperties.getInstance().controller.model.fullname;
+			var fullname:String = "Isaac Goodman";
 			
 			model.exerciseCurrentIndex = 4;
 			

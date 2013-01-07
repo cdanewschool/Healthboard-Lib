@@ -16,8 +16,6 @@ package models
 	{
 		public var context:String;
 		
-		public var fullname:String;
-		
 		public var patientAlerts:ArrayCollection;
 		
 		public var chartStyles:ChartStyles;
@@ -33,6 +31,8 @@ package models
 		public var preferences:Preferences;
 		
 		public var supportedLanguages:ArrayCollection;
+		
+		public var user:UserModel;	//	logged-in user
 		
 		public function ApplicationModel( context:String )
 		{

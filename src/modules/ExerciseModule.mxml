@@ -1866,7 +1866,7 @@
 						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
 					</s:layout>
 					
-					<s:Button label="+ Record Results" styleName="buttonText" height="24" />
+					<s:Button label="+ Record Results" styleName="buttonText" height="24" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
 					<s:Button label="+ Add" styleName="buttonText" height="24" click="addPerExercise()" />
 					
 					<s:Spacer width="100%" />
@@ -2046,7 +2046,7 @@
 															
 															private function dataTipsUntrackableExercise(hd:HitData):String 
 															{
-																return "Comments:\n\n" + hd.item.value + "\n<I><FONT COLOR='#4D4D4D'>- " + AppProperties.getInstance().controller.model.fullname + ", " + hd.item.date + "</FONT></I>";
+																return "Comments:\n\n" + hd.item.value + "\n<I><FONT COLOR='#4D4D4D'>- " + AppProperties.getInstance().controller.model.user.fullName + ", " + hd.item.date + "</FONT></I>";
 															}
 															
 														]]>

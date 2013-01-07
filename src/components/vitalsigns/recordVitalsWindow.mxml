@@ -211,7 +211,7 @@
 				
 				if(txtComments.text != "") {
 					var newComment:Object = new Object();
-					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.fullname,datePatient:txtDate.text,comments:txtComments.text, vital:'comments'});
+					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.user.fullName,datePatient:txtDate.text,comments:txtComments.text, vital:'comments'});
 					
 					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Comments')).chart.getItemAt(0).data.addItem(newComment);
 					

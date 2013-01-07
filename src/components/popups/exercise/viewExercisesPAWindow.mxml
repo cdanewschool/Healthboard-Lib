@@ -136,7 +136,7 @@
 	<s:HGroup width="100%" paddingLeft="8">
 		<s:VGroup>
 			<s:Label width="287" text="{currentComments}" />
-			<s:Label visible="{currentComments != ''}" text="{'– ' + appController.model.fullname + ', ' + date}" fontStyle="italic" color="0x4D4D4D" />
+			<s:Label visible="{currentComments != ''}" text="{'– ' + appController.model.user.fullName + ', ' + date}" fontStyle="italic" color="0x4D4D4D" />
 		</s:VGroup>
 
 		<s:HGroup paddingTop="-5" gap="-8" visible="{currentComments != '' &amp;&amp; type == 'patient'}" includeInLayout="{currentComments != '' &amp;&amp; type == 'patient'}">

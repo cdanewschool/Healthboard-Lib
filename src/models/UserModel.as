@@ -95,5 +95,24 @@ package models
 			
 			return "assets/images/providers/" + size + "/" + lastName.toLowerCase() + ".jpg";
 		}
+		
+		public static function fromObj( data:Object ):UserModel
+		{
+			var val:UserModel = new UserModel();
+			
+			for (var prop:String in data)
+			{
+				if( val.hasOwnProperty( prop ) )
+				{
+					try
+					{
+						val[prop] = data[prop];
+					}
+					catch(e:Error){}
+				}
+			}
+			
+			return val;
+		}
 	}
 }
