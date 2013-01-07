@@ -150,7 +150,7 @@
 		<medical bloodType="A+" conditions="High cholesterol" lastVisit="12/10/2011" team="1" urgency="0" />
 	</patient>
 	
-	<patient id="123" lastName="Goodman" firstName="Isaac" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+	<patient id="123" lastName="Goodman" firstName="Isaac" username="isaac" password="isaacisaac" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
 		
 		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
 		<location city="Arlington" state="Virginia" latitude="38.82774" longitude="-77.158098" />

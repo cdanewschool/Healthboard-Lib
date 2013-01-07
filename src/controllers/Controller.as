@@ -327,6 +327,8 @@ package controllers
 				}
 			}
 			
+			model.user = null;
+			
 			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
 			evt.data = Constants.STATE_DEFAULT;
 			application.dispatchEvent( evt );
@@ -369,7 +371,12 @@ package controllers
 		{
 		}
 		
-		public function validate( username:String, password:String ):UserModel
+		public function validateUser( username:String, password:String ):UserModel
+		{
+			return null;
+		}
+		
+		public function getDefaultUser():UserModel
 		{
 			return null;
 		}

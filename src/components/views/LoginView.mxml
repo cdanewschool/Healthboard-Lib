@@ -32,10 +32,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import ASclasses.Constants;
+			
 			import events.ApplicationEvent;
 			import events.AuthenticationEvent;
 			
 			import models.ApplicationModel;
+			import models.PatientsModel;
+			import models.UserModel;
 			
 			import mx.controls.Alert;
 			import mx.events.ValidationResultEvent;
@@ -43,9 +47,6 @@
 			import util.StringUtil;
 			
 			private var vResult:ValidationResultEvent;
-			
-			[Bindable] private var registeredUserID:String = "thisValueWillBeReplaced";
-			[Bindable] private var registeredPassword:String = "thisValueWillBeReplaced";
 			
 			private var model:ApplicationModel;
 			
@@ -93,24 +94,17 @@
 			{
 				var model:ApplicationModel = AppProperties.getInstance().controller.model;
 				
-				if( userID.text == adminUsername
-					|| (userID.text == 'piim' && password.text == 'password') 
-					|| (userID.text == 'james' && password.text == 'archer') 
-					|| (userID.text == 'melissa' && password.text == 'archer') 
-					|| (userID.text == 'tiffany' && password.text == 'janeway') 
-					|| (userID.text == 'robert' && password.text == 'janeway') 
-					|| (userID.text == 'albert' && password.text == 'sisko') 
-					|| (userID.text == 'doris' && password.text == 'sisko') 
-					|| (userID.text == registeredUserID && password.text == registeredPassword) ) 
+				var enteredUsername:String = userID.text;
+				var enteredPassword:String = password.text;
+				
+				var isDebug:Boolean = enteredUsername == adminUsername || (enteredUsername == Constants.ADMIN_USERNAME && enteredPassword == Constants.ADMIN_PASSWORD);
+				
+				var user:UserModel;
+				
+				if( (isDebug && (user = AppProperties.getInstance().controller.getDefaultUser() ) != null )
+					|| (user = AppProperties.getInstance().controller.validateUser( enteredUsername, enteredPassword ) ) != null ) 
 				{
-					if(userID.text == 'pipi' || (userID.text == 'piim' && password.text == 'password')) model.fullname = "Isaac Goodman";
-					else if(userID.text == 'james' && password.text == 'archer') model.fullname = "James Archer";
-					else if(userID.text == 'melissa' && password.text == 'archer') model.fullname = "Melissa Archer";
-					else if(userID.text == 'tiffany' && password.text == 'janeway') model.fullname = "Tiffany Janeway";
-					else if(userID.text == 'robert' && password.text == 'janeway') model.fullname = "Robert Janeway";
-					else if(userID.text == 'albert' && password.text == 'sisko') model.fullname = "Albert Sisko";
-					else if(userID.text == 'doris' && password.text == 'sisko') model.fullname = "Doris Sisko";
-					//else, fullname will contain the name the user indicated at registration.
+					AppProperties.getInstance().controller.model.user = user;
 					
 					var evt:AuthenticationEvent = new AuthenticationEvent( AuthenticationEvent.SUCCESS, true );
 					dispatchEvent( evt );
@@ -171,10 +165,15 @@
 				}
 				else 
 				{
-					registeredUserID = userID2.text;
-					registeredPassword = password2.text;
+					var user:UserModel = new UserModel();
+					user.username = userID2.text;
+					user.password = password2.text;
+					user.firstName = firstName.text;
+					user.lastName = lastName.text;
+					user.email = emailAddress.text;
+					user.birthdate = new Date( dateOfBirth.text );
 					
-					model.fullname = StringUtil.titleCase(firstName.text.toLowerCase() + " " + lastName.text.toLowerCase());
+					PatientsModel(AppProperties.getInstance().controller.patientsController.model).patients.addItem( user );
 					
 					firstName.text = lastName.text = userID2.text = emailAddress.text = password2.text = passwordConf.text = "";
 					dateOfBirth.text = "MM/DD/YYYY";
