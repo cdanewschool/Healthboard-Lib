@@ -25,6 +25,7 @@ package controllers
 	import models.ApplicationModel;
 	import models.ModuleMappable;
 	import models.NextStep;
+	import models.PatientsModel;
 	import models.Preferences;
 	import models.UserModel;
 	import models.modules.AppointmentsModel;
@@ -123,6 +124,16 @@ package controllers
 		protected function onPatientsLoaded(event:ApplicationDataEvent):void 
 		{
 			onInitialized();
+		}
+		
+		public function getUserById( id:int, type:String = null ):UserModel
+		{
+			var user:UserModel;
+			var users:ArrayCollection = PatientsModel(patientsController.model).patients;
+			
+			for each(user in users) if( user.id == id ) return user;
+			
+			return null;
 		}
 		
 		[Bindable]

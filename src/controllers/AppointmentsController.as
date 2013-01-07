@@ -6,6 +6,7 @@ package controllers
 	
 	import enum.AppointmentStatus;
 	
+	import models.UserModel;
 	import models.modules.AppointmentsModel;
 	
 	import mx.collections.ArrayCollection;
@@ -45,6 +46,7 @@ package controllers
 			obj.type = "Appointment";
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.SCHEDULED;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -53,6 +55,7 @@ package controllers
 			obj.type = "Appointment";
 			obj.provider = "Dr. Greenfield";
 			obj.status = AppointmentStatus.SCHEDULED;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -61,6 +64,7 @@ package controllers
 			obj.type = "Appointment";
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.SCHEDULED;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -70,6 +74,7 @@ package controllers
 			obj.selected = false;
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.SCHEDULED;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -82,6 +87,7 @@ package controllers
 			obj.nextStepsText = "•Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time.\n\n•Continue to check blood sugar twice daily.";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 10;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -92,6 +98,7 @@ package controllers
 			obj.provider = "Dr. Hammond";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 9;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -102,6 +109,7 @@ package controllers
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 8;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -122,6 +130,7 @@ package controllers
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 5;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -132,6 +141,7 @@ package controllers
 			obj.provider = "Dr. Rothstein";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 4;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -142,6 +152,7 @@ package controllers
 			obj.provider = "Dr. Hammond";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 3;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -152,6 +163,7 @@ package controllers
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 2;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -162,6 +174,7 @@ package controllers
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 1;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			obj = new Object();
@@ -172,6 +185,7 @@ package controllers
 			obj.provider = "Dr. Berg";
 			obj.status = AppointmentStatus.COMPLETED;
 			obj.medRecIndex = 0;
+			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
 			appointments.addItem( obj );
 			
 			today = AppProperties.getInstance().controller.model.today;

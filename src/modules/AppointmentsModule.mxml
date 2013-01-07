@@ -466,7 +466,11 @@
 			private function sendMessage(type:String):void 
 			{
 				var message:Message = new Message();
-				message.recipientType = type == "appointment" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
+				
+				if( currentState == 'provider' )
+					message.recipients = [ selectedAppointment.patient ];
+				else
+					message.recipientType = type == "appointment" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
 				event.data = Constants.MODULE_MESSAGES;
@@ -844,7 +848,7 @@
 				</s:Line>
 				
 				<s:HGroup width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5">
-					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == 'Appointment' ? selectedAppointment.provider : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
+					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == 'Appointment' ? (currentState == 'provider' ? selectedAppointment.patient.fullName : selectedAppointment.provider) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
 				</s:HGroup>
 				
 				<s:HGroup id="hgViewMedRec" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED}" includeInLayout="{selectedAppointment.status == AppointmentStatus.COMPLETED}">
