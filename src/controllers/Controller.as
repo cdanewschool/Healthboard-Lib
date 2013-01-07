@@ -99,8 +99,6 @@ package controllers
 			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
 			application.addEventListener( MouseEvent.CLICK, onActivity );
 			
-			patientsController.model.addEventListener( ApplicationDataEvent.LOADED, onPatientsLoaded );
-			
 			sessionTimer = new Timer( 5000 );
 			sessionTimer.addEventListener(TimerEvent.TIMER, onCheckSession );
 			
