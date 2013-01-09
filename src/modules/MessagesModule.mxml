@@ -207,7 +207,7 @@
 				return returnArray;
 			}
 			
-			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null ):void 
+			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null, subject:String = null, body:String = null ):void 
 			{
 				//	selectedRecipient is only != 0 when called from the appointments module
 				newMessage = new NewMessage();
@@ -222,10 +222,7 @@
 				{
 					var emails:Array = [];
 					
-					for each(var recipient:UserModel in recipients)
-					{
-						emails.push( recipient.email );
-					}
+					for each(var recipient:UserModel in recipients) emails.push( recipient.email );
 					
 					newMessage.cbRecipients.selectedIndex = -1;
 					//newMessage.cbRecipients.label = emails.join(", ");
@@ -244,6 +241,9 @@
 						}
 					}
 				}
+				
+				if( subject ) newMessage.cbSubjects.textInput.text = subject;
+				if( body ) newMessage.messageText.text = body;
 			}
 			
 			private function onNewMessageClose( event:CloseEvent ):void
@@ -883,14 +883,15 @@
 					
 					model.pendingRecipientType = null;
 				}
-				else if( model.pendingRecipients
-							&& model.pendingRecipients.length )
+				else if( model.pendingBody || model.pendingSubject || model.pendingRecipients )
 				{
-					createNewMessage( model.pendingRecipients );
+					createNewMessage( model.pendingRecipients, null, model.pendingSubject, model.pendingBody );
 					
 					tabsMessages.selectedIndex = viewStackMessages.length - 2;
 					
 					model.pendingRecipients = null;
+					model.pendingSubject = null;
+					model.pendingBody = null;
 				}
 				else
 				{

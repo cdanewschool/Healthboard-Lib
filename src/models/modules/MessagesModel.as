@@ -23,6 +23,8 @@ package models.modules
 		public var pendingMessage:Object;
 		public var pendingRecipientType:String;
 		public var pendingRecipients:Array;
+		public var pendingSubject:String;
+		public var pendingBody:String;
 		
 		public var currentMainBox:String = INBOX;
 		
