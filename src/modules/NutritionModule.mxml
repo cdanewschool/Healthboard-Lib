@@ -889,8 +889,8 @@
 															{
 																 
 																var item:Object = outerDocument.nutritionJournal.selectedItem;
-																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
-																outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( outerDocument.model.foodJournal.getItemAt(index).meal ) ].addItem( outerDocument.model.foodJournal.getItemAt(index).ingredients );
+																var index:int = outerDocument.nutritionJournal.dataProvider.getItemIndex(item);
+																outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( outerDocument.nutritionJournal.dataProvider.getItemAt(index).meal ) ].addItem( outerDocument.nutritionJournal.dataProvider.getItemAt(index).ingredients );
 																
 																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
 																evt.data = "Your meal has been saved as a favorite";

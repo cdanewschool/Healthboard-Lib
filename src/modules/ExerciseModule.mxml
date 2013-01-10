@@ -844,7 +844,7 @@
 					
 					<s:VGroup gap="6" styleName="whiteText13" paddingLeft="12" paddingTop="15" width="157">
 						<mx:LinkButton id="btnExAll" label="All" styleName="messageFolderSelected" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" click="switchExerciseView(0);" />
-						<mx:LinkButton id="btnExPRT" label="Overall PRT Score" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
+						<!--<mx:LinkButton id="btnExPRT" label="Overall PRT Score" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />-->
 						<mx:LinkButton id="btnExRun" label="1.5 Mile Run" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" click="switchExerciseView(2);" />
 						<mx:LinkButton id="btnExCurlUps" label="Curl Ups" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
 						<mx:LinkButton id="btnExPushUps" label="Push Ups" textRollOverColor="0xAEDBE2" textSelectedColor="0xAEDBE2" skin="{null}" />
@@ -978,7 +978,7 @@
 														
 														<s:HGroup width="140" verticalAlign="middle" paddingLeft="7" gap="3">
 															<s:Image buttonMode="true" source.expanded="@Embed(source='/images/smallArrow2.png')" source.collapsed="@Embed(source='/images/smallArrowCollapsed2.png')" click="{this.currentState=='expanded' ? this.currentState = 'collapsed' : this.currentState = 'expanded'}" />
-															<mx:LinkButton visible="{data.type == ExerciseType.OVERVIEW}" includeInLayout="{data.type == ExerciseType.OVERVIEW}" icon.expanded="{outerDocument.model.iconOverview}" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnWhite" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" buttonMode="false" />
+															<mx:LinkButton visible="{data.type == ExerciseType.OVERVIEW}" includeInLayout="{data.type == ExerciseType.OVERVIEW}" horizontalGap="2" id="btnMeasure" label="{data.measure}" fontSize="18" fontWeight="bold" toggle="true" styleName="linkBtnWhite" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" buttonMode="false" /><!--icon.expanded="{outerDocument.model.iconOverview}" -->
 															<mx:LinkButton visible="{data.type == ExerciseType.RUN}" includeInLayout="{data.type == ExerciseType.RUN}" icon.expanded="{outerDocument.model.iconRun}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 															<mx:LinkButton visible="{data.type == ExerciseType.CURL_UPS}" includeInLayout="{data.type == ExerciseType.CURL_UPS}" icon.expanded="{outerDocument.model.iconCurlUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
 															<mx:LinkButton visible="{data.type == ExerciseType.PUSH_UPS}" includeInLayout="{data.type == ExerciseType.PUSH_UPS}" icon.expanded="{outerDocument.model.iconPushUps}" horizontalGap="2" label="{data.measure}" fontSize="13" fontWeight="bold" toggle="true" styleName="linkBtnBlue" skin="{null}" click="switchExerciseViewFromRenderer(data.type)" />
@@ -1307,6 +1307,7 @@
 					
 					<s:Button label="+ Record Results" styleName="buttonText" height="24" click="recordExResults()" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
 					<s:Button label="+ Set Activities" styleName="buttonText" height="24" click="setActivities()" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" />
+					<s:Button label="+ Add Comments" styleName="buttonText" height="24" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" />
 					
 					<s:Spacer width="100%" />
 					
@@ -1367,9 +1368,9 @@
 								
 								<s:Label text="Goal" paddingRight="10" />
 								
-								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
+								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>
+								</mx:Legend>-->
 								
 							</s:HGroup>
 							
@@ -1609,7 +1610,7 @@
 							<!--list view-->									
 						</s:NavigatorContent>
 						
-						<s:NavigatorContent>
+						<s:NavigatorContent backgroundColor="0x4A4A49">
 							
 							<s:layout>
 								<s:VerticalLayout />
@@ -1720,9 +1721,9 @@
 								
 								<s:Label text="Goal" paddingRight="10" />
 								
-								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
+								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>
+								</mx:Legend>-->
 								
 								<s:Label text="Data:" paddingLeft="1" paddingRight="-5" />
 								
@@ -1867,7 +1868,8 @@
 					</s:layout>
 					
 					<s:Button label="+ Record Results" styleName="buttonText" height="24" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
-					<s:Button label="+ Add" styleName="buttonText" height="24" click="addPerExercise()" />
+					<s:Button label="+ Add" styleName="buttonText" height="24" click="addPerExercise()" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}" />
+					<s:Button label="+ Add Comments" styleName="buttonText" height="24" visible="{currentState=='provider'}" includeInLayout="{currentState=='provider'}" /><!--click="setActivities()" -->
 					
 					<s:Spacer width="100%" />
 					
@@ -1914,7 +1916,7 @@
 								
 								<fx:Component>
 									
-									<mx:HBox>
+									<mx:HBox includeInLayout="{data.type != 'comments'}" visible="{data.type != 'comments'}">
 										
 										<fx:Script>
 											<![CDATA[
@@ -1950,9 +1952,9 @@
 								
 								<s:Label text="Goal" paddingRight="10" />
 								
-								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
+								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>
+								</mx:Legend>-->
 								
 							</s:HGroup>
 							
@@ -2127,7 +2129,9 @@
 																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
 																</mx:LineSeries>
 																
-																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="@Embed(source='/images/exercise/untrackable.png')" radius="8" fill="{outerDocument.chartStyles.colorExerciseUntrackable}" />
+																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="mx.charts.renderers.CircleItemRenderer" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" radius="8"><!--itemRenderer="@Embed(source='/images/exercise/untrackable.png')" fill="{outerDocument.chartStyles.colorExerciseUntrackable}"-->
+																	<mx:stroke><s:SolidColorStroke color="0xFFFFFF" weight="1" /></mx:stroke>
+																</mx:PlotSeries>  
 																
 															</mx:series>
 															

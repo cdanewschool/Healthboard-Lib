@@ -2,7 +2,7 @@
 <s:TitleWindow 
 	xmlns:fx="http://ns.adobe.com/mxml/2009" 
 	xmlns:s="library://ns.adobe.com/flex/spark" 
-	xmlns:mx="library://ns.adobe.com/flex/mx" width="508" height="468"
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="508" height.default="468" height.provider="397"
 	skinClass="skins.general.myHeaderlessTitleWindow" 
 	close="PopUpManager.removePopUp(this);" >
 	
@@ -303,7 +303,7 @@
 		<s:TextArea id="txtReason" width="344" height="91" />
 	</s:HGroup>
 	
-	<s:HGroup paddingTop="7" gap="12" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}">
+	<s:HGroup paddingTop="3" gap="12" paddingBottom="8" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}">
 		<s:Label text="Sig/ Directions:" textAlign="right" width="123" paddingTop="6" />
 		<s:TextArea id="txtDirections" width="344" height="91" />
 	</s:HGroup>
