@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx">
+	
+	<fx:Metadata>
+		[Event(name="change", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			
+			[Bindable] public var glasses:ArrayCollection;
+			
+			[Bindable] public var value:Number;
+			
+			private var _max:int;
+			
+			public function get max():int{ return value; }
+			
+			[Bindable] public var horizontalGap:int = 10;
+			
+			[Bindable]
+			public function set max(value:int):void
+			{
+				_max = value;
+				
+				var g:ArrayCollection = new ArrayCollection();
+				
+				for(var i:int=0;i<value;i++) 
+					g.addItem( i );
+				
+				glasses = g;
+			}
+			
+			public function updateValue( value:Number ):void
+			{
+				this.value = value;
+				
+				dispatchEvent( new Event( Event.CHANGE, true ) );
+			}
+		]]>
+	</fx:Script>
+	
+	<s:DataGroup width="100%" height="100%" dataProvider="{glasses}">
+		
+		<s:layout>
+			<s:HorizontalLayout gap="{horizontalGap}" />
+		</s:layout>
+		
+		<s:itemRenderer>
+			
+			<fx:Component>
+				
+				<mx:HBox>
+					
+					<fx:Script>
+						<![CDATA[
+							
+							[Bindable] private var index:int;	//	1-based
+							
+							override public function set data(value:Object):void
+							{
+								super.data = value;
+								
+								index = (data as int) + 1;
+							}
+						]]>
+					</fx:Script>
+					
+					<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="outerDocument.updateValue( index );" visible="{outerDocument.value &lt; index}" includeInLayout="{outerDocument.value &lt; index}" />
+					<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="outerDocument.updateValue( outerDocument.value >= index ? index-1 : index );" visible="{outerDocument.value >= (index)}" includeInLayout="{outerDocument.value >= (index)}" />
+					
+				</mx:HBox>
+				
+			</fx:Component>
+			
+		</s:itemRenderer>
+		
+	</s:DataGroup>
+	
+</s:HGroup>

@@ -359,6 +359,7 @@
 					imgFatsOilsChart.source = !model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1;
 					imgSugarChart.source = !model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1;
 					imgAlcoholChart.source = !model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0;
+					waterIntakeChart.value = !model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8
 				}
 				
 				//	alternative intake 1
@@ -369,6 +370,7 @@
 					imgFatsOilsChart.source = newChartFatsOils1;
 					imgSugarChart.source = newChartSugar1;
 					imgAlcoholChart.source = newChartAlcohol1;
+					waterIntakeChart.value = 8;
 				}
 				
 				//	alternative intake 2
@@ -379,6 +381,7 @@
 					imgFatsOilsChart.source = newChartFatsOils2;
 					imgSugarChart.source = newChartSugar2;
 					imgAlcoholChart.source = newChartAlcohol2;
+					waterIntakeChart.value = 6;
 				}
 			}
 			
@@ -631,7 +634,7 @@
 	
 	<s:Group>
 		
-		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height="606">
+		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height="656">
 			
 			<s:NavigatorContent label="{currentState=='default'?'My ':''}Food Journal" creationPolicy="all">
 				
@@ -770,26 +773,9 @@
 								<s:VerticalLayout paddingTop="21" paddingLeft="13" />
 							</s:layout>
 							
-							<s:HGroup paddingTop="4" gap="10" mouseChildren="{currentState=='default'}">
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 1;}" visible="{glassesTaken &lt; 1}" includeInLayout="{glassesTaken &lt; 1}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = glassesTaken == 1 ? 0 : 1;}" visible="{glassesTaken >= 1}" includeInLayout="{glassesTaken >= 1}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken &lt; 2}" includeInLayout="{glassesTaken &lt; 2}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 2;}" visible="{glassesTaken >= 2}" includeInLayout="{glassesTaken >= 2}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken &lt; 3}" includeInLayout="{glassesTaken &lt; 3}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 3;}" visible="{glassesTaken >= 3}" includeInLayout="{glassesTaken >= 3}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken &lt; 4}" includeInLayout="{glassesTaken &lt; 4}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 4;}" visible="{glassesTaken >= 4}" includeInLayout="{glassesTaken >= 4}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken &lt; 5}" includeInLayout="{glassesTaken &lt; 5}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 5;}" visible="{glassesTaken >= 5}" includeInLayout="{glassesTaken >= 5}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken &lt; 6}" includeInLayout="{glassesTaken &lt; 6}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 6;}" visible="{glassesTaken >= 6}" includeInLayout="{glassesTaken >= 6}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken &lt; 7}" includeInLayout="{glassesTaken &lt; 7}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 7;}" visible="{glassesTaken >= 7}" includeInLayout="{glassesTaken >= 7}" />
-								<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken &lt; 8}" includeInLayout="{glassesTaken &lt; 8}" />
-								<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="{glassesTaken = 8;}" visible="{glassesTaken >= 8}" includeInLayout="{glassesTaken >= 8}" />
-							</s:HGroup>
+							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="{glassesTaken = WaterIntakeMeter(event.target).value}" mouseChildren="{currentState=='default'}" />
 							
-							<s:Label text="{glassesTaken != 8 ? glassesTaken + ' cups' : '8+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
+							<s:Label text="{glassesTaken != waterIntake.max ? glassesTaken + ' cups' : waterIntake.max + '+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
 							
 						</s:BorderContainer>
 						
@@ -1155,7 +1141,7 @@
 								
 							</s:VGroup>
 							
-							<s:Line yFrom="0" yTo="361">
+							<s:Line yFrom="0" yTo="391">
 								<s:stroke>
 									<s:SolidColorStroke color="#666666"/>
 								</s:stroke>
@@ -1211,6 +1197,18 @@
 									<s:VGroup gap="1" paddingTop="-10">
 										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
 										<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
+									</s:VGroup>
+									
+								</s:HGroup>
+								
+								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+									
+									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Water" />
+									<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
+									
+									<s:VGroup gap="1" paddingTop="-10" visible="{model.dateRange != DateRanges.DAY}" includeInLayout="{model.dateRange != DateRanges.DAY}">
+										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="8 cups or more" />
+										<nutrition:WaterIntakeMeter id="waterIntakeChart" horizontalGap="6" paddingTop="4" max="8" value="{!model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8}" mouseChildren="false" />
 									</s:VGroup>
 									
 								</s:HGroup>
