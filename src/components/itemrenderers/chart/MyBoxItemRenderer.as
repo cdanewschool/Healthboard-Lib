@@ -95,7 +95,6 @@ package components.itemrenderers.chart
 					break;
 			}
 			
-			var stroke:IStroke;
 			/*if( _data.item.index != ExerciseModel( AppProperties.getInstance().controller.exerciseController.model ).exerciseData.length - 1 ) {
 				stroke = getStyle("stroke");
 			}
@@ -103,6 +102,7 @@ package components.itemrenderers.chart
 				stroke = new SolidColorStroke(0xFFFFFF,1);
 				fill = AppProperties.getInstance().controller.model.chartStyles.colorVitalSignsProvider;
 			}*/
+			
 			var stroke:IStroke = getStyle("stroke");
 			
 			var w:Number = stroke ? stroke.weight / 2 : 0;
@@ -112,11 +112,15 @@ package components.itemrenderers.chart
 			var maxDateMonth:int = 2;
 			var maxDateYear:int = 2011;
 			
-			if(_data.item.date.date != maxDateDate || _data.item.date.month != maxDateMonth || _data.item.date.fullYear != maxDateYear) {
-				var rc:Rectangle = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0, 0);
+			var rc:Rectangle;
+			
+			if(_data.item.date.date != maxDateDate || _data.item.date.month != maxDateMonth || _data.item.date.fullYear != maxDateYear) 
+			{
+				rc = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0, 0);
 			}
-			else {
-				var rc:Rectangle = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
+			else 
+			{
+				rc = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
 			}
 			
 			var g:Graphics = graphics;
