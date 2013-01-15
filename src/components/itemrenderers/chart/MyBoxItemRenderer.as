@@ -9,6 +9,9 @@ package components.itemrenderers.chart
 	import mx.charts.ChartItem;
 	import mx.charts.chartClasses.GraphicsUtilities;
 	import mx.charts.renderers.BoxItemRenderer;
+	import mx.charts.series.LineSeries;
+	import mx.charts.series.items.LineSeriesItem;
+	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
 	import mx.graphics.IFill;
 	import mx.graphics.IStroke;
@@ -95,32 +98,21 @@ package components.itemrenderers.chart
 					break;
 			}
 			
-			/*if( _data.item.index != ExerciseModel( AppProperties.getInstance().controller.exerciseController.model ).exerciseData.length - 1 ) {
-				stroke = getStyle("stroke");
-			}
-			else {
-				stroke = new SolidColorStroke(0xFFFFFF,1);
-				fill = AppProperties.getInstance().controller.model.chartStyles.colorVitalSignsProvider;
-			}*/
-			
 			var stroke:IStroke = getStyle("stroke");
 			
 			var w:Number = stroke ? stroke.weight / 2 : 0;
 			
-			var maxDate:String = "03/30/2011";
-			var maxDateDate:int = 30;
-			var maxDateMonth:int = 2;
-			var maxDateYear:int = 2011;
-			
 			var rc:Rectangle;
 			
-			if(_data.item.date.date != maxDateDate || _data.item.date.month != maxDateMonth || _data.item.date.fullYear != maxDateYear) 
+			if( data is LineSeriesItem && LineSeriesItem(data).element is LineSeries 
+				&& LineSeries(LineSeriesItem(data).element).dataProvider is ArrayCollection 
+				&& (LineSeries(LineSeriesItem(data).element).items[ LineSeries(LineSeriesItem(data).element).items.length - 1 ] as LineSeriesItem).item == LineSeriesItem(data).item ) 
 			{
-				rc = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0, 0);
+				rc = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
 			}
 			else 
 			{
-				rc = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
+				rc = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0, 0);
 			}
 			
 			var g:Graphics = graphics;
