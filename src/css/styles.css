@@ -471,9 +471,21 @@ s|FormItem {
 	skinClass: ClassReference("spark.skins.spark.StackedFormItemSkin");
 }
 
-/*MEDICAL RECORDS, also EXERCISE*/
+/*MEDICAL RECORDS, also EXERCISE and NUTRITION*/
 .orangeStandout {
 	color: "0xFBB03B";
+	fontSize: 36;
+	fontWeight: bold;
+}
+
+.greenStandout {
+	color: "0x009245";
+	fontSize: 36;
+	fontWeight: bold;
+}
+
+.redStandout {
+	color: "0xC1272D";
 	fontSize: 36;
 	fontWeight: bold;
 }

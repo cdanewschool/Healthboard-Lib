@@ -181,6 +181,14 @@
 				}
 			}
 			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
+				//	TODO: pos
+				
+			}
+			
 			private function onFoodPlanChange(event:Event):void
 			{
 				invalidateProperties();
@@ -253,6 +261,7 @@
 				
 				model.summaryCalories.refresh();
 				model.dailyCaloriesCurrent.refresh();
+				lblCaloriesDaily.styleName = int(lblCaloriesDaily.text) <= 1600 ? 'greenStandout' : int(lblCaloriesDaily.text) <= 2000 ? 'orangeStandout' : 'redStandout';
 				
 				if( nutComments.text != 'Enter when, where, and why you had the meal.' 
 					&& nutComments.text != '') 
@@ -496,6 +505,7 @@
 					else updateNutritionDatesWeek('alt2');
 					
 					weeklyAvgCalories = avg(new Array(model.weeklyCaloriesCurrent.getItemAt(0).calories,model.weeklyCaloriesCurrent.getItemAt(1).calories,model.weeklyCaloriesCurrent.getItemAt(2).calories,model.weeklyCaloriesCurrent.getItemAt(3).calories,model.weeklyCaloriesCurrent.getItemAt(4).calories,model.weeklyCaloriesCurrent.getItemAt(5).calories,model.weeklyCaloriesCurrent.getItemAt(6).calories));
+					lblNutWeeklyAvgValue.styleName = weeklyAvgCalories <= 1600 ? 'greenStandout' : weeklyAvgCalories <= 2000 ? 'orangeStandout' : 'redStandout';
 				}
 				//if view == MONTHLY
 				else 
@@ -548,6 +558,7 @@
 				}
 				
 				model.dailyCaloriesCurrent.refresh();
+				lblCaloriesDaily.styleName = int(lblCaloriesDaily.text) <= 1600 ? 'greenStandout' : int(lblCaloriesDaily.text) <= 2000 ? 'orangeStandout' : 'redStandout';
 			}
 			
 			private function updateNutritionDatesWeek(set:String):void 
@@ -577,6 +588,7 @@
 					
 					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories1));
 					imgNutGaugeMonth.source = (avg(arrMonthlyCalories1) < 1600) ? gauge1487 : avg(arrMonthlyCalories1) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories1) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories1) <= 2000 ? 'orangeStandout' : 'redStandout';
 				}
 				else if( set == 'alt1' ) 
 				{
@@ -588,6 +600,7 @@
 					
 					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories2));
 					imgNutGaugeMonth.source = (avg(arrMonthlyCalories2) < 1600) ? gauge1487 : avg(arrMonthlyCalories2) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories2) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories2) <= 2000 ? 'orangeStandout' : 'redStandout';
 				}
 				else if(set == 'alt2') 
 				{
@@ -598,6 +611,7 @@
 					}
 					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories3));
 					imgNutGaugeMonth.source = (avg(arrMonthlyCalories3) < 1600) ? gauge1487 : avg(arrMonthlyCalories3) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories3) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories3) <= 2000 ? 'orangeStandout' : 'redStandout';
 				}
 				model.monthlyCalories.refresh();
 			}
@@ -617,7 +631,7 @@
 				PopUpManager.centerPopUp(myTipWindow);
 			}
 			
-			private function init():void 
+			protected function init():void 
 			{
 				lgBlue.entries = [ge1, ge2, ge3];
 				lgBlue.rotation = 90;
@@ -652,7 +666,7 @@
 	
 	<s:Group>
 		
-		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height="631">
+		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height.default="631" height.provider="500" change.provider="{viewStackNutrition.height = viewStackNutrition.selectedIndex == 0 ? 500 : 606}">
 			
 			<s:NavigatorContent label="{currentState=='default'?'My ':''}Food Journal" creationPolicy="all">
 				
@@ -700,9 +714,9 @@
 					</s:stroke>
 				</s:Line>
 							
-				<s:HGroup gap="10" paddingLeft="13" width="974">
+				<s:HGroup id="hgNutrition" gap.default="10" gap.provider="16" paddingLeft="13" width="974">
 					
-					<s:VGroup gap="7" paddingTop="48">
+					<s:VGroup id="vgRecordIntake" gap="7" paddingTop="48">
 						
 						<s:Label text="Record Intake" styleName="greenSubtitleLarge" paddingLeft="0" />
 						
@@ -842,16 +856,16 @@
 						</s:Line>
 					</s:VGroup>
 					
-					<s:Line yFrom="0" yTo="588">
+					<s:Line id="vLine1" yFrom="0" yTo="588">
 						<s:stroke>
 							<s:SolidColorStroke color="#666666"/>
 						</s:stroke>
 					</s:Line>
 					
-					<s:VGroup>
+					<s:VGroup id="vgMealList">
 						<s:Label id="nutJournalDate" text="{DateUtil.formatDateFromString((new Date().getMonth() + 1) + '/' + (new Date().getDate()) + '/' + (new Date().getFullYear()))}" styleName="greenBoldText" paddingTop="12" paddingBottom="16" paddingLeft="6" />
 						
-						<s:Label text="{currentState=='default'?'Your ':''}Meal List" styleName="greenSubtitleLarge" paddingTop="1" paddingBottom="1" />
+						<s:Label text="{currentState=='default'?'Your ':'Patient\'s '}Meal List" styleName="greenSubtitleLarge" paddingTop="1" paddingBottom="1" />
 						
 						<s:BorderContainer width="650" styleName="transparentBorderContainerLight">
 							
@@ -984,8 +998,8 @@
 							</mx:DataGrid>
 						</s:BorderContainer>
 						
-						<s:HGroup paddingTop="14" gap="14">
-							<s:VGroup>
+						<s:HGroup id="hgFoodPlate" paddingTop="14" gap="14">
+							<s:VGroup id="vgTotalCaloriesTaken">
 								<s:Label text="Total Calories Taken" styleName="greenSubtitleLarge" />
 								<mx:ViewStack id="viewsNutritionJournal" height="308" creationPolicy="all">
 									
@@ -1001,7 +1015,7 @@
 											</s:VGroup>
 											<s:VGroup gap="0" paddingTop="-4">
 												<s:HGroup>
-													<s:Label text="{model.dailyCaloriesCurrent.getItemAt(0).calories}" styleName="orangeStandout" />
+													<s:Label id="lblCaloriesDaily" text="{model.dailyCaloriesCurrent.getItemAt(0).calories}" styleName="greenStandout" />
 													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
 												</s:HGroup>
 												<s:Label color="0xFFFFFF" fontSize="14" text="Daily Budget: 2,000 Calories" />
@@ -1009,19 +1023,19 @@
 										</s:HGroup>
 										
 										<s:VGroup gap="2">
-											<s:Line xFrom="0" xTo="309">
+											<s:Line xFrom="0" xTo.default="309" xTo.provider="277">
 												<s:stroke>
 													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
 												</s:stroke>
 											</s:Line>
-											<s:Line xFrom="0" xTo="309">
+											<s:Line xFrom="0" xTo.default="309" xTo.provider="277">
 												<s:stroke>
 													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
 												</s:stroke>
 											</s:Line>
 										</s:VGroup>
 										
-										<s:VGroup width="253" paddingLeft="28">
+										<s:VGroup width="253" paddingLeft.default="28" paddingLeft.provider="12">
 											<s:HGroup color="0xFFFFFF" paddingTop="14" paddingLeft="24">
 												<s:Image source="@Embed('/images/nutritionJournalFood.png')" />
 												<s:Label text="{'+ ' + model.dailyCaloriesCurrent.getItemAt(0).calories}" textAlign="right" width="57" fontSize="16" paddingRight="8" />
@@ -1111,7 +1125,7 @@
 											</s:VGroup>
 											<s:VGroup gap="0" paddingTop="-4">
 												<s:HGroup>
-													<s:Label id="lblNutWeeklyAvgValue" text="{weeklyAvgCalories}" styleName="orangeStandout" />
+													<s:Label id="lblNutWeeklyAvgValue" text="{weeklyAvgCalories}" styleName="greenStandout" />
 													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
 												</s:HGroup>
 												<s:Label text="{'Average daily calories\nconsumed for this week'}" color="0xFFFFFF" fontSize="14" />
@@ -1211,7 +1225,7 @@
 								
 							</s:VGroup>
 							
-							<s:Line yFrom="0" yTo="361">
+							<s:Line id="vLine2" yFrom="0" yTo="361">
 								<s:stroke>
 									<s:SolidColorStroke color="#666666"/>
 								</s:stroke>
@@ -1219,57 +1233,59 @@
 							
 							<s:VGroup>
 								
-								<s:Label text="{currentState=='default'?'Your ':''}Food Plate" styleName="greenSubtitleLarge" />
+								<s:Label text="{currentState=='default'?'Your ':'Patient\'s '}Food Plate" styleName="greenSubtitleLarge" />
 								
 								<mx:LinkButton id="btnNutReadComment" visible="false" label="Read Comment" icon="{iconComment}" fontSize="11" fontStyle="italic" paddingLeft="0" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" rollOver="{btnNutReadComment.styleName='linkBtnUnderline';}" rollOut="btnNutReadComment.styleName='linkBtn';" />
 								
-								<s:HGroup paddingTop="-18" width="100%" horizontalAlign="center">
+								<s:HGroup paddingTop="-18" paddingLeft.provider="76" width="100%" horizontalAlign="center">
 									<s:Image id="imgNutJournalMyPlate" source="{!model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial}" />
 								</s:HGroup>
 								
-								<s:HGroup verticalAlign="middle" gap="7" paddingTop="18">
+								<s:VGroup id="vgFoodPlateDetails" paddingLeft.provider="68">
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="18">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sodium" />
+										<s:Image source="@Embed('/images/nutritionNewSodiumLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2,000 mg" />
+											<s:Image id="imgSodiumChart" source="{!model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
 									
-									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sodium" />
-									<s:Image source="@Embed('/images/nutritionNewSodiumLG.png')" />
-									<s:VGroup gap="1" paddingTop="-10">
-										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2,000 mg" />
-										<s:Image id="imgSodiumChart" source="{!model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1}" />
-									</s:VGroup>
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="{'Fats\n&amp; Oils'}" />
+										<s:Image source="@Embed('/images/nutritionNewFatsOilsLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2 - 3 servings" />
+											<s:Image id="imgFatsOilsChart" source="{!model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
 									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sugar" />
+										<s:Image source="@Embed('/images/nutritionNewSugarLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 1 serving" />
+											<s:Image id="imgSugarChart" source="{!model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
 									
-									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="{'Fats\n&amp; Oils'}" />
-									<s:Image source="@Embed('/images/nutritionNewFatsOilsLG.png')" />
-									<s:VGroup gap="1" paddingTop="-10">
-										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2 - 3 servings" />
-										<s:Image id="imgFatsOilsChart" source="{!model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1}" />
-									</s:VGroup>
-									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
-									
-									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sugar" />
-									<s:Image source="@Embed('/images/nutritionNewSugarLG.png')" />
-									<s:VGroup gap="1" paddingTop="-10">
-										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 1 serving" />
-										<s:Image id="imgSugarChart" source="{!model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1}" />
-									</s:VGroup>
-									
-								</s:HGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
-									
-									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Alcohol" />
-									<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
-									<s:VGroup gap="1" paddingTop="-10">
-										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
-										<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
-									</s:VGroup>
-									
-								</s:HGroup>
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Alcohol" />
+										<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
+											<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
+										</s:VGroup>
+										
+									</s:HGroup>
+								</s:VGroup>
 								
 							</s:VGroup>
 							
