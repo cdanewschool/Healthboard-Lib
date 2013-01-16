@@ -289,7 +289,7 @@
 		
 		<!--- @copy spark.components.TitleWindow#closeButton -->
 		<!--added down here (Damian) so that the button is displayed ON TOP / OUTSIDE the TitleWindow-->
-		<s:Button id="closeButton" skinClass="skins.general.CustomTitleWindowCloseButtonSkin"
+		<s:Button id="closeButton" skinClass="edu.newschool.piim.healthboard.view.components.skins.general.CustomTitleWindowCloseButtonSkin"
 				  width="25" height="25" right="-11" top="-14" /> <!-- (damian) orig: spark.skins.spark.TitleWindowCloseButtonSkin width="15" height="15"-->
 		
     </s:Group>

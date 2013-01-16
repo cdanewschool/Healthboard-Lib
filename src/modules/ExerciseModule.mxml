@@ -8,7 +8,7 @@
 	xmlns:components="components.*" 
 	xmlns:general="components.general.*" 
 	xmlns:performancemeter="skins.general.performancemeter.*"
-	initialize="init()" creationComplete="creationComplete()" >
+	initialize="init()" creationComplete="creationComplete()" xmlns:chart="eu.tiagoluchini.chart.*" >
 	
 	<fx:Declarations>
 		
@@ -19,6 +19,10 @@
 			<s:Image source="@Embed('/images/exercise/runChartBackground.jpg')" width="817" height="35" />
 		</fx:Array>
 		
+		<s:SolidColorStroke id="dashedStroke" color="0xFAFDFF" weight="2" alpha=".5" />
+		<s:SolidColorStroke id="dashedStroke2" color="0xFF0000" weight="2" alpha=".5" />
+		<s:SolidColorStroke id="dashedStroke3" color="0xBCBCBD" weight="1" alpha=".5" />
+
 	</fx:Declarations>
 	
 	<s:states>
@@ -866,11 +870,12 @@
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="31" horizontalAlign="right" verticalAlign="middle">
 								
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFF0000" weight="1" alpha="0.5" />
-									</s:stroke>
-								</s:Line>
+								<s:HGroup gap="2">
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke2}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke2}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke2}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke2}" />
+								</s:HGroup>
 								
 								<s:Label text="Passing Score" />
 								
@@ -1001,11 +1006,10 @@
 														
 														<mx:LineChart id="chart" width="445" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="outerDocument.viewExercises(event)">
 															<mx:series>
-																<mx:LineSeries yField="expectation" xField="date" interactive="false">
-																	<mx:lineStroke>
-																		<s:SolidColorStroke color="0xFF0000" weight="1" alpha="0.5" />
-																	</mx:lineStroke>
-																</mx:LineSeries>
+																
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke2}" />
+																
 																<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererExercise" radius="8" adjustedRadius="8" fillFunction="{outerDocument.exerciseLineFillFunction}" selectedIndex="0"><!--form="curve" -->
 																	<mx:lineStroke>
 																		<s:SolidColorStroke color="0xFFFFFF" weight="3" /><!--4-->
@@ -1014,6 +1018,7 @@
 																		<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 																	</mx:stroke>
 																</mx:LineSeries>
+																
 															</mx:series>
 															
 															<mx:horizontalAxis>
@@ -1198,23 +1203,14 @@
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="18" horizontalAlign="right" verticalAlign="middle" paddingTop="1">
 								
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-									</s:stroke>
-								</s:Line>
+								<s:HGroup gap="2">
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								</s:HGroup>
 								
 								<s:Label text="Goal" paddingRight="10" />
-								
-								<!--
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFF0000" weight="2" alpha=".8" />
-									</s:stroke>
-								</s:Line>
-								
-								<s:Label text="Passing Score" />
-								-->
 								
 								<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
 									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
@@ -1360,17 +1356,14 @@
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="31" horizontalAlign="right" verticalAlign="middle">
 								
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-									</s:stroke>
-								</s:Line>
+								<s:HGroup gap="2">
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								</s:HGroup>
 								
 								<s:Label text="Goal" paddingRight="10" />
-								
-								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
-									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>-->
 								
 							</s:HGroup>
 							
@@ -1484,19 +1477,22 @@
 														<mx:LineChart id="chart" width="465" height="107" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)" itemClick="outerDocument.viewExercisesPhysicianAssigned(event)"><!--itemRollOverColor="0xFBB03B" itemSelectionColor="0xFBB03B" showDataTips="true" itemRollOut="{myLineSeries.selectedIndex = 2}" -->
 															
 															<mx:series>
-																<mx:LineSeries yField="expectation" xField="date" interactive="false">
-																	<mx:lineStroke>
-																		<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha="0.5" />
-																	</mx:lineStroke>
-																</mx:LineSeries>
+																
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke}" />
+																
 																<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererExercise" radius="8" adjustedRadius="8" fillFunction="{outerDocument.exerciseLineFillFunction}" selectedIndex="0"><!--form="curve" -->
+																	
 																	<mx:lineStroke>
 																		<s:SolidColorStroke color="0xFFFFFF" weight="3" /><!--4-->
 																	</mx:lineStroke>
+																	
 																	<mx:stroke>
 																		<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 																	</mx:stroke>
+																	
 																</mx:LineSeries>
+																
 															</mx:series>
 															
 															<mx:horizontalAxis>
@@ -1516,6 +1512,7 @@
 															</mx:verticalAxisRenderers>
 															
 														</mx:LineChart>
+														
 													</s:VGroup>
 													
 													<s:VGroup includeInLayout="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" visible="{data.chartType != 'comments' &amp;&amp; this.currentState == 'collapsed'}" width="497">
@@ -1530,11 +1527,14 @@
 															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesCommentsPhysicianAssigned(event)">
 															
 															<mx:series>
+																
 																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" />
-																<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
-																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
-																</mx:LineSeries>
+																
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke3}" />
+																
 																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
+															
 															</mx:series>
 															
 															<mx:horizontalAxis>
@@ -1713,17 +1713,14 @@
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="18" horizontalAlign="right" verticalAlign="middle" paddingTop="1">
 								
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-									</s:stroke>
-								</s:Line>
+								<s:HGroup gap="2">
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								</s:HGroup>
 								
 								<s:Label text="Goal" paddingRight="10" />
-								
-								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
-									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>-->
 								
 								<s:Label text="Data:" paddingLeft="1" paddingRight="-5" />
 								
@@ -1758,11 +1755,8 @@
 								
 								<mx:series>
 									
-									<mx:LineSeries yField="expectation" xField="date" interactive="false">
-										<mx:lineStroke>
-											<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
-										</mx:lineStroke>
-									</mx:LineSeries>
+									<chart:DashedLineSeries 
+										yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{dashedStroke}" />
 									
 									<mx:LineSeries id="myLineSeriesRunWalk" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{controller.fillFunction}"><!--form="curve" -->
 										<mx:lineStroke>
@@ -1944,17 +1938,14 @@
 							
 							<s:HGroup width="100%" color="0xFFFFFF" height="31" horizontalAlign="right" verticalAlign="middle">
 								
-								<s:Line xFrom="0" xTo="24">
-									<s:stroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-									</s:stroke>
-								</s:Line>
+								<s:HGroup gap="2">
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+									<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								</s:HGroup>
 								
 								<s:Label text="Goal" paddingRight="10" />
-								
-								<!--<mx:Legend color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="11" paddingTop="6" paddingRight="9">
-									<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
-								</mx:Legend>-->
 								
 							</s:HGroup>
 							
@@ -2076,19 +2067,19 @@
 															
 															<mx:series>
 																
-																<mx:LineSeries yField="expectation" xField="date" interactive="false">
-																	<mx:lineStroke>
-																		<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha="0.5" />
-																	</mx:lineStroke>
-																</mx:LineSeries>
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke}" />
 																
 																<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererExercise" radius="8" adjustedRadius="8" fillFunction="{outerDocument.exerciseLineFillFunction}" selectedIndex="0"><!--form="curve" -->
+																	
 																	<mx:lineStroke>
 																		<s:SolidColorStroke color="0xFFFFFF" weight="3" /><!--4-->
 																	</mx:lineStroke>
+																	
 																	<mx:stroke>
 																		<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 																	</mx:stroke>
+																	
 																</mx:LineSeries>
 																
 															</mx:series>
@@ -2125,9 +2116,8 @@
 															
 															<mx:series>
 																
-																<mx:LineSeries xField="date" yField="expectation" itemRenderer="{null}" interactive="false">
-																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
-																</mx:LineSeries>
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="date" itemRenderer="{null}" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke3}" />
 																
 																<mx:PlotSeries xField="date" yField="yvalue" itemRenderer="mx.charts.renderers.CircleItemRenderer" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" radius="8"><!--itemRenderer="@Embed(source='/images/exercise/untrackable.png')" fill="{outerDocument.chartStyles.colorExerciseUntrackable}"-->
 																	<mx:stroke><s:SolidColorStroke color="0xFFFFFF" weight="1" /></mx:stroke>
@@ -2162,11 +2152,14 @@
 															showDataTips="true" dataTipFunction="dataTipsVitalSignsComments" creationComplete="applyCustomDataTipsVitalSigns()" itemClick="outerDocument.viewExercisesComments(event)"><!--dataTipFunction="dataTipsMedicationsNew" itemClick="updateIntake(event)" creationComplete="medicationsSetMinMax(); applyCustomDataTipsMedi();" itemRollOver="Mouse.cursor = MouseCursor.BUTTON;" itemRollOut="Mouse.cursor = MouseCursor.AUTO;" paddingLeft="-155" paddingLeft="7"-->	<!--showDataTips="true" dataTipFunction="dataTipsMedications" itemClick="showMedicationDetails(event)" creationComplete="applyCustomDataTipsMedi();" -->
 															
 															<mx:series>
+																
 																<mx:PlotSeries xField="dateProvider" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentProvider.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsProvider}" /><!--displayName="Medication" fillFunction="medicationsFillFunction" selectable="true" stroke="{whiteStroke}"-->
-																<mx:LineSeries yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false">
-																	<mx:lineStroke><s:SolidColorStroke color="0xBCBCBD" weight="1" /></mx:lineStroke>
-																</mx:LineSeries>
+																
+																<chart:DashedLineSeries 
+																	yField="expectation" xField="datePatient" itemRenderer="{null}" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke3}" />
+																
 																<mx:PlotSeries xField="datePatient" yField="type" itemRenderer="@Embed(source='/images/vitalSignsCommentPatient.png')" radius="8" fill="{outerDocument.chartStyles.colorVitalSignsPatient}" />
+															
 															</mx:series>
 															
 															<mx:horizontalAxis>
