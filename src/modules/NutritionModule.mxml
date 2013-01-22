@@ -1381,14 +1381,14 @@
 									
 									<nutrition:ServingLabel id="fruitsLabel" x="{plate.x - fruitsLabel.width + 20}" y="{plate.y + 10}" horizontalAlign="right" />
 									<nutrition:ServingLabel id="vegetablesLabel" x="{plate.x - vegetablesLabel.width + 20}" y="{plate.y + plate.height - vegetablesLabel.height - 10}" horizontalAlign="right" />
-									<nutrition:ServingLabel id="grainsLabel" x="{plate.x + plate.width - 10}" y="{plate.y + 10}" />
+									<nutrition:ServingLabel id="grainsLabel" x="{plate.x + plate.width - 10}" y="{plate.y + 10}" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
 									<nutrition:ServingLabel id="proteinsLabel" x="{plate.x + plate.width - 10}" y="{plate.y + plate.height - proteinsLabel.height - 10}" />
 									<nutrition:ServingLabel id="dairyLabel" x="{dairyPlate.x + dairyPlate.width + 10}" y="{dairyPlate.y + (dairyPlate.height - proteinsLabel.height)/2 - 10}" requestedRowCount="2" />
 									
 									<s:Image id="plate" source="@Embed('/images/nutrition/foodGroupPlate.png')" x="153" y="30" />
 									<s:Image id="dairyPlate" source="@Embed('/images/nutrition/dairyPlate.png')" x="{plate.x + plate.width + 20}" y="{plate.y + (plate.height - dairyPlate.height)/2}" />
 									
-									<s:BorderContainer x="{plate.x + plate.width - 90 - 10}" y="{plate.y + 10}" width="90" height="98" borderVisible="false" backgroundAlpha="0" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
+									<s:BorderContainer x="{plate.x + plate.width - 105}" y="{plate.y + 14}" width="90" height="98" borderVisible="false" backgroundAlpha="0" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
 									
 									<s:Line x="567" y="10" yFrom="0" yTo="276">
 										<s:stroke>
