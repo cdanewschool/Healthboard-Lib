@@ -221,15 +221,6 @@
 				<update date="02/01/2011" riskLevel="low" />
 				
 				<type name="Dengue">
-					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
-				</type>
-				
-				<type name="Filariasis">
-					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
-				</type>
-				
-				<type name="Malaria">
-				
 					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia">
 						<incidence latitude="18.796464" longitude="98.660059" value="24867"/><!-- chiang mai, thailand -->
 						<incidence latitude="18.684809" longitude="100.800005" value="996"/><!-- nan, thailand -->
@@ -240,6 +231,16 @@
 						<incidence latitude="7.984311" longitude="98.330747" value="18996"/><!-- phuket, thailand -->
 						<incidence latitude="16.429647" longitude="102.837332" value="2568"/><!-- yaia, thailand -->
 					</update>
+					
+					<issues>
+						<issue disease="Hepatitis A" status="Vaccinated on 11/16/2010" />
+						<issue disease="Hepatitis B" status="Vaccinated on 10/01/2010" />
+						<issue disease="Typhoid" status="Vaccinated on 02/03/2011" />
+						<issue disease="Malaria" status="Medications not prescribed" />
+						<issue disease="Schistosomiasis" status="Medications not prescribed" />
+						<issue disease="Dengue" status="Medications not prescribed" />
+						<issue disease="Filariasis" status="Medications not prescribed" />
+					</issues>
 					
 					<experts>
 						<expert name="Dr. Pedro Alonso" expertise="Internal Medicine" location="CRESI" />
@@ -254,11 +255,117 @@
 						<treatment method="CDC Prevention" type="Document" description="Prevention methods" />
 						<treatment method="CDC Treatment" type="Document" description="Guidelines for treatment" />
 					</treatments>
+				</type>
+				
+				<type name="Filariasis">
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia">
+						<incidence latitude="18.796464" longitude="98.660059" value="24867"/><!-- chiang mai, thailand -->
+						<incidence latitude="18.684809" longitude="100.800005" value="996"/><!-- nan, thailand -->
+						<incidence latitude="15.251389" longitude="104.870278" value="11256"/><!-- ubon ratchathani, thailand -->
+						<incidence latitude="12.976667" longitude="100.913333" value="3568"/><!-- bang lumong, thailand -->
+						<incidence latitude="13.752222" longitude="100.493889" value="17565"/><!-- bangkok, thailand -->
+						<incidence latitude="12.492948" longitude="99.678689" value="78"/><!-- hua hin, thailand -->
+						<incidence latitude="7.984311" longitude="98.330747" value="18996"/><!-- phuket, thailand -->
+						<incidence latitude="16.429647" longitude="102.837332" value="2568"/><!-- yaia, thailand -->
+					</update>
 					
+					<issues>
+						<issue disease="Hepatitis A" status="Vaccinated on 11/16/2010" />
+						<issue disease="Hepatitis B" status="Vaccinated on 10/01/2010" />
+						<issue disease="Typhoid" status="Vaccinated on 02/03/2011" />
+						<issue disease="Malaria" status="Medications not prescribed" />
+						<issue disease="Schistosomiasis" status="Medications not prescribed" />
+						<issue disease="Dengue" status="Medications not prescribed" />
+						<issue disease="Filariasis" status="Medications not prescribed" />
+					</issues>
+					
+					<experts>
+						<expert name="Dr. Pedro Alonso" expertise="Internal Medicine" location="CRESI" />
+						<expert name="Dr. Awa-Marie Coll-Seck " expertise="Infectious Disease" location="MMV" />
+						<expert name="Dr. Carlos Morel" expertise="Tropical Disease" location="GMP,WHO" />
+						<expert name="Dr. Robert Newman" expertise="Public Health" location="MMV" />
+						<expert name="Dr. Dennis Schmatz" expertise="Infectious Disease" location="MMV" />
+					</experts>
+					
+					<treatments>
+						<treatment method="Antimalarials" type="Medications" area="medications" description="Malaria prevention" />
+						<treatment method="CDC Prevention" type="Document" description="Prevention methods" />
+						<treatment method="CDC Treatment" type="Document" description="Guidelines for treatment" />
+					</treatments>
+				</type>
+				
+				<type name="Malaria">
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia">
+						<incidence latitude="18.796464" longitude="98.660059" value="24867"/><!-- chiang mai, thailand -->
+						<incidence latitude="18.684809" longitude="100.800005" value="996"/><!-- nan, thailand -->
+						<incidence latitude="15.251389" longitude="104.870278" value="11256"/><!-- ubon ratchathani, thailand -->
+						<incidence latitude="12.976667" longitude="100.913333" value="3568"/><!-- bang lumong, thailand -->
+						<incidence latitude="13.752222" longitude="100.493889" value="17565"/><!-- bangkok, thailand -->
+						<incidence latitude="12.492948" longitude="99.678689" value="78"/><!-- hua hin, thailand -->
+						<incidence latitude="7.984311" longitude="98.330747" value="18996"/><!-- phuket, thailand -->
+						<incidence latitude="16.429647" longitude="102.837332" value="2568"/><!-- yaia, thailand -->
+					</update>
+					
+					<issues>
+						<issue disease="Hepatitis A" status="Vaccinated on 11/16/2010" />
+						<issue disease="Hepatitis B" status="Vaccinated on 10/01/2010" />
+						<issue disease="Typhoid" status="Vaccinated on 02/03/2011" />
+						<issue disease="Malaria" status="Medications not prescribed" />
+						<issue disease="Schistosomiasis" status="Medications not prescribed" />
+						<issue disease="Dengue" status="Medications not prescribed" />
+						<issue disease="Filariasis" status="Medications not prescribed" />
+					</issues>
+					
+					<experts>
+						<expert name="Dr. Pedro Alonso" expertise="Internal Medicine" location="CRESI" />
+						<expert name="Dr. Awa-Marie Coll-Seck " expertise="Infectious Disease" location="MMV" />
+						<expert name="Dr. Carlos Morel" expertise="Tropical Disease" location="GMP,WHO" />
+						<expert name="Dr. Robert Newman" expertise="Public Health" location="MMV" />
+						<expert name="Dr. Dennis Schmatz" expertise="Infectious Disease" location="MMV" />
+					</experts>
+					
+					<treatments>
+						<treatment method="Antimalarials" type="Medications" area="medications" description="Malaria prevention" />
+						<treatment method="CDC Prevention" type="Document" description="Prevention methods" />
+						<treatment method="CDC Treatment" type="Document" description="Guidelines for treatment" />
+					</treatments>
 				</type>
 				
 				<type name="Schistosomiasis">
-					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia"/>
+					<update date="04/30/2011" riskLevel="low" reason="pending deployment in Southeast Asia">
+						<incidence latitude="18.796464" longitude="98.660059" value="24867"/><!-- chiang mai, thailand -->
+						<incidence latitude="18.684809" longitude="100.800005" value="996"/><!-- nan, thailand -->
+						<incidence latitude="15.251389" longitude="104.870278" value="11256"/><!-- ubon ratchathani, thailand -->
+						<incidence latitude="12.976667" longitude="100.913333" value="3568"/><!-- bang lumong, thailand -->
+						<incidence latitude="13.752222" longitude="100.493889" value="17565"/><!-- bangkok, thailand -->
+						<incidence latitude="12.492948" longitude="99.678689" value="78"/><!-- hua hin, thailand -->
+						<incidence latitude="7.984311" longitude="98.330747" value="18996"/><!-- phuket, thailand -->
+						<incidence latitude="16.429647" longitude="102.837332" value="2568"/><!-- yaia, thailand -->
+					</update>
+					
+					<issues>
+						<issue disease="Hepatitis A" status="Vaccinated on 11/16/2010" />
+						<issue disease="Hepatitis B" status="Vaccinated on 10/01/2010" />
+						<issue disease="Typhoid" status="Vaccinated on 02/03/2011" />
+						<issue disease="Malaria" status="Medications not prescribed" />
+						<issue disease="Schistosomiasis" status="Medications not prescribed" />
+						<issue disease="Dengue" status="Medications not prescribed" />
+						<issue disease="Filariasis" status="Medications not prescribed" />
+					</issues>
+					
+					<experts>
+						<expert name="Dr. Pedro Alonso" expertise="Internal Medicine" location="CRESI" />
+						<expert name="Dr. Awa-Marie Coll-Seck " expertise="Infectious Disease" location="MMV" />
+						<expert name="Dr. Carlos Morel" expertise="Tropical Disease" location="GMP,WHO" />
+						<expert name="Dr. Robert Newman" expertise="Public Health" location="MMV" />
+						<expert name="Dr. Dennis Schmatz" expertise="Infectious Disease" location="MMV" />
+					</experts>
+					
+					<treatments>
+						<treatment method="Antimalarials" type="Medications" area="medications" description="Malaria prevention" />
+						<treatment method="CDC Prevention" type="Document" description="Prevention methods" />
+						<treatment method="CDC Treatment" type="Document" description="Guidelines for treatment" />
+					</treatments>
 				</type>
 				
 			</type>
