@@ -14,13 +14,13 @@ package components.itemrenderers.chart
 	import mx.graphics.SolidColor;
 	import mx.utils.ColorUtil;
 	
-	public class MyMixedItemRenderer extends CircleItemRenderer
+	public class MyMixedItemRendererOver extends CircleItemRenderer
 	{
 		private static var rcFill:Rectangle = new Rectangle();
 		
 		private var _data:Object;
 
-		public function MyMixedItemRenderer()
+		public function MyMixedItemRendererOver()
 		{
 			super();
 		}
@@ -110,19 +110,7 @@ package components.itemrenderers.chart
 			
 			if( data.item.type == 'provider' )
 			{
-				var rc:Rectangle;
-				if( data is LineSeriesItem && LineSeriesItem(data).element is LineSeries 
-		        	&& LineSeries(LineSeriesItem(data).element).dataProvider is ArrayCollection 
-					&& (LineSeries(LineSeriesItem(data).element).items[ LineSeries(LineSeriesItem(data).element).items.length - 1 ] as LineSeriesItem).item == LineSeriesItem(data).item ) 
-				{
-					rc = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
-				}
-				else 
-				{
-					rc = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0, 0);
-				}
-				
-				//var rc:Rectangle = new Rectangle(w - adjustedRadius, w - adjustedRadius, width - 2 * w + adjustedRadius * 2, height - 2 * w + adjustedRadius * 2);
+				var rc:Rectangle = new Rectangle(w - adjustedRadius + 8, w - adjustedRadius + 8, 0 - 2 * w + adjustedRadius * 2, 0 - 2 * w + adjustedRadius * 2);
 				
 				g.moveTo(rc.left,rc.top);
 				g.lineTo(rc.right,rc.top);
@@ -137,15 +125,7 @@ package components.itemrenderers.chart
 				
 				adjustedRadius += radiusOffset;
 				
-				if( data is LineSeriesItem && LineSeriesItem(data).element is LineSeries 
-					        	&& LineSeries(LineSeriesItem(data).element).dataProvider is ArrayCollection 
-					&& (LineSeries(LineSeriesItem(data).element).items[ LineSeries(LineSeriesItem(data).element).items.length - 1 ] as LineSeriesItem).item == LineSeriesItem(data).item ) 
-				{
-					g.drawEllipse(w - adjustedRadius,w - adjustedRadius, unscaledWidth - 2 * w + adjustedRadius * 2, unscaledHeight - 2 * w + adjustedRadius * 2);
-				}
-				else {
-					g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8,0,0);
-				}
+				g.drawEllipse(w - adjustedRadius + 8,w - adjustedRadius + 8, 0 - 2 * w + adjustedRadius * 2, 0 - 2 * w + adjustedRadius * 2);
 			}
 			
 			if (fill)
