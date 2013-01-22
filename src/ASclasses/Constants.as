@@ -2,7 +2,7 @@ package ASclasses
 {
 	public class Constants
 	{
-		public static const DEBUG:Boolean = false;
+		public static const DEBUG:Boolean = true;
 		
 		public static const ADMIN_USERNAME:String = "piim";
 		public static const ADMIN_PASSWORD:String = "password";

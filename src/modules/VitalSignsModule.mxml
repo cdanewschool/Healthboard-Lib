@@ -6,7 +6,7 @@
 	xmlns:components="components.*" 
 	xmlns:general="components.general.*" 
 	xmlns:ASclasses="ASclasses.*" 
-	creationComplete="init()">
+	creationComplete="init()" xmlns:chart="eu.tiagoluchini.chart.*">
 	
 	<fx:Declarations>
 		<fx:Array id="vitalSignsWeightBackground">
@@ -21,6 +21,8 @@
 		<fx:Array id="vitalSignsPressureDiastolicBackground">
 			<s:Image source="@Embed('/images/vitalsPressureDiastolicBG.png')" width="822" height="331" />
 		</fx:Array>
+		<s:SolidColorStroke id="dashedStroke" color="0x86888A" weight="2" alpha=".5" />
+		<s:SolidColorStroke id="dashedStroke2" color="0xFAFDFF" weight="2" alpha=".5" />
 	</fx:Declarations>
 	
 	<s:states>
@@ -439,11 +441,12 @@
 						
 						<s:HGroup width="100%" color="0xFFFFFF" height="31" horizontalAlign="right" verticalAlign="middle">
 							
-							<s:Line xFrom="0" xTo="24">
-								<s:stroke>
-									<s:SolidColorStroke color="0x86888A" weight="2" alpha=".5"/>
-								</s:stroke>
-							</s:Line>
+							<s:HGroup gap="2">
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+							</s:HGroup>
 							
 							<s:Label text="Goal" />
 							
@@ -519,7 +522,8 @@
 															}
 														}
 														
-														private function switchVitalViewFromRenderer(vital:String):void {
+														private function switchVitalViewFromRenderer(vital:String):void 
+														{
 															if(vital == "Weight") outerDocument.switchVitalView(2);
 															else if(vital == "Blood pressure") outerDocument.switchVitalView(3);
 														}
@@ -594,11 +598,8 @@
 														
 														<mx:series>
 															
-															<mx:LineSeries yField="expectation" xField="date" interactive="false">
-																<mx:lineStroke>
-																	<s:SolidColorStroke color="0x86888A" weight="2" alpha=".5" />
-																</mx:lineStroke>
-															</mx:LineSeries>
+															<chart:DashedLineSeries 
+																yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke}" />
 															
 															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" buttonMode="true" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}" selectedIndex="0"><!--form="curve" -->
 																<mx:lineStroke>
@@ -609,19 +610,13 @@
 																</mx:stroke>
 															</mx:LineSeries>
 															
-															<mx:LineSeries yField="expectation2" xField="date" interactive="false" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}">
-																<mx:lineStroke>
-																	<s:SolidColorStroke color="0x86888A" weight="2" alpha=".5" />
-																</mx:lineStroke>
-															</mx:LineSeries>
+															<chart:DashedLineSeries 
+																yField="expectation2" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{outerDocument.dashedStroke}" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}" />
 															
 															<mx:LineSeries id="myLineSeries2" yField="value2" xField="date" includeInLayout="{data.chartType == 'double'}" visible="{data.chartType == 'double'}" itemRenderer="components.itemrenderers.chart.MyCircleItemRenderer" radius="8" adjustedRadius="8" fillFunction="{outerDocument.vitalSignsFillFunction}"><!--form="curve" -->
 																<mx:lineStroke>
 																	<s:SolidColorStroke color="0xFFFFFF" weight="3" />
 																</mx:lineStroke>
-																<!--<mx:fill>
-																<mx:SolidColor color="0xD78C73"/>
-																</mx:fill>-->
 																<mx:stroke>
 																	<mx:SolidColorStroke color="0xFFFFFF"/>
 																</mx:stroke>
@@ -918,11 +913,12 @@
 						
 						<s:HGroup width="100%" color="0xFFFFFF" height="18" horizontalAlign="right" verticalAlign="middle" paddingTop="1">
 							
-							<s:Line xFrom="0" xTo="24">
-								<s:stroke>
-									<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-								</s:stroke>
-							</s:Line>
+							<s:HGroup gap="2">
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+							</s:HGroup>
 							
 							<s:Label text="Goal" />
 							
@@ -971,11 +967,8 @@
 							
 							<mx:series>
 								
-								<mx:LineSeries yField="expectation" xField="date" interactive="false">
-									<mx:lineStroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
-									</mx:lineStroke>
-								</mx:LineSeries>
+								<chart:DashedLineSeries 
+									yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{dashedStroke2}" />
 								
 								<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" buttonMode="true" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
@@ -1098,32 +1091,43 @@
 						</s:Line>
 						
 						<s:HGroup width="100%" color="0xFFFFFF" height="18" horizontalAlign="right" verticalAlign="middle" paddingTop="1">
-							<s:Line xFrom="0" xTo="24">
-								<s:stroke>
-									<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5"/>
-								</s:stroke>
-							</s:Line>
+							
+							<s:HGroup gap="2">
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+								<s:Line xFrom="0" xTo="4" stroke="{dashedStroke}" />
+							</s:HGroup>
+							
 							<s:Label text="Goal" paddingRight="15" />
+							
 							<s:Line xFrom="0" xTo="24">
 								<s:stroke>
 									<s:SolidColorStroke color="0xFFFFFF" weight="4" caps="square" />
 								</s:stroke>
 							</s:Line>
+							
 							<s:Label text="Systolic" paddingRight="15" />
+							
 							<s:Line xFrom="0" xTo="24">
 								<s:stroke>
 									<s:SolidColorStroke color="0xAEDEE4" weight="4" caps="square" />
 								</s:stroke>
 							</s:Line>
+							
 							<s:Label text="Diastolic" paddingRight="15" />
+							
 							<mx:Legend id="legendVitalSignsIndividualPressure" color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingLeft="15" paddingTop="6">
 								<mx:LegendItem label="Patient Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsPatient}"  stroke="{chartStyles.whiteStroke}" />
 							</mx:Legend>
+							
 							<!--I'm putting these two legend items in two separate legends, because when I put them in one, they get messed up when I close and reopen the module (they appear on top of each other instead of next to ech other)-->
 							<mx:Legend id="legendVitalSignsIndividualPressure2" color="0xFFFFFF" fontFamily="myMyriadNoCFF" verticalAlign="bottom" paddingRight="14" paddingTop="6">
 								<mx:LegendItem label="Provider Entry" fontSize="12" fontWeight="normal" legendMarkerRenderer="mx.charts.renderers.CircleItemRenderer" markerAspectRatio="1" markerHeight="12" markerWidth="12" fill="{chartStyles.colorVitalSignsProvider}" stroke="{chartStyles.whiteStroke}" />
 							</mx:Legend>
+							
 							<s:Label text="Reference:" paddingLeft="1" paddingRight="-5" />
+							
 							<s:HGroup paddingTop="-3">
 								<s:DropDownList id="dropDownVitalSignsPressureReference" selectedIndex="0" width="81" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="skins.general.MyDropDownListSkin" color="0xAEDBE2" change="vitalsPressureChangeReference()"><!--change="messageSort()"--> 
 									<mx:ArrayCollection>
@@ -1153,11 +1157,9 @@
 							
 							<mx:series>
 								
-								<mx:LineSeries id="myPressureExpectationSeries" yField="expectation" xField="date" interactive="false">
-									<mx:lineStroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
-									</mx:lineStroke>
-								</mx:LineSeries>
+								<chart:DashedLineSeries 
+									id="myPressureExpectationSeries" 
+									yField="expectation" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{dashedStroke2}" />
 								
 								<mx:LineSeries id="myPressureLineSeries" yField="value" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}"><!--form="curve" -->
 									<mx:lineStroke>
@@ -1168,19 +1170,14 @@
 									</mx:stroke>
 								</mx:LineSeries>
 								
-								<mx:LineSeries id="myPressureExpectationSeries2" yField="expectation2" xField="date" interactive="false" alpha="0.3">
-									<mx:lineStroke>
-										<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
-									</mx:lineStroke>
-								</mx:LineSeries>
+								<chart:DashedLineSeries 
+									id="myPressureExpectationSeries2" 
+									yField="expectation2" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{dashedStroke2}" />
 								
 								<mx:LineSeries id="myPressureLineSeries2" yField="value2" xField="date" itemRenderer="components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{vitalSignsFillFunction}" alpha=".3">
 									<mx:lineStroke>
 										<s:SolidColorStroke color="0xAEDEE4" weight="4" />
 									</mx:lineStroke>
-									<!--<mx:fill>
-									<mx:SolidColor color="0xD78C73"/>
-									</mx:fill>-->
 									<mx:stroke>
 										<mx:SolidColorStroke color="0xAEDEE4"/>
 									</mx:stroke>

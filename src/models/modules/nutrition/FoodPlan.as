@@ -2,6 +2,7 @@ package models.modules.nutrition
 {
 	import enum.DietClassQuantifier;
 	
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
 	import models.UserModel;
@@ -152,6 +153,13 @@ package models.modules.nutrition
 			dirty = false;
 		}
 
+		public function addNote( note:Object ):void
+		{
+			notes && notes.length ? notes.addItem( note ) : notes = new ArrayCollection( [ note ] );
+			
+			dispatchEvent( new Event( Event.CHANGE, true ) );
+		}
+		
 		public function getFoodGroupById(id:String):FoodServing
 		{
 			for each(var foodGroup:FoodServing in servingCategories)

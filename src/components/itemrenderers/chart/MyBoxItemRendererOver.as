@@ -95,7 +95,6 @@ package components.itemrenderers.chart
 					break;
 			}
 			
-			var stroke:IStroke;
 			/*if( _data.item.index != ExerciseModel( AppProperties.getInstance().controller.exerciseController.model ).exerciseData.length - 1 ) {
 				stroke = getStyle("stroke");
 			}
