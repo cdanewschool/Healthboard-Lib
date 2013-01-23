@@ -1110,9 +1110,11 @@
 											</s:VGroup>
 										</s:HGroup>
 										
-										<s:Label text="0                400              800             1200           1600        2000 cals." color="#FFFFFF" fontSize="11" paddingBottom="-6" paddingLeft="39" />
+										<s:Label color="#FFFFFF" fontSize="11" paddingBottom="-6" paddingLeft="39"
+												 text.default="0                400              800             1200           1600        2000 cals."
+												 text.provider="0             400           800          1200        1600     2000 cals."/>
 										
-										<mx:BarChart id="nutFoodJournalWeeklyCalories" dataProvider="{model.weeklyCaloriesCurrent}" type="overlaid" height="165" width="314" showDataTips="true"><!--backgroundElements="{nutritionJournalBGE}"-->
+										<mx:BarChart id="nutFoodJournalWeeklyCalories" dataProvider="{model.weeklyCaloriesCurrent}" type="overlaid" height="165" width.default="314" width.provider="278" showDataTips="true"><!--backgroundElements="{nutritionJournalBGE}"-->
 											<mx:series>
 												<mx:BarSeries id="nutJourWeeklyCalExcessSeries" yField="day" xField="calories" fillFunction="nutCaloriesExcessFillFunction">
 													
@@ -1168,7 +1170,7 @@
 										
 										<s:HGroup paddingLeft="-50" verticalAlign="middle">
 											
-											<mx:LineChart id="nutFoodJournalMonthlyCalories" dataProvider="{model.monthlyCalories}" showDataTips="true" height="176" width="348" backgroundElements="{bge}" seriesFilters="[]">
+											<mx:LineChart id="nutFoodJournalMonthlyCalories" dataProvider="{model.monthlyCalories}" showDataTips="true" height="176" width.default="348" width.provider="323" backgroundElements="{bge}" seriesFilters="[]">
 												<mx:series>
 													<mx:LineSeries yField="goal" xField="day" interactive="false">
 														<mx:lineStroke>
@@ -1263,19 +1265,19 @@
 										</s:VGroup>
 										
 									</s:HGroup>
+									
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12" visible="{model.dateRange != DateRanges.DAY}" includeInLayout="{model.dateRange != DateRanges.DAY}">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Water" />
+										<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
+										
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="8 cups or more" />
+											<nutrition:WaterIntakeMeter id="waterIntakeChart" horizontalGap="6" paddingTop="4" max="8" value="{!model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8}" mouseChildren="false" />
+										</s:VGroup>
+										
+									</s:HGroup>
 								</s:VGroup>
-								
-								<s:HGroup verticalAlign="middle" gap="7" paddingTop="12" visible="{model.dateRange != DateRanges.DAY}" includeInLayout="{model.dateRange != DateRanges.DAY}">
-									
-									<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Water" />
-									<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
-									
-									<s:VGroup gap="1" paddingTop="-10">
-										<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="8 cups or more" />
-										<nutrition:WaterIntakeMeter id="waterIntakeChart" horizontalGap="6" paddingTop="4" max="8" value="{!model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8}" mouseChildren="false" />
-									</s:VGroup>
-									
-								</s:HGroup>
 								
 							</s:VGroup>
 							
