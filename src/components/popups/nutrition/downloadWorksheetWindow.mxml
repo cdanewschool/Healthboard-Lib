@@ -20,8 +20,8 @@
 	<s:Label text="Download Worksheet" fontWeight="bold" fontSize="16" paddingBottom="11" paddingLeft="8" />
 	
 	<s:VGroup paddingLeft="24" paddingTop="9">
-		<s:Label text="Do you want to download your food plan worksheet?" fontWeight="bold" />
-		<s:Label text="{'Name: My Food Plan Worksheet\nType: Adobe Acrobat 7.0 Document, 100KB'}" paddingTop="14" />
+		<s:Label text="Do you want to download your food journal worksheet?" fontWeight="bold" />
+		<s:Label text="{'Name: My Food Journal Worksheet\nType: Adobe Acrobat 7.0 Document, 100KB'}" paddingTop="14" />
 	</s:VGroup>
 	
 	<s:HGroup width="100%" horizontalAlign="right" paddingTop="23">
