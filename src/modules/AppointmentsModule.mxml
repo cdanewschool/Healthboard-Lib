@@ -707,10 +707,6 @@
 						
 					</s:HGroup>
 					
-					<s:HGroup gap="0">
-						<s:Button width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="onListClick()" chromeColor="0xFF931E" />
-					</s:HGroup>
-					
 				</s:BorderContainer>
 				
 				<mx:ViewStack id="stackViews" width="100%" height="100%" creationPolicy="all" creationComplete="{stackViews.selectedIndex = currentState==STATE_PROVIDER?2:0}">	<!--setting creationPolicy="all" so that we can set appointmentsList.selectedItem when selecting an appointment from MonthView-->
