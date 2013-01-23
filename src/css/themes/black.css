@@ -107,12 +107,13 @@ enhancedtitlewindow|EnhancedTitleWindow {
 .ruledGrid mx|GridItem { borderColor:#BCBBBB; borderAlpha: .3; borderStyle:solid; paddingLeft: 4; paddingRight: 4; paddingTop: 4; paddingBottom: 0; }
 
 /*	link button	*/
-.linkButtonStyle1{ color: "0xAEDEE4"; textRollOverColor: "0xAEDEE4"; textSelectedColor: "0xAEDEE4"; }		/*	light blue	*/	/*	PublicHealthAdvisoryItemRenderer	*/
+.linkButtonStyle1{ color: "0xAEDEE4"; textRollOverColor: "0xAEDEE4"; textSelectedColor: "0xAEDEE4";}		/*	light blue	*/	/*	PublicHealthAdvisoryItemRenderer	*/
 .linkButtonStyle2{ color: "0x064E71"; textRollOverColor: "0x064E71"; textSelectedColor: "0x064E71";}		/*	dark blue	*/
 .linkButtonStyle3{ color: "0xE6E6E6"; textRollOverColor: "0xE6E6E6"; textSelectedColor: "0xE6E6E6";}		/*	light gray	*/
 .linkButtonStyle4{ color: "0xB3B3B3"; textRollOverColor: "0xE6E6E6"; textSelectedColor: "0xE6E6E6";}		/*	yellow	*/
 .linkButtonStyle5{ color: "0xFF931E"; textRollOverColor: "0xFF931E"; textSelectedColor: "0xFF931E";}		/*	orange	*/
 .linkButtonStyle6{ color: "0xFFFFFF"; textRollOverColor: "0xFFFFFF"; textSelectedColor: "0xFFFFFF";}		/*	white	*/
+.linkButtonStyle7{ color: "0x28285B"; textRollOverColor: "0x28285B"; textSelectedColor: "0x28285B";}		/*	darker blue	*/
 
 /*	navigator content	*/
 .navigatorContent { backgroundColor: "0x333333"; }	/*	ViewPublicHealthAdvisories	*/
