@@ -695,11 +695,6 @@
 						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('/images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
 					</s:HGroup>
 					
-					<s:HGroup gap="0">
-						<s:Button id="btnNutChart" width="29" height="24" icon="@Embed('/images/btnNutritionChart.png')" chromeColor="0xFF931E" /><!--click="switchExercisePerView(0);"-->
-						<s:Button id="btnNutList" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" styleName="buttonText" /><!--click="switchExercisePerView(1);" click="switchVitalView(1)" PopUpManager.removePopUp(myChartPopup); (under click)-->
-					</s:HGroup>
-					
 				</s:BorderContainer>
 				
 				<s:Line xFrom="0" xTo="974">
