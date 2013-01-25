@@ -39,10 +39,10 @@
 		<s:BasicLayout id="layout" />
 	</s:layout>
 	
-	<s:Label width="100%" text="{confirmationText}" styleName="darkGrayBold16" textAlign="center" paddingTop="10" />
+	<s:Label width="100%" text="{confirmationText}" styleName="darkGrayBold16" textAlign="center" paddingTop="12" />
 	
-	<s:HGroup horizontalAlign="center" width="100%" bottom="10">
-		<s:Button label="Confirm" click="close()" />
+	<s:HGroup horizontalAlign="center" width="100%" bottom="14">
+		<s:Button label="Confirm" height="24" click="close()" />
 	</s:HGroup>
 	
 </s:TitleWindow>
