@@ -75,7 +75,7 @@
 					</fx:Script>
 					
 					<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="outerDocument.updateValue( index );" visible="{outerDocument.value &lt; index}" includeInLayout="{outerDocument.value &lt; index}" />
-					<s:Image source="@Embed('/images/nutritionGlassFull.png')" buttonMode="true" click="outerDocument.updateValue( outerDocument.value >= index ? index-1 : index );" visible="{outerDocument.value >= (index)}" includeInLayout="{outerDocument.value >= (index)}" />
+					<s:Image source="@Embed('/images/nutritionGlassFullNew.png')" buttonMode="true" click="outerDocument.updateValue( outerDocument.value >= index ? index-1 : index );" visible="{outerDocument.value >= (index)}" includeInLayout="{outerDocument.value >= (index)}" />
 					
 				</mx:HBox>
 				
