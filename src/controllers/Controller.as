@@ -27,11 +27,15 @@ package controllers
 	import models.NextStep;
 	import models.PatientsModel;
 	import models.Preferences;
+	import models.ProviderModel;
+	import models.ProvidersModel;
 	import models.UserModel;
 	import models.modules.AppointmentsModel;
 	import models.modules.ImmunizationsModel;
 	import models.modules.MedicalRecordsModel;
 	import models.modules.MedicationsModel;
+	import models.modules.appointments.PatientAppointment;
+	import models.modules.medicalrecords.MedicalRecord;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
@@ -43,6 +47,7 @@ package controllers
 	import mx.events.StyleEvent;
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
+	import mx.rpc.events.ResultEvent;
 	import mx.states.State;
 	
 	import spark.components.Application;
@@ -61,6 +66,7 @@ package controllers
 		[Bindable] public var messagesController:MessagesController;
 		[Bindable] public var nutritionController:NutritionController;
 		[Bindable] public var patientsController:PatientsController;
+		[Bindable] public var providersController:ProvidersController;
 		[Bindable] public var vitalSignsController:VitalSignsController;
 		
  		private var _model:ApplicationModel;
@@ -85,6 +91,7 @@ package controllers
 			messagesController = new MessagesController();
 			nutritionController = new NutritionController();
 			patientsController = new PatientsController();
+			providersController = new ProvidersController();
 			vitalSignsController = new VitalSignsController();
 			
 			application = FlexGlobals.topLevelApplication as Application;
@@ -108,11 +115,12 @@ package controllers
 		protected function init():void
 		{
 			patientsController.model.dataService.send();
+			providersController.model.dataService.send();
 		}
 		
 		protected function get initialized():Boolean
 		{
-			return patientsController.model.dataLoaded;
+			return patientsController.model.dataLoaded && providersController.model.dataLoaded;
 		}
 		
 		protected function onInitialized():void
@@ -124,10 +132,16 @@ package controllers
 			onInitialized();
 		}
 		
+		protected function onProvidersLoaded(event:ApplicationDataEvent):void 
+		{
+			onInitialized();
+		}
+		
 		public function getUserById( id:int, type:String = null ):UserModel
 		{
 			var user:UserModel;
-			var users:ArrayCollection = PatientsModel(patientsController.model).patients;
+			
+			var users:ArrayCollection = (type==UserModel.TYPE_PROVIDER?ProvidersModel(providersController.model).providers:PatientsModel(patientsController.model).patients);
 			
 			for each(user in users) if( user.id == id ) return user;
 			

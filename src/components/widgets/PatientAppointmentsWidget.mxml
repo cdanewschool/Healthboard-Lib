@@ -15,6 +15,7 @@
 			import events.ApplicationEvent;
 			
 			import models.modules.AppointmentsModel;
+			import models.modules.appointments.PatientAppointment;
 			
 			import spark.filters.DropShadowFilter;
 			
@@ -23,7 +24,7 @@
 			[Bindable] public var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController;
 			[Bindable] private var model:AppointmentsModel = controller.model as AppointmentsModel;
 			
-			[Bindable] private var selectedAppointment:Object;
+			[Bindable] private var selectedAppointment:PatientAppointment;
 			
 			override protected function commitProperties():void
 			{
@@ -32,11 +33,11 @@
 				if( selectedAppointment )
 				{
 					month.text = Constants.MONTHS[ selectedAppointment.date.month ].toUpperCase();
-					date.text = selectedAppointment.date.date;
+					date.text = selectedAppointment.date.date.toString();
 					
 					appointmentTime.label = Constants.DAYS[ selectedAppointment.date.day ].toUpperCase() + ' ' + StringUtil.leftPad(selectedAppointment.hour) + ':' + StringUtil.leftPad(selectedAppointment.mins.toString()) + ' ' + selectedAppointment.meridiem.toUpperCase();
 					
-					details.text = selectedAppointment.desc + '\n' + selectedAppointment.provider + '\n(999) 999-9999';
+					details.text = selectedAppointment.description + '\n' + selectedAppointment.provider.fullNameAbbreviated + '\n(999) 999-9999';
 				}
 			}
 			

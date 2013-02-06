@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<providers>
+
+	<!-- logged-in provider -->
+	<provider 
+		id="1"
+		firstName="Gregory" lastName="Berg" 
+		birthdate="01/01/1963" sex="1"
+		email="berggre123@nnmc.com" phone="2122921227"
+		street1="123 Woodeld Road" street2="" city="Besthesda" state="MD" zip="20889"
+		education="M.D., Howard University College of Medicine, Washington, DC, 1990&#10;B.S., Duke University, Durham, NC, 1984"
+		location="NMMC" office="Room 204 Building B" 
+		certification="American Board of Surgery&#10;American Board of Internal Medicine" department="General care" 
+		specialty="General Practice" status="Certified" role="MD" team="1"
+		emergencyName="Virginia Berg" emergencyRelation="0" emergencyPhone1="212-123-4567" emergencyPhone2="212-123-4568"
+		username="Berg2012" password="gregory" securityQuestion="0" securityAnswer="Woolf" 
+		available="U" 
+		/>
+	
+	<!-- 	other providers -->
+	<provider id="2" team="1" role="MD" available="A" firstName="Neil" lastName="Greenfield" department="General care" location="NMMC" specialty="Family Medicine" status="Certified" />
+	<provider id="3" team="1" role="MD" available="A" firstName="Michael" lastName="McKinley" department="General care" location="NMMC" specialty="General Practice" status="Certified" />
+	<provider id="4" team="1" role="RN" available="A" firstName="Angela" lastName="Tritle" department="General care" location="NMMC" specialty="Diabetes" status="Certified" />
+	<provider team="1" role="RN" available="A" firstName="Amanda" lastName="Renshaw" department="General care" location="NMMC" specialty="Pain Management" status="Certified" />
+	<provider team="1" role="LPN" available="A" firstName="Nina" lastName="Tottenberg" department="General care" location="NMMC" specialty="Office Nursing" status="Certified" />
+	<provider team="1" role="LPN" available="A" firstName="Mark" lastName="Rowell" department="General care" location="NMMC" specialty="Office Nursing" status="Certified" />
+	<provider team="1" role="LPN" available="A" firstName="Robert" lastName="Massie" department="General care" location="NMMC" specialty="Hospital Nursing" status="Certified" />
+	<provider team="1" role="LPN" available="U" firstName="David" lastName="Memmott" department="General care" location="NMMC" specialty="Military Nursing" status="Certified" />
+	<provider team="1" role="Admin" available="A" firstName="Barb" lastName="Ferguson" department="General care" location="NMMC" specialty="" status="" />
+	<provider team="1" role="Admin" available="A" firstName="Steve" lastName="Speth" department="General care" location="NMMC" specialty="" status="" />
+	<provider team="1" role="Admin" available="A" firstName="Grant" lastName="Bill" department="General care" location="NMMC" specialty="" status="" />
+	
+	<provider team="2" role="MD" available="A" firstName="Barbara" lastName="Stowe" department="General care" location="NMMC" specialty="Family medicine" status="Certified" />
+	<provider team="2" role="MD" available="A" firstName="Steve" lastName="Grant" department="General care" location="NMMC" specialty="General practice pediatrics" status="Certified" />
+	<provider team="2" role="MD" available="A" firstName="Linton" lastName="Barrick" department="General care" location="NMMC" specialty="General practice" status="Certified" />
+	<provider team="2" role="RN" available="A" firstName="Karen" lastName="Clark" department="General care" location="NMMC" specialty="Pain Management" status="Certified" />
+	<provider team="2" role="RN" available="A" firstName="Peter" lastName="Russell" department="General care" location="NMMC" specialty="Interventional Radiology" status="Certified" />
+	<provider team="2" role="LPN" available="A" firstName="Angela" lastName="Lansbury" department="General care" location="NMMC" specialty="Military Nursing" status="Certified" />
+	<provider team="2" role="LPN" available="A" firstName="Nanny" lastName="McPhee" department="General care" location="NMMC" specialty="Hospital Nursing" status="Certified" />
+	<provider team="2" role="LPN" available="A" firstName="Jessica" lastName="Fletcher" department="General care" location="NMMC" specialty="Military Nursing" status="Certified" />
+	
+</providers>
