@@ -27,6 +27,11 @@ package util
 			return date;
 		}
 		
+		public static function dateCompare( date1:Date, date2:Date ):Boolean
+		{
+			return date1.fullYear == date2.fullYear && date1.month == date2.month && date1.date == date2.date;
+		}
+		
 		public static function compareByDate( item:Object, item2:Object, fields:Array = null):int
 		{
 			if( item.date.time > item2.date.time ) return 1;
@@ -58,6 +63,15 @@ package util
 			
 			if( dateParts[1] == "*" ) 
 				dateParts[1] = now.date;
+			else if( new RegExp( />/ ).exec( dateParts[1] ) != null )
+			{
+				now.date += 1;
+				
+				while( now.day != parseInt( dateParts[1].substr(1) ) )
+				{
+					now.date += 1;
+				}
+			}
 			else if( new RegExp( /-|\+/ ).exec( dateParts[1] ) == null )
 				now.date = parseInt( dateParts[1] );
 			else 
