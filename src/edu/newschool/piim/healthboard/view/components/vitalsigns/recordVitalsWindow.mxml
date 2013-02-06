@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="385" height="467"
+			   close="PopUpManager.removePopUp(this);" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow" color="0x000000" initialize="addAdditionalTrackers()">
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.controller.VitalSignsController;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			
+			import edu.newschool.piim.healthboard.model.module.VitalSignsModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			
+			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
+			[Bindable] private var model:VitalSignsModel = controller.model as VitalSignsModel;
+			
+			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
+			protected function dropDownCalendar_openHandler(event:DropDownEvent):void 
+			{
+				dateChooser.addEventListener(MouseEvent.MOUSE_DOWN, stopPropagation, false, 0, true);
+			}
+			
+			protected function stopPropagation(event:Event):void 
+			{
+				event.stopImmediatePropagation();
+			}
+			
+			protected function dateChooser_changeHandler(event:CalendarLayoutChangeEvent):void 
+			{
+				txtDate.text = DateUtil.get10DigitDate(dateChooser.displayedMonth + 1 + '/' + dateChooser.selectedDate.date + '/' + dateChooser.displayedYear);
+				dropDownCalendar.closeDropDown(true);					
+			}
+			
+			private function addAdditionalTrackers():void 
+			{
+				for(var i:uint = 7; i < model.vitalSigns.length; i++) 
+				{
+					/* <s:HGroup verticalAlign="middle" gap="5">
+						<s:Label text="Weight:" textAlign="right" width="103" paddingRight="7" />
+						<s:TextInput id="txtWeight" width="72" height="24" />
+						<s:Label text="pounds" color="0x666666" />
+					</s:HGroup> */
+						
+					var myHGroup:HGroup = new HGroup();
+					myHGroup.verticalAlign = "middle";
+					myHGroup.gap = 5;
+					
+					var myVitalLabel:Label = new Label();
+					myVitalLabel.text = model.vitalSigns.getItemAt(i-1).vital + ":";
+					myVitalLabel.setStyle("textAlign","right");
+					myVitalLabel.width = 103;
+					myVitalLabel.setStyle("paddingRight",7);
+					
+					var myTextInput:TextInput = new TextInput();
+					myTextInput.width = 72;
+					myTextInput.height = 24;
+					
+					var myUnitsLabel:Label = new Label();
+					myUnitsLabel.text = model.vitalSigns.getItemAt(i-1).units;
+					myUnitsLabel.setStyle("color",0x666666);
+					
+					myHGroup.addElement(myVitalLabel);
+					myHGroup.addElement(myTextInput);
+					myHGroup.addElement(myUnitsLabel);
+					vgVitalFields.addElement(myHGroup);
+					this.height += 32;
+				}
+			}
+			
+			private function addRecord():void 
+			{
+				controller.updateVitalIndices();
+				
+				txtDate.text = DateUtil.get10DigitDate(txtDate.text);	//ensure date field has 10 digits, because if it accidentally has something like 9/24/2012; it won't be recognized when viewing the vital record later.
+				
+				if(txtWeight.text != "") 
+				{
+					var weightStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (length-- using -1 wasn't working), otherwise we added before the end (-2)
+					var newWeight:Object = new Object();
+					
+					newWeight = ({value:txtWeight.text, expectation:model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chart.getItemAt(0).data.getItemAt(0).expectation, date:txtDate.text, type:'patient', vital:'weight'});
+					model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chart.getItemAt(0).data.source.splice( weightStartIndex, 0, newWeight );
+					
+					if(Number(txtWeight.text) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chartMax - 10)) 
+						model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chartMax = Number(txtWeight.text) + 10;
+					else if(Number(txtWeight.text) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Weight')).chartMin + 10)) 
+						model.vitalSigns.getItemAt( model.vitalIndices.indexOf('Weight') ).chartMin = Number(txtWeight.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(model.weightMax)) 
+						model.weightMax = txtDate.text;
+					
+					//	here maybe if you want you could do it so that this is true IF the new date (PLUS 30 DAYS) is greater than the weightChartMax
+					if(new Date(txtDate.text) > model.weightChartMax) 
+					{	
+						var myNewDate:Date = new Date(txtDate.text);
+						
+						if(myNewDate.getDate() < 22) myNewDate.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						myNewDate.setMonth(myNewDate.getMonth() + 1);
+						model.weightChartMax = myNewDate;
+					}
+				}
+				
+				if(txtBloodPressure1.text != "" && txtBloodPressure2.text != "") 
+				{
+					var bloodPressureStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					var newBloodPressure:Object = new Object();
+					
+					newBloodPressure = ({value:txtBloodPressure1.text, expectation:model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(0).expectation, value2:txtBloodPressure2.text, expectation2:model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.getItemAt(0).expectation2, date:txtDate.text, type:'patient', vital:'bloodPressure'});
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chart.getItemAt(0).data.source.splice(bloodPressureStartIndex,0,newBloodPressure);
+					
+					if(Number(txtBloodPressure1.text) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMax - 20)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMax = Number(txtBloodPressure1.text) + 20;
+					else if(Number(txtBloodPressure2.text) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMin + 20)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Blood pressure')).chartMin = Number(txtBloodPressure2.text) - 20;
+					
+					if(new Date(txtDate.text) > new Date(model.bloodPressureMax)) 
+						model.bloodPressureMax = txtDate.text;
+					
+					if(new Date(txtDate.text) > model.bloodPressureChartMax) 
+					{
+						var myNewDate2:Date = new Date(txtDate.text);
+						if(myNewDate2.getDate() < 22) myNewDate2.setDate(22);		//this is a quick fix to ensure the graph doesn't get resized due to the position of the axis's labels.
+						myNewDate2.setMonth(myNewDate2.getMonth() + 1);
+						model.bloodPressureChartMax = myNewDate2;
+					}
+				}
+				
+				if(txtHeartRate.text != "") 
+				{
+					var heartRateStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					
+					var newHeartRate:Object = new Object();
+					newHeartRate = ({value:txtHeartRate.text, expectation:65, date:txtDate.text, type:'patient', vital:'heartRate'});
+					
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chart.getItemAt(0).data.source.splice(heartRateStartIndex,0,newHeartRate);
+					
+					if(Number(txtHeartRate.text) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chartMax - 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chartMax = Number(txtHeartRate.text) + 10;
+					else if(Number(txtHeartRate.text) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chartMin + 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Heart rate')).chartMin = Number(txtHeartRate.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(model.heartRateMax)) 
+						model.heartRateMax = txtDate.text;
+				}
+				
+				if(txtRespiratory.text != "") 
+				{
+					var respiratoryStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					
+					var newRespiratory:Object = new Object();
+					newRespiratory = ({value:txtRespiratory.text, expectation:18, date:txtDate.text, type:'patient', vital:'respiratory'});
+					
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chart.getItemAt(0).data.source.splice(respiratoryStartIndex,0,newRespiratory);
+					
+					if(Number(txtRespiratory.text) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chartMax - 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chartMax = Number(txtRespiratory.text) + 10;
+					else if(Number(txtRespiratory.text) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chartMin + 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Respiratory')).chartMin = Number(txtRespiratory.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(model.respiratoryMax)) 
+						model.respiratoryMax = txtDate.text;
+				}
+				
+				if(txtTemperature.text != "") 
+				{
+					var temperatureStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					
+					var newTemperature:Object = new Object();
+					newTemperature = ({value:txtTemperature.text, expectation:98, date:txtDate.text, type:'patient', vital:'temperature'});
+					
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chart.getItemAt(0).data.source.splice(temperatureStartIndex,0,newTemperature);
+					
+					if(Number(txtTemperature.text) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chartMax - 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chartMax = Number(txtTemperature.text) + 10;
+					else if(Number(txtTemperature.text) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chartMin + 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Temperature')).chartMin = Number(txtTemperature.text) - 10;
+					
+					if(new Date(txtDate.text) > new Date(model.temperatureMax)) 
+						model.temperatureMax = txtDate.text;
+				}
+				
+				if(txtHeightFeet.text != "" && txtHeightInches.text != "") 
+				{
+					var heightStartIndex:int = (new Date(txtDate.text) >= new Date(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.length - 1).date)) ? model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.length : -2;	//if the new date is the latest one, we add the new object at the end of the array (-1), otherwise we added before the end (-2)
+					
+					var newHeight:Object = new Object();
+					newHeight = ({value:(Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)), expectation:71, date:txtDate.text, type:'patient', vital:'height'});
+					
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.source.splice(heightStartIndex,0,newHeight);
+					
+					if((Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) > (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chartMax - 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chartMax = (Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) + 10;
+					else if((Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) < (model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chartMin + 10)) 
+						model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chartMin = (Number(txtHeightFeet.text) * 12 + Number(txtHeightInches.text)) - 10;
+					
+					if(new Date(txtDate.text) > new Date(model.heightMax)) 
+						model.heightMax = txtDate.text;
+				}
+				
+				if(txtComments.text != "") {
+					var newComment:Object = new Object();
+					newComment = ({type:'patient',expectation:'expectation',author:AppProperties.getInstance().controller.model.user.fullName,datePatient:txtDate.text,comments:txtComments.text, vital:'comments'});
+					
+					model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Comments')).chart.getItemAt(0).data.addItem(newComment);
+					
+					if(new Date(txtDate.text) > new Date(model.commentsMax)) model.commentsMax = txtDate.text;
+				}
+
+				var newChartMax:Date = new Date(txtDate.text);
+				newChartMax.setDate(newChartMax.getDate() + 8);
+				
+				//	this is a quick and dirty way of forcing the chart to refresh, by resetting parentApplication.chartMax (in this case to itself)
+				var newChartMaxDummy:Date = new Date(model.dateMax.getFullYear(), model.dateMax.getMonth(), model.dateMax.getDate());
+				
+				//may need to re-do this in a way so the chartMax is always reset, cause apparently the charts only get updated when this gets updated.
+				if(new Date(txtDate.text) > model.dateMax) 
+					model.dateMax = newChartMax;
+				else 
+					model.dateMax = newChartMaxDummy;
+				
+				//	ADDING TO arrVitalSignsByDate FOR THE LIST VIEW
+				//	if any field is entered?
+				var entryByDate:Object = new Object();
+				var myNewHeight:String = txtHeightFeet.text != "" ? txtHeightFeet.text + "'" + txtHeightInches.text + "''" : "";
+				var myNewHeightInInches:uint = txtHeightFeet.text != "" ? int(txtHeightFeet.text) * 12 + int(txtHeightInches.text) : model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.getItemAt(model.vitalSigns.getItemAt(model.vitalIndices.indexOf('Height')).chart.getItemAt(0).data.length - 1).value;
+				var myNewWeightBMI:String = txtWeight.text == '' ? '' : txtWeight.text + ' / ' + String(int(((int(txtWeight.text) * 703) / Math.pow(myNewHeightInInches, 2))*10)/10);
+				var myNewBloodPressure:String = txtBloodPressure1.text == '' ? '' : txtBloodPressure1.text + '/' + txtBloodPressure2.text;
+				
+				var comments:ArrayCollection = new ArrayCollection( [ { comment:txtComments.text,author:'You',date:new Date()} ] );
+				
+				entryByDate = {date: DateUtil.get10DigitDate(txtDate.text), weightBMI: myNewWeightBMI, bloodPressure: myNewBloodPressure, heartRate: txtHeartRate.text, respiratory: txtRespiratory.text, temperature: txtTemperature.text, height: myNewHeight, comments: comments, author: 'You'};
+				model.vitalSignsByDate.addItem(entryByDate);
+				
+				model.vitalSigns.refresh();
+				model.vitalSignsByDate.refresh();
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your vital has been recorded";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="Record Vitals" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	
+	<s:VGroup id="vgVitalFields" gap="8" paddingTop="2">
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Weight:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtWeight" width="72" height="24" />
+			<s:Label text="pounds" color="0x666666" />
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Blood pressure:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtBloodPressure1" width="72" height="24" />
+			<s:Label text="/" color="0x666666" />
+			<s:TextInput id="txtBloodPressure2" width="72" height="24" />
+			<s:Label text="mmHg" color="0x666666" />
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Heart rate:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtHeartRate" width="72" height="24" />
+			<s:Label text="beats / minute" color="0x666666" />
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Respiratory:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtRespiratory" width="72" height="24" />
+			<s:Label text="breaths / minute" color="0x666666" />
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Temperature:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtTemperature" width="72" height="24" />
+			<s:Label text="degrees Fahrenheit" color="0x666666" />
+		</s:HGroup>
+		
+		<s:HGroup verticalAlign="middle" gap="5">
+			<s:Label text="Height:" textAlign="right" width="103" paddingRight="7" />
+			<s:TextInput id="txtHeightFeet" width="72" height="24" />
+			<s:Label text="feet" color="0x666666" />
+			<s:TextInput id="txtHeightInches" width="72" height="24" />
+			<s:Label text="inches" color="0x666666" />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	<s:HGroup paddingTop="25" verticalAlign="middle" gap="5">
+		
+		<s:Label text="Date collected:" textAlign="right" width="103" paddingRight="7" />
+		
+		<s:TextInput id="txtDate" width="88" height="24" text="{DateUtil.get10DigitDate((new Date().getMonth() + 1) + '/' + new Date().getDate() + '/' + new Date().getFullYear())}" />		
+		
+		<s:HGroup paddingTop="-2" paddingLeft="-3">
+			
+			<s:DropDownList id="dropDownCalendar" dropShadowVisible="false" skinClass="edu.newschool.piim.healthboard.view.skins.general.MyCalendarDropDownListSkin" itemRenderer="spark.skins.spark.DefaultComplexItemRenderer" width="25" requireSelection="false" open="dropDownCalendar_openHandler(event)" click="{event.stopImmediatePropagation()}"> 
+				<s:dataProvider>
+					<s:ArrayList>
+						<mx:DateChooser 
+							id="dateChooser" showToday="true"
+							contentBackgroundColor="0x3C3C3B" borderColor="0x4D4D4D" color="0xEDEDED" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x3C3C3B" todayColor="0xD6D6D6" headerStyleName="dateChooserVitalGrayHeader"
+							fontSize="11" change="dateChooser_changeHandler(event)" />
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+			
+		</s:HGroup>	
+	</s:HGroup>
+	
+	<s:HGroup paddingTop="25" gap="12" verticalAlign="top">
+		<s:Label text="Comments:" textAlign="right" width="96" paddingTop="8" />
+		<s:TextArea id="txtComments" width="225" height="71" />
+	</s:HGroup>
+
+	<s:HGroup paddingTop="30" paddingBottom="6">
+		<s:Line xFrom="0" xTo="356">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Add Record" styleName="buttonText" height="24" click="addRecord()" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+	
+</s:TitleWindow>

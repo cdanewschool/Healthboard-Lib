@@ -1,0 +1,920 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:components="edu.newschool.piim.healthboard.view.components.*"
+	xmlns:general="components.general.*" 
+	xmlns:views="edu.asu.chir.calendar.classes.views.*"
+	creationComplete="init()" xmlns:general1="edu.newschool.piim.healthboard.view.components.general.*">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.Constants;
+			
+			import edu.newschool.piim.healthboard.view.components.general.MainLinkButton;
+			import edu.newschool.piim.healthboard.view.components.general.MultilineLinkButton;
+			import edu.newschool.piim.healthboard.view.components.popups.myAppointmentsWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.myClassesWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.myConfirmCancelWindow;
+			
+			import edu.newschool.piim.healthboard.controller.AppointmentsController;
+			
+			import edu.newschool.piim.healthboard.enum.AppointmentStatus;
+			import edu.newschool.piim.healthboard.enum.AppointmentType;
+			import edu.newschool.piim.healthboard.enum.DateRanges;
+			import edu.newschool.piim.healthboard.enum.RecipientType;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			import edu.newschool.piim.healthboard.events.AppointmentEvent;
+			
+			import edu.asu.chir.calendar.classes.events.CustomEvents;
+			import edu.asu.chir.calendar.classes.model.DataHolder;
+			import edu.asu.chir.calendar.mxml_views.monthCell;
+			
+			import edu.newschool.piim.healthboard.model.Message;
+			import edu.newschool.piim.healthboard.model.NextStep;
+			import edu.newschool.piim.healthboard.model.ProviderModel;
+			import edu.newschool.piim.healthboard.model.module.AppointmentsModel;
+			import edu.newschool.piim.healthboard.model.module.MedicalRecordsModel;
+			import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
+			import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.controls.LinkButton;
+			import mx.events.CloseEvent;
+			import mx.events.CollectionEvent;
+			import mx.events.DataGridEvent;
+			import mx.formatters.DateFormatter;
+			import mx.managers.PopUpManager;
+			
+			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
+			
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			import edu.newschool.piim.healthboard.util.StringUtil;
+			
+			private static const STATE_DEFAULT:String = "default";
+			private static const STATE_PROVIDER:String = "provider";
+			
+			[Bindable] private var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController as AppointmentsController;
+			[Bindable] public var model:AppointmentsModel = controller.model as AppointmentsModel;
+			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] public var showHeader:Boolean = true;
+			
+			private var cancelAppointmentPopup:myConfirmCancelWindow;
+			private var wasGridDisplayedAlready:Boolean = false;
+			
+			private var minDate:Date;
+			private var maxDate:Date;
+			
+			override public function set currentState(value:String):void
+			{
+				super.currentState = value;
+				
+				if( currentState == STATE_PROVIDER )
+				{
+					DataHolder.getInstance().dataProvider.filterFunction = filterByDate;
+					
+					updateDateRange();
+				}
+				else
+				{
+					DataHolder.getInstance().dataProvider.filterFunction = null;
+					DataHolder.getInstance().dataProvider.refresh();
+				}
+				
+				showAppointment();
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				appointmentsList.setStyle( 'alternatingItemColors', currentState == STATE_PROVIDER ? [0x303030,0x303030] : [0x303030,0x3c3c3b]);
+			}
+			
+			private function showAppointment():void
+			{
+				selectedAppointment = DataHolder.getInstance().dataProvider && DataHolder.getInstance().dataProvider.length ? DataHolder.getInstance().dataProvider[ model.currentAppointmentIndex ] : null;
+			}
+			
+			private function setApplicationState( state:String ):void
+			{
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				evt.data = state;
+				dispatchEvent( evt );
+			}
+			
+			private function requestClasses( className:String = '' ):void 
+			{
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true );
+				evt.data = className;
+				dispatchEvent( evt );
+				
+				if( currentState == STATE_DEFAULT ) stackViews.selectedIndex = 1;
+				
+				activateButton( btnCalendarWeek );
+			}
+			
+			private function requestAppointment():void 
+			{
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
+				dispatchEvent( evt );
+				
+				if( currentState == STATE_DEFAULT ) stackViews.selectedIndex = 1;
+				
+				activateButton( btnCalendarWeek );
+			}
+			
+			private function filterByDate( item:Object ):Boolean
+			{
+				var valid:Boolean = true;
+				
+				if( valid ) valid = model.status != AppointmentStatus.ALL ? item.status == model.status : true;
+				if( valid ) valid = minDate && maxDate ? item.date.time > minDate.time && item.date.time < maxDate.time : true;
+				
+				return valid;
+			}
+			
+			//	TODO: make this a button bar, so we don't have to manually set colors
+			private function activateButton( activeButton:Button ):void
+			{
+				if( !activeButton ) return;
+				
+				var buttons:Array = [btnCalendarMonth, btnCalendarWeek, btnCalendarList ];
+				for each(var button:Button in buttons ) button.setStyle("chromeColor", 0xB3B3B3);
+				
+				activeButton.setStyle("chromeColor", 0xFF931E);
+			}
+			
+			[Bindable] private var upcomingAppointmentCount:int = 0;
+			
+			private function populateLeftColumn():void 
+			{
+				var appointments:ArrayCollection = new ArrayCollection( DataHolder.getInstance().dataProvider.source.slice() );
+				var today:Date = AppProperties.getInstance().controller.model.today;
+				
+				var sort:Sort = new Sort();
+				sort.compareFunction = DateUtil.compareByDate;
+				appointments.sort = sort;
+				appointments.refresh();
+				
+				upcomingAppointmentCount = 0;
+				const LEFTCOLUMNMAXAPPTS:uint = 5;
+				var leftColumnApptsCount:uint = 0;
+				
+				upcomingAppts.removeAllElements();
+				
+				for(var i:uint = 0; i < appointments.length; i++) 
+				{
+					var obj:PatientAppointment = appointments[i] as PatientAppointment;
+					
+					if(leftColumnApptsCount < LEFTCOLUMNMAXAPPTS) 
+					{
+						var myUpcomingApptLabel:LinkButton = new MultilineLinkButton();
+						myUpcomingApptLabel.styleName = "linkBtnBlue";
+						myUpcomingApptLabel.setStyle('textAlign', "left");
+						myUpcomingApptLabel.addEventListener(MouseEvent.CLICK,onUpcomingAppointmentClick);
+						
+						if(obj.status != AppointmentStatus.COMPLETED) 
+						{
+							myUpcomingApptLabel.data = obj;
+							
+							var title:String = (obj.provider && obj.provider is ProviderModel ? obj.provider.lastNameAbbreviated + " - " : obj.provider) + obj.description + "\n";
+							title += String(obj.date).substr(0,3) + ", " + String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " hrs";
+							
+							myUpcomingApptLabel.label = title;
+							
+							upcomingAppts.addElement( myUpcomingApptLabel );
+							leftColumnApptsCount++;
+						}
+					}
+
+					if( obj.date.time > today.time ) upcomingAppointmentCount++;
+				}
+				
+				
+				var nextSteps:ArrayCollection = model.nextSteps;
+				
+				nextStepsContainer.removeAllElements();
+				
+				var j:int;
+				
+				for(i=0,j=0;i<nextSteps.length;i++)
+				{
+					if( j == 2 ) break;
+					
+					var nextStep:NextStep = nextSteps.getItemAt(i) as NextStep;
+					
+					if( !nextStep.completed )
+					{
+						var vgroup:VGroup = new VGroup();
+						vgroup.gap = 0;
+						nextStepsContainer.addElement( vgroup );
+						
+						var label:Label = new Label();
+						label.setStyle('truncateToFit', true);
+						label.width = 150;
+						label.text = nextStep.recommendation;
+						label.styleName = "smallText";
+						label.setStyle('paddingLeft',9);
+						label.setStyle('paddingTop',15);
+						vgroup.addElement( label );
+						
+						var hgroup:HGroup = new HGroup();
+						hgroup.setStyle('paddingTop',-5);
+						hgroup.setStyle('paddingBottom',-5);
+						hgroup.setStyle('paddingLeft',-5);
+						vgroup.addElement( hgroup );
+						
+						if( nextStep.area != null )
+						{
+							var linkButton:MainLinkButton = new MainLinkButton();
+							linkButton.data = nextStep;
+							linkButton.label = nextStep.type == "class" ? "Schedule Class" : "Schedule Appointment";
+							linkButton.setStyle('fontSize',10.5);
+							linkButton.setStyle('color','0xAEDEE4');
+							linkButton.setStyle('textRollOverColor','0xAEDEE4');
+							linkButton.setStyle('textSelectedColor','0xAEDEE4');
+							linkButton.addEventListener( MouseEvent.CLICK, onNextStepClick );
+							hgroup.addElement( linkButton );
+						}
+						
+						j++;
+					}
+				}
+			}
+			
+			private function onNextStepClick(event:MouseEvent):void
+			{
+				var nextStep:NextStep = LinkButton(event.target).data as NextStep;
+				
+				if( nextStep.area == "schedule" )
+				{
+					if( nextStep.type == "class" )
+					{
+						requestClasses( nextStep.actionId )
+					}
+					else
+					{
+						stackViews.selectedIndex = 1; 
+						controller.setAvailable( 'set2', nextStep.task );
+					}
+				}
+			}
+			
+			private function onUpcomingAppointmentClick(event:MouseEvent):void
+			{
+				var link:LinkButton = LinkButton(event.currentTarget);
+				
+				selectedAppointment = link.data as PatientAppointment;
+			}
+			
+			private function onCancelAppointmentClick():void 
+			{
+				confirmCancel(selectedAppointment);
+			}
+			
+			private function confirmCancel(myObj:Object):void 
+			{
+				onCancelAppointmentClose();
+				
+				cancelAppointmentPopup = myConfirmCancelWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, myConfirmCancelWindow) as spark.components.TitleWindow );
+				cancelAppointmentPopup.apptToCancel = myObj;
+				cancelAppointmentPopup.addEventListener( CloseEvent.CLOSE, onCancelAppointmentClose );
+				cancelAppointmentPopup.addEventListener( AppointmentEvent.CANCEL_APPOINTMENT, onCancelAppointment );
+				
+				PopUpManager.centerPopUp( cancelAppointmentPopup );
+			}
+			
+			private function onCancelAppointment( event:AppointmentEvent ):void
+			{
+				DataHolder.getInstance().removeEvent( event.data );
+				
+				populateLeftColumn();
+				
+				selectedAppointment = null;
+				cancelledAppointment = event.data;
+				
+				appointmentsList.invalidateList();
+				
+				rightColumn.visible = rightColumn.includeInLayout = false;
+				rightColumnEventCanceled.visible = rightColumnEventCanceled.includeInLayout = true;
+			}
+			
+			private function onCancelAppointmentClose( event:CloseEvent = null ):void
+			{
+				if( !cancelAppointmentPopup ) return;
+				if( cancelAppointmentPopup.parent ) PopUpManager.removePopUp(cancelAppointmentPopup);
+				
+				cancelAppointmentPopup.removeEventListener( CloseEvent.CLOSE, onCancelAppointmentClose );
+				cancelAppointmentPopup.removeEventListener( AppointmentEvent.CANCEL_APPOINTMENT, onCancelAppointment );
+				
+				cancelAppointmentPopup = null;
+				
+				if( event )
+				{
+					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					evt.data = "Your appointment has been cancelled";
+					dispatchEvent( evt );
+				}
+			}
+			
+			private function onDateScroll():void
+			{
+				onDateChange();
+			}
+			
+			private function onDateChange():void
+			{
+				model.currentDate = new Date( dtPicker.displayedYear, dtPicker.displayedMonth, dtPicker.selectedDate.date );
+			}
+			
+			private function getTypeLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return StringUtil.titleCase(appointment.type);
+			}
+			
+			private function getHasNextStepsLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return appointment.nextSteps && appointment.nextSteps.length ? 'Yes' : '';
+			}
+			
+			private function getProviderLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return appointment.provider.lastNameAbbreviated;
+			}
+			
+			// function fires when a cell is being clicked from the Month View
+			private function onMonthViewClick(_event:CustomEvents):void
+			{
+				model.currentDate = _event.object.date;
+				
+				stackViews.selectedIndex = 0;
+				
+				//	TODO: make this a button bar, so we don't have to manually set colors
+				activateButton( btnCalendarMonth );
+			}
+			
+			private function onMonthViewViewClass( event:AppointmentEvent ):void
+			{
+				selectedAppointment = event.data;
+				populateLeftColumn();
+			}
+			
+			private function onMonthViewAddClass( event:AppointmentEvent ):void
+			{
+				var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				evt.data = "Your appointment has been added";
+				dispatchEvent( evt );
+				
+				selectedAppointment = event.data;
+				populateLeftColumn();
+			}
+			
+			private function onMonthViewAddAppointment( event:AppointmentEvent ):void
+			{
+				selectedAppointment = event.data;
+				populateLeftColumn();
+			}
+			
+			// function fires when Save button is clicked from Event From to save an event
+			private function onNewEventAdded( event:CustomEvents ):void
+			{
+				onDateChange();
+				
+				monthView.redraw();
+			}
+			
+			private function onWeekClick():void
+			{
+				stackViews.selectedIndex = 1;
+				
+				activateButton( btnCalendarWeek );
+			}
+			
+			private function onMonthClick():void
+			{
+				stackViews.selectedIndex = 0;
+				
+				activateButton( btnCalendarMonth );
+			}
+			
+			private function onListClick():void
+			{
+				stackViews.selectedIndex = 2;
+				
+				if(wasGridDisplayedAlready) 
+				{
+					//	this refreshes the datagrid! (if the dataProvider was an ArrayCollection, should use invalidateDisplayList() instead.
+					appointmentsList.invalidateList();
+				}
+				
+				wasGridDisplayedAlready = true;
+				
+				activateButton( btnCalendarList );
+			}
+			
+			private function appointmentDateLabelFunction(item:Object, column:DataGridColumn):String 
+			{
+				var mins:String = item.mins == 0 ? "00" : item.mins;
+				
+				return Constants.MONTHS_ABBR[ item.date.getMonth() ] + ' ' + item.date.getDate() + ', ' + item.date.getFullYear() + ' - ' + item.hour + ':' + mins + ' ' + item.meridiem;
+			}
+			
+			private function appointmentsListSelection():void 
+			{
+				selectedAppointment = appointmentsList.selectedItem as PatientAppointment;
+			}
+			
+ 			private var _selectedAppointment:PatientAppointment;
+
+			[Bindable]
+			public function get selectedAppointment():PatientAppointment
+			{
+				return _selectedAppointment;
+			}
+
+			public function set selectedAppointment(value:PatientAppointment):void
+			{
+				if( _selectedAppointment ) _selectedAppointment.selected = false;
+				
+				_selectedAppointment = value;
+				
+				if( selectedAppointment )
+				{
+					selectedAppointment.selected = true;
+					
+					var obj:Object = selectedAppointment;
+					
+					if( appointmentDateStart ) appointmentDateStart.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins);
+					if( appointmentDateEnd ) appointmentDateEnd.text = String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + obj.date.getFullYear() + " at " + (obj.mins == 0 ? (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) : (obj.meridiem != "pm" ? int(obj.hour) : int(obj.hour) + 12) + 1) + ":" + (obj.mins == 0 ? '30' : '00');
+					if( appointmentsList ) appointmentsList.selectedItem = selectedAppointment;
+					
+					model.currentDate = selectedAppointment.date;
+					
+					cancelledAppointment = null;
+				}
+				
+				if( monthView ) monthView.redraw();
+			}
+
+			[Bindable] public var cancelledAppointment:Object;
+			
+			private function viewMedicalRecord():void 
+			{
+				if( currentState == STATE_PROVIDER 
+					&& selectedAppointment.status == AppointmentStatus.COMPLETED ) 
+				{
+					MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingRecord = selectedAppointment.medicalRecords.getItemAt(0) as MedicalRecord;
+				}
+				
+				setApplicationState( Constants.MODULE_MEDICAL_RECORDS );
+			}
+			
+			private function sendMessage(type:String):void 
+			{
+				var message:Message = new Message();
+				
+				if( currentState == 'provider' )
+					message.recipients = [ selectedAppointment.patient ];
+				else
+					message.recipientType = type == "medical" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				event.data = Constants.MODULE_MESSAGES;
+				event.message = message;
+				dispatchEvent( event );
+			}
+			
+			private function onWeekViewViewClass(event:AppointmentEvent):void
+			{
+				selectedAppointment = event.data;
+				
+				dispatchEvent( new CustomEvents( CustomEvents.MONTH_VIEW_CLICK, event.data.date ) );
+			}
+			
+			private function setDateRange(range:String=null):void
+			{
+				model.dateRange = range;
+				
+				updateDateRange();
+			}
+			
+			private function updateDateRange():void 
+			{
+				var today:Date = new Date( model.currentDate.fullYear, model.currentDate.month, model.currentDate.date );
+				
+				minDate = new Date();
+				minDate.time = today.time;
+				
+				maxDate = new Date();
+				maxDate.time = today.time;
+				
+				if(model.dateRange == DateRanges.DAY) 
+				{
+					minDate.time = today.time - DateUtil.DAY
+					maxDate.time = today.time + DateUtil.DAY/2;
+				}
+				else if(model.dateRange == DateRanges.WEEK) 
+				{
+					minDate.time = today.time - DateUtil.WEEK
+					maxDate.time = today.time + DateUtil.WEEK/2;
+				}
+				else if(model.dateRange == DateRanges.MONTH)
+				{
+					minDate.time = today.time - DateUtil.MONTH
+					maxDate.time = today.time + DateUtil.MONTH/2;
+				}
+				else if(model.dateRange == DateRanges.MONTH_THREE) 
+				{
+					minDate.time = today.time - DateUtil.MONTH*3;
+					maxDate.time = today.time + DateUtil.MONTH*3;
+				}
+				else if(model.dateRange == DateRanges.YEAR) 
+				{
+					minDate.time = today.time - DateUtil.YEAR
+					maxDate.time = today.time + DateUtil.YEAR/2;
+				}
+				else if(model.dateRange == DateRanges.YEAR_THREE) 
+				{
+					minDate.time = today.time - DateUtil.YEAR*3;
+					maxDate.time = today.time + DateUtil.YEAR*3/2;
+				}
+				else
+				{
+					minDate = null;
+					maxDate = null;
+				}
+				
+				DataHolder.getInstance().dataProvider.refresh();
+			}
+
+			private function onKeyDown( event:KeyboardEvent ):void
+			{
+				if( event.keyCode == 39 )
+				{
+					model.currentAppointmentIndex = Math.max( model.currentAppointmentIndex + 1, DataHolder.getInstance().dataProvider.length - 1 );
+				}
+				else if( event.keyCode == 37 )
+				{
+					model.currentAppointmentIndex = Math.min( model.currentAppointmentIndex - 1, 0 );
+				}
+				
+				showAppointment();
+			}
+			
+			private function addInitialAppointments():void
+			{
+				DataHolder.getInstance().dataProvider = model.appointments;
+			}
+			
+			private function init():void
+			{
+				weekView.addEventListener( AppointmentEvent.ADD_CLASS, onWeekViewViewClass );
+				weekView.addEventListener( AppointmentEvent.VIEW_CLASS, onWeekViewViewClass );
+				weekView.addEventListener( AppointmentEvent.REQUEST_CLASS, onWeekViewViewClass );
+				
+				monthView.addEventListener( CustomEvents.MONTH_VIEW_CLICK, onMonthViewClick );
+				monthView.addEventListener( AppointmentEvent.ADD_APPOINTMENT, onMonthViewAddAppointment );
+				monthView.addEventListener( AppointmentEvent.ADD_CLASS, onMonthViewAddClass );
+				monthView.addEventListener( AppointmentEvent.VIEW_CLASS, onMonthViewViewClass );
+				
+				model.addEventListener( AppointmentEvent.ADD_APPOINTMENT, onMonthViewAddClass );
+				model.addEventListener( AppointmentEvent.ADD_CLASS, onMonthViewAddClass );
+				
+				addEventListener( KeyboardEvent.KEY_DOWN, onKeyDown );
+				
+				DataHolder.getInstance().addEventListener( CustomEvents.ADD_NEW_EVENT, onNewEventAdded );
+				
+				addInitialAppointments();
+				
+				populateLeftColumn();
+				
+				showAppointment();
+
+				onDateChange();
+				
+				if( model.isRecommending )
+				{
+					if( currentState == STATE_DEFAULT ) stackViews.selectedIndex = 1;
+					
+					activateButton( btnCalendarWeek );
+					
+					model.isRecommending = false;
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<components:ModuleHeader 
+		id="header"
+		icon="@Embed('/images/btnHome.png')" title="Appointments" 
+		actionPrefix="You have" actionCount="{upcomingAppointmentCount}" actionSuffix="appointments in the coming week." showBackground="false"
+		showSearch="true" searchPlaceholder="Search appointments" 
+		visible="{showHeader}" includeInLayout="{showHeader}" />
+	
+	<s:Spacer height="10" />
+	
+	<s:BorderContainer borderColor="0xBDBCBC" cornerRadius="4" backgroundColor="0x4A4A49" width="976">
+		
+		<s:layout>
+			<s:HorizontalLayout horizontalAlign="center" />
+		</s:layout>
+		
+		<s:HGroup>
+			
+			<s:VGroup width="150" height="100%" gap="3">
+				
+				<s:VGroup width="150" height="100%" gap="3" visible="{currentState == STATE_DEFAULT}" includeInLayout="{currentState == STATE_DEFAULT}">
+					
+					<s:Label text="Upcoming" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
+				
+					<s:VGroup id="upcomingAppts" styleName="smallText" paddingLeft="9" paddingTop="15" width="150" gap="14" />
+					
+				</s:VGroup>
+				
+				<s:Label text="Next Steps" styleName="subtitles" textAlign="center" width="100%" paddingTop="23" />
+				
+				<s:VGroup id="nextStepsContainer" gap="3" />
+				
+				<!--
+				<s:Label text="Tetanus Vaccination" styleName="smallText" paddingLeft="9" paddingTop="15" />
+				
+				<s:HGroup paddingTop="-5" paddingBottom="-5" paddingLeft="-1">
+					<mx:LinkButton id="btnScheduleAppt" label="Schedule Appointment" click="{stackViews.selectedIndex = 1; controller.setAvailable('set2', 'Tetanus Vaccination');}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnScheduleAppt.styleName='linkBtnUnderline';}" rollOut="btnScheduleAppt.styleName='linkBtn';" />
+				</s:HGroup>
+				
+				<s:Label text="Gentle Chair Yoga" styleName="smallText" paddingLeft="9" paddingTop="8" />
+				
+				<s:HGroup paddingTop="-5" paddingBottom="-5" paddingLeft="-1">
+					<mx:LinkButton id="btnScheduleClass" label="Schedule Class" click="requestClasses('yogaGentle')" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnScheduleClass.styleName='linkBtnUnderline';}" rollOut="btnScheduleClass.styleName='linkBtn';" />
+				</s:HGroup>
+				-->
+				
+				<s:Spacer height="100%" />
+				
+				<mx:DateChooser 
+					id="dtPicker" selectedDate="{model.currentDate}"
+					scroll="onDateScroll()" change="onDateChange()" 
+					showToday="true" 
+					contentBackgroundColor="0x4A4A49" borderColor="0x4A4A49" color="0xFFFFFF" headerColors="[0xF7F7F7,0xB3B3B3]" selectionColor="0x585858" rollOverColor="0x4A4A49" todayColor="0xD6D6D6" 
+					headerStyleName="dateChooserGrayHeader"
+					fontSize="11" width="160" 
+					visible="{currentState == STATE_DEFAULT}" includeInLayout="{currentState == STATE_DEFAULT}"/>
+				
+			</s:VGroup>
+			
+			<s:BorderContainer width="646" height="625" borderColor="0xBDBCBC" backgroundColor="0X3C3C3B">
+				
+				<s:layout>
+					<s:VerticalLayout paddingBottom="-1" paddingTop="-1" /><!-- negative padding so the top and bottom borders overlap with the calendar's borders (instead of making a double line)-->
+				</s:layout>
+				
+				<s:BorderContainer height="37" width="100%" borderVisible="false" backgroundColor="0x706F6F" includeIn="default">
+					
+					<s:layout>
+						<s:HorizontalLayout paddingTop="6" paddingLeft="6" paddingRight="6" />
+					</s:layout>
+					
+					<s:Button label="+ Request an Appointment" height="24" styleName="buttonText" click="requestAppointment()" />		<!-- click="{weekView.displayAppointments()}" click reference added by damian -->
+					<s:Button label="+ Find a Class" height="24" styleName="buttonText" click="requestClasses()" />
+					<s:Button label="Export" height="24" styleName="buttonText" />
+					<s:Spacer width="100%" />
+					
+					<s:HGroup gap="0">
+						<s:Button id="btnCalendarMonth" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" click="onMonthClick()" chromeColor="0xFF931E" />
+						<s:Button id="btnCalendarWeek" width="29" height="24" icon="@Embed('/images/btnCalendarWeek.png')" click="onWeekClick()" chromeColor="0xB3B3B3" />
+						<s:Button id="btnCalendarList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="onListClick()" chromeColor="0xB3B3B3" />
+					</s:HGroup>
+					
+				</s:BorderContainer>
+				
+				<s:BorderContainer height="37" width="100%" borderVisible="false" backgroundColor="0x706F6F" includeIn="provider">
+					
+					<s:layout>
+						<s:HorizontalLayout paddingTop="6" paddingLeft="6" paddingRight="6" />
+					</s:layout>
+					
+					<s:HGroup width="100%" color="0xFFFFFF" gap="4" paddingTop="1" verticalAlign="middle">
+						<s:Label text="Status:" />
+						<s:DropDownList id="statusSelect" width="100" dataProvider="{AppointmentsModel.STATUSES}" selectedItem="{model.status}" change="{model.status=statusSelect.selectedItem;DataHolder.getInstance().dataProvider.refresh()}" />
+					</s:HGroup>
+					
+					<s:HGroup width="100%" color="0xFFFFFF" gap="0" paddingTop="1" horizontalAlign="right">
+						
+						<s:Label text="Time Range:" paddingTop="6" />
+						
+						<general1:customLinkButton label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="{DateRanges.YEAR}" click="setDateRange(DateRanges.YEAR)" toggle="true" selected="{model.dateRange==DateRanges.YEAR}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="{DateRanges.YEAR_THREE}" click="setDateRange(DateRanges.YEAR_THREE)" selected="{model.dateRange==DateRanges.YEAR_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton label="All" click="setDateRange()" selected="{model.dateRange==null}"  toggle="true" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" />
+						<general1:customLinkButton id="btnMedCustom" label="Custom" />
+						
+					</s:HGroup>
+					
+				</s:BorderContainer>
+				
+				<mx:ViewStack id="stackViews" width="100%" height="100%" creationPolicy="all" creationComplete="{stackViews.selectedIndex = currentState==STATE_PROVIDER?2:0}">	<!--setting creationPolicy="all" so that we can set appointmentsList.selectedItem when selecting an appointment from MonthView-->
+					
+					<views:MonthView id="monthView" label="Month View" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="monthView.currentMonth=model.currentDate.month;monthView.currentYear=model.currentDate.fullYear" showEffect="WipeDown" hideEffect="WipeUp" width="100%" />
+					<views:WeekViewTimeSlots id="weekView" timeSlots="{model.timeSlots}" currentDate="{model.currentDate}" label="Week View" x="0" y="0" horizontalScrollPolicy="off" showEffect="WipeDown" hideEffect="WipeUp" />
+					
+					<mx:VBox showEffect="WipeDown" hideEffect="WipeUp">
+						
+						<general1:AppointmentsDataGrid
+							id="appointmentsList" dataProvider="{DataHolder.getInstance().dataProvider}" styleName="standardDataGrid"
+							width="100%" height="100%"
+							change="appointmentsListSelection()"
+							selectionColor="0xEDA006" 
+							headerHeight="28" 
+							rowHeight="27" verticalGridLines="false" creationComplete="appointmentsList.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE, false, true, 0, null, 0, null, null, 0));"><!--http://www.hsharma.com/air/auto-sort-datagrid-column-in-flex-3/-->	<!--originally rollOverColor="0x286982"--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+							
+							<general1:columns> 
+								<mx:DataGridColumn dataField="date" headerText="Date of Service" width="195" paddingLeft="10" labelFunction="appointmentDateLabelFunction" sortDescending="true"/> 
+								<mx:DataGridColumn dataField="type" headerText="Type" labelFunction="getTypeLabel" /> 
+								<mx:DataGridColumn dataField="provider" headerText="Provider" labelFunction="getProviderLabel" /> 
+								<mx:DataGridColumn dataField="description" headerText="Description" width="135"/> 
+								<mx:DataGridColumn dataField="nextSteps" headerText="Next Steps" labelFunction="getHasNextStepsLabel" />
+								<mx:DataGridColumn dataField="status" headerText="Status"/> 
+							</general1:columns> 
+							
+						</general1:AppointmentsDataGrid>
+						
+					</mx:VBox>
+					
+				</mx:ViewStack>
+				
+			</s:BorderContainer>
+			
+			<s:VGroup id="rightColumn" width="{selectedAppointment!=null?166:0}" visible="{selectedAppointment!=null}" includeInLayout="{selectedAppointment!=null}">
+				
+				<s:Label text="Event Details" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
+				<s:Label id="appointmentProvider" text="{selectedAppointment.type == AppointmentType.MEDICAL ? selectedAppointment.provider.lastNameAbbreviated : selectedAppointment.description}" textAlign="center" width="100%" styleName="smallText" paddingTop="12" />
+				
+				<s:Line xFrom="0" xTo="160" left="20">
+					<s:stroke>
+						<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:HGroup>
+					<s:Label text="From" textAlign="right" width="59" styleName="smallTextBold" />
+					<s:Label id="appointmentDateStart" text="Nov 16, 2011 at 11:00" styleName="smallText" />
+				</s:HGroup>
+				
+				<s:HGroup>
+					<s:Label text="To" textAlign="right" width="59" styleName="smallTextBold" />
+					<s:Label id="appointmentDateEnd" text="Nov 16, 2011 at 11:45" styleName="smallText" />
+				</s:HGroup>
+				
+				<s:Line xFrom="0" xTo="160" left="20">
+					<s:stroke>
+						<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:VGroup id="appointmentDetails" visible="{selectedAppointment.type == AppointmentType.MEDICAL}" includeInLayout="{selectedAppointment.type == AppointmentType.MEDICAL}">
+					
+					<s:HGroup>
+						<s:Label text="Type" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label id="appointmentType" text="{selectedAppointment.type == AppointmentType.MEDICAL ? 'Routine' : 'Class'}" styleName="smallText" />
+					</s:HGroup>
+					
+					<s:HGroup>
+						<s:Label text="Classific." textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label text="Outpatient" styleName="smallText" />
+					</s:HGroup>
+					
+					<s:HGroup>
+						<s:Label text="RFV" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label id="appointmentRFV" text="{selectedAppointment.description}" styleName="smallText" />
+					</s:HGroup>
+					
+					<s:Line xFrom="0" xTo="160" left="20">
+						<s:stroke>
+							<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<s:HGroup>
+						<s:Label text="Phone" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label text="(999) 999-9999" styleName="smallText" />
+					</s:HGroup>
+					
+					<s:HGroup>
+						<s:Label text="Address" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label text="{'The New York Clinic\n99 Main St.\nNew York, NY 11111'}" styleName="smallText" />
+					</s:HGroup>
+					
+				</s:VGroup>
+				
+				<s:Line id="nextStepsLine" xFrom="0" xTo="160" left="20" visible="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" includeInLayout="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}">
+					<s:stroke>
+						<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:VGroup id="vgNextSteps" visible="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" includeInLayout="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" paddingLeft="3">
+					<s:Label text="Next Steps" styleName="smallTextBold" />
+					
+					<s:DataGroup dataProvider="{selectedAppointment.nextSteps}">
+						
+						<s:layout>
+							<s:VerticalLayout />
+						</s:layout>
+						
+						<s:itemRenderer>
+							
+							<fx:Component>
+								
+								<mx:HBox>
+									
+									<fx:Script>
+										<![CDATA[
+											import edu.newschool.piim.healthboard.model.NextStep;
+										]]>
+									</fx:Script>
+									
+									<s:Label styleName="smallText" width="155" text="• {NextStep(data).task}" />
+									
+								</mx:HBox>
+								
+							</fx:Component>
+							
+						</s:itemRenderer>
+						
+					</s:DataGroup>
+					
+				</s:VGroup>
+				
+				<s:VGroup id="classDetails" visible="{selectedAppointment.type != AppointmentType.MEDICAL}" includeInLayout="{selectedAppointment.type != AppointmentType.MEDICAL}">
+					
+					<s:HGroup>
+						<s:Label text="Instructor" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label id="classInstructor" styleName="smallText" text="{selectedAppointment.provider &amp;&amp; selectedAppointment.provider is ProviderModel ? selectedAppointment.provider.fullName : selectedAppointment.provider}" />
+					</s:HGroup>
+					
+					<s:HGroup>
+						<s:Label text="Location" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label text="{'The New York Clinic\n99 Main St.\nNew York, NY 11111'}" styleName="smallText" />
+					</s:HGroup>
+					
+					<s:Line xFrom="0" xTo="160" left="20">
+						<s:stroke>
+							<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+						</s:stroke>
+					</s:Line>
+					
+					<s:HGroup>
+						<s:Label text="Availability" textAlign="right" width="59" styleName="smallTextBold" />
+						<s:Label text="3 seats remaining" styleName="smallText" />
+					</s:HGroup>
+					
+				</s:VGroup>
+				
+				<s:Line xFrom="0" xTo="160" left="20">
+					<s:stroke>
+						<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:HGroup width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5">
+					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == AppointmentType.MEDICAL ? (currentState == 'provider' ? selectedAppointment.patient.fullName : selectedAppointment.provider.lastNameAbbreviated) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
+				</s:HGroup>
+				
+				<s:HGroup id="viewMedicalRecordLink" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED &amp;&amp; selectedAppointment.medicalRecords &amp;&amp; selectedAppointment.medicalRecords.length}" includeInLayout="{viewMedicalRecordLink.visible}">
+					<mx:LinkButton id="btnViewMedicalRecord" label="View Medical Record" click="viewMedicalRecord()" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="btnViewMedicalRecord.styleName='linkBtnUnderline';" rollOut="btnViewMedicalRecord.styleName='linkBtn';" />
+				</s:HGroup>
+				
+				<s:HGroup id="hgCancelAppt" horizontalAlign="center" width="100%" paddingTop="15">
+					<s:Button id="btnCancelAppointment" label="{selectedAppointment.type == AppointmentType.MEDICAL ? '- Cancel Appointment' : '- Cancel Reservation'}" height="24" styleName="buttonText" click="onCancelAppointmentClick()" />
+				</s:HGroup>
+				
+			</s:VGroup>
+			
+			<s:VGroup id="rightColumnEventCanceled" width="166" visible="{cancelledAppointment!=null}" includeInLayout="{cancelledAppointment!=null}">
+				<s:Label text="Event Details" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
+				<s:Label text="Your appointment has been canceled" textAlign="center" width="100%" styleName="smallText" fontStyle="italic" paddingTop="12" paddingLeft="-4" />
+			</s:VGroup>
+		</s:HGroup>
+		
+	</s:BorderContainer>
+	
+</s:VGroup>

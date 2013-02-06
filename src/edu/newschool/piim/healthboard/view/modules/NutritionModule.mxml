@@ -1,0 +1,1719 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:components="edu.newschool.piim.healthboard.view.components.*" 
+	xmlns:plus="net.flexwiz.blog.tabbar.plus.*" 
+	xmlns:general="edu.newschool.piim.healthboard.view.components.general.*"
+	initialize="updateNutritionDatesMonth('thisMonth');" 
+	creationComplete="init();" xmlns:nutrition="edu.newschool.piim.healthboard.view.components.nutrition.*" >
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.enum.DietClassQuantifier;
+			
+			import edu.newschool.piim.healthboard.model.module.nutrition.FoodServing;
+			
+			import mx.collections.Sort;
+			import mx.events.DataGridEvent;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		<fx:Array id="bge">
+			<mx:GridLines gridDirection="vertical" alpha=".7" />
+		</fx:Array>
+	</fx:Declarations>
+
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.model.module.nutrition.FoodPlan;
+			import edu.newschool.piim.healthboard.model.UserModel;
+			import spark.components.TitleWindow;
+			import mx.graphics.LinearGradient;
+			import mx.graphics.GradientEntry;
+			import mx.collections.SortField;
+			import edu.newschool.piim.healthboard.Constants;
+			
+			import edu.newschool.piim.healthboard.view.components.popups.nutrition.downloadWorksheetWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.nutrition.help;
+			import edu.newschool.piim.healthboard.view.components.popups.nutrition.tips;
+			import edu.newschool.piim.healthboard.view.components.tooltips.nutrition.FoodJournalToolTip;
+			import edu.newschool.piim.healthboard.view.components.tooltips.nutrition.FoodPlanToolTip;
+			
+			import edu.newschool.piim.healthboard.controller.NutritionController;
+			
+			import edu.newschool.piim.healthboard.enum.DateRanges;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			
+			import edu.newschool.piim.healthboard.model.module.NutritionModel;
+			
+			import mx.charts.ChartItem;
+			import mx.events.ListEvent;
+			import mx.events.ToolTipEvent;
+			import mx.graphics.IFill;
+			import mx.graphics.SolidColor;
+			import mx.managers.PopUpManager;
+			
+			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
+			
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			
+			[Bindable] [Embed("/images/vitalSignsCommentPatient.png")] public var iconComment:Class;
+			
+			[Bindable] [Embed("/images/nutritionPlateEmpty.png")] public var plateEmpty:Class;
+			[Bindable] [Embed("/images/nutritionPlateFull.png")] public var plateFull:Class;
+			[Bindable] [Embed("/images/nutritionPlateAlmostFull.png")] public var plateAlmostFull:Class;
+			[Bindable] [Embed("/images/nutritionPlatePartial.png")] public var platePartial:Class;
+			[Bindable] [Embed("/images/nutritionPlateAlternative.png")] public var plateAlternative:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalEmpty.png')] public var bigPlateEmpty:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournal.png')] public var bigPlatePartial:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalFull.png')] public var bigPlateFull:Class;
+			[Bindable] [Embed('/images/nutritionFoodJournalAlmostFull.png')] public var bigPlateAlmostFull:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumEmpty.png")] public var bigSodiumEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumPartial.png")] public var bigSodiumPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumFull.png")] public var bigSodiumFull:Class;
+			[Bindable] [Embed("/images/nutritionBigSodiumFullRed.png")] public var bigSodiumFullRed:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsEmpty.png")] public var bigFatsOilsEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsPartial.png")] public var bigFatsOilsPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigFatsOilsFull.png")] public var bigFatsOilsFull:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholEmpty.png")] public var bigAlcoholEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholPartial.png")] public var bigAlcoholPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigAlcoholFull.png")] public var bigAlcoholFull:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterEmpty.png")] public var bigWaterEmpty:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterPartial.png")] public var bigWaterPartial:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterFull.png")] public var bigWaterFull:Class;
+			[Bindable] [Embed("/images/nutritionBigWaterVeryFull.png")] public var bigWaterVeryFull:Class;
+			[Bindable] [Embed('/images/nutritionGauge0.png')] public var gaugeEmpty:Class;
+			[Bindable] [Embed('/images/nutritionGauge1.png')] public var gaugePartial:Class;
+			[Bindable] [Embed('/images/nutritionGauge2.png')] public var gaugeFull:Class;
+			[Bindable] [Embed('/images/nutritionGauge3.png')] public var gaugeAlmostFull:Class;
+			[Bindable] [Embed('/images/nutritionGauge1487.png')] public var gauge1487:Class;
+			[Bindable] [Embed('/images/nutritionGauge1864.png')] public var gauge1864:Class;
+			[Bindable] [Embed('/images/nutritionGauge1921.png')] public var gauge1921:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium0.png')] public var newChartSodium0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium1.png')] public var newChartSodium1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSodium2.png')] public var newChartSodium2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils0.png')] public var newChartFatsOils0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils1.png')] public var newChartFatsOils1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartFatsOils2.png')] public var newChartFatsOils2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar0.png')] public var newChartSugar0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar1.png')] public var newChartSugar1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartSugar2.png')] public var newChartSugar2:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol0.png')] public var newChartAlcohol0:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol1.png')] public var newChartAlcohol1:Class;
+			[Bindable] [Embed('/images/nutritionNewChartAlcohol2.png')] public var newChartAlcohol2:Class;
+			
+			[Bindable] private var controller:NutritionController = AppProperties.getInstance().controller.nutritionController as NutritionController;
+			[Bindable] public var model:NutritionModel = controller.model as NutritionModel;
+			[Bindable] private var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+			
+			[Bindable] private var nutCaloriesXaxisMaximumToday:int = 500;
+			[Bindable] private var nutCaloriesXaxisMaximumCurrent:int = 500;
+			
+			[Bindable] public var showHeader:Boolean = true;
+			
+			[Bindable] private var currentDayDiff:int = 0;
+			[Bindable] private var currentWeekDiff:int = 0;
+			[Bindable] private var currentMonthDiff:int = 0;
+			
+			[Bindable] private var currentDailyPlate:uint = 0;
+			[Bindable] private var currentWeeklyPlate:uint = 1;
+			[Bindable] private var currentMonthlyPlate:uint = 2;
+			[Bindable] private var currentMonth:Date;
+			
+			private var today:Date = AppProperties.getInstance().controller.model.today;
+			private var thisSunday:Date = new Date(today.getTime() - today.getDay() * DateUtil.DAY);
+			private var thisSaturday:Date = new Date(thisSunday.getTime() + 6 * DateUtil.DAY);
+			
+ 			private var _glassesTaken:uint = 0;
+			
+			[Bindable] private var arrMonthlyCalories1:Array = new Array(1900,1970,2000,1900,2150,1800,2000,1900,2050,1750,2000,1900,1750,1800,2100,2000,1900,2000,1800,1800,1900,2150,1600,1900,1700,2000,1650,1800,2200,475);
+			private var arrMonthlyCalories2:Array = new Array(2000,1800,1900,1600,1700,1700,2100,1800,1900,2000,2000,2050,1750,1900,2100,2150,2000,2100,1800,1600,1800,1900,2000,1900,2150,1800,1600,2000,2150,1900);
+			private var arrMonthlyCalories3:Array = new Array(1900,2000,1650,1750,1900,2150,2050,2000,2150,1950,2100,2000,1800,1850,1800,1900,1600,1650,1600,1750,1800,1750,1600,1700,1900,2000,2000,2000,2100,1900);
+			
+			[Bindable] public var nutritionRollOverRowIndex:int = -2;
+			
+			[Bindable] public var mealTypes:Array = new Array('Breakfast','Lunch','Snack','Dinner');
+			
+			[Bindable] private var weeklyAvgCalories:uint = 0;
+			[Bindable] private var monthlyAvgCalories:uint = 0;
+			
+			private var _foodPlan:FoodPlan;
+			
+			public function get foodPlan():FoodPlan
+			{ 
+				return _foodPlan; 
+			}
+			
+			[Bindable] 
+			public function set foodPlan(value:FoodPlan):void
+			{ 
+				if( _foodPlan) _foodPlan.removeEventListener( Event.CHANGE, onFoodPlanChange );
+				
+				_foodPlan = value; 
+				
+				if( _foodPlan ) _foodPlan.addEventListener( Event.CHANGE, onFoodPlanChange );
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( foodPlan )
+				{
+					if( planStartDate ) planStartDate.text = DateFormatters.monthShortDayNumberYearFull.format( foodPlan.startingDate );
+					
+					if( fruitsLabel) fruitsLabel.serving = foodPlan.getFoodGroupById( FoodServing.FRUITS );
+					if( vegetablesLabel) vegetablesLabel.serving = foodPlan.getFoodGroupById( FoodServing.VEGETABLES );
+					if( grainsLabel ) grainsLabel.serving = foodPlan.getFoodGroupById( FoodServing.GRAINS );
+					if( proteinsLabel ) proteinsLabel.serving = foodPlan.getFoodGroupById( FoodServing.PROTEINS );
+					if( dairyLabel ) dairyLabel.serving = foodPlan.getFoodGroupById( FoodServing.DAIRY );
+				}
+			}
+			
+			private function onFoodPlanChange(event:Event):void
+			{
+				invalidateProperties();
+			}
+			
+			[Bindable]
+			public function get glassesTaken():uint
+			{
+				return _glassesTaken;
+			}
+			
+			public function set glassesTaken(value:uint):void
+			{
+				var dirty:Boolean = _glassesTaken != value;
+				
+				_glassesTaken = value;
+				
+				if( dirty )
+				{
+					var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					event.data = "Your water intake has been recorded";
+					dispatchEvent( event );
+				}
+			}
+			
+			private function onNutritionRollOver(event:ListEvent):void
+			{
+				nutritionRollOverRowIndex = event.rowIndex;
+			}
+			
+			private function setState( state:String ):void
+			{
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
+				event.data = state;
+				dispatchEvent( event );
+			}
+			
+			private function showNutritionHelp(selIndex:int = 3):void 
+			{
+				var myHelpWindow:help = help(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, help) as spark.components.TitleWindow);
+				myHelpWindow.viewStackHelp.selectedIndex = selIndex;
+				
+				PopUpManager.centerPopUp(myHelpWindow);
+			}
+			
+			private function handleNutritionMealEntry():void 
+			{
+				model.hasMealBeenSubmitted = true;
+				
+				if(dropDownNutritionMealType.selectedIndex == 1 || dropDownNutritionMealType.selectedIndex == 3) 
+				{
+					model.mealType = 'full';
+					
+					model.summaryCalories.getItemAt(0).calories = 1700;
+					model.summaryCalories.getItemAt(0).caloriesFromExtras = 515;
+					model.summaryCalories.getItemAt(0).extrasFats = 165;
+					model.summaryCalories.getItemAt(0).extrasSugar = 150;
+					model.summaryCalories.getItemAt(0).extrasAlcohol = 200;
+				}
+				else 
+				{
+					model.mealType = 'partial';
+					
+					model.summaryCalories.getItemAt(0).calories = 532;
+					model.summaryCalories.getItemAt(0).caloriesFromExtras = 230;
+					model.summaryCalories.getItemAt(0).extrasFats = 150;
+					model.summaryCalories.getItemAt(0).extrasSugar = 80;
+					model.summaryCalories.getItemAt(0).extrasAlcohol = 0;
+				}
+				
+				model.summaryCalories.refresh();
+				model.dailyCaloriesCurrent.refresh();
+				lblCaloriesDaily.styleName = int(lblCaloriesDaily.text) <= 1600 ? 'greenStandout' : int(lblCaloriesDaily.text) <= 2000 ? 'orangeStandout' : 'redStandout';
+				
+				if( nutComments.text != 'Enter when, where, and why you had the meal.' 
+					&& nutComments.text != '') 
+					btnNutReadComment.visible = true;
+				
+				var portionUnit:String = nutritionPortionTypes.selectedItem;
+				
+				if( portionUnit == 'other' )
+				{
+					portionUnit = nutritionPortionOther.text;
+				}
+				
+				var now:Date = new Date();
+				model.foodJournal.addItem( { meal:dropDownNutritionMealType.selectedItem, portion: numPortion.value + ' ' + portionUnit, ingredients:(nutritionFoodSearch.text != 'Search' && nutritionFoodSearch.text != '') ? nutritionFoodSearch.text : dropDownNutritionSavedMeal.selectedItem, calories:123, date:DateUtil.get10DigitDate((now.getMonth()+1)+'/'+now.getDate()+'/'+now.getFullYear()), comments:(nutComments.text == 'Enter when, where, and why you had the meal.') ? '' : nutComments.text});
+				
+				nutritionJournal.rowCount++;
+				nutritionJournal.rowCount--;		//this is a quick trick to get nutritionJournal.rowCount to refresh
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your meal has been recorded";
+				dispatchEvent( event );
+				
+				clearForm();
+			}
+			
+			private function clearForm():void
+			{
+				dropDownNutritionMealType.selectedIndex = 0;
+				dropDownNutritionSavedMeal.selectedIndex = -1;
+				
+				nutritionFoodSearch.text = "Search";
+				numPortion.value = 1;
+				nutritionPortionTypes.selectedIndex = 0;
+				
+				nutComments.text = "Enter when, where, and why you had the meal.";
+			}
+			
+			private function avg(values:Array):int 
+			{
+				var sum:int = 0;
+				for(var i:uint = 0; i < values.length; i++) 
+				{
+					sum += values[i];
+				}
+				return Math.round(sum/values.length);
+			}
+			
+			private function setDateRange(range:String=null):void
+			{
+				model.dateRange = range;
+				
+				updateDateRange();
+			}
+			
+			private function updateDateRange():void 
+			{
+				var meal:Object;
+				
+				if( model.dateRange == DateRanges.DAY ) 
+				{
+					viewsNutritionJournal.selectedIndex = 0;
+					
+					showJournalPlate(currentDailyPlate);
+					showCurrentDay();
+					
+					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear())
+					}
+				}
+				else if( model.dateRange == DateRanges.WEEK ) 
+				{
+					viewsNutritionJournal.selectedIndex = 1;
+					
+					showJournalPlate(currentWeeklyPlate);
+					showCurrentWeek();
+					
+					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear())
+					}
+				}
+				else if( model.dateRange == DateRanges.MONTH ) 
+				{
+					viewsNutritionJournal.selectedIndex = 2;
+					
+					showJournalPlate(currentMonthlyPlate);
+					showCurrentMonth();
+					
+					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentMonth.getMonth()+1)+'/01/'+currentMonth.getFullYear())
+					}
+				}
+			}
+			
+			private function showJournalPlate(plate:uint):void
+			{
+				//	today's intake
+				if(plate == 0) 
+				{
+					imgNutJournalMyPlate.source = !model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial;		//imgNutJournalMyPlate.source = !model.hasMealBeenSubmitted ? bigPlateEmpty : model.mealType == 'full' ? bigPlateFull : bigPlatePartial;
+					imgSodiumChart.source = !model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1;
+					imgFatsOilsChart.source = !model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1;
+					imgSugarChart.source = !model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1;
+					imgAlcoholChart.source = !model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0;
+					waterIntakeChart.value = !model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8
+				}
+				
+				//	alternative intake 1
+				else if(plate == 1)
+				{
+					imgNutJournalMyPlate.source = plateAlmostFull;		//imgNutJournalMyPlate.source = bigPlateAlmostFull;
+					imgSodiumChart.source = newChartSodium1;
+					imgFatsOilsChart.source = newChartFatsOils1;
+					imgSugarChart.source = newChartSugar1;
+					imgAlcoholChart.source = newChartAlcohol1;
+					waterIntakeChart.value = 8;
+				}
+				
+				//	alternative intake 2
+				else 
+				{
+					imgNutJournalMyPlate.source = plateFull;			//imgNutJournalMyPlate.source = bigPlateFull;
+					imgSodiumChart.source = newChartSodium2;
+					imgFatsOilsChart.source = newChartFatsOils2;
+					imgSugarChart.source = newChartSugar2;
+					imgAlcoholChart.source = newChartAlcohol2;
+					waterIntakeChart.value = 6;
+				}
+			}
+			
+			private var currentDay:Date;
+			private var currentSunday:Date;
+			private var currentSaturday:Date;
+			
+			private function showCurrentDay():void 
+			{
+				currentDay = new Date( today.getTime() + currentDayDiff * DateUtil.DAY );
+				nutJournalDate.text = DateUtil.formatDateFromString((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear());
+			}
+			
+			private function showCurrentWeek():void 
+			{
+				currentSunday = new Date( thisSunday.getTime() + currentWeekDiff * DateUtil.WEEK );
+				currentSaturday = new Date( thisSaturday.getTime() + currentWeekDiff * DateUtil.WEEK );
+				nutJournalDate.text = DateUtil.formatDateFromString((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear()) + ' - ' + DateUtil.formatDateFromString((currentSaturday.getMonth()+1)+'/'+currentSaturday.getDate()+'/'+currentSaturday.getFullYear());
+			}
+			
+			private function showCurrentMonth():void 
+			{
+				currentMonth = new Date( today.getTime() + currentMonthDiff * ((365.2425/12)*DateUtil.DAY) );
+				nutJournalDate.text = Constants.MONTHS[currentMonth.getMonth()] + ', ' + currentMonth.getFullYear();
+				lblNutMonthlyAvg.text = 'Average daily calories for\nthe month of ' + Constants.MONTHS[currentMonth.getMonth()];
+			}
+			
+			private function createCustomTip(title:String, body:String, event:ToolTipEvent):void 
+			{
+				var myToolTip:FoodPlanToolTip = new FoodPlanToolTip();
+				event.toolTip = myToolTip;
+			}
+			
+			public function createCustomTipJournal(event:ToolTipEvent):void 
+			{
+				var myToolTip:FoodJournalToolTip = new FoodJournalToolTip();
+				event.toolTip = myToolTip;
+			}
+			
+			private function onDownloadWorksheetClick(event:MouseEvent):void 
+			{
+				var myDownloadWorksheet:downloadWorksheetWindow = downloadWorksheetWindow( PopUpManager.createPopUp(AppProperties.getInstance().controller.application, downloadWorksheetWindow) as spark.components.TitleWindow );
+				PopUpManager.centerPopUp(myDownloadWorksheet);
+			}
+			
+			protected function onSetFoodPlanClick(event:MouseEvent):void
+			{
+			}
+			
+			protected function onAddCommentsClick(event:MouseEvent):void
+			{
+			}
+			
+			private function nutCaloriesFillFunction(element:ChartItem, index:Number):IFill 
+			{
+				var transparent:SolidColor = new SolidColor(0x000000,0);	
+				return model.weeklyCaloriesCurrent.getItemAt(index).calories <= 2000 ? transparent : lgBlue;
+			}
+			
+			private function nutCaloriesExcessFillFunction(element:ChartItem, index:Number):IFill 
+			{
+				return nutJourWeeklyCalExcessSeries.items[index].xNumber <= 2000 ? lgBlue : lgRed;
+			}
+			
+			private function nutNavigateDate(direction:String):void 
+			{
+				var meal:Object;
+				
+				//	if view == DAILY
+				if( viewsNutritionJournal.selectedIndex == 0 ) 
+				{
+					if(direction == 'prev') currentDayDiff--;
+					else currentDayDiff++;
+					
+					currentDailyPlate = (currentDayDiff == 0) ? 0 : (currentDailyPlate == 1) ? 2 : 1;
+					showJournalPlate(currentDailyPlate);
+					showCurrentDay();
+					
+					nutritionJournal.dataProvider = (currentDayDiff == 0) ? model.foodJournal : (currentDailyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentDay.getMonth()+1)+'/'+currentDay.getDate()+'/'+currentDay.getFullYear())
+					}
+					
+					if(currentDayDiff == 0) updateNutritionDatesDay('today');
+					else if(currentDailyPlate == 1) updateNutritionDatesDay('alt1');
+					else updateNutritionDatesDay('alt2');
+				}
+				//	if view == WEEKLY
+				else if(viewsNutritionJournal.selectedIndex == 1) 
+				{		
+					if(direction == 'prev') currentWeekDiff--;
+					else currentWeekDiff++;
+					
+					currentWeeklyPlate = (currentWeeklyPlate == 1) ? 2 : 1;
+					showJournalPlate(currentWeeklyPlate);
+					showCurrentWeek();
+					
+					nutritionJournal.dataProvider = (currentWeekDiff == 0) ? model.foodJournal : (currentWeeklyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentSunday.getMonth()+1)+'/'+currentSunday.getDate()+'/'+currentSunday.getFullYear())
+					}
+					
+					if(currentWeekDiff == 0) updateNutritionDatesWeek('thisWeek');
+					else if(currentWeeklyPlate == 1) updateNutritionDatesWeek('alt1');
+					else updateNutritionDatesWeek('alt2');
+					
+					weeklyAvgCalories = avg(new Array(model.weeklyCaloriesCurrent.getItemAt(0).calories,model.weeklyCaloriesCurrent.getItemAt(1).calories,model.weeklyCaloriesCurrent.getItemAt(2).calories,model.weeklyCaloriesCurrent.getItemAt(3).calories,model.weeklyCaloriesCurrent.getItemAt(4).calories,model.weeklyCaloriesCurrent.getItemAt(5).calories,model.weeklyCaloriesCurrent.getItemAt(6).calories));
+					lblNutWeeklyAvgValue.styleName = weeklyAvgCalories <= 1600 ? 'greenStandout' : weeklyAvgCalories <= 2000 ? 'orangeStandout' : 'redStandout';
+				}
+				//if view == MONTHLY
+				else 
+				{
+					if(direction == 'prev') currentMonthDiff--;
+					else currentMonthDiff++;
+					
+					currentMonthlyPlate = (currentMonthlyPlate == 1) ? 2 : 1;
+					showJournalPlate(currentMonthlyPlate);
+					showCurrentMonth();
+					
+					nutritionJournal.dataProvider = (currentMonthDiff == 0) ? model.foodJournal : (currentMonthlyPlate == 1) ? model.foodJournalAlt2 : model.foodJournalAlt1;
+					
+					for each(meal in nutritionJournal.dataProvider) 
+					{
+						meal.date = DateUtil.get10DigitDate((currentMonth.getMonth()+1)+'/01/'+currentMonth.getFullYear())
+					}
+					
+					if(currentMonthDiff == 0) updateNutritionDatesMonth('thisMonth');
+					else if(currentMonthlyPlate == 1) updateNutritionDatesMonth('alt1');
+					else updateNutritionDatesMonth('alt2');
+				}
+				
+				updateMealSort();
+			}
+			
+			private function updateMealSort():void
+			{
+				var sort:Sort = new Sort();
+				sort.fields = [ new SortField('ingredients') ];
+				nutritionJournal.dataProvider.sort = sort;
+			}
+			
+			private function updateNutritionDatesDay(set:String):void 
+			{
+				if( set == 'today' ) 
+				{
+					model.dailyCaloriesCurrent = model.summaryCalories;
+					imgNutGauge.source = !model.hasMealBeenSubmitted ? gaugeEmpty : model.mealType == 'full' ? gaugeFull : gaugePartial;
+				}
+				else if( set == 'alt1' ) 
+				{
+					model.dailyCaloriesCurrent = model.dailyCaloriesAlt1;
+					imgNutGauge.source = gaugeAlmostFull;
+				}
+				else if(set == 'alt2' ) 
+				{
+					model.dailyCaloriesCurrent = model.dailyCaloriesAlt2;
+					imgNutGauge.source = gaugeFull;
+				}
+				
+				model.dailyCaloriesCurrent.refresh();
+				lblCaloriesDaily.styleName = int(lblCaloriesDaily.text) <= 1600 ? 'greenStandout' : int(lblCaloriesDaily.text) <= 2000 ? 'orangeStandout' : 'redStandout';
+			}
+			
+			private function updateNutritionDatesWeek(set:String):void 
+			{
+				if(set == 'thisWeek') model.weeklyCaloriesCurrent = model.weeklyCalories;
+				else if(set == 'alt1') model.weeklyCaloriesCurrent = model.weeklyCaloriesAlt1;
+				else if(set == 'alt2') model.weeklyCaloriesCurrent = model.weeklyCaloriesAlt2;
+				
+				model.weeklyCaloriesCurrent.refresh();
+				
+				lblNutWeeklyAvgValue.text = String(weeklyAvgCalories);
+			}
+			
+			private function updateNutritionDatesMonth(set:String):void
+			{
+				model.monthlyCalories = new ArrayCollection();
+				
+				var obj:Object;
+				
+				if( set == 'thisMonth' ) 
+				{
+					for(var i:uint = 0; i < 30; i++) 
+					{
+						obj = {day:(today.getMonth()+1) + '/' + (today.getDate()-(30 - i)) + '/' + today.getFullYear(), calories:arrMonthlyCalories1[i], goal:2000};
+						model.monthlyCalories.addItem(obj);
+					}
+					
+					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories1));
+					imgNutGaugeMonth.source = (avg(arrMonthlyCalories1) < 1600) ? gauge1487 : avg(arrMonthlyCalories1) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories1) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories1) <= 2000 ? 'orangeStandout' : 'redStandout';
+				}
+				else if( set == 'alt1' ) 
+				{
+					for(var j:uint = 0; j < 30; j++) 
+					{
+						obj = {day:(currentMonth.getMonth()+1) + '/' + (j+1) + '/' + currentMonth.getFullYear(), calories:arrMonthlyCalories2[j], goal:2000};
+						model.monthlyCalories.addItem(obj);
+					}
+					
+					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories2));
+					imgNutGaugeMonth.source = (avg(arrMonthlyCalories2) < 1600) ? gauge1487 : avg(arrMonthlyCalories2) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories2) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories2) <= 2000 ? 'orangeStandout' : 'redStandout';
+				}
+				else if(set == 'alt2') 
+				{
+					for(var k:uint = 0; k < 30; k++) 
+					{
+						obj = {day:(currentMonth.getMonth()+1) + '/' + (k+1) + '/' + currentMonth.getFullYear(), calories:arrMonthlyCalories3[k], goal:2000};
+						model.monthlyCalories.addItem(obj);
+					}
+					lblNutMonthlyAvgValue.text = String(avg(arrMonthlyCalories3));
+					imgNutGaugeMonth.source = (avg(arrMonthlyCalories3) < 1600) ? gauge1487 : avg(arrMonthlyCalories3) < 1900 ? gauge1864 : gauge1921;
+					lblNutMonthlyAvgValue.styleName = avg(arrMonthlyCalories3) <= 1600 ? 'greenStandout' : avg(arrMonthlyCalories3) <= 2000 ? 'orangeStandout' : 'redStandout';
+				}
+				model.monthlyCalories.refresh();
+			}
+			
+			private var ge1:GradientEntry = new GradientEntry(0xC2E1DF, 0);
+			private var ge2:GradientEntry = new GradientEntry(0x51B6B2, .5);
+			private var ge3:GradientEntry = new GradientEntry(0x6FD2B2, 1);	
+			private var lgBlue:LinearGradient = new LinearGradient();
+			private var ge4:GradientEntry = new GradientEntry(0xF6AF95, 0);
+			private var ge5:GradientEntry = new GradientEntry(0xB71918, .5);
+			private var ge6:GradientEntry = new GradientEntry(0xF6A763, 1);	
+			private var lgRed:LinearGradient = new LinearGradient();
+			
+			private function showTip():void 
+			{
+				var myTipWindow:tips = tips(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, tips) as spark.components.TitleWindow);
+				PopUpManager.centerPopUp(myTipWindow);
+			}
+			
+			protected function init():void 
+			{
+				lgBlue.entries = [ge1, ge2, ge3];
+				lgBlue.rotation = 90;
+				lgRed.entries = [ge4, ge5, ge6];
+				lgRed.rotation = 90;
+				
+				if( currentState == "default" ) showTip();
+				
+				dateChooser.selectableRange = {rangeEnd: today}
+				dateChooser.selectedDate = today;
+				
+				weeklyAvgCalories = avg(new Array(model.weeklyCaloriesCurrent.getItemAt(0).calories,model.weeklyCaloriesCurrent.getItemAt(1).calories,model.weeklyCaloriesCurrent.getItemAt(2).calories,model.weeklyCaloriesCurrent.getItemAt(3).calories,model.weeklyCaloriesCurrent.getItemAt(4).calories,model.weeklyCaloriesCurrent.getItemAt(5).calories,model.weeklyCaloriesCurrent.getItemAt(6).calories));
+			}
+						
+			private function getDateLabel(item:Date):String 
+			{
+				return DateFormatters.dateOnlyBackslashDelimited.format(item);
+			}
+
+		]]>
+	</fx:Script>
+	
+	<components:ModuleHeader 
+		id="header"
+		icon="@Embed('/images/btnHome.png')"
+		title="Nutrition" 
+		actionSuffix="new notifications" actionCount="0" showActionsIfNone="true"
+		showSearch="true" searchPlaceholder="Search Nutrition" showBackground="false" 
+		visible="{showHeader}" includeInLayout="{showHeader}" />
+	
+	<s:Spacer height="10" />
+	
+	<s:Group>
+		
+		<mx:ViewStack id="viewStackNutrition" borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x3C3C3B" borderVisible="true" borderStyle="solid" x="0" y="22" height.default="661" height.provider="500" change.provider="{viewStackNutrition.height = viewStackNutrition.selectedIndex == 0 ? 500 : 606}">
+			
+			<s:NavigatorContent label="{currentState=='default'?'My ':''}Food Journal" creationPolicy="all">
+				
+				<s:layout>
+					<s:VerticalLayout gap="0" />
+				</s:layout>
+				
+				<s:BorderContainer height="40" width="100%" backgroundColor="0x706F6F">
+					
+					<s:layout>
+						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
+					</s:layout>
+					
+					<s:Button label="Download Fillable Worksheet" styleName="buttonText" height="24" click="onDownloadWorksheetClick(event)" visible="{currentState == 'default'}" includeInLayout="{currentState == 'default'}" />
+					<s:Button label="Print Food Journal" styleName="buttonText" height="24" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}" />
+					<s:Button label="+ Add Comments" styleName="buttonText" height="24" click="onAddCommentsClick(event)" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}" />
+					
+					<s:Spacer width="100%" />
+					
+					<s:HGroup color="0xFFFFFF" gap="2">
+						<s:Label text="Time Range:" paddingTop="6" />
+						<general:customLinkButton id="btnNut1d" label="{DateRanges.DAY}" click="setDateRange(DateRanges.DAY)" toggle="true" selected="{model.dateRange==DateRanges.DAY}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut1wk" label="{DateRanges.WEEK}" click="setDateRange(DateRanges.WEEK)" toggle="true" selected="{model.dateRange==DateRanges.WEEK}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut1mo" label="{DateRanges.MONTH}" click="setDateRange(DateRanges.MONTH)" toggle="true" selected="{model.dateRange==DateRanges.MONTH}" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="2" />
+						<general:customLinkButton id="btnNut3mo" label="{DateRanges.MONTH_THREE}" click="setDateRange(DateRanges.MONTH_THREE)" selected="{model.dateRange==DateRanges.MONTH_THREE}" toggle="true" toggleBackgroundColor="0x4A4A49" skin="edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin" paddingLeft="2" paddingRight="0" />
+						<general:customLinkButton id="btnMedCustom" label="Custom" paddingLeft="2" paddingRight="2" />
+					</s:HGroup>
+					
+					<s:HGroup gap="-1" visible="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" includeInLayout="{btnNut1d || btnNut1wk.selected || btnNut1mo.selected}" paddingLeft="4" paddingRight="4">
+						<s:Button id="btnNutLeft" width="28" height="24" icon="@Embed('/images/arrowLeft.png')" click="nutNavigateDate('prev')" />
+						<s:Button id="btnNutRight" width="28" height="24" icon="@Embed('/images/arrowRight.png')" styleName="buttonText" click="nutNavigateDate('next')" enabled="{btnNut1d.selected ? (currentDayDiff &lt; 0) : btnNut1wk.selected ? (currentWeekDiff &lt; 0) : (currentMonthDiff &lt; 0)}" />
+					</s:HGroup>
+					
+				</s:BorderContainer>
+				
+				<s:Line xFrom="0" xTo="974">
+					<s:stroke>
+						<s:SolidColorStroke color="#3F3E3D"/>
+					</s:stroke>
+				</s:Line>
+							
+				<s:HGroup id="hgNutrition" gap.default="10" gap.provider="16" paddingLeft="13" width="974">
+					
+					<s:VGroup id="vgRecordIntake" gap="7" paddingTop="48">
+						
+						<s:Label text="Record Intake" styleName="greenSubtitleLarge" paddingLeft="0" />
+						
+						<s:Line xFrom="0" xTo="258">
+							<s:stroke>
+								<s:SolidColorStroke color="#4E4E4E"/>
+							</s:stroke>
+						</s:Line>
+						
+						<mx:DateField id="dateChooser" textFieldClass="mx.core.UIFTETextField" textInputClass="mx.controls.MXFTETextInput" width="103" height="24" dateChooserStyleName="dateChooserDark" labelFunction="getDateLabel" />
+						
+						<s:Line xFrom="0" xTo="258">
+							<s:stroke>
+								<s:SolidColorStroke color="#4E4E4E"/>
+							</s:stroke>
+						</s:Line>
+						
+						<s:HGroup verticalAlign="middle">
+							<s:Label text="Meal" styleName="greenBoldText" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp()" />
+						</s:HGroup>
+						
+						<s:VGroup fontSize="13">
+							
+						</s:VGroup>
+						
+						<s:HGroup gap="10">
+							<s:DropDownList id="dropDownNutritionMealType" selectedIndex="0" styleName="buttonText" height="24" width="101"><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+								<s:dataProvider>
+									<s:ArrayCollection>
+										<fx:String>Breakfast</fx:String>
+										<fx:String>Lunch</fx:String>
+										<fx:String>Snack</fx:String>
+										<fx:String>Dinner</fx:String>
+									</s:ArrayCollection>							
+								</s:dataProvider>
+							</s:DropDownList>
+							<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a favorite meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex) as ArrayCollection}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+						</s:HGroup>
+						
+						<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
+						
+						<s:TextInput id="nutritionFoodSearch" text="Search" fontStyle="italic" color="0x4D4D4D" height="24" click="{if(nutritionFoodSearch.text == 'Search') nutritionFoodSearch.text = ''}" width="253" />
+						
+						<s:VGroup visible="{dropDownNutritionSavedMeal.selectedIndex > -1 || (nutritionFoodSearch.text != 'Search' &amp;&amp; nutritionFoodSearch.text != '')}">
+							<s:Label text="What portion?" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
+							
+							<s:HGroup verticalAlign="middle" gap="10">
+								
+								<s:NumericStepper id="numPortion" maximum="1000" value="1" width="40" height="23" />
+								
+								<s:DropDownList id="nutritionPortionTypes" selectedIndex="0" styleName="buttonText" height="23" width="96">
+									<s:layout>
+										<s:VerticalLayout gap="0" horizontalAlign="contentJustify" requestedRowCount="7" />
+									</s:layout>
+									<s:dataProvider>
+										<s:ArrayCollection>
+											<fx:String>cups</fx:String>
+											<fx:String>plates</fx:String>
+											<fx:String>slices</fx:String>
+											<fx:String>pieces</fx:String>
+											<fx:String>bowls</fx:String>
+											<fx:String>servings</fx:String>
+											<fx:String>other</fx:String>
+										</s:ArrayCollection>
+									</s:dataProvider>
+								</s:DropDownList>
+								
+								<s:TextInput id="nutritionPortionOther" color="0x4D4D4D" width="97" height="23" visible="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" includeInLayout="{nutritionPortionTypes.selectedIndex == nutritionPortionTypes.dataProvider.length-1}" />
+								
+							</s:HGroup>
+							
+							<s:Label text="Comments (optional):" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
+							
+							<s:TextArea id="nutComments" width="253" height="46" fontStyle="italic" color="0x4D4D4D" text="Enter when, where, and why you had the meal." click="{if(nutComments.text == 'Enter when, where, and why you had the meal.') nutComments.text = ''}" />
+							
+						</s:VGroup>
+						
+						<s:HGroup paddingTop="4">
+							<s:Line xFrom="0" xTo="258">
+								<s:stroke>
+									<s:SolidColorStroke color="0x4D4D4D" />
+								</s:stroke>
+							</s:Line>
+						</s:HGroup>
+						
+						<s:HGroup paddingLeft="184" paddingTop="2">
+							<s:Button label="Submit" styleName="buttonText" height="24" click="handleNutritionMealEntry()" />
+						</s:HGroup>
+
+						<s:VGroup gap="3" paddingTop="5">
+							<s:Line xFrom="0" xTo="258">
+								<s:stroke>
+									<s:SolidColorStroke color="#4E4E4E"/>
+								</s:stroke>
+							</s:Line>
+							<s:Line xFrom="0" xTo="258">
+								<s:stroke>
+									<s:SolidColorStroke color="#4E4E4E"/>
+								</s:stroke>
+							</s:Line>
+						</s:VGroup>
+
+						<s:HGroup verticalAlign="middle">
+							<s:Label text="Water" styleName="greenBoldText" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" click="showNutritionHelp(4)" />
+						</s:HGroup>
+						
+						<s:VGroup paddingTop="21" paddingLeft="13" >
+							
+							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="{glassesTaken = WaterIntakeMeter(event.target).value}" mouseChildren="{currentState=='default'}" />
+
+							<s:Label text="{glassesTaken != waterIntake.max ? glassesTaken + ' cups' : waterIntake.max + '+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
+							
+						</s:VGroup>
+
+						<s:Line xFrom="0" xTo="258">
+							<s:stroke>
+								<s:SolidColorStroke color="#4E4E4E"/>
+							</s:stroke>
+						</s:Line>
+					</s:VGroup>
+					
+					<s:Line id="vLine1" yFrom="0" yTo="588">
+						<s:stroke>
+							<s:SolidColorStroke color="#666666"/>
+						</s:stroke>
+					</s:Line>
+					
+					<s:VGroup id="vgMealList">
+						<s:Label id="nutJournalDate" text="{DateUtil.formatDateFromString((new Date().getMonth() + 1) + '/' + (new Date().getDate()) + '/' + (new Date().getFullYear()))}" styleName="greenBoldText" paddingTop="12" paddingBottom="16" paddingLeft="6" />
+						
+						<s:Label text="{currentState=='default'?'Your ':'Patient\'s '}Meal List" styleName="greenSubtitleLarge" paddingTop="1" paddingBottom="1" />
+						
+						<s:BorderContainer width="650" styleName="transparentBorderContainerLight">
+							
+							<s:layout>
+								<s:VerticalLayout paddingTop="1" paddingLeft="1" paddingRight="1" />
+							</s:layout>
+							
+							<mx:DataGrid 
+								id="nutritionJournal" 
+								width="100%"
+								dataProvider="{model.foodJournal}" 
+								styleName="standardDataGrid"
+								rowCount="3"
+								fontSize="12"
+								paddingTop="4"
+								headerHeight="27" rowHeight="27" horizontalGridLines="false" 
+								itemRollOver="onNutritionRollOver(event)" itemRollOut="nutritionRollOverRowIndex=-2" 
+								creationComplete="nutritionJournal.dispatchEvent(new DataGridEvent(DataGridEvent.HEADER_RELEASE,true,false,1))">
+								
+								<mx:columns> 
+									<mx:DataGridColumn dataField="meal" headerText="Type" paddingLeft="5" width="70" />
+									<mx:DataGridColumn dataField="ingredients" headerText="Food" width="164" paddingLeft="5" fontFamily="myMyriad">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="184" paddingTop="-3" horizontalScrollPolicy="off">
+													
+													<fx:Script>
+														<![CDATA[
+															import edu.newschool.piim.healthboard.events.ApplicationEvent;
+															
+															protected function deleteMeal():void 
+															{
+																var item:Object = outerDocument.nutritionJournal.selectedItem;
+																var index:int = outerDocument.model.foodJournal.getItemIndex(item);
+																
+																outerDocument.model.foodJournal.removeItemAt(index);
+																
+																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																evt.data = "Your meal has been deleted";
+																dispatchEvent( evt );
+															}
+														]]>
+													</fx:Script>
+													
+													<mx:Label width="122" text="{data.ingredients}" fontSize="12" paddingTop="1" color="0xFFFFFF" selectable="false"/>
+													
+													<s:VGroup paddingTop="7" paddingLeft="-7" paddingRight="7" visible="{outerDocument.nutritionJournal.dataProvider.getItemIndex(data) == outerDocument.nutritionRollOverRowIndex}">
+														<s:Image source="@Embed('/images/nutritionDelete.png')" toolTip="Delete" buttonMode="true" click="deleteMeal()" />
+													</s:VGroup>
+													
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn dataField="portion" headerText="Portion" width="63" paddingLeft="5" />
+									<mx:DataGridColumn dataField="calories" headerText="Calories" width="63" paddingLeft="5" />
+									<mx:DataGridColumn dataField="comments" headerText="Comments" width="216" paddingLeft="5" /><!--if you want to be able to truncate the text, you can use the following, but the embedded font doesn't work: itemRenderer="ASclasses.CustomRowColor"-->
+									<mx:DataGridColumn headerText="Nutr. Facts" width="77" paddingLeft="5" fontFamily="myMyriad">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="77" horizontalScrollPolicy="off" horizontalAlign="center">
+													<s:VGroup visible="{data.ingredients == 'Spinach quiche'}" paddingTop="-1" paddingLeft="-3">
+														<s:Image source="@Embed('/images/info.png')" toolTip=" " toolTipCreate="{if(data.ingredients == 'Spinach quiche') outerDocument.createCustomTipJournal(event)}" />
+													</s:VGroup>
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+									<mx:DataGridColumn dataField="meal" headerText="Favorite" width="70">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox width="100%" horizontalScrollPolicy="off" horizontalAlign="center" dataChange="update()">
+													<fx:Script>
+														<![CDATA[
+															import edu.newschool.piim.healthboard.view.components.popups.nutrition.saveMealWindow;
+															
+															import edu.newschool.piim.healthboard.events.ApplicationEvent;
+															
+															import mx.controls.Alert;
+															import mx.controls.CheckBox;
+															import mx.events.CloseEvent;
+															import mx.managers.PopUpManager;
+															import mx.collections.ArrayCollection;
+															
+															import spark.components.TitleWindow;
+															
+															[Bindable] private var mealSaved:Boolean;
+															
+															private function saveMeal():void
+															{
+																 
+																var item:Object = outerDocument.nutritionJournal.selectedItem;
+																var index:int = outerDocument.nutritionJournal.dataProvider.getItemIndex(item);
+																outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( outerDocument.nutritionJournal.dataProvider.getItemAt(index).meal ) ].addItem( outerDocument.nutritionJournal.dataProvider.getItemAt(index).ingredients );
+																
+																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+																evt.data = "Your meal has been saved as a favorite";
+																AppProperties.getInstance().controller.application.dispatchEvent( evt );
+																
+																update();
+															} 
+															
+															private function removeSavedMeal():void
+															{
+																var index:int = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients );
+																
+																if( index > -1 )
+																{
+																	ArrayCollection( outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ) ).removeItemAt( index );
+																}
+																
+																update();
+															}
+															
+															private function update():void
+															{
+																mealSaved = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients ) > -1;
+															}
+														]]>
+													</fx:Script>
+													
+													<mx:Image source="@Embed(source='/images/nutritionFavorite.png')" visible="{mealSaved}" includeInLayout="{mealSaved}" click="removeSavedMeal()" />
+													<mx:Image source="@Embed(source='/images/nutritionFavoriteNOT.png')" visible="{!mealSaved}" includeInLayout="{!mealSaved}" click="saveMeal()" />
+													
+												</mx:HBox>
+											</fx:Component>
+										</mx:itemRenderer>
+									</mx:DataGridColumn>
+								</mx:columns> 
+							</mx:DataGrid>
+						</s:BorderContainer>
+						
+						<s:HGroup id="hgFoodPlate" paddingTop="14" gap="14">
+							<s:VGroup id="vgTotalCaloriesTaken">
+								<s:Label text="Total Calories Taken" styleName="greenSubtitleLarge" />
+								<mx:ViewStack id="viewsNutritionJournal" height="308" creationPolicy="all">
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="18" paddingTop="16" paddingLeft="12" paddingBottom="15">
+											<s:VGroup>
+												<s:Image id="imgNutGauge" source="{!model.hasMealBeenSubmitted ? gaugeEmpty : model.mealType == 'full' ? gaugeFull : gaugePartial}" />
+											</s:VGroup>
+											<s:VGroup gap="0" paddingTop="-4">
+												<s:HGroup>
+													<s:Label id="lblCaloriesDaily" text="{model.dailyCaloriesCurrent.getItemAt(0).calories}" styleName="greenStandout" />
+													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
+												</s:HGroup>
+												<s:Label color="0xFFFFFF" fontSize="14" text="Daily Budget: 2,000 Calories" />
+											</s:VGroup>
+										</s:HGroup>
+										
+										<s:VGroup gap="2">
+											<s:Line xFrom="0" xTo.default="309" xTo.provider="277">
+												<s:stroke>
+													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
+												</s:stroke>
+											</s:Line>
+											<s:Line xFrom="0" xTo.default="309" xTo.provider="277">
+												<s:stroke>
+													<s:SolidColorStroke color="#BDBCBC" weight="1" alpha=".75" />
+												</s:stroke>
+											</s:Line>
+										</s:VGroup>
+										
+										<s:VGroup width="253" paddingLeft.default="28" paddingLeft.provider="12">
+											<s:HGroup color="0xFFFFFF" paddingTop="14" paddingLeft="24">
+												<s:Image source="@Embed('/images/nutritionJournalFood.png')" />
+												<s:Label text="{'+ ' + model.dailyCaloriesCurrent.getItemAt(0).calories}" textAlign="right" width="57" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. Taken" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="2" paddingBottom="1" paddingLeft="24">
+												<s:Image source="@Embed('/images/nutritionJournalExercise.png')" />
+												<s:Label text="- 0" textAlign="right" width="57" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. Burned" fontSize="14" />
+											</s:HGroup>
+											
+											<s:Line xFrom="0" xTo="253">
+												<s:stroke>
+													<s:SolidColorStroke color="#666666" />
+												</s:stroke>
+											</s:Line>
+											
+											<s:HGroup paddingTop="-6" paddingBottom="19">
+												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" color="0xFFFFFF" width="253" height="37" fontWeight="bold">
+													<s:layout>
+														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="13" />
+													</s:layout>
+													<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).calories}" fontSize="24" width="85" textAlign="right" />
+													<s:Label text="Total Calories Taken" fontSize="14" paddingTop="7" />
+												</s:BorderContainer>
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewFatsOilsSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasFats}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Fats &amp; Oils" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="1" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewSugarsSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasSugar}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Sugar" fontSize="14" />
+											</s:HGroup>
+											
+											<s:HGroup color="0xFFFFFF" paddingTop="1" paddingLeft="22">
+												<s:VGroup paddingTop="-3">
+													<s:Image source="@Embed('/images/nutritionNewAlcoholSM.png')" />
+												</s:VGroup>
+												<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).extrasAlcohol}" textAlign="right" width="54" fontSize="16" paddingRight="8" />
+												<s:Label text="Cals. From Alcohol" fontSize="14" />
+											</s:HGroup>
+											
+											<s:Line xFrom="0" xTo="253">
+												<s:stroke>
+													<s:SolidColorStroke color="#666666" />
+												</s:stroke>
+											</s:Line>
+											
+											<s:HGroup paddingTop="-6">
+												<s:BorderContainer backgroundColor="0xFFFFFF" backgroundAlpha=".1" borderVisible="false" color="0xFFFFFF" width="253" height="37" fontWeight="bold">
+													<s:layout>
+														<s:HorizontalLayout paddingLeft="10" paddingTop="7" gap="13" />
+													</s:layout>
+													<s:Label text="{'+' + model.dailyCaloriesCurrent.getItemAt(0).caloriesFromExtras}" fontSize="24" width="85" textAlign="right" />
+													<s:Label text="Calories from Extra" fontSize="14" paddingTop="7" />
+												</s:BorderContainer>
+											</s:HGroup>
+											
+										</s:VGroup>
+										
+									</s:NavigatorContent>
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="3" fontSize="13" paddingLeft="6">
+											<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
+											<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
+										</s:HGroup>
+										
+										<s:HGroup gap="18" paddingTop="16" paddingLeft="12" paddingBottom="20">
+											<s:VGroup>
+												<s:Image id="imgNutGaugeWeek" source="{(weeklyAvgCalories &lt; 1600) ? gauge1487 : weeklyAvgCalories &lt; 1900 ? gauge1864 : gauge1921}" />
+											</s:VGroup>
+											<s:VGroup gap="0" paddingTop="-4">
+												<s:HGroup>
+													<s:Label id="lblNutWeeklyAvgValue" text="{weeklyAvgCalories}" styleName="greenStandout" />
+													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
+												</s:HGroup>
+												<s:Label text="{'Average daily calories\nconsumed for this week'}" color="0xFFFFFF" fontSize="14" />
+											</s:VGroup>
+										</s:HGroup>
+										
+										<s:Label color="#FFFFFF" fontSize="11" paddingBottom="-6" paddingLeft="39"
+												 text.default="0                400              800             1200           1600        2000 cals."
+												 text.provider="0             400           800          1200        1600     2000 cals."/>
+										
+										<mx:BarChart id="nutFoodJournalWeeklyCalories" dataProvider="{model.weeklyCaloriesCurrent}" type="overlaid" height="165" width.default="314" width.provider="278" showDataTips="true"><!--backgroundElements="{nutritionJournalBGE}"-->
+											<mx:series>
+												<mx:BarSeries id="nutJourWeeklyCalExcessSeries" yField="day" xField="calories" fillFunction="nutCaloriesExcessFillFunction">
+													
+												</mx:BarSeries>
+												<!-- if u want to use this for multiple 'series', maybe just leave the xField static, and write a fillFunction for each barseries that will check if there's an excess, and if so show the appropriate colors and invisibilities-->
+												<mx:BarSeries id="nutJourWeeklyCaloriesSeries" yField="day" xField="limit" fillFunction="nutCaloriesFillFunction" interactive="false">
+												</mx:BarSeries>
+												
+											</mx:series>
+											
+											<mx:verticalAxis>
+												<mx:CategoryAxis id="nutJourSummaryWeeklyCaloriesYaxis" categoryField="day" />
+											</mx:verticalAxis>
+											
+											<mx:verticalAxisRenderers>
+												<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesYaxis}" showLine="false" color="0xFFFFFF" fontSize="13" />
+											</mx:verticalAxisRenderers>
+											
+											<mx:horizontalAxis>
+												<mx:LinearAxis id="nutJourSummaryWeeklyCaloriesXaxis" minimum="0" maximum="2200" interval="400" />
+											</mx:horizontalAxis>
+											
+											<mx:horizontalAxisRenderers>
+												<mx:AxisRenderer axis="{nutJourSummaryWeeklyCaloriesXaxis}" showLabels="false" showLine="false" tickPlacement="none" minorTickPlacement="none" />
+											</mx:horizontalAxisRenderers>
+										</mx:BarChart>
+										
+									</s:NavigatorContent>
+									
+									<s:NavigatorContent creationPolicy="all">
+										
+										<s:layout>
+											<s:VerticalLayout />
+										</s:layout>
+										
+										<s:HGroup gap="3" fontSize="13" paddingLeft="6">
+											<s:Label color="0xFFFFFF" text="Daily Calorie Budget:" />
+											<s:Label color="0xFF931E" fontStyle="italic" text="2000 calories" />
+										</s:HGroup>
+										
+										<s:HGroup gap="18" paddingTop="16" paddingLeft="12" paddingBottom="20">
+											<s:VGroup>
+												<s:Image id="imgNutGaugeMonth" source="{gauge1864}" />
+											</s:VGroup>
+											<s:VGroup gap="0" paddingTop="-4">
+												<s:HGroup>
+													<s:Label id="lblNutMonthlyAvgValue" text="{avg(arrMonthlyCalories1)}" styleName="orangeStandout" />
+													<s:Label text="Cals." fontSize="24" color="0xFFFFFF" paddingTop="9" />
+												</s:HGroup>
+												<s:Label id="lblNutMonthlyAvg" text="{'Average daily calories for\nthe month of September'}" color="0xFFFFFF" fontSize="14" />
+											</s:VGroup>
+										</s:HGroup>
+										
+										<s:HGroup paddingLeft="-50" verticalAlign="middle">
+											
+											<mx:LineChart id="nutFoodJournalMonthlyCalories" dataProvider="{model.monthlyCalories}" showDataTips="true" height="176" width.default="348" width.provider="323" backgroundElements="{bge}" seriesFilters="[]">
+												<mx:series>
+													<mx:LineSeries yField="goal" xField="day" interactive="false">
+														<mx:lineStroke>
+															<s:SolidColorStroke color="0xFF0000" weight="2" alpha="0.45" />
+														</mx:lineStroke>
+													</mx:LineSeries>
+													<mx:LineSeries yField="calories" xField="day">
+														<mx:lineStroke>
+															<s:SolidColorStroke color="0x51B6B2" weight="3" />
+														</mx:lineStroke>
+													</mx:LineSeries>
+												</mx:series>
+												<mx:horizontalAxis>
+													<mx:DateTimeAxis id="nutJourMonthlyCaloriesXAxis" />
+												</mx:horizontalAxis>
+												<mx:horizontalAxisRenderers>
+													<mx:AxisRenderer axis="{nutJourMonthlyCaloriesXAxis}" color="0xFFFFFF" fontSize="12" tickPlacement="none" />
+												</mx:horizontalAxisRenderers>
+												<mx:verticalAxis>
+													<mx:LinearAxis id="nutJourMonthlyCaloriesYaxis" maximum="3500" minimum="0" />
+												</mx:verticalAxis>
+												<mx:verticalAxisRenderers>
+													<mx:AxisRenderer axis="{nutJourMonthlyCaloriesYaxis}" visible="false" />
+												</mx:verticalAxisRenderers>
+											</mx:LineChart>
+											<s:Label text="{'2000\ncals.'}" color="0xFFFFFF" fontSize="13" lineHeight="13" paddingTop="-34" paddingLeft="-25" />
+										</s:HGroup>
+										
+									</s:NavigatorContent>
+									
+								</mx:ViewStack>
+								
+							</s:VGroup>
+							
+							<s:Line id="vLine2" yFrom="0" yTo="391">
+								<s:stroke>
+									<s:SolidColorStroke color="#666666"/>
+								</s:stroke>
+							</s:Line>
+							
+							<s:VGroup>
+								
+								<s:Label text="{currentState=='default'?'Your ':'Patient\'s '}Food Plate" styleName="greenSubtitleLarge" />
+								
+								<mx:LinkButton id="btnNutReadComment" visible="false" label="Read Comment" icon="{iconComment}" fontSize="11" fontStyle="italic" paddingLeft="0" color="0xFF931E" textRollOverColor="0xFF931E" textSelectedColor="0xFF931E" skin="{null}" rollOver="{btnNutReadComment.styleName='linkBtnUnderline';}" rollOut="btnNutReadComment.styleName='linkBtn';" />
+								
+								<s:HGroup paddingTop="-18" paddingLeft.provider="76" width="100%" horizontalAlign="center">
+									<s:Image id="imgNutJournalMyPlate" source="{!model.hasMealBeenSubmitted ? plateEmpty : model.mealType == 'full' ? plateFull : platePartial}" />
+								</s:HGroup>
+								
+								<s:VGroup id="vgFoodPlateDetails" paddingLeft.provider="68">
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="18">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sodium" />
+										<s:Image source="@Embed('/images/nutritionNewSodiumLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2,000 mg" />
+											<s:Image id="imgSodiumChart" source="{!model.hasMealBeenSubmitted ? newChartSodium0 : model.mealType == 'full' ? newChartSodium2 : newChartSodium1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="{'Fats\n&amp; Oils'}" />
+										<s:Image source="@Embed('/images/nutritionNewFatsOilsLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="2 - 3 servings" />
+											<s:Image id="imgFatsOilsChart" source="{!model.hasMealBeenSubmitted ? newChartFatsOils0 : model.mealType == 'full' ? newChartFatsOils2 : newChartFatsOils1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Sugar" />
+										<s:Image source="@Embed('/images/nutritionNewSugarLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 1 serving" />
+											<s:Image id="imgSugarChart" source="{!model.hasMealBeenSubmitted ? newChartSugar0 : model.mealType == 'full' ? newChartSugar2 : newChartSugar1}" />
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Alcohol" />
+										<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="Less than 2 drinks" />
+											<s:Image id="imgAlcoholChart" source="{!model.hasMealBeenSubmitted ? newChartAlcohol0 : model.mealType == 'full' ? newChartAlcohol2 : newChartAlcohol0}" />
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+									<s:HGroup verticalAlign="middle" gap="7" paddingTop="12" visible="{model.dateRange != DateRanges.DAY}" includeInLayout="{model.dateRange != DateRanges.DAY}">
+										
+										<s:Label width="50" textAlign="right" color="0xBED63A" fontSize="12" paddingTop="2" text="Water" />
+										<s:Image source="@Embed('/images/nutritionNewAlcoholLG.png')" />
+										
+										<s:VGroup gap="1" paddingTop="-10">
+											<s:Label width="200" textAlign="right" fontSize="11" fontStyle="italic" color="0xCCCCCC" text="8 cups or more" />
+											<nutrition:WaterIntakeMeter id="waterIntakeChart" horizontalGap="6" paddingTop="4" max="8" value="{!model.hasMealBeenSubmitted ? 8 : model.mealType == 'full' ? 6 : 8}" mouseChildren="false" />
+										</s:VGroup>
+										
+									</s:HGroup>
+								</s:VGroup>
+								
+							</s:VGroup>
+							
+						</s:HGroup>
+						
+					</s:VGroup>	
+				</s:HGroup>
+			</s:NavigatorContent>
+			
+			<s:NavigatorContent label="{currentState=='default'?'My ':''}Food Plan">
+				
+				<s:layout>
+					<s:VerticalLayout gap="0" />
+				</s:layout>
+				
+				<s:BorderContainer height="40" width="100%" backgroundColor="0x706F6F">
+					
+					<s:layout>
+						<s:HorizontalLayout verticalAlign="middle" paddingRight="6" paddingLeft="8"/>
+					</s:layout>
+					
+					<s:Button label="Set Food Plan" styleName="buttonText" height="24" click="onSetFoodPlanClick(event)" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}" />
+					<s:Button label="Print {currentState=='default'?'My ':''}Food Plan" styleName="buttonText" height="24" />
+					
+				</s:BorderContainer>
+				
+				<s:Line xFrom="0" xTo="974">
+					<s:stroke>
+						<s:SolidColorStroke color="#3F3E3D"/>
+					</s:stroke>
+				</s:Line>
+				
+				<s:Scroller width="100%" height="100%">
+					
+					<s:VGroup>
+						
+						<s:HGroup width="100%" horizontalAlign="right" verticalAlign="middle" gap="-1" paddingRight="10" paddingTop="5">
+							<mx:LinkButton id="btnNutViewHistory" label="View History" paddingTop="-1" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewHistory.styleName='linkBtnUnderline';}" rollOut="btnNutViewHistory.styleName='linkBtn';" />
+							<s:Image source="@Embed('/images/erBtnHelp.png')" buttonMode="true" />
+						</s:HGroup>
+						
+						<s:VGroup width="805" paddingLeft="68">
+							
+							<s:Label text="{currentState=='default'?'My ':''}Food Plan" styleName="greenBoldText" />
+							
+							<s:HGroup verticalAlign="middle">
+								<s:Label width="105" textAlign="right" text="Starting Date:" fontSize="11" fontWeight="bold" color="0x999999" />
+								<s:Label id="planStartDate" color="0xEDEDED" creationComplete="invalidateProperties();" />
+							</s:HGroup>
+							
+							<s:HGroup verticalAlign="middle">
+								<s:Label width="105" textAlign="right" text="Assigned by:" fontSize="11" fontWeight="bold" color="0x999999" />
+								<s:Label text="{foodPlan.provider.fullNameAbbreviated}" color="0xEDEDED" fontWeight="bold" />
+							</s:HGroup>
+							
+							<s:HGroup verticalAlign="middle">
+								<s:Label width="105" textAlign="right" text="Reasons for Plan:" fontSize="11" fontWeight="bold" color="0x999999" />
+								<s:Label text="{foodPlan.reasons}" color="0xEDEDED" />
+							</s:HGroup>
+							
+							<s:HGroup verticalAlign="middle">
+								<s:Label width="105" textAlign="right" text="Direction:" fontSize="11" fontWeight="bold" color="0x999999" />
+								<s:Label text="{foodPlan.directions}" color="0xEDEDED" />
+							</s:HGroup>
+							
+							<s:HGroup verticalAlign="middle" paddingBottom="2">
+								<s:Label width="105" textAlign="right" text="Daily Calorie Budget:" fontSize="11" fontWeight="bold" color="0x999999" />
+								<s:Label text="{foodPlan.calorieBudget} calories" color="0xEDEDED" />
+							</s:HGroup>
+							
+							<s:BorderContainer width="805" height="346" styleName="transparentBorderContainer">
+								
+								<s:layout>
+									<s:VerticalLayout paddingTop="16" paddingLeft="19" gap="7" />
+								</s:layout>
+								
+								<s:HGroup>
+									<s:Label text="{currentState=='default'?'My ':''}Daily Food Plan" styleName="greenBoldText" />
+									<s:HGroup gap="3" paddingLeft="3">
+										<s:Label fontSize="13" color="0xFFFFFF" fontStyle="italic" text="Hover over food group icons to learn about" />
+										<s:Label fontSize="13" color="0xFBB03B" fontStyle="italic" text="food examples" />
+										<s:Label fontSize="13" color="0xFFFFFF" fontStyle="italic" text="and" />
+										<s:Label fontSize="13" color="0xFBB03B" fontStyle="italic" text="serving sizes" />
+									</s:HGroup>
+								</s:HGroup>
+								
+								<s:BorderContainer borderVisible="false" backgroundAlpha="0" creationComplete="invalidateProperties()" >
+									
+									<s:layout>
+										<s:BasicLayout />
+									</s:layout>
+									
+									<nutrition:ServingLabel id="fruitsLabel" x="{plate.x - fruitsLabel.width + 20}" y="{plate.y + 10}" horizontalAlign="right" />
+									<nutrition:ServingLabel id="vegetablesLabel" x="{plate.x - vegetablesLabel.width + 20}" y="{plate.y + plate.height - vegetablesLabel.height - 10}" horizontalAlign="right" />
+									<nutrition:ServingLabel id="grainsLabel" x="{plate.x + plate.width - 10}" y="{plate.y + 10}" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
+									<nutrition:ServingLabel id="proteinsLabel" x="{plate.x + plate.width - 10}" y="{plate.y + plate.height - proteinsLabel.height - 10}" />
+									<nutrition:ServingLabel id="dairyLabel" x="{dairyPlate.x + dairyPlate.width + 10}" y="{dairyPlate.y + (dairyPlate.height - proteinsLabel.height)/2 - 10}" requestedRowCount="2" />
+									
+									<s:Image id="plate" source="@Embed('/images/nutrition/foodGroupPlate.png')" x="153" y="30" />
+									<s:Image id="dairyPlate" source="@Embed('/images/nutrition/dairyPlate.png')" x="{plate.x + plate.width + 20}" y="{plate.y + (plate.height - dairyPlate.height)/2}" />
+									
+									<s:BorderContainer x="{plate.x + plate.width - 90 - 10}" y="{plate.y + 10}" width="90" height="98" borderVisible="false" backgroundAlpha="0" toolTip=" " toolTipCreate="createCustomTip('','', event)" buttonMode="true" />
+									
+									<s:Line x="567" y="10" yFrom="0" yTo="276">
+										<s:stroke>
+											<s:SolidColorStroke color="0xBDBCBC" weight="1"/>
+										</s:stroke>
+									</s:Line>
+									
+									<s:DataGroup x="580" y="10" dataProvider="{foodPlan.servingCategories}">
+										
+										<s:layout>
+											<s:VerticalLayout paddingLeft="8" gap="20" />
+										</s:layout>
+										
+										<s:itemRenderer>
+											
+											<fx:Component>
+												
+												<mx:HBox verticalAlign="middle" visible="{!FoodServing(data).isPrimary}" includeInLayout="{!FoodServing(data).isPrimary}">
+													<fx:Script>
+														<![CDATA[
+															import edu.newschool.piim.healthboard.enum.DietClassQuantifier;
+															
+															import edu.newschool.piim.healthboard.model.module.nutrition.FoodServing;
+														]]>
+													</fx:Script>
+													
+													<s:HGroup horizontalAlign="center" width="35">
+														<s:Image source="{FoodServing(data).iconBig}" />
+													</s:HGroup>
+													
+													<s:VGroup gap="0">
+														<s:Label text="{FoodServing(data).title}" styleName="greenSubtitle" fontSize="13" />
+														<s:HGroup verticalAlign="bottom" gap="4">
+															<s:Label text="{FoodServing(data).quantifier}" fontSize="13" fontWeight="bold" color="0xFBB03B" visible="{FoodServing(data).quantifier != DietClassQuantifier.EXACTLY}" includeInLayout="{FoodServing(data).quantifier != DietClassQuantifier.EXACTLY}" />
+															<s:Label text="{FoodServing(data).servingSize}" styleName="orangeStandout" fontSize="32" paddingBottom="-6" />
+															<s:Label text="{FoodServing(data).unit}" styleName="white11" fontSize="13" />
+														</s:HGroup>
+													</s:VGroup>
+													
+												</mx:HBox>
+												
+											</fx:Component>
+											
+										</s:itemRenderer>
+										
+									</s:DataGroup>
+									
+								</s:BorderContainer>
+								
+							</s:BorderContainer>
+							
+							<s:VGroup paddingTop="4" paddingBottom="4">
+								
+								<s:BorderContainer width="805" height="111" styleName="transparentBorderContainer">
+									
+									<s:layout>
+										<s:HorizontalLayout paddingLeft="17" paddingTop="14" gap="28" />
+									</s:layout>
+									
+									<s:VGroup width="350">
+										
+										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
+											<s:Image source="@Embed('/images/iconGreenCircle.png')" />
+											<s:Label text="Food to Increase" styleName="greenBoldText" />
+											<s:Spacer width="100%" />
+											<mx:LinkButton id="btnNutViewMore3" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore3.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore3.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
+										</s:HGroup>
+										
+										<s:DataGroup dataProvider="{foodPlan.foodsToIncrease}">
+											
+											<s:layout>
+												<s:HorizontalLayout gap="2" />
+											</s:layout>
+											
+											<s:itemRenderer>
+												
+												<fx:Component>
+													
+													<mx:HBox>
+														
+														<s:Image 
+															source="{Food(data).image}" toolTip="{Food(data).name}" 
+															visible="{outerDocument.foodPlan.foodsToIncrease.getItemIndex(data)&lt;6}" 
+															includeInLayout="{outerDocument.foodPlan.foodsToIncrease.getItemIndex(data)&lt;6}">
+															
+															<fx:Script>
+																<![CDATA[
+																	import edu.newschool.piim.healthboard.model.module.nutrition.Food;
+																]]>
+															</fx:Script>
+															
+														</s:Image>
+														
+													</mx:HBox>
+													
+												</fx:Component>
+												
+											</s:itemRenderer>
+											
+										</s:DataGroup>
+										
+									</s:VGroup>
+									
+									<s:Line yFrom="0" yTo="79">
+										<s:stroke>
+											<s:SolidColorStroke color="#BDBCBC"/>
+										</s:stroke>
+									</s:Line>
+									
+									<s:VGroup width="350">
+										
+										<s:HGroup width="100%" verticalAlign="middle" paddingBottom="-1">
+											<s:Image source="@Embed('/images/iconRedCross.png')" />
+											<s:Label text="Food to Limit" styleName="greenBoldText" />
+											<s:Spacer width="100%" />
+											<mx:LinkButton id="btnNutViewMore4" label="View More »" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNutViewMore4.styleName='linkBtnUnderline';}" rollOut="btnNutViewMore4.styleName='linkBtn';" click="setState(Constants.MODULE_EDUCATIONAL_RESOURCES);" />
+										</s:HGroup>
+										
+										<s:DataGroup dataProvider="{foodPlan.foodsToLimit}">
+											
+											<s:layout>
+												<s:HorizontalLayout gap="2" />
+											</s:layout>
+											
+											<s:itemRenderer>
+												
+												<fx:Component>
+													
+													<mx:HBox>
+														
+														<s:Image 
+															source="{Food(data).image}" ioError="trace(event.errorID)" toolTip="{Food(data).name}" 
+															visible="{outerDocument.foodPlan.foodsToLimit.getItemIndex(data)&lt;6}" 
+															includeInLayout="{outerDocument.foodPlan.foodsToLimit.getItemIndex(data)&lt;6}">
+															
+															<fx:Script>
+																<![CDATA[
+																	import edu.newschool.piim.healthboard.model.module.nutrition.Food;
+																]]>
+															</fx:Script>
+															
+														</s:Image>
+														
+													</mx:HBox>
+													
+												</fx:Component>
+												
+											</s:itemRenderer>
+											
+										</s:DataGroup>
+										
+									</s:VGroup>
+									
+								</s:BorderContainer>
+								
+							</s:VGroup>
+							
+							<s:HGroup paddingBottom="10" gap="26">
+								
+								<s:BorderContainer width="454" maxHeight="242" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+									
+									<s:layout>
+										<s:VerticalLayout paddingTop="17" />
+									</s:layout>
+									
+									<s:HGroup width="100%" paddingRight="7" paddingTop="-1" paddingLeft="23" paddingBottom="6">
+										
+										<s:Label text="Notes from My Doctors" styleName="greenBoldText" paddingTop="1" />
+										
+										<s:Spacer width="100%" />
+										
+										<mx:LinkButton id="btnNotesHistory" label="History" fontSize="11" paddingTop="-6" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNotesHistory.styleName='linkBtnUnderline';}" rollOut="btnNotesHistory.styleName='linkBtn';" />
+									
+									</s:HGroup>
+									
+									<s:Label text="Dr. Berg" color="0xFFFFFF" fontWeight="bold" fontSize="11" paddingLeft="23" />
+									
+									<mx:DataGrid 
+										id="dgNutritionNotes" 
+										dataProvider="{foodPlan.notes}" 
+										width="100%" height="100%" 
+										fontSize="12" color="0xEDEDED" selectable="false" headerHeight="0" borderVisible="false" rowHeight="64" 
+										verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0x303030,0x3C3C3B]">
+										<mx:columns>
+											
+											<mx:DataGridColumn dataField="note" paddingLeft="23" width="325">
+												
+												<mx:itemRenderer>
+													
+													<fx:Component>		
+														
+														<mx:HBox paddingTop="8">
+															
+															<s:Label text="•" fontSize="6" paddingTop="2" />
+															
+															<mx:VBox verticalGap="3">
+																
+																<s:Label text="{data.note}" width="274" lineHeight="16" />
+																
+																<mx:HBox visible="{data.recommendation != ''}" includeInLayout="{data.recommendation != ''}">
+																	<s:Label text="Recommendation:" paddingTop="4" /><!--paddingTop was 2 when fontFamily="myMyriadNoCFF"-->
+																	<mx:LinkButton id="btnNextStepsRecommendation" label="{data.recommendation}" paddingTop="-5" paddingLeft="-7" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsRecommendation.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation.styleName='linkBtn';" /><!--click="{outerDocument.handleRecommendation(data.recommendation)}" //COMMENTED OUT BECAUSE IT'S THROWING AN ERROR THAT DOESN'T MAKE ANY SENSE (about closing the popup, error doesn't appear on Chrome)-->
+																</mx:HBox>
+																
+															</mx:VBox>
+															
+														</mx:HBox>
+														
+													</fx:Component>
+													
+												</mx:itemRenderer>
+											</mx:DataGridColumn>
+											
+											<mx:DataGridColumn dataField="completed">
+												
+												<mx:itemRenderer>
+													
+													<fx:Component>
+														
+														<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+															
+															<mx:VBox paddingTop="2">
+																<s:Image source="@Embed('/images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
+															</mx:VBox>
+															
+															<mx:VBox verticalGap="1" paddingTop="-2"><!--vgap was 3, no paddingTop-->
+																<mx:LinkButton id="btnNextStepsMarkCompleted" label="{data.completed ? 'Unmark completed' : 'Mark completed'}" paddingTop="-5" color="0xAEDEE4" click="{data.completed = !data.completed; outerDocument.foodPlan.notes.refresh();}" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsMarkCompleted.styleName='linkBtnUnderline';}" rollOut="btnNextStepsMarkCompleted.styleName='linkBtn';" />
+																<mx:LinkButton id="btnNextStepsDelete" label="Remove" color="0xAEDEE4" textRollOverColor="0xAEDEE4" click="{outerDocument.foodPlan.notes.removeItemAt(outerDocument.foodPlan.notes.getItemIndex(data))}" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsDelete.styleName='linkBtnUnderline';}" rollOut="btnNextStepsDelete.styleName='linkBtn';" />
+															</mx:VBox>
+															
+														</mx:HBox>
+														
+													</fx:Component>
+													
+												</mx:itemRenderer>
+												
+											</mx:DataGridColumn>
+											
+										</mx:columns>
+										
+									</mx:DataGrid>
+									
+								</s:BorderContainer>
+								
+								<s:BorderContainer width="325" maxHeight="255" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+									
+									<s:layout>
+										<s:VerticalLayout paddingTop="17" />
+									</s:layout>
+									
+									<s:Label text="Suggested Meals for a Day" styleName="greenBoldText" paddingLeft="23" />
+									
+									<s:Scroller id="mealsScroller" width="{mealsScroller.verticalScrollBar.visible?309:325}" maxHeight="210" horizontalScrollPolicy="off">
+										
+										<s:DataGroup width="100%" dataProvider="{foodPlan.mealCategories}">
+											
+											<s:layout>
+												<s:VerticalLayout gap="2" />
+											</s:layout>
+											
+											<s:itemRenderer>
+												
+												<fx:Component>
+													
+													<mx:VBox width="100%">
+														<fx:Script>
+															<![CDATA[
+																import edu.newschool.piim.healthboard.model.module.nutrition.MealCategory;
+															]]>
+														</fx:Script>
+														
+														<s:Label text="{MealCategory(data).name}" color="0xFFFFFF" fontWeight="bold" fontSize="13" paddingLeft="23" paddingTop="8" />
+														
+														<s:List 
+															width="100%" dataProvider="{MealCategory(data).meals}" borderVisible="false" contentBackgroundAlpha="0" 
+															horizontalScrollPolicy="off" visible="{MealCategory(data).meals &amp;&amp; MealCategory(data).meals.length}">
+															
+															<s:layout>
+																<s:VerticalLayout variableRowHeight="true" />
+															</s:layout>
+															
+															<s:itemRenderer>
+																
+																<fx:Component>
+																	
+																	<s:ItemRenderer width="100%" autoDrawBackground="false">
+																		
+																		<mx:HBox 
+																			width="100%" 
+																			backgroundColor="{MealCategory(outerDocument.data).meals.getItemIndex(data)%2==0?0x303030:0x3C3C3B}" 
+																			paddingLeft="8" paddingTop="8" paddingRight="8" paddingBottom="8" 
+																			horizontalGap="5">
+																			
+																			<fx:Script>
+																				<![CDATA[
+																					import edu.newschool.piim.healthboard.model.module.nutrition.MealCategory;
+																				]]>
+																			</fx:Script>
+																			
+																			<s:Label text="{MealCategory(outerDocument.data).meals.getItemIndex(data) + 1})" styleName="whiteText11" fontSize="13" />
+																			
+																			<s:Label text="{data.description}" width="175" styleName="whiteText11" fontSize="13" />
+																			
+																		</mx:HBox>
+																		
+																	</s:ItemRenderer>
+																	
+																</fx:Component>
+																
+															</s:itemRenderer>
+															
+														</s:List>
+														
+													</mx:VBox>
+													
+												</fx:Component>
+												
+											</s:itemRenderer>
+											
+										</s:DataGroup>
+										
+									</s:Scroller>
+									
+								</s:BorderContainer>
+								
+							</s:HGroup>
+							
+						</s:VGroup>
+						
+					</s:VGroup>
+					
+				</s:Scroller>
+				
+			</s:NavigatorContent>
+			
+		</mx:ViewStack>
+		
+		<plus:TabBarPlus id="tabsNutrition" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="never" dataProvider="{viewStackNutrition}" /><!--change="tabsMedicalRecordsChangeHandler(event)"-->
+	
+	</s:Group>
+	
+</s:VGroup>

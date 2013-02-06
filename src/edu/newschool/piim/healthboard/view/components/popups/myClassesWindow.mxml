@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="646" height="435"
+			   close="PopUpManager.removePopUp(this);" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow"
+			   fontSize="12" color="0x4D4D4D">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.managers.PopUpManager;
+			
+			public function showClass(className:String):void {
+				var classSchedule:String;
+				
+				if(className == 'expArtsGroup') {
+					lblClassName.text = 'Expressive Arts Group';
+					lblClassDescription.text = 'Expressive Arts Group participants will work with drawing, painting, collage and other arts with the purpose of exploring creativity, having fun, developing new insights, and sharing time with others. The class is focused on the art-making experience, rather than on what a person produces. No talent required!';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'expArtsSenior') {
+					lblClassName.text = 'Senior Arts & Social Hour';
+					lblClassDescription.text = 'Senior Arts & Social Hour Group is an opportunity for seniors to enjoy conversation while making art. We’ll do some drawing, painting, collage and other arts with the purpose of exploring creativity, having fun, developing new insights, and sharing time with others. Socializing encouraged!';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'hLifeWeight') {
+					lblClassName.text = 'Weight Management Basics';
+					lblClassDescription.text = 'Are you tired of losing and regaining weight? Then don’t try another diet! Join us for a six-week weight management program that will teach you a sensible, permanent approach to weight control. You will learn how to plan a healthy, low-calorie diet, what types and amounts of carbohydrate, protein and fat to choose, how to read food labels, manage eating out, set goals for exercise and develop skills for emotional eating. Open to all.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'hLifeMindful') {
+					lblClassName.text = 'Mindful Eating Group';
+					lblClassDescription.text = 'The purpose of this class is to increase awareness around our relationship to food and our food behaviors, so that we may improve our habits with food and get more enjoyment out of life.  Each class includes a topic for exploration and discussion as well as an experiential exercise.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'lunchCholesterol') {
+					lblClassName.text = 'Cholesterol Control Class';
+					lblClassDescription.text = 'Is your cholesterol level too high? If so, you are at increased risk of a heart attack or stroke. In this 2 hour class, you will learn what your cholesterol numbers mean, how to follow a diet to lower your cholesterol, how to read food labels, how to make healthier choices when dining out and how regular exercise can improve your cholesterol profile.';
+					classSchedule = "Duration: 2 hours.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'lunchPain') {
+					lblClassName.text = 'Pain Management';
+					lblClassDescription.text = 'This valuable 4-week skills-based class is designed to help you learn specific strategies and techniques for reducing the impact of pain on your life.';
+					classSchedule = "Duration: 1 hour, twice a week for 4 weeks.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'lunchPressure') {
+					lblClassName.text = 'High Blood Pressure Class';
+					lblClassDescription.text = 'Taking medication is an important part of managing blood pressure. But did you know that you may be able to lower your blood pressure by making changes in your diet, losing weight and increasing your activity level? This 1 hour class will teach you about these lifestyle approaches to managing your blood pressure.';
+					classSchedule = "Duration: 1 hour, twice a week for 4 weeks.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'lunchTobacco') {
+					lblClassName.text = 'Tobacco Cessation';
+					lblClassDescription.text = 'A flexible program designed to give you the tools you need to give up tobacco and stay tobacco free forever. Options including group, individual, and online sessions.';
+					classSchedule = "Duration: 1 hour, twice a week for 4 weeks.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodyOrientation') {
+					lblClassName.text = 'Orientation to Mind-Body Medicine';
+					lblClassDescription.text = 'Join us for this informative session to learn how mind-body medicine works, how it could be helpful to you, and what classes are available for you to join now. Most Introductions to Mind-Body Medicine sessions are followed by a drop-in mind-body medicine class that you are free to join.';
+					classSchedule = "Duration: 20 minutes.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodyGroup') {
+					lblClassName.text = 'Mind-Body Skills Group';
+					lblClassDescription.text = 'Participants in Mind-Body Skills Groups learn mind-body techniques such as meditation, guided imagery, writing, drawing, biofeedback and personal sharing. The purpose of the groups is to increase self-awareness and self-care.';
+					classSchedule = "Duration: 2 hour, twice a week for 8 weeks.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodySkills') {
+					lblClassName.text = 'Mindful Living Skills';
+					lblClassDescription.text = 'In these classes, you will learn how to practice mindfulness meditation, as well as how to apply the power of mindfulness to every aspect of your life, as well as to specific problems (such as chronic pain, anxiety, and depression, etc). The purpose of these classes is to empower you with tools to reduce stress and improve the quality of your life.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodySampler') {
+					lblClassName.text = 'Mind-Body Sampler';
+					lblClassDescription.text = 'In this class, you will learn and practice several different mind-body techniques, such as meditation, guided imagery, Breathwork and yoga to empower you towards optimal health and healing. No specific attire is required.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodyRelaxation') {
+					lblClassName.text = 'Guided Imagery for Relaxation';
+					lblClassDescription.text = 'Guided Imagery is a technique that uses imagination and visualization, somewhat like storytelling. It can bring about healing, relaxation, and help to reduce reactivity to stress.';
+					classSchedule = "Duration: 20 minutes.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodyBreathwork') {
+					lblClassName.text = 'Breathwork & Imagery';
+					lblClassDescription.text = 'Join us for this informative session which uses the breath with visualizations for healing. Interesting research is providing evidence that the body will respond to our thoughts. As we visualize healing, we are calming the nervous system and creating an optimum environment for healing.';
+					classSchedule = "Duration: 20 minutes.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'mindBodyMeditation') {
+					lblClassName.text = 'Guided Meditation';
+					lblClassDescription.text = 'This is an introduction to meditation techniques. These techniques can be practiced by anyone of any religion, have been around for thousands of years, and have recently been proven by neuroscientists to improve our mental and emotional functioning.';
+					classSchedule = "Duration: 20 minutes.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'yogaBeginner') {
+					lblClassName.text = 'Beginner Yoga';
+					lblClassDescription.text = 'This class combines a series of yoga postures designed to balance, open, and tone the body, along with deep breathing and mindfulness practice to calm and center the mind. Supplies are provided and comfortable clothing is suggested.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'yogaLunch') {
+					lblClassName.text = 'Yoga Before Lunch';
+					lblClassDescription.text = 'This is a brief half-hour class in which we practice several postures to balance and open the body, along with deep breathing and mindfulness to calm and center the mind.';
+					classSchedule = "Duration: 30 minutes.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'yogaRestorative') {
+					lblClassName.text = 'Restorative Yoga';
+					lblClassDescription.text = 'This class incorporates restorative yoga poses, imagery, and music to bring you to a state of deep relaxation in order to release stress and renew your energy. Supplies are provided and comfortable clothing is suggested.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				else if(className == 'yogaGentle') {
+					lblClassName.text = 'Gentle Chair Yoga';
+					lblClassDescription.text = 'This class combines gentle stretching in a chair, combined with deep breathing and mindfulness practice to release tension, restore energy, and balance mind and body. This class is primarily for seniors and people with limited mobility. Supplies are provided and comfortable clothing is suggested.';
+					classSchedule = "Duration: 1 hour.\nNext available start date: Thursday, November 18, 2011";
+				}
+				
+				lblClassSchedule.text = classSchedule;
+				btnClassAvailability.visible = true;
+			}
+			
+			private function viewAvailability():void {
+				AppProperties.getInstance().controller.appointmentsController.setAvailable('set1', lblClassName.text);
+				PopUpManager.removePopUp(this);
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.myLinkButton {
+			color: #064E71;
+			paddingTop: -2;
+		}
+
+	</fx:Style>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="17" paddingBottom="14" paddingLeft="14" paddingRight="14" />
+	</s:layout>
+	
+	<s:Label text="Available Classes" fontWeight="bold" fontSize="16" />
+	<s:HGroup paddingTop="18" gap="20" width="100%">
+		<s:Scroller height="360">
+			<s:VGroup gap="-1">
+				<s:Label text="Expressive Arts" fontStyle="italic" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Expressive Arts Group" click="showClass('expArtsGroup')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Senior Arts and Social Hour" click="showClass('expArtsSenior')" />
+				<s:Label text="Healthy Lifestyles" fontStyle="italic" paddingTop="22" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Weight Management Basics" click="showClass('hLifeWeight')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Mindful Eating Group" click="showClass('hLifeMindful')" />
+				<s:Label text="Lunch and Learn Nutrition Series" fontStyle="italic" paddingTop="22" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Cholesterol Control Class" click="showClass('lunchCholesterol')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Pain Management" click="showClass('lunchPain')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="High Blood Pressure Class" click="showClass('lunchPressure')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Tobacco Cessation" click="showClass('lunchTobacco')" />
+				<s:Label text="Mind-Body" fontStyle="italic" paddingTop="22" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Orientation to Mind-Body Medicine" click="showClass('mindBodyOrientation')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Mind-Body Skills Group" click="showClass('mindBodyGroup')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Mindful Living Skills" click="showClass('mindBodySkills')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Mind-Body Sampler" click="showClass('mindBodySampler')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Guided Imagery for Relaxation" click="showClass('mindBodyRelaxation')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Breathwork and Imagery" click="showClass('mindBodyBreathwork')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Guided Meditation" click="showClass('mindBodyMeditation')" />
+				<s:Label text="Yoga" fontStyle="italic" paddingTop="22" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Beginner Yoga" click="showClass('yogaBeginner')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Yoga Before Lunch" click="showClass('yogaLunch')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Restorative Yoga" click="showClass('yogaRestorative')" />
+				<mx:LinkButton styleName="myLinkButton" skin="{null}" label="Gentle Chair Yoga" click="showClass('yogaGentle')" />
+			</s:VGroup>
+		</s:Scroller>
+		
+		<s:VGroup gap="16" height="100%" width="100%">
+			<s:Label id="lblClassName" text="Classes from Integrated Health Services" fontStyle="italic" />
+			<s:Label id="lblClassDescription" text="{'Select a class on the left for a description.\nFor more information, please call 301 295 0105.'}" width="320" paddingLeft="20" lineHeight="18" />
+			<s:Label id="lblClassSchedule" paddingLeft="20" lineHeight="18" />
+			<s:Spacer height="100%" />
+			<s:HGroup id="hgButtons" width="100%" horizontalAlign="right">
+				<s:Button id="btnClassAvailability" label="View Availabilty" visible="false" styleName="buttonText" height="24" click="viewAvailability()" />
+				<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+			</s:HGroup>
+		</s:VGroup>
+	</s:HGroup>
+	
+</s:TitleWindow>

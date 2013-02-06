@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkButtonSkin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			 xmlns:s="library://ns.adobe.com/flex/spark" 
+			 minWidth="21" minHeight="21" alpha.disabledStates="0.5" >		<!-- changed the component from SparkSkin to SparkButtonSkin, so the icon for the "new message" can be displayed... (Damian) -->
+	
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("net.flexwiz.blog.tabbar.plus.TabPlus")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.view.components.AlertNavigatorContent;
+			
+			import net.flexwiz.blog.tabbar.plus.TabPlus;
+			private var cornerRadius:Number = 4;
+			
+			/**
+			 *  @private
+			 *  The cornerRadius style is specified by the TabBar, not the button itself.   
+			 * 
+			 *  Rather than bind the corner radius properties of the s:Rect's in the markup 
+			 *  below to hostComponent.owner.getStyle("cornerRadius"), we reset them here, 
+			 *  each time a change in the value of the style is detected.  Note that each 
+			 *  corner radius property is explicitly initialized to the default value of 
+			 *  the style; the initial value of the private cornerRadius property.
+			 */
+			private function updateCornerRadius():void
+			{
+				var cr:Number = getStyle("cornerRadius");
+				if (cornerRadius != cr)
+				{
+					cornerRadius = cr;
+					fill.topLeftRadiusX = cornerRadius;
+					fill.topRightRadiusX = cornerRadius;
+					//border.topLeftRadiusX = cornerRadius;
+					//border.topRightRadiusX = cornerRadius;
+					//highlight.topLeftRadiusX = cornerRadius;
+					//highlight.topRightRadiusX = cornerRadius;
+				}
+			}
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( alertIcon )
+				{
+					alertIcon.visible = alertIcon.includeInLayout = hostComponent.hasOwnProperty('data') && hostComponent['data'] is AlertNavigatorContent && AlertNavigatorContent(hostComponent['data']).showAlert;
+				}
+			}
+			
+			/**
+			 *  @private
+			 */
+			override protected function updateDisplayList(unscaledWidth:Number, unscaleHeight:Number):void
+			{
+				updateCornerRadius();
+				hostComponent.mouseChildren= true;
+				closeBtn.visible = (hostComponent as TabPlus).canClose;		//CASTING TO TABPLUS TO PREVENT ERROR (DAMIAN)... see http://stackoverflow.com/questions/6268281/accessing-custom-property-of-hostcomponent-when-skinning-flex-4-5-sdk-4-5
+				
+				if (!closeBtn.visible) {
+					Label(labelDisplay).right= 8;			//CASTING TO LABEL TO PREVENT ERROR -- SEE http://forums.adobe.com/message/3774509
+					Label(labelDisplay).setStyle("textAlign", "center");	//added DB
+				}
+				else {
+					Label(labelDisplay).right= 30;		//18 (damian)
+				}
+				
+				updateBorderTop(unscaledWidth, unscaledHeight);
+				
+				super.updateDisplayList(unscaledWidth, unscaledHeight);
+			}
+			
+			private function updateBorderTop(width:Number, height:Number):void {
+				var path:String = createPathData(true);
+				borderTop.data = path;
+			}
+			
+			private function createPathData(isBorder:Boolean):String {
+				var left:Number = -0.5;  // assuming stroke weight is 1.0
+				var right:Number = width - 0.5;
+				var top:Number = 0.5;
+				var bottom:Number = height;
+				
+				var a:Number = cornerRadius * 0.292893218813453;
+				var s:Number = cornerRadius * 0.585786437626905;
+				
+				// If the path is for the highlight,
+				// Draw the vertical part of the selected tab highlight that's rendered
+				// with alpha=0.07.  The s:Path is configured to include only the left and
+				// right edges of an s:Rect, along with the top left,right rounded corners.
+				// Otherwise, we draw a full path.
+				var path:String = "";
+				path +=  "M " + left + " " + bottom;
+				path += " L " + left + " " + (top + cornerRadius);
+				path += " Q " + left + " " + (top + s) + " " + (left + a) + " " + (top + a);
+				path += " Q " + (left + s) + " " + top + " " + (left + cornerRadius) + " " + top;
+				
+				if (isBorder)
+					path += " L " + (right - cornerRadius) + " " + top;
+				else
+					path += " M " + (right - cornerRadius) + " " + top;
+				
+				path += " Q " + (right - s) + " " + top + " " + (right - a) + " " + (top + a);
+				path += " Q " + right + " " + (top + s) + " " + right + " " + (top + cornerRadius);
+				path += " L " + right + " " + bottom;
+				
+				return path;
+			}
+		]]>
+	</fx:Script>
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="up" />
+		<s:State name="over" stateGroups="overStates" />
+		<s:State name="down" stateGroups="downStates" />
+		<s:State name="disabled" stateGroups="disabledStates" />
+		<s:State name="upAndSelected" stateGroups="selectedStates, selectedUpStates" />
+		<s:State name="overAndSelected" stateGroups="overStates, selectedStates" />
+		<s:State name="downAndSelected" stateGroups="downStates, selectedStates" />
+		<s:State name="disabledAndSelected" stateGroups="selectedUpStates, disabledStates, selectedStates" />
+	</s:states>
+	
+	<!--- layer 2: fill -->
+	<s:Rect id="fill"
+			left="1" right="1" top="1" bottom="1"
+			topLeftRadiusX="4" topRightRadiusX="4"
+			width="69" height="21">
+		<s:fill>
+			<s:SolidColor color="0x4A4A49"
+						  color.selectedUpStates="0x706F6F"
+						  color.overStates="0x706F6F"
+						  color.downStates="0x706F6F"
+						  alpha="1"
+						  alpha.overAndSelected="1" />	<!--color.overStates="0xBBBDBD" color.downStates="0xAAAAAA"-->
+		</s:fill>
+	</s:Rect>
+	
+	
+	<!--- layer 7: border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+	<s:Line id="borderBottom"
+			left="0" right="0" bottom="0">
+		<s:stroke>
+			<s:SolidColorStroke weight="1"
+								color="0xBDBCBC"
+								color.selectedStates="0x706F6F"
+								alpha="1"
+								alpha.down="1"
+								alpha.selectedStates="1" />
+		</s:stroke>
+	</s:Line>
+	
+	<s:Path id="borderTop"
+			left="0" right="0" top="0" bottom="0"
+			width="69" height="21">
+		<s:stroke>
+			<s:LinearGradientStroke rotation="90" weight="1">
+				<s:GradientEntry color="0xBDBCBC"
+								 alpha="1"
+								 alpha.down="1"
+								 alpha.selectedStates="1" />
+				<s:GradientEntry color="0xBDBCBC"
+								 alpha="1"
+								 alpha.down="1"
+								 alpha.selectedStates="1" />
+			</s:LinearGradientStroke>
+		</s:stroke>
+	</s:Path>
+	
+	<s:Image id="alertIcon" source="@Embed('/images/redMark.png')" top="0" right="0" />
+	
+	<!-- layer 8: text -->
+	
+	<!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
+	<s:Label id="labelDisplay"
+			 verticalAlign="middle"
+			 maxDisplayedLines="1"
+			 verticalCenter="1"
+			 left="10" right="10" top="2" bottom="2"> <!-- horizontalCenter="0"  textAlign="center" -->
+	</s:Label>
+	
+	<s:Button id="closeBtn"
+			  skinClass="net.flexwiz.blog.tabbar.plus.tabskins.TabCloseBtnSkin"
+			  verticalCenter="0"
+			  right="4" />
+
+</s:SparkButtonSkin>

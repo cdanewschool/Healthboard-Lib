@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow" 
+	xmlns:general="edu.newschool.piim.healthboard.view.components.general.*" 
+	color="0x000000" 
+	width="405" 
+	close="PopUpManager.removePopUp(this);">
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.controller.VitalSignsController;
+			
+			import edu.newschool.piim.healthboard.model.module.VitalSignsModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.events.CollectionEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.collections.Sort;
+			import spark.collections.SortField;
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			private const DEFAULT_HEIGHT:int = 410;
+			
+			[Bindable] public var date:String;
+			
+			[Bindable] private var currentWeight:String;
+			[Bindable] private var currentBMI:String;
+			[Bindable] private var currentBloodPressure:String;
+			[Bindable] private var currentHeartRate:String;
+			[Bindable] private var currentRespiratory:String;
+			[Bindable] private var currentTemperature:String;
+			[Bindable] private var currentHeight:String;
+			[Bindable] private var author:String;
+			
+			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
+			[Bindable] public var model:VitalSignsModel = controller.model as VitalSignsModel;
+			
+			[Bindable] public var item:Object;
+			
+			private var sort:Sort;
+			private var count:int;
+			private var dirty:Boolean;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( count 
+					&& dirty )
+				{
+					var height:int = DEFAULT_HEIGHT + (item.comments && item.comments.length ? commentsContainer.height + 10 : 0);
+					
+					height -= (6-count) * 32;
+					
+					this.height = height;
+					
+					dirty = false;
+				}
+				
+				commentsContainer.visible = commentsContainer.includeInLayout = item && item.comments && item.comments.length;
+				commentsList.dataProvider = item ? item.comments : null;
+			}
+			
+			public function populateEntry():void 
+			{
+				this.item = null;
+				
+				count = 0;
+				
+				for(var i:uint = 0; i < model.vitalSignsByDate.length; i++)
+				{
+					var item:Object = model.vitalSignsByDate.getItemAt(i);
+					
+					if( item.date == date ) 
+					{
+						if( item.weightBMI != '' ) 
+						{
+							hbWeight.visible = hbWeight.includeInLayout = true;
+							currentWeight = item.weightBMI.substr(0,3);
+							currentBMI = item.weightBMI.substr(6);
+							count++;
+							
+							if(count%2) hbWeight.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						if( item.bloodPressure != '' ) 
+						{
+							hbBloodPressure.visible = hbBloodPressure.includeInLayout = true;
+							currentBloodPressure = item.bloodPressure;
+							
+							count++;
+							
+							if(count%2) hbBloodPressure.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						if( item.heartRate != '' )
+						{
+							hbHeartRate.visible = hbHeartRate.includeInLayout = true;
+							currentHeartRate = item.heartRate;
+							
+							count++;
+							
+							if(count%2) hbHeartRate.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						if( item.respiratory != '' ) 
+						{
+							hbRespiratory.visible = hbRespiratory.includeInLayout = true;
+							currentRespiratory = item.respiratory;
+							
+							count++;
+							
+							if(count%2) hbRespiratory.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						if( item.temperature != '' ) 
+						{
+							hbTemperature.visible = hbTemperature.includeInLayout = true;
+							currentTemperature = item.temperature;
+							
+							count++;
+							
+							if(count%2) hbTemperature.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						if( item.height != '' ) 
+						{
+							hbHeight.visible = hbHeight.includeInLayout = true;
+							currentHeight = item.height;
+							
+							count++;
+							
+							if(count%2) hbHeight.setStyle("backgroundColor",0xCECECE);		//if ODD
+						}
+						
+						author = item.recordedBy;
+						
+						if( item.comments )
+						{
+							var sort:Sort = new Sort();
+							sort.compareFunction = sortByDate;
+							
+							item.comments.sort = sort;
+							item.comments.refresh();
+						}
+						
+						this.item = item;
+						
+						break;
+					}
+				}
+				
+				dirty = true;
+				
+				invalidateProperties();
+			}
+			
+			private function sortByDate(itemA:Object,itemB:Object,fields:Array=null):int
+			{
+				if( itemA.date.time == itemB.date.time ) return 0;
+				
+				return itemA.date.time > itemB.date.time ? -1 : 1;
+			}
+			
+			private function submitComment():void
+			{
+				comments.errorString = comments.text == "" ? "Please enter a comment" : null;
+				
+				if( comments.errorString ) return;
+				
+				var comment:Object = {comment: comments.text, author: "You", date: new Date() };
+				
+				if( item.comments )
+				{
+					item.comments.addItem( comment );
+				}
+				else
+				{
+					item.comments = new ArrayCollection( [ comment ] );
+					
+					var sort:Sort = new Sort();
+					sort.compareFunction = sortByDate;
+					
+					item.comments.sort = sort;
+				}
+				
+				ArrayCollection(item.comments).refresh();
+				
+				model.vitalSignsByDate.dispatchEvent( new CollectionEvent( CollectionEvent.COLLECTION_CHANGE, true ) );
+				
+				comments.text = "";
+				
+				commentsContainer.viewport.verticalScrollPosition = 0;
+				
+				dirty = true;
+				
+				invalidateProperties();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="5" paddingRight="13" gap="0" />
+	</s:layout>
+	
+	<s:Label text="Vital Records" fontWeight="bold" fontSize="16" color="0x4D4D4D" paddingLeft="8" paddingBottom="16" />
+	
+	<s:HGroup width="100%" paddingLeft="8" paddingBottom="4">
+		<s:Label fontSize="13" fontStyle="italic" color="0x4D4D4D" text="{'Entry for ' + date}" />
+		<s:Spacer width="100%" />
+		<s:HGroup paddingTop="-5" gap="-8" visible="{author == 'You'}" includeInLayout="{author == 'You'}">
+			<mx:LinkButton id="btnEditVital" label="Edit" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnEditVital.styleName='linkBtnUnderline';" rollOut="btnEditVital.styleName='linkBtn';" />
+			<mx:LinkButton id="btnDeleteVital" label="Delete" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnDeleteVital.styleName='linkBtnUnderline';" rollOut="btnDeleteVital.styleName='linkBtn';" />
+		</s:HGroup>
+		<s:Label color="0x4D4D4D" text="View only" visible="{author != 'You'}" includeInLayout="{author != 'You'}" />
+	</s:HGroup>
+	
+	<mx:HBox id="hbWeight" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Weight is" paddingLeft="7" />
+		<s:Label text="{currentWeight + ' pounds'}" fontWeight="bold" />
+		<s:Label text="and BMI is" />
+		<s:Label text="{currentBMI + '.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<mx:HBox id="hbBloodPressure" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Blood pressure is" paddingLeft="7" />
+		<s:Label text="{currentBloodPressure + ' mmHg.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<mx:HBox id="hbHeartRate" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Heart rate is" paddingLeft="7" />
+		<s:Label text="{currentHeartRate + ' beats/minute.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<mx:HBox id="hbRespiratory" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Respiratory is" paddingLeft="7" />
+		<s:Label text="{currentRespiratory + ' breaths/minute.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<mx:HBox id="hbTemperature" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3"><!--backgroundColor="0xCECECE" -->
+		<s:Label text="Temperature is" paddingLeft="7" />
+		<s:Label text="{currentTemperature + '°F.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<mx:HBox id="hbHeight" visible="false" includeInLayout="false" width="391" height="32" verticalAlign="middle" color="0x000000" horizontalGap="3">
+		<s:Label text="Height is" paddingLeft="7" />
+		<s:Label text="{currentHeight + '.'}" fontWeight="bold" />
+	</mx:HBox>
+	
+	<s:Label text="Comments:" paddingLeft="8" paddingTop="16" />
+	
+	<s:HGroup paddingTop="4" paddingBottom="10" paddingLeft="8">
+		<s:Line xFrom="0" xTo="376">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:Scroller 
+		id="commentsContainer"
+		width="100%" height="60" 
+		horizontalScrollPolicy="off">
+		
+		<s:DataGroup id="commentsList" width="80%">
+			
+			<s:layout>
+				<s:VerticalLayout paddingLeft="8" />
+			</s:layout>
+			
+			<s:itemRenderer>
+				
+				<fx:Component>
+					
+					<mx:HBox>
+						
+						<s:VGroup>
+							<s:Label width="287" text="{data.comment}" />
+							<s:Label visible="{data.comment != ''}" text="{'– ' + data.author + ', ' + data.date}" fontStyle="italic" color="0x4D4D4D" />
+						</s:VGroup>
+						
+						<s:Spacer width="{outerDocument.item.comments.length > 1 ? -15 : 0}" />
+						
+						<s:HGroup paddingTop="-5" gap="5" visible="{data.comment != '' &amp;&amp; data.author == 'You'}" includeInLayout="{data.comment != '' &amp;&amp; data.author == 'You'}" horizontalAlign="right">
+							<general:MainLinkButton styleName="linkBtnDarkBlue" label="Edit" />
+							<general:MainLinkButton styleName="linkBtnDarkBlue" label="Delete" />
+						</s:HGroup>
+						
+						<s:Label color="0x4D4D4D" text="View only" visible="{data.author != 'You'}" includeInLayout="{data.author != 'You'}" />
+						
+					</mx:HBox>
+					
+				</fx:Component>
+				
+			</s:itemRenderer>
+			
+		</s:DataGroup>
+		
+	</s:Scroller>
+	
+	<s:VGroup width="100%" paddingLeft="8" paddingTop="5" gap="2">
+		
+		<s:TextArea id="comments" width="100%" height="50" />
+		
+		<general:MainLinkButton label="Submit" styleName="linkBtnDarkBlue" click="submitComment()" />
+		
+	</s:VGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Close" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+	
+</s:TitleWindow>

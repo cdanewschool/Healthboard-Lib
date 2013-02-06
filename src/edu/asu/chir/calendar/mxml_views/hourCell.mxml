@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Buttons/Child view for showing hour strip used in day view and month view -->
+<mx:Canvas 
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	width="720"
+	height="72"
+	xmlns:ns="calendar.mxml_views.*">
+	
+	<mx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			import edu.newschool.piim.healthboard.events.AppointmentEvent;
+			
+			import edu.asu.chir.calendar.classes.model.DataHolder;
+			
+			import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
+			
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			
+			private var myReason:String;
+			
+			public function makeButtonsVisible():void 
+			{
+				btnFirstHalf.visible = Math.floor(Math.random()*20)+1 == 1;
+				btnSecondHalf.visible = Math.floor(Math.random()*20)+1 == 1;
+			}
+			
+			/**
+			 * FUNCTION ADDED BY MICHAEL
+			 * you might wana use View States for these buttons and just swap states out??
+			 */
+			
+			public function fillSlot(data:Object, today:Date = null, thisHour:int = 0):void
+			{
+				
+				var ignoreData:Boolean = false;
+				var ignoreFirstHalf:Boolean = false;
+				var ignoreSecondHalf:Boolean = false;
+				var strLabel:String;
+				var thisMeridiem:String;
+				
+				if(thisHour == 0)
+				{
+					strLabel = "12";
+					thisMeridiem = "am";
+				}
+				else if(thisHour>12)
+				{
+					strLabel = String(thisHour-12);
+					thisMeridiem = "pm";
+				}
+				else
+				{
+					strLabel = String(thisHour);
+					thisMeridiem = "am";
+				}
+				
+				strLabel = (strLabel.length < 2) ? ("0" + strLabel) : strLabel;
+				
+				// check if event already saved for current time then show its description
+				for(var j:int=0; j<DataHolder.getInstance().dataProvider.length; j++) 
+				{
+					var obj:PatientAppointment = DataHolder.getInstance().dataProvider[j] as PatientAppointment;
+					
+					if( DateUtil.dateCompare(obj.date, today) )
+					{
+						if( obj.hour == strLabel
+							&& obj.meridiem == thisMeridiem)
+						{
+							if(obj.mins == 0)
+							{
+								btnFirstHalf.label = obj.description;
+								btnFirstHalf.visible = true;
+								ignoreFirstHalf = true;
+							}
+							else
+							{
+								btnSecondHalf.label = obj.description;
+								btnSecondHalf.visible = true;
+								ignoreSecondHalf = true;
+							}
+						}
+					}
+				}
+				
+				var myDHlength:uint = DataHolder.getInstance().dataProvider.length;
+				
+				if(data)
+				{
+					if(!ignoreFirstHalf && data.firstSlot)
+					{
+						btnFirstHalf.visible = true;
+						btnFirstHalf.label = '+ Click to Request';
+						if(data.type == "appointment") btnFirstHalf.addEventListener(MouseEvent.CLICK, handleClick);
+						else btnFirstHalf.addEventListener(MouseEvent.CLICK, handleClickClass);
+						myReason = data.reason;
+					}
+					if(!ignoreSecondHalf && data.secondSlot)
+					{
+						btnSecondHalf.visible = true;
+						btnSecondHalf.label = '+ Click to Request';
+						if(data.type == "appointment") btnSecondHalf.addEventListener(MouseEvent.CLICK, handleClick2);
+						else btnSecondHalf.addEventListener(MouseEvent.CLICK, handleClick2Class);
+						myReason = data.reason;
+					}
+				}else
+				{
+					// if no data disable both
+					if(!ignoreFirstHalf) btnFirstHalf.visible = false;
+					if(!ignoreSecondHalf) btnSecondHalf.visible = false;
+					if(!ignoreFirstHalf) btnFirstHalf.label = '';
+					if(!ignoreSecondHalf) btnSecondHalf.label = '';
+				}
+			}
+			
+			private function handleClick(event:Event):void 
+			{
+				addAppointment('first', myReason);
+			}
+			
+			private function handleClick2(event:Event):void 
+			{
+				addAppointment('second', myReason);
+			}
+			
+			private function handleClickClass(event:Event):void 
+			{
+				addClass('first', myReason);
+			}
+			
+			private function handleClick2Class(event:Event):void 
+			{
+				addClass('second', myReason);
+			}
+			
+			private function addAppointment(half:String, reason:String):void
+			{
+				var date:Date = data.date as Date;
+				
+				var obj:PatientAppointment = new PatientAppointment();
+				obj.date = new Date( date.fullYear, date.month, date.date, parseInt(data.time) + (parseInt(data.time)>12?12:0), half == 'first' ? 0 : 30 );
+				obj.description = reason;	//"Appt requested";
+				obj.type = "Appointment";
+				obj.provider = "Dr. Berg";
+				obj.status = "Scheduled";
+				DataHolder.getInstance().addEvent(obj);
+				
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_APPOINTMENT, true );
+				evt.data = obj;
+				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your appointment has been added";
+				dispatchEvent( event );
+			}
+			
+			private function addClass(half:String, reason:String):void
+			{
+				var date:Date = data.date as Date;
+				
+				var obj:PatientAppointment = new PatientAppointment();
+				obj.date = new Date( date.fullYear, date.month, date.date, parseInt(data.time) + (parseInt(data.time)>12?12:0), half == 'first' ? 0 : 30 );
+				obj.description = reason;	//"Appt requested";
+				obj.type = "Class";
+				obj.provider = "Nurse Lee";
+				obj.status = "Scheduled";
+				DataHolder.getInstance().addEvent(obj);
+				
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.ADD_CLASS, true );
+				evt.data = obj;
+				AppProperties.getInstance().controller.appointmentsController.model.dispatchEvent( evt );
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your class has been added";
+				dispatchEvent( event );
+			}
+		]]>
+	</mx:Script>
+	
+	<mx:Button width="100%" height="50%" styleName="btnDayItems" paddingTop="-15" paddingLeft="1" fontSize="9" color="0xFFFFFF" id="btnFirstHalf" visible="false" />				<!--label="+ Click to Request" click="addAppointment('first')"--><!--textRollOverColor="0xFFFFFF" -->
+	<mx:Button width="100%" height="50%" styleName="btnDayItems" paddingTop="-15" paddingLeft="1" fontSize="9" color="0xFFFFFF" bottom="0" id="btnSecondHalf" visible="false" />	<!--label="+ Click to Request" click="addAppointment('second')"-->
+	
+	<mx:VRule height="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6" />
+	<mx:HRule x="0" top="0" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6"/>
+	<mx:HRule x="0" top="18" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1" />
+	<mx:HRule x="0" top="36" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+	<mx:HRule x="0" top="54" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+</mx:Canvas>

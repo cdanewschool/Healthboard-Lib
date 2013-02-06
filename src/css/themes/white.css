@@ -1,9 +1,9 @@
 /* CSS file */
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
-@namespace enhancedtitlewindow "external.collapsibleTitleWindow.components.enhancedtitlewindow.*";
+@namespace enhancedtitlewindow "com.ninemmedia.code.collapsibleTitleWindow.components.enhancedtitlewindow.*";
 
-s|Application { skinClass: ClassReference("skins.general.backgroundGradientWhite"); fontFamily: "myMyriad"; }
+s|Application { skinClass: ClassReference("edu.newschool.piim.healthboard.view.skins.general.backgroundGradientWhite"); fontFamily: "myMyriad"; }
 
 enhancedtitlewindow|EnhancedTitleWindow {
 	borderColor: "0x7F7F7F";
@@ -14,7 +14,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	headerColor: "0x574D4D";
 	headerColorAlternate: "0x6E606E";
 	showExpandIndicator: true;
-	skinClass: ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
+	skinClass: ClassReference("com.ninemmedia.code.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 }
 
 .standardDataGrid {
@@ -23,7 +23,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	color: "0x2D0F0F";
 	fontFamily: "myMyriadNoCFF";
 	headerBackgroundColor: "0xFFFFFF";
-	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerBackgroundSkin: ClassReference("edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin");
 	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
 	headerStyleName: "dataGridHeader";
 	headerHeight: 30;
@@ -45,7 +45,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	horizontalGridLineColor: "0xC6C6C6";
 	horizontalSeparatorSkin: ClassReference(null); 
 	headerBackgroundColor: "0xFFFFFF";
-	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerBackgroundSkin: ClassReference("edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin");
 	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
 	headerStyleName: "dataGridHeader";
 	headerHeight: 30;

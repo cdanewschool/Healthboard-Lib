@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enhancedtitlewindow:EnhancedTitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:enhancedtitlewindow="com.ninemmedia.code.collapsibleTitleWindow.components.enhancedtitlewindow.*"
+	xmlns:performancemeter="edu.newschool.piim.healthboard.view.skins.general.performancemeter.*">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.controller.ExerciseController;
+			
+			import edu.newschool.piim.healthboard.model.module.ExerciseModel;
+			
+			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
+			[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
+			
+			[Bindable] public var collapsedPixels:int = 0;
+		]]>
+	</fx:Script>
+	
+	<enhancedtitlewindow:layout>
+		<s:VerticalLayout paddingLeft="10" paddingTop="10" paddingRight="10" paddingBottom="6"/>
+	</enhancedtitlewindow:layout>
+	
+	<mx:DataGrid 
+		id="dgExerciseWidget" width="100%" height="{544 - collapsedPixels}" dataProvider="{model.exerciseForWidget}" selectable="false"
+		color="0xFFFFFF" verticalAlign="middle" 
+		useRollOver="false"
+		headerHeight="0"
+		verticalScrollPolicy="off"
+		borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x3C3C3B]"
+		variableRowHeight="true">
+		
+		<mx:columns>
+			<mx:DataGridColumn dataField="exercise">
+				<mx:itemRenderer>
+					<fx:Component>
+						<mx:VBox horizontalScrollPolicy="off" verticalScrollPolicy="off">
+							<fx:Script>
+								<![CDATA[
+									import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
+									
+									import edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRenderer;
+									import edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererOver;
+									
+									import mx.charts.HitData;
+									import mx.charts.events.ChartItemEvent;
+									import mx.collections.ArrayCollection;
+									import mx.controls.Alert;
+									import mx.events.FlexEvent;
+									
+									import edu.newschool.piim.healthboard.util.DateUtil;
+									
+									override public function set data(value:Object):void 
+									{
+										super.data = value;
+										
+										innerDataGrid.dataProvider = value.chart;
+									}
+								]]>
+							</fx:Script>
+							
+							<fx:Declarations>
+								<fx:Array id="bge">
+								</fx:Array>
+							</fx:Declarations>
+							
+							<mx:states>
+								<s:State name="expanded" />
+								<s:State name="collapsed" />
+							</mx:states>
+							
+							<s:HGroup width="140" gap="-2">
+								<mx:LinkButton icon.expanded="@Embed(source='/images/smallArrowGray.png')" icon.collapsed="@Embed(source='/images/smallArrowCollapsedGray.png')" horizontalGap="10" id="btnVital" label="{data.exerciseType}" fontSize="12" fontWeight="bold" toggle="true" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" click="{if(this.currentState=='expanded') {this.currentState = 'collapsed'; outerDocument.collapsedPixels+= (data.exerciseType == 'Most Recent PRT') ? 253 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);} else {this.currentState = 'expanded'; outerDocument.collapsedPixels-= (data.exerciseType == 'Most Recent PRT') ? 253 : (data.exerciseType == 'Physician-assigned' ? 130 : 71);}}" />
+								<mx:Label text="{'(Last: ' + DateUtil.formatDateFromString(data.lastDate) + ')'}" fontSize="12" color="0x868686" paddingTop="1" />
+							</s:HGroup>
+							
+							<s:Group includeIn="expanded">
+								<s:Line xFrom="0" xTo="280">
+									<s:stroke>
+										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
+									</s:stroke>
+								</s:Line>
+							</s:Group>
+							
+							<s:VGroup 
+								width="100%" horizontalAlign="left" paddingTop="3" gap="12"
+								visible="{this.currentState == 'expanded' &amp;&amp; data.exerciseType == 'Most Recent PRT'}" 
+								includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.exerciseType == 'Most Recent PRT'}">
+								
+								<s:HGroup gap="15" verticalAlign="middle">
+									
+									<s:Label text="Overall PRT Score" color="0xFFFFFF" fontSize="12" fontWeight="bold" width="55" />
+									
+									<s:HGroup width="150" verticalAlign="middle">
+										
+										<s:Image source="{outerDocument.controller.getPerformanceIconForExercise( {value:data.chart.PRTscore} )}" />
+										
+										<s:Label text="{data.chart.PRTscore}" styleName="orangeStandout" fontSize="32" paddingTop="5" paddingLeft="5" />
+										
+										<s:VGroup gap="2" paddingTop="0">
+											
+											<s:Label text="points" styleName="whiteText12" />
+											<s:Label 
+												fontSize="12" fontWeight="bold" 
+												text="{outerDocument.controller.getPerformanceLabelForExercise( {value:data.chart.PRTscore} )}" 
+												color="{outerDocument.controller.getPerformanceLabelColorForExercise( {value:data.chart.PRTscore} )}" />
+											
+										</s:VGroup>
+										
+									</s:HGroup>
+									
+								</s:HGroup>
+								
+								<s:VGroup paddingTop="-6">
+									<performancemeter:PerformanceMeter value="{data.chart.PRTscore}" width="280" />
+								</s:VGroup>
+								
+								<s:Group>
+									<s:Line xFrom="0" xTo="280">
+										<s:stroke>
+											<s:SolidColorStroke color="0xB3B2B3" alpha=".1" />
+										</s:stroke>
+									</s:Line>
+								</s:Group>
+								
+								<s:DataGroup id="exerciseOverview" dataProvider="{outerDocument.model.exerciseDataByMeasure}">
+									
+									<s:layout>
+										<s:VerticalLayout paddingLeft="0" gap="5" />
+									</s:layout>
+									
+									<s:itemRenderer>
+										
+										<fx:Component>
+											
+											<mx:VBox visible="{data.type != 'overview'}" includeInLayout="{data.type != 'overview'}">
+												
+												<fx:Script>
+													<![CDATA[
+														
+														[Bindable] private var exerciseIcon:Class;
+														[Bindable] private var performanceIcon:Class;
+														[Bindable] private var performanceLabel:String;
+														[Bindable] private var performanceLabelColor:uint;
+														
+														[Bindable] private var resultData:Object;
+														
+														[Bindable] private var isOverview:Boolean;
+														
+														override public function set data(value:Object):void
+														{
+															super.data = value;
+															
+															if( data )
+															{
+																exerciseIcon = outerDocument.outerDocument.controller.getIconForExercise( data, true );
+																
+																if( data.hasOwnProperty('chart') 
+																	&& data.chart.length 
+																	&& data.chart.getItemAt(0).hasOwnProperty('data') 
+																	&& data.chart.getItemAt(0).data.length )
+																{
+																	var latestResult:Object = data.chart.getItemAt(0).data.getItemAt(0);
+																	
+																	for each(var result:Object in data.chart.getItemAt(0).data)
+																	{
+																		if( new Date( result.date ).time > new Date( latestResult.date ).time )
+																			latestResult = result;
+																	}
+																	
+																	resultData = latestResult;
+																	
+																	performanceIcon = outerDocument.outerDocument.controller.getPerformanceIconForExercise( resultData );
+																	performanceLabel = outerDocument.outerDocument.controller.getPerformanceLabelForExercise( resultData );
+																	performanceLabelColor = outerDocument.outerDocument.controller.getPerformanceLabelColorForExercise( resultData );
+																}
+															}
+															
+															isOverview = outerDocument.exerciseOverview.dataProvider.getItemIndex(data) == 0;
+														}
+														
+													]]>
+												</fx:Script>
+												
+												<s:HGroup gap="5" verticalAlign="middle" paddingTop="0" paddingBottom="0">
+													
+													<s:HGroup width="55" verticalAlign="middle" paddingLeft="10">
+														<s:Image source="{exerciseIcon}" visible="{exerciseIcon!=null}" includeInLayout="{exerciseIcon!=null}" />
+													</s:HGroup>
+													
+													<s:HGroup width="150" verticalAlign="middle" paddingLeft="10">
+														
+														<s:Image source="{performanceIcon}" />
+														
+														<s:Label text="{resultData.value}" styleName="orangeStandout" fontSize="32" paddingTop="5" paddingLeft="5" />
+														
+														<s:VGroup gap="2" paddingTop="0">
+															<s:Label text="points" styleName="whiteText12" />
+															<s:Label text="{performanceLabel}" color="{performanceLabelColor}" fontSize="12" fontWeight="bold" />
+														</s:VGroup>
+														
+													</s:HGroup>
+													
+												</s:HGroup>
+												
+											</mx:VBox>
+											
+										</fx:Component>
+										
+									</s:itemRenderer>
+									
+								</s:DataGroup>
+								
+							</s:VGroup>
+							
+							<mx:DataGrid 
+								id="innerDataGrid" includeInLayout="{this.currentState == 'expanded' &amp;&amp; data.exerciseType != 'Most Recent PRT'}" visible="{this.currentState == 'expanded' &amp;&amp; data.exerciseType != 'Most Recent PRT'}" dropIndicatorSkin="edu.newschool.piim.healthboard.view.skins.general.myDropIndicatorSkin"
+								width="100%" height="{data.exerciseType == 'Physician-assigned' ? 117 : 58}" color="0xFFFFFF" verticalAlign="middle" selectable="false"
+								useRollOver="false" 
+								headerHeight="0"
+								borderVisible="false" verticalGridLines="false" horizontalGridLines="false" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x3C3C3B,0x3C3C3B]"
+								variableRowHeight="true" initialize="outerDocument.controller.updatePAIndices()"><!--rowCount="7"-->
+								
+								<mx:columns>
+									<mx:DataGridColumn dataField="measure">
+										<mx:itemRenderer>
+											<fx:Component>
+												<mx:HBox verticalAlign="middle" paddingLeft="10" horizontalScrollPolicy="off" verticalScrollPolicy="off">
+													<fx:Script>
+														<![CDATA[
+															import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
+															
+															import edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRenderer;
+															import edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererOver;
+															
+															import edu.newschool.piim.healthboard.controller.ExerciseController;
+															
+															import edu.newschool.piim.healthboard.enum.ExerciseType;
+															
+															import edu.newschool.piim.healthboard.model.module.ExerciseModel;
+															
+															import mx.charts.HitData;
+															import mx.charts.events.ChartItemEvent;
+															import mx.controls.Alert;
+															import mx.events.FlexEvent;
+															import mx.managers.PopUpManager;
+															
+															import edu.newschool.piim.healthboard.view.styles.ChartStyles;
+															
+															[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
+															
+															[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
+															
+															[Bindable] public var chartStyles:ChartStyles = AppProperties.getInstance().controller.model.chartStyles;
+															
+															[Bindable] public var item:Object;
+															
+															override public function set data(value:Object):void
+															{
+																super.data = value;
+																
+																if (value.hasOwnProperty("chart")) 
+																{
+																	chart.dataProvider = value.chart[0].data;
+																}
+																
+																item = data && data.chart && data.chart.length ? data.chart[0].data[data.chart[0].data.length - 1] : null;
+															}	
+															
+															private function chartRolloverEventHandler(event:ChartItemEvent):void 
+															{
+																value1.text = data.chart[0].data[event.hitData.chartItem.index].value;
+																value2.text = data.chart[0].data[event.hitData.chartItem.index].value2;
+																
+																myLineSeries.setStyle("itemRenderer",new ClassFactory(edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererOverWidget)); 
+															}
+															
+															private function chartRolloutEventHandler(event:ChartItemEvent):void 
+															{
+																value1.text = data.chart[0].data[event.hitData.chartItem.index].value;
+																value2.text = data.chart[0].data[event.hitData.chartItem.index].value2;
+																
+																myLineSeries.setStyle("itemRenderer",new ClassFactory(edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererExercise)); 
+															}
+														]]>
+													</fx:Script>
+													
+													<fx:Declarations>
+														<fx:Array id="bge">
+														</fx:Array>
+													</fx:Declarations>
+													
+													<s:VGroup width="23" horizontalAlign="center" paddingLeft="10">
+														<s:Image source="{controller.getIconForExercise(data,true)}" />
+													</s:VGroup>
+													
+													<mx:LineChart id="chart" width="150" height="52" backgroundElements="{bge}" seriesFilters="[]" selectionMode="single" itemRollOver="chartRolloverEventHandler(event)" itemRollOut="chartRolloutEventHandler(event)">
+														
+														<mx:series>
+															
+															<mx:LineSeries yField="expectation" xField="date" interactive="false">
+																<mx:lineStroke>
+																	<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha="0.4" />
+																</mx:lineStroke>
+															</mx:LineSeries>
+															
+															<mx:LineSeries id="myLineSeries" yField="value" xField="date" itemRenderer="edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererExercise" radius="4" adjustedRadius="4" fill="{chartStyles.colorVitalSignsWidgetBlack}" selectedIndex="0"><!--form="curve" -->
+																<mx:lineStroke>
+																	<s:SolidColorStroke color="0xFFFFFF" weight="2" />
+																</mx:lineStroke>
+																<mx:stroke>
+																	<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
+																</mx:stroke>
+															</mx:LineSeries>
+															
+														</mx:series>
+														
+														<mx:horizontalAxis>
+															<mx:DateTimeAxis id="exerciseXaxis" minimum="{model.chartMinExPA}" maximum="{model.chartMaxExPA}" />
+														</mx:horizontalAxis>
+														
+														<mx:horizontalAxisRenderers>
+															<mx:AxisRenderer axis="{exerciseXaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false"  />
+														</mx:horizontalAxisRenderers>
+														
+														<mx:verticalAxis>
+															<mx:LinearAxis id="exerciseYaxis" minimum="{data.chartMin}" maximum="{data.chartMax}" /><!--minimum="60" maximum="140"-->
+														</mx:verticalAxis>
+														
+														<mx:verticalAxisRenderers>
+															<mx:AxisRenderer axis="{exerciseYaxis}" showLabels="false" tickPlacement="none" showLine="false" visible="false" />
+														</mx:verticalAxisRenderers>
+														
+													</mx:LineChart>
+													
+													<s:VGroup fontSize="12" paddingLeft="10" gap="3">
+														
+														<s:HGroup gap="3">
+															<s:Label id="value1" color="0xFBB03B" fontWeight="bold" creationComplete="item ? value1.text=item.value: ''" />
+															<s:Label text="{data.unit}" color="0xFFFFFF" />
+														</s:HGroup>
+														
+														<s:HGroup gap="3">
+															<s:Label id="value2" color="0xFBB03B" fontWeight="bold" creationComplete="item ? value2.text=item.value2: ''" />
+															<s:Label text="{data.unit2}" color="0xFFFFFF" />
+														</s:HGroup>
+														
+													</s:VGroup>
+												</mx:HBox>
+												
+											</fx:Component>
+											
+										</mx:itemRenderer>
+										
+									</mx:DataGridColumn>
+									
+								</mx:columns>
+								
+							</mx:DataGrid>
+							
+							<s:Group>
+								<s:Line xFrom="0" xTo="280">
+									<s:stroke>
+										<s:SolidColorStroke color="0xB3B3B3" weight="1" alpha="0.1" />
+									</s:stroke>
+								</s:Line>
+							</s:Group>
+							
+						</mx:VBox>
+						
+					</fx:Component>
+					
+				</mx:itemRenderer>
+				
+			</mx:DataGridColumn>
+			
+		</mx:columns>
+		
+	</mx:DataGrid>
+	
+</enhancedtitlewindow:EnhancedTitleWindow>

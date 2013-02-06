@@ -1,6 +1,6 @@
 package 
 {
-	import controllers.Controller;
+	import edu.newschool.piim.healthboard.controller.Controller;
 
 	public class AppProperties
 	{

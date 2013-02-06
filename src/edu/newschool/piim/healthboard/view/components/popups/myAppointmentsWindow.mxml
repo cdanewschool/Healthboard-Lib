@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" width="320" height="244" height.fullList="396"
+			   close="PopUpManager.removePopUp(this);" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow"
+			   fontSize="12">
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.events.AppointmentEvent;
+			
+			import mx.managers.PopUpManager;
+			
+			private function handleReason():void 
+			{
+				btnAvailability.enabled = Boolean(txtReason.text.length);
+			}
+			
+			private function selectReason(reason:String):void 
+			{
+				txtReason.text = reason;
+				btnAvailability.enabled = true;
+			}
+			
+			private function selectReasonFullList():void 
+			{
+				currentState = 'default';
+				
+				txtReason.text = listReason.selectedItem;
+				btnAvailability.enabled = true;
+			}
+			
+			private function viewAvailability():void 
+			{
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.VIEW_AVAILABILITY );
+				evt.data = txtReason.text;
+				dispatchEvent( evt );
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+		
+		.myLinkButton {
+			color: #064E71;
+		}
+	</fx:Style>
+	
+	<s:layout>
+		<s:VerticalLayout paddingTop="17" paddingBottom="14" paddingLeft="14" paddingRight="13" />
+	</s:layout>
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="fullList" />
+	</s:states>
+	
+	<s:transitions>
+		<s:Transition fromState="default">
+			<s:Parallel>
+				<s:Resize target="{this}" duration="280"/>
+				<!--<mx:Blur target="{vgReasonsList}" />-->
+				<s:Wipe direction="down" target="{vgReasonsList}"/>
+			</s:Parallel> 
+		</s:Transition>
+		<s:Transition fromState="fullList">
+			<s:Sequence>
+				<s:Resize target="{this}" duration="280"/>
+			</s:Sequence>
+		</s:Transition>
+	</s:transitions>
+	
+	<s:Label text="What is your reason for visit?" />
+	<s:VGroup includeIn="default" width="100%">
+		<s:TextInput id="txtReason" width="100%" change="handleReason()" />
+		<s:HGroup width="100%" paddingTop="18">
+			<s:Label text="Common reasons for visit:" paddingTop="3" />
+			<s:Spacer width="100%" />
+			<mx:LinkButton label="Browse full list >" skin="{null}" styleName="myLinkButton" paddingTop="-4" click="this.currentState='fullList'" />
+		</s:HGroup>
+		<s:HGroup gap="16">
+			<s:VGroup gap="-5">
+				<mx:LinkButton label="General Consultation" styleName="myLinkButton" skin="{null}" click="selectReason('General Consultation')" />
+				<mx:LinkButton label="Physical Examination" styleName="myLinkButton" skin="{null}" click="selectReason('Physical Examination')" />
+				<mx:LinkButton label="Follow-up" styleName="myLinkButton" skin="{null}" click="selectReason('Follow-up')" />
+				<mx:LinkButton label="Flu vaccination" styleName="myLinkButton" skin="{null}" click="selectReason('Flu vaccination')" />
+				<mx:LinkButton label="Common RFV #5" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #5')" />
+			</s:VGroup>
+			<s:VGroup gap="-5">
+				<mx:LinkButton label="Common RFV #6" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #6')" />
+				<mx:LinkButton label="Common RFV #7" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #7')" />
+				<mx:LinkButton label="Common RFV #8" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #8')" />
+				<mx:LinkButton label="Common RFV #9" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #9')" />
+				<mx:LinkButton label="Common RFV #10" styleName="myLinkButton" skin="{null}" click="selectReason('Common RFV #10')" />
+			</s:VGroup>
+		</s:HGroup>
+		<s:HGroup width="100%" horizontalAlign="right" paddingTop="12">
+			<s:Button id="btnAvailability" label="View Availabilty" enabled="false" click="viewAvailability()" styleName="buttonText" height="24" />
+			<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
+		</s:HGroup>
+	</s:VGroup>
+	<s:VGroup id="vgReasonsList" includeIn="fullList" width="100%" horizontalAlign="right" gap="15">
+		<s:List id="listReason" change="selectReasonFullList()" width="293" height="311">
+			<s:dataProvider>
+				<s:ArrayCollection>
+					<fx:String>Reason for Visit #1</fx:String> 
+					<fx:String>Reason for Visit #2</fx:String> 
+					<fx:String>Reason for Visit #3</fx:String> 
+					<fx:String>Reason for Visit #4</fx:String>
+					<fx:String>Reason for Visit #5</fx:String> 
+					<fx:String>Reason for Visit #6</fx:String> 
+					<fx:String>Reason for Visit #7</fx:String> 
+					<fx:String>Reason for Visit #8</fx:String>
+					<fx:String>Reason for Visit #9</fx:String> 
+					<fx:String>Reason for Visit #10</fx:String> 
+					<fx:String>Reason for Visit #11</fx:String> 
+					<fx:String>Reason for Visit #12</fx:String>
+					<fx:String>Reason for Visit #13</fx:String> 
+					<fx:String>Reason for Visit #14</fx:String> 
+					<fx:String>Reason for Visit #15</fx:String> 
+					<fx:String>Reason for Visit #16</fx:String>
+					<fx:String>Reason for Visit #17</fx:String> 
+					<fx:String>Reason for Visit #18</fx:String> 
+					<fx:String>Reason for Visit #19</fx:String> 
+					<fx:String>Reason for Visit #20</fx:String>
+				</s:ArrayCollection>
+			</s:dataProvider>
+		</s:List>
+		<s:Button id="btnCloseFullList" label="Close" click="this.currentState='default'" styleName="buttonText" height="24" />
+	</s:VGroup>
+	
+</s:TitleWindow>

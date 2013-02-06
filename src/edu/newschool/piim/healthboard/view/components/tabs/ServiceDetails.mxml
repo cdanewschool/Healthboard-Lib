@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:general="edu.newschool.piim.healthboard.view.components.general.*"
+	preinitialize="preinitialize()"
+	creationComplete="creationComplete();">
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.controller.AppointmentsController;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			
+			import edu.newschool.piim.healthboard.model.Comment;
+			import edu.newschool.piim.healthboard.model.NextStep;
+			import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+			import edu.newschool.piim.healthboard.model.module.medicalrecords.TestResult;
+			import edu.newschool.piim.healthboard.model.module.medicalrecords.TestResults;
+			
+			import mx.controls.LinkButton;
+			import mx.formatters.DateFormatter;
+			
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.util.StringUtil;
+			
+ 			private var _medicalRecord:MedicalRecord;
+			
+			[Bindable] private var test:TestResults;
+			
+			private var controller:AppointmentsController = AppProperties.getInstance().controller.appointmentsController as AppointmentsController;
+			
+			[Bindable] public var dateFormatter:DateFormatter;
+			[Bindable] public var timeFormatter:DateFormatter;
+			[Bindable] public var today:Date;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( medicalRecord )
+				{
+					test = medicalRecord.tests && medicalRecord.tests.length ? medicalRecord.tests.getItemAt(0) as TestResults : null;
+					
+					if( medicalRecord.category_id == "lab" ) 
+					{
+						lblDetailsTitle.text= "Lab Details";
+						lblDetailsProvider.text = "Ordered by";
+						lblReasonForVisit.text = "Lab Name";
+					}
+					else if( medicalRecord.category.id == "radiology" ) 
+					{
+						lblDetailsTitle.text= "Procedure Details";
+						lblDetailsProvider.text = "Ordered by";
+						lblReasonForVisit.text = "Reason for Visit";
+					}
+					else
+					{
+						lblDetailsTitle.text= "Service Details";
+						lblDetailsProvider.text = "Provider";
+						lblReasonForVisit.text = "Reason for Visit";
+					}
+				}
+				
+				vgDateCollectionOrder.visible = vgDateCollectionOrder.includeInLayout = test!=null && test.collectionDate!=null;
+				vgDateTime.visible = vgDateTime.includeInLayout = !vgDateCollectionOrder.visible;
+			}
+			
+			[Bindable]
+			public function get medicalRecord():MedicalRecord
+			{
+				return _medicalRecord;
+			}
+			
+			public function set medicalRecord(value:MedicalRecord):void
+			{
+				_medicalRecord = value;
+				
+				invalidateProperties();
+			}
+			
+			public function onNextStepClick(event:MouseEvent):void 
+			{
+				var item:NextStep = LinkButton(event.currentTarget).data as NextStep;
+				controller.showNextStep( item );
+			}
+			
+			private function getCommentLastComment(item:TestResult, column:DataGridColumn):String 
+			{
+				var comment:String = item.comments && item.comments.length ? (item.comments.getItemAt(0) as Comment).text : '';
+				
+				return comment.length < 43 ? comment : comment.substr(0,43) + "...";
+			}
+			
+			private function creationComplete():void 
+			{
+				label = DateFormatters.dateOnlyBackslashDelimited.format(medicalRecord.date) + ' - ' + medicalRecord.description;
+			}
+			
+			private function preinitialize():void
+			{
+				dateFormatter = DateFormatters.dateOnlyBackslashDelimited;
+				timeFormatter = DateFormatters.dateFormatterTimeOnly;
+				
+				today = AppProperties.getInstance().controller.model.today;
+			}
+
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="0" />
+	</s:layout>
+	
+	<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+		
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="5" />
+		</s:layout>
+
+		<s:Button label="Print" height="24" styleName="buttonText" />
+		<s:Button label="Export" height="24" styleName="buttonText" click="dispatchEvent( new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true, false, 'Your file has been exported') )" />
+		
+	</s:BorderContainer>
+	
+	<s:Scroller height="100%" horizontalScrollPolicy="off">	
+		
+		<s:HGroup paddingTop="6" paddingBottom="15" width="960">
+			
+			<s:VGroup width="325" gap="15">
+				
+				<s:Label id="lblDetailsTitle" styleName="greenBoldText" paddingLeft="20" paddingTop="13" />
+				
+				<s:VGroup color="#EDEDED" gap="4">
+					
+					<s:HGroup>
+						<s:Label id="lblDetailsProvider" text="Provider" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicalRecord.provider.fullNameAbbreviated}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup visible="{medicalRecord.interpreter!=null}" includeInLayout="{medicalRecord.interpreter!=null}">
+						<s:Label text="Interpreted by" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicalRecord.interpreter}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:VGroup id="vgDateTime">
+						
+						<s:HGroup paddingTop="15">
+							<s:Label width="102" textAlign="right" fontWeight="bold" text="Date" />
+							<s:Label text="{dateFormatter.format(medicalRecord.date)}" paddingLeft="7" />
+						</s:HGroup>
+						
+						<s:HGroup>
+							<s:Label width="102" textAlign="right" fontWeight="bold" text="Time" />
+							<s:Label text="{timeFormatter.format(medicalRecord.date)}{medicalRecord.endDate ? ' -' + timeFormatter.format(medicalRecord.endDate) : ''} hs" paddingLeft="7" />
+						</s:HGroup>
+						
+					</s:VGroup>
+					
+					<s:VGroup id="vgDateCollectionOrder">
+						
+						<s:HGroup paddingTop="15" visible="{test.collectionDate!=null}" includeInLayout="{test.collectionDate!=null}">
+							<s:Label width="102" textAlign="right" fontWeight="bold" text="Collection Date" />
+							<s:Label text="{dateFormatter.format(test.collectionDate)}" paddingLeft="7" />
+						</s:HGroup>
+						
+						<s:HGroup visible="{test.orderDate!=null}" includeInLayout="{test.orderDate!=null}">
+							<s:Label width="102" textAlign="right" fontWeight="bold" text="Order Date" />
+							<s:Label text="{dateFormatter.format(test.orderDate)}" paddingLeft="7" />
+						</s:HGroup>
+						
+					</s:VGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label width="102" textAlign="right" fontWeight="bold" text="Type" />
+						<s:Label text="{medicalRecord.category.label}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup> 
+						<s:Label id="lblReasonForVisit" text="Reason for Visit" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicalRecord.description}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup id="hgClassification"> 
+						<s:Label width="102" textAlign="right" fontWeight="bold" text="Classification" />
+						<s:Label text="{StringUtil.titleCase(medicalRecord.classification)}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label width="102" textAlign="right" fontWeight="bold" text="Phone" />
+						<s:Label text="(999) 999-9999" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup> 
+						<s:Label width="102" textAlign="right" fontWeight="bold" text="Address" />
+						<s:Label text="{'The New York Clinic\n99 Main St.\nNew York, NY 11111'}" paddingLeft="7" />
+					</s:HGroup>
+					
+				</s:VGroup>
+				
+				<s:VGroup visible="{medicalRecord.nextSteps &amp;&amp; medicalRecord.nextSteps.length}" includeInLayout="{medicalRecord.nextSteps &amp;&amp; medicalRecord.nextSteps.length}" gap="12">
+					
+					<s:Label text="Next Steps" styleName="greenBoldText" paddingLeft="20" paddingTop="19" />
+					
+					<s:VGroup id="vgNextSteps" color="#EDEDED">
+						
+						<s:DataGroup width="100%" height="100%" dataProvider="{medicalRecord.nextSteps}">
+							
+							<s:layout>
+								<s:VerticalLayout />
+							</s:layout>
+							
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:VBox horizontalAlign="left" verticalGap="0">
+										
+										<fx:Script>
+											<![CDATA[
+												import edu.newschool.piim.healthboard.model.NextStep;
+											]]>
+										</fx:Script>
+										
+										<s:HGroup paddingLeft="27" gap="10">
+											<mx:Text text="•" />
+											<mx:Text text="{NextStep(data).task}" width="245" />
+										</s:HGroup>
+										
+										<general:MainLinkButton width="300" paddingLeft="45" styleName="linkBtnBlue" label="Recommendation: {NextStep(data).recommendation}" click="outerDocument.onNextStepClick(event)" textAlign="left" />
+										
+									</mx:VBox>
+									
+								</fx:Component>
+								
+							</s:itemRenderer>
+						
+						</s:DataGroup>
+						
+					</s:VGroup>
+					
+				</s:VGroup>
+				
+			</s:VGroup>
+			
+			<s:VGroup>
+				
+				<s:VGroup id="vgVisit" visible="{medicalRecord.summary &amp;&amp; medicalRecord.summary.length}" includeInLayout="{medicalRecord.summary &amp;&amp; medicalRecord.summary.length}">
+					
+					<s:Label text="Visit Summary" styleName="greenBoldText" paddingTop="13" />
+					
+					<s:VGroup paddingTop="8" paddingBottom="-7">
+						
+						<s:Line xFrom="0" xTo="614">
+							<s:stroke>
+								<s:SolidColorStroke color="0x7C7C7C" weight="3" caps="square" />
+							</s:stroke>
+						</s:Line>
+						
+					</s:VGroup>
+					
+					<s:BorderContainer width="618" backgroundColor="0xE3E3E3" color="0x3C3C3B">
+						
+						<s:DataGroup width="100%" height="100%" dataProvider="{medicalRecord.summary}">
+							
+							<s:layout>
+								<s:VerticalLayout paddingLeft="20" paddingTop="19" paddingBottom="19" gap="19" />
+							</s:layout>
+							
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:VBox verticalGap="19">
+										
+										<fx:Script>
+											<![CDATA[
+												import edu.newschool.piim.healthboard.model.module.medicalrecords.SummaryElement;
+											]]>
+										</fx:Script>
+										
+										<s:Label text="{SummaryElement(data).title}" textDecoration="underline" />
+										<s:Label text="{SummaryElement(data).text}" width="540" />
+										
+									</mx:VBox>
+									
+								</fx:Component>
+								
+							</s:itemRenderer>
+							
+						</s:DataGroup>
+						
+					</s:BorderContainer>
+					
+				</s:VGroup>
+				
+				<s:VGroup id="vgLab" visible="{test != null}" includeInLayout="{test != null}">
+					
+					<s:Label text="{medicalRecord.description + ' Results'}" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
+					
+					<mx:DataGrid 
+						width="617" fontFamily="myMyriadNoCFF" fontSize="10" selectable="false" 
+						color="0xFFFFFF" rollOverColor="0x00ADEE" selectionColor="0x00ADEE" alternatingItemColors="[0x303030,0x3c3c3b]" borderColor="0xBDBCBC" 
+						verticalAlign="middle" rowCount="14"
+						headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeader" 
+						rowHeight="27" horizontalGridLines="false" dataProvider="{test.results}">
+						
+						<mx:columns> 
+							
+							<mx:DataGridColumn dataField="name" headerText="Result Name" paddingLeft="5" width="148" />
+							<mx:DataGridColumn dataField="site" headerText="Date/Specimen" paddingLeft="5" width="103" />
+							<mx:DataGridColumn dataField="result" headerText="Result" paddingLeft="5" width="74">
+								
+								<mx:itemRenderer>
+									
+									<fx:Component>
+										
+										<mx:HBox width="100%" paddingTop="0" toolTip="{data.warning != null ? 'Abnormal result. Contact your provider for more information.' : ''}">
+											<mx:Label text="{data.result}" fontSize="9" paddingTop="1" />
+											<s:Spacer width="100%" />
+											<s:VGroup paddingTop="-4">
+												<s:Image source="@Embed('/images/redMark.png')" visible="{data.warning}" />
+											</s:VGroup>
+										</mx:HBox>
+										
+									</fx:Component>
+									
+								</mx:itemRenderer>
+								
+							</mx:DataGridColumn>
+							
+							<mx:DataGridColumn dataField="units" headerText="Units" paddingLeft="5" width="77" />
+							<mx:DataGridColumn dataField="comments" headerText="Comments" paddingLeft="5" labelFunction="getCommentLastComment" />
+							
+						</mx:columns> 
+						
+					</mx:DataGrid>
+					
+					<s:Label text="Comments" styleName="greenBoldText" paddingTop="22" />
+					
+					<s:VGroup paddingTop="8" paddingBottom="-7">
+						<s:Line xFrom="0" xTo="614">
+							<s:stroke>
+								<s:SolidColorStroke color="0x7C7C7C" weight="3" caps="square" />
+							</s:stroke>
+						</s:Line>
+					</s:VGroup>
+					
+					<s:BorderContainer
+						width="618" backgroundColor="0xE3E3E3" color="0x3C3C3B" 
+						visible="{test.comments &amp;&amp; test.comments.length}" includeInLayout="{test.comments &amp;&amp; test.comments.length}">
+						
+						<s:DataGroup width="100%" height="100%" dataProvider="{test.comments}">
+							
+							<s:layout>
+								<s:VerticalLayout />
+							</s:layout>
+							
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:VBox paddingLeft="20" paddingTop="19" paddingBottom="19" verticalGap="19">
+										<fx:Script>
+											<![CDATA[
+												import edu.newschool.piim.healthboard.model.Comment;
+											]]>
+										</fx:Script>
+										
+										<mx:HBox width="433" visible="{Comment(data).owner!=null || Comment(data).date != null}" includeInLayout="{Comment(data).owner!=null || Comment(data).date != null}">
+											<s:Label text="{Comment(data).owner.fullName}" color="0x1D6487" fontWeight="bold" />
+											<s:Spacer width="100%" />
+											<s:Label text="{outerDocument.dateFormatter.format(Comment(data).date)} at {outerDocument.timeFormatter.format(Comment(data).date)} hs" color="0x706F6F" fontSize="10" />
+										</mx:HBox>
+										
+										<s:Label text="{Comment(data).text}" width="433" />
+										
+									</mx:VBox>
+									
+								
+								</fx:Component>
+								
+							</s:itemRenderer>
+							
+						</s:DataGroup>
+						
+					</s:BorderContainer>
+					
+				</s:VGroup>
+				
+				<s:VGroup visible="{medicalRecord.images &amp;&amp; medicalRecord.images.length}" includeInLayout="{medicalRecord.images &amp;&amp; medicalRecord.images.length}">
+					
+					<s:Label text="Attached Images" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
+					
+					<s:DataGroup width="100%" height="100%" dataProvider="{medicalRecord.images}">
+						
+						<s:layout>
+							<s:HorizontalLayout gap="12" />
+						</s:layout>
+						
+						<s:itemRenderer>
+							
+							<fx:Component>
+								
+								<mx:HBox rotation="{ImageReference(data).rotation}">
+									<fx:Script>
+										<![CDATA[
+											import edu.newschool.piim.healthboard.model.ImageReference;
+										]]>
+									</fx:Script>
+									<s:Image source="{ImageReference(data).url}" />
+								</mx:HBox>
+								
+							</fx:Component>
+							
+						</s:itemRenderer>
+						
+					</s:DataGroup>
+					
+				</s:VGroup>
+				
+				<s:VGroup 
+					visible="{medicalRecord.report!=null}" 
+					includeInLayout="{medicalRecord.report!=null}">
+					
+					<s:Label text="{medicalRecord.description + ' Report'}" styleName="greenBoldText" paddingTop="22" />
+					
+					<s:VGroup paddingTop="8" paddingBottom="-7">
+						<s:Line xFrom="0" xTo="614">
+							<s:stroke>
+								<s:SolidColorStroke color="0x7C7C7C" weight="3" caps="square" />
+							</s:stroke>
+						</s:Line>
+					</s:VGroup>
+					
+					<s:BorderContainer 
+						width="618" backgroundColor="0xE3E3E3" color="0x3C3C3B">
+						
+						<s:DataGroup width="100%" height="100%" dataProvider="{medicalRecord.report.elements}">
+							
+							<s:layout>
+								<s:VerticalLayout paddingLeft="20" paddingTop="19" paddingBottom="19" gap="19" />
+							</s:layout>
+							
+							<s:itemRenderer>
+								
+								<fx:Component>
+									
+									<mx:VBox>
+										<fx:Script>
+											<![CDATA[
+												import edu.newschool.piim.healthboard.model.module.medicalrecords.SummaryElement;
+											]]>
+										</fx:Script>
+										
+										<s:Label text="{SummaryElement(data).title}" textDecoration="underline" />
+										<s:Label text="{SummaryElement(data).text}" width="540" />
+										
+									</mx:VBox>
+									
+								</fx:Component>
+								
+							</s:itemRenderer>
+							
+						</s:DataGroup>
+						
+					</s:BorderContainer>
+					
+				</s:VGroup>
+				
+			</s:VGroup>
+			
+		</s:HGroup>
+		
+	</s:Scroller>
+	
+</s:NavigatorContent>

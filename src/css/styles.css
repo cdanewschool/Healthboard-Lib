@@ -595,7 +595,7 @@ s|FormItem {
 }
 
 .iconButton {
-	skinClass: ClassReference("skins.general.IconButtonSkin");
+	skinClass: ClassReference("edu.newschool.piim.healthboard.view.skins.general.IconButtonSkin");
 }
 
 /*s|Form {
@@ -738,9 +738,9 @@ paddingLeft:30;
 	chromeColor:"0x3c3c3b";
 	color: "0xb3b3b3";
 	cornerRadius: 0;
-	firstButton: ClassReference("skins.general.FlatButtonSkin");
-	middleButton: ClassReference("skins.general.FlatButtonSkin");
-	lastButton: ClassReference("skins.general.FlatButtonSkin");
+	firstButton: ClassReference("edu.newschool.piim.healthboard.view.skins.general.FlatButtonSkin");
+	middleButton: ClassReference("edu.newschool.piim.healthboard.view.skins.general.FlatButtonSkin");
+	lastButton: ClassReference("edu.newschool.piim.healthboard.view.skins.general.FlatButtonSkin");
 }
 
 .dateChooserDark {

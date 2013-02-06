@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:plus="net.flexwiz.blog.tabbar.plus.*" 
+	xmlns:components="edu.newschool.piim.healthboard.view.components.*" 
+	xmlns:ASclasses="ASclasses.*" 
+	width="100%" height="100%"
+	show="show()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.view.components.tabs.messages.NewMessage;
+			import edu.newschool.piim.healthboard.view.components.tabs.messages.ViewMessage;
+			
+			import edu.newschool.piim.healthboard.controller.MessagesController;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			
+			import net.flexwiz.blog.tabbar.plus.TabPlus;
+			
+			import edu.newschool.piim.healthboard.model.UserModel;
+			import edu.newschool.piim.healthboard.model.module.MessagesModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.collections.IList;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
+			import mx.controls.Alert;
+			import mx.events.CloseEvent;
+			import mx.events.CollectionEvent;
+			import mx.events.ListEvent;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Embed(source="/images/bloodyNose.jpg")] private static var myPic:Class;
+			[Embed('/images/btnHome.png')] private var btnHome:Class;
+			[Embed('/images/patientHome.png')] private var btnPatient:Class;
+			
+			[Bindable] public var controller:MessagesController = AppProperties.getInstance().controller.messagesController as MessagesController;
+			[Bindable] public var model:MessagesModel = controller.model as MessagesModel;
+			
+			[Bindable] public var areOptionsEnabled:Boolean = true;
+			
+			private function showMessages( type:String = MessagesModel.INBOX ):void 
+			{
+				controller.showMessages( type );
+					
+				dgMessages.dataProvider = type == MessagesModel.TRASH ? model.messagesTrash : model.messagesToDisplay;
+				
+				if( dgMessages.dataProvider.length > 0 ) 
+				{
+					dgMessages.visible = dgMessages.includeInLayout = true;
+					lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+					lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = false;
+					areOptionsEnabled = true;
+				}
+				else 
+				{
+					dgMessages.visible = dgMessages.includeInLayout = false;
+					lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+					lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = true;
+					areOptionsEnabled = false;
+				}
+				
+				var label:String = type.charAt(0).toUpperCase() + type.substr(1).toLowerCase();
+				
+				mainBox.label = label;
+				viewStackMessages.selectedIndex = 0;
+				highlightSelectedFolder( type );
+				clearCheckBoxes();
+				
+				lblSearchResults.visible = btnClearSearch.visible = false;
+				
+				// used by the search fi"lter to update mainBox.label after the user has cleared the search field, to know to which label we need to restore the first tab's label
+				model.currentMainBox = type;
+			}
+			
+			/**
+			 * I'm clearing all the checkboxes and corresponding arrays after deleting multiple messages, 
+			 * and also after changing folders (otherwise it acts strangely and selects different messages 
+			 * randomly when changing folders), and also other situations...
+			*/
+			private function clearCheckBoxes():void 
+			{
+				areCheckboxesSelected = true;	//setting it to true is necessary so that when we set it to false in the next line it will update its value and deselect the checkboxes... there is likely a better way to do this...
+				areCheckboxesSelected = false;
+				selectedMessages.splice(0);	//empty array
+				areButtonsEnabled = false;
+				selectedTrashMessages.splice(0);	//empty array
+				areTrashButtonsEnabled = false;
+			}
+			
+			private function highlightSelectedFolder( folder:String = null ):void 
+			{
+				btnInbox.styleName = "messageFolderNotSelected";
+				btnDrafts.styleName = "messageFolderNotSelected";
+				btnSent.styleName = "messageFolderNotSelected";
+				btnTrash.styleName = "messageFolderNotSelected";
+				
+				if( folder == MessagesModel.INBOX ) 
+					btnInbox.styleName = "messageFolderSelected";
+				else if( folder == MessagesModel.DRAFT ) 
+					btnDrafts.styleName = "messageFolderSelected";
+				else if( folder == MessagesModel.SENT ) 
+					btnSent.styleName = "messageFolderSelected";
+				else if( folder == MessagesModel.TRASH ) 
+					btnTrash.styleName = "messageFolderSelected";
+			}
+			
+			/**
+			 * This function takes an ID as a parameter, and tells us which message it belongs to.
+			 * It is used when adding a reply to a message from the ViewMessage component, so we know what message to add the reply to.
+			 */
+			public function getMessageIndex(id:uint):uint 
+			{
+				for(var i:uint = 0; i < model.messages.length; i++) 
+				{
+					if(model.messages[i].id == id) return i;
+				}
+				return 0;
+			}
+			
+			public var arrNewMessages:Array = new Array();
+			private var arrNewMessagesIndices:Array;
+			
+			private var newMessage:NewMessage;
+			private var viewMessage:ViewMessage;
+			
+			protected function onTabChange(event:IndexChangeEvent):void
+			{
+				//	if the user clicked on the "Open New Message" tab
+				if(tabsMessages.selectedIndex == viewStackMessages.length - 1) 
+				{
+					//	we check if there are NONE "New Message" tabs open
+					if(model.openTabs.indexOf("NEW") == -1) 
+					{
+						//	create new message
+						createNewMessage();
+					}
+					
+					//	else (if there is at least one "New Message" tab open)
+					else 
+					{
+						var isThereAnEmptyMessage:Boolean = false;
+						
+						//	we loop through the "New Message" tabs open (which we push to the arrNewMessages array every time we open one)
+						for(var i:uint = 0; i < arrNewMessages.length; i++) 
+						{
+							//	and check if that "New Message" is empty (the user didn't write anything yet)
+							if(arrNewMessages[i].messageText.text == "") 
+							{					
+								isThereAnEmptyMessage = true;
+								
+								//	we break the loop (i stays equal to the first index of arrNewMessages where there was an empty "New Message")
+								break;
+							}
+						}
+						//	If we found one
+						if(isThereAnEmptyMessage)
+						{
+							//	we put in this array, all the tab indices where there is a new message
+							arrNewMessagesIndices = populateNewMessageIndices();
+							//	and we select the first one (i) where there was an empty "New Message"
+							viewStackMessages.selectedIndex = arrNewMessagesIndices[i] + 1;
+						}
+						//	else (if there are no empty "New Messages")
+						else 
+						{
+							//	we proceed to create a new one.
+							createNewMessage();
+						}
+					}
+					
+					highlightSelectedFolder();
+				}
+				//	This "else" block is only to highlight (orange) the corresponding folder name
+				else 
+				{					
+					if(model.openTabs[tabsMessages.selectedIndex - 1] == "NEW") 
+						highlightSelectedFolder();		//	deselect all folders
+					else 
+						highlightSelectedFolder( model.currentMainBox );
+				}
+			}
+			
+			private function populateNewMessageIndices():Array
+			{
+				var returnArray:Array = new Array();
+				
+				for(var i:uint = 0; i < model.openTabs.length; i++) 
+				{
+					if(model.openTabs[i] == "NEW") returnArray.push(i);
+				}
+				
+				return returnArray;
+			}
+			
+			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null, subject:String = null, body:String = null ):void 
+			{
+				//	selectedRecipient is only != 0 when called from the appointments module
+				newMessage = new NewMessage();
+				newMessage.addEventListener( CloseEvent.CLOSE, onNewMessageClose );
+				
+				viewStackMessages.addChildAt(newMessage,viewStackMessages.length - 1);
+				arrNewMessages.push(newMessage);
+				
+				model.openTabs.push("NEW");
+				
+				if( recipients )
+				{
+					var emails:Array = [];
+					
+					for each(var recipient:UserModel in recipients) emails.push( recipient.email );
+					
+					newMessage.cbRecipients.selectedIndex = -1;
+					//newMessage.cbRecipients.label = emails.join(", ");
+				}
+				else if( selectedRecipientType ) 
+				{
+					var index:int;
+					
+					for(var i:int=0;i<model.recipientTypes.length;i++)
+					{
+						if( model.recipientTypes.getItemAt(i).data == selectedRecipientType )
+						{
+							newMessage.cbRecipients.selectedIndex = i;
+							newMessage.cbSubjects.selectedIndex = i;
+							newMessage.label = newMessage.cbSubjects.selectedItem;
+						}
+					}
+				}
+				
+				if( subject ) newMessage.cbSubjects.textInput.text = subject;
+				if( body ) newMessage.messageText.text = body;
+			}
+			
+			private function onNewMessageClose( event:CloseEvent ):void
+			{
+				viewStackMessages.removeChild( newMessage );
+				
+				arrNewMessages.splice( arrNewMessages.indexOf(this), 1 );
+				
+				onMessageClose();
+			}
+			
+			private function onViewMessageClose( event:CloseEvent ):void
+			{
+				viewStackMessages.removeChild( viewMessage );
+				
+				onMessageClose();
+			}
+			
+			private function onMessageClose():void
+			{
+				model.openTabs.splice( viewStackMessages.selectedIndex-1,1 );
+				
+				if( model.currentMainBox == MessagesModel.INBOX ) 
+					showMessages( MessagesModel.INBOX );
+				else if( model.currentMainBox == MessagesModel.SENT ) 
+					showMessages( MessagesModel.SENT );
+				else if( model.currentMainBox == MessagesModel.DRAFT )
+					showMessages( MessagesModel.DRAFT );
+				else 
+					viewStackMessages.selectedIndex--;
+				
+				//	refresh the main datagrid so the "replied" icon is displayed
+				dgMessages.invalidateList();
+				//	refresh this message's datagrid so the msg we just replied is displayed
+				dgMessages.invalidateList();
+				dgMessages.percentHeight = 100;
+			}
+			
+			private function openDraftMessage(myData:Object):void 
+			{
+				newMessage = new NewMessage();
+				newMessage.addEventListener( CloseEvent.CLOSE, onNewMessageClose );
+				newMessage.draftMessage = myData;
+				
+				viewStackMessages.addChildAt(newMessage,viewStackMessages.length - 1);
+				viewStackMessages.selectedIndex = viewStackMessages.length - 2;
+				arrNewMessages.push(newMessage);
+				
+				model.openTabs.push(myData);
+			}
+			
+			[Bindable] private var areMessageButtonsEnabled:Boolean = false;
+			
+			public function messageCheckbox_clickHandler(event:MouseEvent):void
+			{
+				var isAnyCheckboxSelected:Boolean = false;
+				
+				areMessageButtonsEnabled = isAnyCheckboxSelected;
+			}
+			
+			public function openMessage(myData:Object):void
+			{
+				var isMessageAlreadyOpen:Boolean = false;
+				
+				for(var j:uint = 0; j < model.openTabs.length; j++) 
+				{
+					if(model.openTabs[j] == myData) 
+					{
+						isMessageAlreadyOpen = true;
+						
+						//	+1 because in model.openTabs we don't include the "inbox" tab
+						viewStackMessages.selectedIndex = j + 1;
+						break;
+					}
+				}
+				
+				if(!isMessageAlreadyOpen) 
+				{
+					if(!myData.isDraft || myData.messages.length > 1) 
+					{
+						//	if the message IS NOT a draft, or if it's a draft for an existing message (i.e. reply)
+						viewMessage = new ViewMessage();
+						viewMessage.addEventListener( CloseEvent.CLOSE, onViewMessageClose );
+						viewMessage.messages = myData;		//messages[event.rowIndex];
+						
+						viewStackMessages.addChildAt(viewMessage,viewStackMessages.length - 1);
+						tabsMessages.selectedIndex = viewStackMessages.length - 2;
+						
+						model.openTabs.push(myData);
+						
+						myData.status = "read";
+						
+						for(var i:uint = 0; i < myData.messages.length; i++) 
+						{
+							myData.messages[i].status = "read";
+						}
+						
+						controller.updateMessageCounts();
+						
+						dgMessages.invalidateList();
+					}
+					else 
+					{
+						openDraftMessage(myData);
+					}
+				}
+			}
+			
+			private function calcRowColor(item:Object, rowIndex:int, dataIndex:int, color:uint):uint 
+			{
+				if(item.status == "read" || item.status == "replied") return 0x4A4A49;
+				else return 0x383838;
+			}
+			
+			protected function dgMessages_itemClickHandler(event:ListEvent):void 
+			{
+				//	column with checkbox
+				if(event.columnIndex == 1) 
+				{		
+					//	handle checkbox from here?
+				}
+				//	column with delete btn
+				else if(event.columnIndex == 4) 
+				{
+					if(model.currentMainBox != MessagesModel.TRASH) 
+					{
+						model.messagesTrash.addItem( model.messages.removeItemAt(model.messages.getItemIndex(event.itemRenderer.data) ) );
+						
+						controller.updateMessageCounts();
+						
+						refreshDisplayedMessages();
+						
+						var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+						evt.data = "Your message has been deleted";
+						dispatchEvent( evt );
+					}
+					else 
+					{
+						Alert.show("Are you sure you want to permanently delete this message?","Message will be deleted permanently",Alert.YES | Alert.CANCEL,this,addArguments(alertListener, [model.messagesTrash.getItemIndex(event.itemRenderer.data)]));
+					}
+				}
+				else 
+				{
+					openMessage(event.itemRenderer.data);
+				}
+			}
+			
+			// This method will return our function with the additional parameters included
+			// http://stackoverflow.com/questions/5071468/flex-sending-parameters-to-alert-closehandler
+			private function addArguments(method:Function, additionalArguments:Array):Function 
+			{
+				return function(event:Event):void {method.apply(null, [event].concat(additionalArguments));}
+			}
+			
+			private function alertListener(eventObj:CloseEvent, myItemIndex:int):void 
+			{
+				if (eventObj.detail==Alert.YES) 
+				{
+					model.messagesTrash.removeItemAt(myItemIndex);
+					
+					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					evt.data = "Your message has been deleted";
+					dispatchEvent( evt );
+				}
+			}
+			
+			/**The following two functions were copied from the Adobe documentation:
+			 * http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/Date.html?filter_flash=cs5&filter_flashplayer=10.2&filter_air=2.6#getHours()
+			 */
+			private function getUSClockTime(hrs:uint, mins:uint):String 
+			{
+				var modifier:String = "pm";
+				var minLabel:String = doubleDigitFormat(mins);
+				
+				if(hrs > 12) 
+				{
+					hrs = hrs-12;
+				} 
+				else if(hrs == 0) 
+				{
+					modifier = "am";
+					hrs = 12;
+				} 
+				else if(hrs < 12)
+				{
+					modifier = "am";
+				}
+				
+				return (hrs + ":" + minLabel + modifier);
+			}
+			
+			private function doubleDigitFormat(num:uint):String 
+			{
+				if(num < 10) 
+				{
+					return ("0" + num);
+				}
+				return "" + num;	//originally: num as String, but it wasn't working properly
+			}
+			
+			[Bindable] public var selectedMessages:Array = new Array();
+			[Bindable] public var selectedTrashMessages:Array = new Array();
+			[Bindable] public var areButtonsEnabled:Boolean = false;
+			[Bindable] public var areTrashButtonsEnabled:Boolean = false;
+			[Bindable] public var areCheckboxesSelected:Boolean = false;
+			
+			public function selectMultiple(message:Object, isSelected:Boolean):void 
+			{
+				if( model.currentMainBox != MessagesModel.TRASH ) 
+				{
+					if(isSelected) 
+						selectedMessages.push(message);
+					else 
+						selectedMessages.splice(selectedMessages.indexOf(message),1);
+					
+					areButtonsEnabled = selectedMessages.length > 0 ? true : false;
+				}
+				else 
+				{
+					if(isSelected) 
+						selectedTrashMessages.push(message);
+					else 
+						selectedTrashMessages.splice(selectedTrashMessages.indexOf(message),1);
+					
+					areTrashButtonsEnabled = selectedTrashMessages.length > 0 ? true : false;
+				}
+			}
+			
+			private function select(selection:String):void 
+			{
+				if( model.currentMainBox != MessagesModel.TRASH ) 
+				{
+					if(selection == 'all') 
+					{
+						areCheckboxesSelected = false;
+						areCheckboxesSelected = true;
+						
+						selectedMessages.splice(0);
+						for(var i:uint = 0; i < model.messagesToDisplay.length; i++) 
+						{
+							selectedMessages.push(model.messagesToDisplay[i]);
+						}
+						
+						if(selectedMessages.length > 0) areButtonsEnabled = true;
+					}
+					else if(selection == 'read') 
+					{
+						selectedMessages.splice(0);
+						
+						for(var j:uint = 0; j < model.messagesToDisplay.length; j++)
+						{
+							if(model.messagesToDisplay[j].status == "read") 
+							{
+								model.messagesToDisplay[j].checkboxSelection = true;
+								selectedMessages.push(model.messagesToDisplay[j]);
+							}
+						}
+						
+						areButtonsEnabled = selectedMessages.length > 0 ? true : false;
+						areCheckboxesSelected = true;
+						
+						//	resetting this bindable variable here, also makes the checkbox check for the checkboxSelection property on each message.
+						areCheckboxesSelected = false;
+						
+						//	reset checkboxSelection to false, since the checkbox has already been selected, and we don't want it to stay selected after other user actions (click on selection buttons, changing folders, etc)
+						for(var z:uint = 0; z < model.messagesToDisplay.length; z++) 
+						{
+							model.messagesToDisplay[z].checkboxSelection = false;
+						}	
+					}
+					else if(selection == 'none') 
+					{
+						clearCheckBoxes();
+					}
+				}
+				else 
+				{
+					if(selection == 'all') 
+					{
+						areCheckboxesSelected = false;
+						areCheckboxesSelected = true;
+						
+						selectedTrashMessages.splice(0);
+						
+						for(var s:uint = 0; s < model.messagesTrash.length; s++) 
+						{
+							selectedTrashMessages.push(model.messagesTrash[s]);
+						}
+						
+						if(selectedTrashMessages.length > 0) 
+							areTrashButtonsEnabled = true;
+					}
+					else if(selection == 'read') 
+					{
+						selectedTrashMessages.splice(0);
+						
+						for(var t:uint = 0; t < model.messagesTrash.length; t++) 
+						{
+							if(model.messagesTrash[t].status == "read") 
+							{
+								model.messagesTrash[t].checkboxSelection = true;
+								selectedTrashMessages.push(model.messagesTrash[t]);
+							}
+						}
+						
+						areTrashButtonsEnabled = selectedTrashMessages.length > 0 ? true : false;
+						areCheckboxesSelected = true;
+						areCheckboxesSelected = false;
+						
+						//	reset checkboxSelection to false, since the checkbox has already been selected, 
+						//	and we don't want it to stay selected after other user actions (click on selection buttons, changing folders, etc)
+						for(var u:uint = 0; u < model.messagesTrash.length; u++) 
+						{
+							model.messagesTrash[u].checkboxSelection = false;
+						}
+					}
+					else if(selection == 'none') 
+					{
+						clearCheckBoxes();
+					}
+				}
+			}
+			
+			private function deleteMultiple():void 
+			{
+				if( model.currentMainBox != MessagesModel.TRASH ) 
+				{
+					for(var i:uint = 0; i < selectedMessages.length; i++) 
+					{
+						model.messagesTrash.addItem(model.messages.removeItemAt(model.messages.getItemIndex(selectedMessages[i])));
+					}
+					
+					controller.updateMessageCounts();
+					
+					var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+					evt.data = "Your message has been deleted";
+					dispatchEvent( evt );
+					
+					refreshDisplayedMessages();
+				}
+				else 
+				{
+					for(var j:uint = 0; j < selectedTrashMessages.length; j++) 
+					{
+						model.messagesTrash.removeItemAt(model.messagesTrash.getItemIndex(selectedTrashMessages[j]));
+					}
+					
+					showMessages( MessagesModel.TRASH );
+				}
+				
+				clearCheckBoxes();
+			}
+			
+			private function markUnread():void 
+			{
+				if(model.currentMainBox != "Trash") 
+				{
+					for(var i:uint = 0; i < selectedMessages.length; i++) 
+					{
+						model.messages[model.messages.getItemIndex(selectedMessages[i])].status = "unread";
+						
+						for(var j:uint = 0; j < model.messages[model.messages.getItemIndex(selectedMessages[i])].messages.length; j++) 
+						{
+							model.messages[model.messages.getItemIndex(selectedMessages[i])].messages[j].status = "unread";
+						}
+					}
+					
+					controller.updateMessageCounts();
+					
+					refreshDisplayedMessages();
+				}
+				else 
+				{
+					for(var k:uint = 0; k < selectedTrashMessages.length; k++) 
+					{
+						model.messagesTrash[model.messagesTrash.getItemIndex(selectedTrashMessages[k])].status = "unread";
+						
+						for(var l:uint = 0; l < model.messagesTrash[model.messagesTrash.getItemIndex(selectedTrashMessages[k])].messages.length; l++) 
+						{
+							model.messagesTrash[model.messagesTrash.getItemIndex(selectedTrashMessages[k])].messages[l].status = "unread";
+						}
+					}
+					
+					showMessages( MessagesModel.TRASH );
+				}
+			}
+			
+			private function refreshDisplayedMessages():void
+			{
+				if( model.currentMainBox == MessagesModel.INBOX ) 
+					showMessages(MessagesModel.INBOX);
+				else if( model.currentMainBox == MessagesModel.SENT ) 
+					showMessages(MessagesModel.SENT);
+				else if( model.currentMainBox == MessagesModel.DRAFT ) 
+					showMessages(MessagesModel.DRAFT);
+				else if( model.currentMainBox == MessagesModel.TRASH ) 
+					showMessages(MessagesModel.TRASH);
+			}
+			
+			private function showAll():void 
+			{
+				if( model.currentMainBox != MessagesModel.TRASH ) 
+				{
+					model.messagesToDisplay.filterFunction = null;
+					model.messagesToDisplay.refresh();
+				}
+				else 
+				{
+					model.messagesTrash.filterFunction = null;
+					model.messagesTrash.refresh();
+				}
+				
+				//	resetting all selections to avoid conflicts
+				clearCheckBoxes();
+			
+				lblSearchResults.visible = btnClearSearch.visible = false;
+				dgMessages.visible = dgMessages.includeInLayout = true;
+				lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+			}
+			
+			private function showUnread():void 
+			{
+				if(model.currentMainBox != MessagesModel.TRASH) 
+				{
+					model.messagesToDisplay.filterFunction = filterUnread;
+					model.messagesToDisplay.refresh();
+				}
+				else 
+				{
+					model.messagesTrash.filterFunction = filterUnread;
+					model.messagesTrash.refresh();
+				}
+				
+				/**
+				 * resetting all selections to avoid conflicts (i.e. if the user filters only "unread" 
+				 * messages while there were "read" messages previously selected, then if the user clicked 
+				 * "DELETE" (and we didn't do the following), then those previously selected messages 
+				 * would be deleted as well, even thought there were not shown on the screen at the moment of deleting...) 
+				*/
+				clearCheckBoxes();
+				
+				lblSearchResults.visible = btnClearSearch.visible = false;
+				dgMessages.visible = dgMessages.includeInLayout = true;
+				lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+			}
+			
+			private function filterUnread(item:Object):Boolean 
+			{
+				return item.status == "unread";
+			}
+			
+			private function messageSort():void 
+			{
+				if(model.currentMainBox != "Trash") 
+				{
+					model.messagesToDisplay.sort = new Sort();
+					
+					if(dropDownMessageSort.selectedIndex == 0) 
+					{
+						var sortField:SortField = new SortField();
+						sortField.compareFunction = compareDates;
+						model.messagesToDisplay.sort.fields = [sortField];
+					}
+					else if(dropDownMessageSort.selectedIndex == 1) 
+						model.messagesToDisplay.sort.fields = [new SortField("correspondent")];
+					else if(dropDownMessageSort.selectedIndex == 2) 
+					{
+						var sortField2:SortField = new SortField();
+						sortField2.compareFunction = compareUrgencies;
+						model.messagesToDisplay.sort.fields = [sortField2];
+					}
+					
+					model.messagesToDisplay.refresh();
+				}
+				else 
+				{
+					model.messagesTrash.sort = new Sort();
+					
+					if(dropDownMessageSort.selectedIndex == 0) 
+					{
+						var sortFieldTrash:SortField = new SortField();
+						sortFieldTrash.compareFunction = compareDates;
+						model.messagesTrash.sort.fields = [sortFieldTrash];
+					}
+					else if(dropDownMessageSort.selectedIndex == 1) 
+						model.messagesTrash.sort.fields = [new SortField("correspondent")];
+					else if(dropDownMessageSort.selectedIndex == 2) 
+					{
+						var sortFieldTrash2:SortField = new SortField();
+						sortFieldTrash2.compareFunction = compareUrgencies;
+						model.messagesTrash.sort.fields = [sortFieldTrash2];
+					}
+					
+					model.messagesTrash.refresh();
+				}
+				
+				/**
+				 * resetting selections to avoid possible conflicts (refreshing messagesToDisplay 
+				 * causing selections to be set = areCheckboxesSelected, and this ignores any changes made after that...) 
+				*/
+				clearCheckBoxes();
+			}
+			
+			private function compareDates(itemA:Object, itemB:Object):int 
+			{
+				var date1:Date = new Date(itemA.date);
+				var date2:Date = new Date(itemB.date);
+				return (date1.getTime() < date2.getTime()) ? 1 : -1;
+			}
+			
+			private function compareUrgencies(itemA:Object, itemB:Object):int 
+			{
+				var urgency1:String = itemA.messages[itemA.messages.length - 1].urgency;
+				var urgency2:String = itemB.messages[itemB.messages.length - 1].urgency;
+				
+				//	this is the "shortcut" way of doing this... (we're using it since "Urgent", "Somewhat urgent", and "Not urgent" happen to be inversely alphabetically arranged)
+				return ObjectUtil.stringCompare(urgency1, urgency2) * -1;
+			}
+			
+			private function searchFilter():void 
+			{
+				if(model.currentMainBox != MessagesModel.TRASH) 
+				{
+					model.messagesToDisplay.filterFunction = filterSearch;
+					model.messagesToDisplay.refresh();
+					
+					if(model.messagesToDisplay.length == 0) 
+					{
+						dgMessages.visible = dgMessages.includeInLayout = false;
+						lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = false;
+						lblNoMessages.visible = lblNoMessages.includeInLayout = true;
+						//areOptionsEnabled = false;		//commented out because this is messing with the lblNoMessages for some strange reason
+					}
+					else 
+					{
+						dgMessages.visible = dgMessages.includeInLayout = true;
+						lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+						lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = false;
+						//areOptionsEnabled = true;			//commented out because this is messing with the lblNoMessages for some strange reason
+					}
+				}
+				else 
+				{
+					model.messagesTrash.filterFunction = filterSearch;
+					model.messagesTrash.refresh();
+					
+					if(model.messagesTrash.length == 0) 
+					{
+						dgMessages.visible = dgMessages.includeInLayout = false;
+						lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = false;
+						lblNoMessages.visible = lblNoMessages.includeInLayout = true;
+						//areOptionsEnabled = false;		//commented out because this is messing with the lblNoMessages for some strange reason
+					}
+					else 
+					{
+						dgMessages.visible = dgMessages.includeInLayout = true;
+						lblNoMessages.visible = lblNoMessages.includeInLayout = false;
+						lblNoMessagesFolder.visible = lblNoMessagesFolder.includeInLayout = false;
+						//areOptionsEnabled = true;			//commented out because this is messing with the lblNoMessages for some strange reason
+					}
+				}
+				
+				viewStackMessages.selectedIndex = 0;
+				
+				if(messagesHeader.search.text != "") 
+				{
+					lblSearchResults.text = 'Search Results: "' + messagesHeader.search.text + '"';
+					lblSearchResults.visible = btnClearSearch.visible = true;
+				}
+				else lblSearchResults.visible = btnClearSearch.visible = false;
+				
+				/**
+				 * resetting all selections to avoid conflicts (i.e. if the user filters only "abc" messages while 
+				 * there were other messages previously selected, then if the user clicked "DELETE" (and we didn't 
+				 * do the following), then those previously selected messages would be deleted as well, even thought 
+				 * there were not shown on the screen at the moment of deleting...) 
+				*/
+				clearCheckBoxes();
+			}
+			
+			private function filterSearch(item:Object):Boolean 
+			{
+				var pattern:RegExp = new RegExp("[^]*"+messagesHeader.search.text+"[^]*", "i");
+				var concatenatedMessages:String = "";
+				
+				for(var i:uint = 0; i < item.messages.length; i++) 
+				{
+					concatenatedMessages += item.messages[i].text;
+				}
+				
+				return pattern.test(item.correspondent) || pattern.test(item.subject) || pattern.test(concatenatedMessages);
+			}
+			
+			private function clearSearch():void 
+			{
+				refreshDisplayedMessages();
+			}
+			
+			protected function onTabClose( event:ListEvent ):void
+			{
+				var arrNewMessagesInOpenTabs:Array = new Array(); 
+				
+				var dataProvider:IList = TabBarPlus( event.target.owner).dataProvider as IList;
+				var index:int = event.rowIndex;
+				
+				for(var i:uint = 0; i < model.openTabs.length; i++) 
+				{
+					if( model.openTabs[i] == "NEW") arrNewMessagesInOpenTabs.push(i);
+				}
+				
+				if( model.openTabs[index-1] == "NEW" ) 
+					model.openTabs.splice( arrNewMessagesInOpenTabs.indexOf(index-1), 1 );
+				
+				model.openTabs.splice(index-1,1);
+				
+				viewStackMessages.selectedIndex--;
+				
+				event.stopImmediatePropagation();
+			}
+			
+			private function show():void
+			{
+				if( !container.initialized ) return;
+				
+				if( model.pendingMessage )
+				{
+					openMessage(model.pendingMessage);
+					tabsMessages.selectedIndex = viewStackMessages.length - 2;
+					
+					model.pendingMessage = null;
+				}
+				else if( model.pendingRecipientType != null )
+				{
+					createNewMessage( null, model.pendingRecipientType );
+					
+					tabsMessages.selectedIndex = viewStackMessages.length - 2;
+					
+					model.pendingRecipientType = null;
+				}
+				else if( model.pendingBody || model.pendingSubject || model.pendingRecipients )
+				{
+					createNewMessage( model.pendingRecipients, null, model.pendingSubject, model.pendingBody );
+					
+					tabsMessages.selectedIndex = viewStackMessages.length - 2;
+					
+					model.pendingRecipients = null;
+					model.pendingSubject = null;
+					model.pendingBody = null;
+				}
+				else
+				{
+					showMessages( MessagesModel.INBOX );
+				}
+			}
+			
+			private function onMessagesChange( event:CollectionEvent ):void
+			{
+				dgMessages.invalidateList();
+			}
+			
+			private function init():void
+			{
+				addEventListener( TabPlus.CLOSE_TAB_EVENT, onTabClose );
+				
+				model.messages.addEventListener( CollectionEvent.COLLECTION_CHANGE, onMessagesChange );
+				
+				// Set first and last tabs as non-closable
+				tabsMessages.setTabClosePolicy(0, false);
+				tabsMessages.setTabClosePolicy(1, false);
+				
+				showMessages( MessagesModel.INBOX );
+				
+				show();
+			}
+		]]>
+	</fx:Script>
+	
+	<s:VGroup id="container" creationComplete="init()" width="100%" paddingTop="{currentState=='provider'?0:10}">
+		
+		<components:ModuleHeader 
+			id="messagesHeader"
+			title="Messages" actionPrefix="You have" actionSuffix="new messages." actionCount="{model.unreadMessageCount}"
+			searchPlaceholder="Search messages" searchFunction="searchFilter" showSearch="true" 
+			showBackground="false" creationComplete="{messagesHeader.showBackground = currentState == 'provider';messagesHeader.icon = (currentState=='provider'?btnPatient:btnHome)}" />
+		
+		<s:Spacer height="10" />
+		
+		<s:HGroup width="100%">
+			
+			<s:VGroup width="100%" paddingTop="15" paddingLeft="7" gap="7" styleName="whiteText13">
+				<s:Label text="MAILBOXES" styleName="greenBoldText" paddingLeft="-4" paddingBottom="3" />
+				<mx:LinkButton id="btnInbox" label="Inbox{model.unreadMessageCount ? ' (' + model.unreadMessageCount + ')' : ''}" click="showMessages( MessagesModel.INBOX )" styleName="messageFolderSelected" />
+				<mx:LinkButton id="btnDrafts" label="Drafts{model.draftMessageCount ? ' (' + model.draftMessageCount + ')' : ''}" click="showMessages( MessagesModel.DRAFT )" />
+				<mx:LinkButton id="btnSent" label="Sent" click="showMessages( MessagesModel.SENT )" />
+				<mx:LinkButton id="btnTrash" label="Trash" click="showMessages( MessagesModel.TRASH )" />
+			</s:VGroup>
+			
+			<s:Group>
+				
+				<mx:ViewStack 
+					id="viewStackMessages" 
+					borderColor="0xBDBCBC" cornerRadius="2" backgroundColor="0x4A4A49" width="825" height="606" borderVisible="true" borderStyle="solid" x="0" y="22" creationPolicy="all"><!--change="updateBreadcrumb('messages')" -->
+					
+					<s:NavigatorContent id="mainBox" label="Inbox">
+						
+						<s:layout>
+							<s:VerticalLayout gap="0" />
+						</s:layout>
+						
+						<s:BorderContainer height="37" width="100%" backgroundColor="0x706F6F">
+							
+							<s:layout>
+								<s:HorizontalLayout verticalAlign="middle" paddingLeft="10" paddingRight="9"/>
+							</s:layout>
+							
+							<s:Button label="Delete" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="deleteMultiple()" />
+							<s:Button label="Mark Unread" styleName="buttonText" height="24" enabled="{model.currentMainBox != MessagesModel.TRASH ? areButtonsEnabled : areTrashButtonsEnabled}" click="markUnread()" />
+							
+							<s:Spacer width="100%" />
+							
+							<s:Label text="{(dgMessages.dataProvider.length &lt;= 1 ? dgMessages.dataProvider.length : '1 - ' + dgMessages.dataProvider.length) + ' of ' + dgMessages.dataProvider.length}" color="0xFFFFFF" fontSize="11" />						
+							
+						</s:BorderContainer>
+						
+						<s:Line xFrom="0" xTo="822">
+							<s:stroke>
+								<s:SolidColorStroke color="#3F3E3D"/>
+							</s:stroke>
+						</s:Line>
+						
+						<s:HGroup width="100%" color="0xFFFFFF" fontSize="11" height="31" verticalAlign="middle" paddingLeft="13" paddingRight="19" paddingTop="-1">
+							
+							<s:Label text="Select:" paddingTop="2" />
+							<mx:LinkButton id="btnSelectAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="{select('all')}" rollOver="{if(areOptionsEnabled) btnSelectAll.styleName='linkBtnUnderline';}" rollOut="btnSelectAll.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnSelectRead" label="Read" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('read')}" rollOver="{if(areOptionsEnabled) btnSelectRead.styleName='linkBtnUnderline';}" rollOut="btnSelectRead.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnSelectNone" label="None" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="{select('none')}" rollOver="{if(areOptionsEnabled) btnSelectNone.styleName='linkBtnUnderline';}" rollOut="btnSelectNone.styleName='linkBtn';" />
+							<s:Spacer width="100%" />
+							<s:Label id="lblSearchResults" visible="false" paddingTop="2" fontWeight="bold" maxWidth="362" maxDisplayedLines="1" />
+							<mx:LinkButton id="btnClearSearch" label="(Clear)" visible="false" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="clearSearch()" rollOver="btnClearSearch.styleName='linkBtnUnderline';" rollOut="btnClearSearch.styleName='linkBtn';" />
+							<s:Spacer width="100%" />
+							<s:Label text="Show:" paddingTop="2" />
+							<mx:LinkButton id="btnShowAll" label="All" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-5" paddingRight="-8" click="showAll()" rollOver="{if(areOptionsEnabled) btnShowAll.styleName='linkBtnUnderline';}" rollOut="btnShowAll.styleName='linkBtn';" />
+							<s:Label text="," paddingTop="2" />
+							<mx:LinkButton id="btnShowUnread" label="Unread" enabled="{areOptionsEnabled}" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="-6" paddingRight="-8" click="showUnread()" rollOver="{if(areOptionsEnabled) btnShowUnread.styleName='linkBtnUnderline';}" rollOut="btnShowUnread.styleName='linkBtn';" />
+							<s:Label text="Sort by:" paddingLeft="18" paddingTop="2" paddingRight="-9" />
+							
+							<s:DropDownList id="dropDownMessageSort" enabled="{areOptionsEnabled}" selectedIndex="0" width="105" dropShadowVisible="false" contentBackgroundColor="0x4A4A49" rollOverColor="0x5E5E5D" selectionColor="0x5E5E5D" skinClass="edu.newschool.piim.healthboard.view.skins.general.MyDropDownListSkin" color="0xAEDBE2" change="messageSort()"> 
+								<mx:ArrayCollection>
+									<fx:String>Date Received</fx:String>
+									<fx:String>Sender</fx:String>
+									<fx:String>Urgency Level</fx:String>
+								</mx:ArrayCollection>
+							</s:DropDownList>
+							
+						</s:HGroup>
+						
+						<s:Line xFrom="0" xTo="822">
+							<s:stroke>
+								<s:SolidColorStroke color="#7C7C7C"/>
+							</s:stroke>
+						</s:Line>
+						
+						<components:RowColorDataGrid 
+							id="dgMessages" rowColorFunction="calcRowColor" 
+							dataProvider="{model.messagesToDisplay}" 
+							buttonMode="true"
+							itemClick="dgMessages_itemClickHandler(event)" 
+							visible="{model.messagesToDisplay!=null}" includeInLayout="{model.messagesToDisplay!=null}"
+							width="100%" height="100%"
+							color="0xFFFFFF" verticalAlign="middle"
+							selectable="false"
+							headerHeight="0"
+							borderVisible="false" rowHeight="59" verticalGridLines="false" horizontalGridLines="true" horizontalGridLineColor="0x7C7C7C" horizontalSeparatorSkin="{null}" alternatingItemColors="[0x4A4A49,0x4A4A49]" rowCount="3"><!--itemClick="dgMessages_itemClickHandler(event)" selectionColor="0x4A4A49" rollOverColor="0x4A4A49" selectionColor="0x00ADEE" rollOverColor="0x286982"-->
+							
+							<components:columns> 
+								
+								<mx:DataGridColumn dataField="status" width="46">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox horizontalAlign="center"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<s:Image source="@Embed('/images/messagesEnvelope.png')" toolTip="Unread" visible="{data.status == 'unread'}" includeInLayout="{data.status == 'unread'}" />
+												<!--<s:Image source="@Embed('/images/messagesRead.png')" toolTip="Read" visible="{data.status == 'read'}" includeInLayout="{data.status == 'read'}" />-->
+												<s:Image source="@Embed('/images/messagesReplied.png')" toolTip="Replied" visible="{data.status == 'replied'}" includeInLayout="{data.status == 'replied'}" />
+											</mx:HBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn width="26">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox paddingTop="-1"><!--buttonMode="true"-->		
+												<!--<fx:Script>
+												<![CDATA[
+												protected function messageCheckbox_clickHandler(event:MouseEvent):void {
+												var item:Object = outerDocument.dgMessages.selectedItem;
+												var index:int = outerDocument.messages.getItemIndex(item);
+												outerDocument.messages.removeItemAt(index);
+												}															
+												]]>
+												</fx:Script>-->
+												<s:CheckBox id="messageCheckbox" change="outerDocument.selectMultiple(data,messageCheckbox.selected)" selected="{outerDocument.areCheckboxesSelected || data.checkboxSelection}" /><!--click="outerDocument.messageCheckbox_clickHandler(event)"-->
+											</mx:HBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn dataField="correspondent" width="132">
+									<mx:itemRenderer>
+										<fx:Component>		
+											<mx:VBox height="59" verticalAlign="middle" verticalGap="3" paddingTop="6"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<s:Label text="{data.correspondent}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
+												<s:Label text="{outerDocument.controller.displayTime(data.date)}" fontSize="11" />
+											</mx:VBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn dataField="subject" width="588">
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:HBox verticalAlign="middle" height="59" paddingTop="7"><!--buttonMode="true" click="{outerDocument.openMessage(data);}"-->
+												<fx:Script>
+													<![CDATA[
+														//import mx.controls.Alert;
+														
+														private function showNumberOfMessages():String {
+															return (!data.isDraft) ? (data.messages.length == 1) ? '' : '(' + data.messages.length + ') ' : '(DRAFT SAVED) ';
+														}
+														//this function was added to ensure that the (nevermind :)
+														/*private function showInitialTextWithoutLineBreaks(myData:Object):String {
+														for(var i:uint = 0; i < 75; i++) {
+														if(myData.messages[myData.messages.length - 1].text.charAt(i) == "\n") {
+														break;
+														}
+														}
+														return myData.messages[myData.messages.length - 1].text.substr(0,i) + ' ';
+														}*/
+														private function showEllipsis():String {
+															return (data.messages[data.messages.length - 1].text.length <= 75) ? '' : '...';
+														}
+													]]>
+												</fx:Script>
+												
+												<mx:HBox width="17" >
+													<s:Image id="urgentIcon" source="@Embed('/images/messagesUrgent.png')" toolTip="Urgent" creationComplete="urgentIcon.visible=data.messages[data.messages.length - 1].urgency == 'Urgent'" includeInLayout="{urgentIcon.visible}" />
+													<s:Image id="somewhatUrgentIcon" source="@Embed('/images/messagesSomewhatUrgent.png')" toolTip="Somewhat urgent" creationComplete="somewhatUrgentIcon.visible=data.messages[data.messages.length - 1].urgency == 'Somewhat urgent'" includeInLayout="{somewhatUrgentIcon.visible}" />
+												</mx:HBox>
+												
+												<mx:VBox verticalGap="3">
+													<s:Label text="{showNumberOfMessages() + data.subject}" color="0xAEDEE4" fontSize="13" fontWeight="{data.status == 'unread' ? 'bold' : 'normal'}" />
+													<s:Label id="preview" creationComplete="preview.text=data.messages[data.messages.length - 1].text.substr(0,75) + showEllipsis()" maxDisplayedLines="1" />
+												</mx:VBox>
+												
+											</mx:HBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+								<mx:DataGridColumn>
+									<mx:itemRenderer>
+										<fx:Component>
+											<mx:VBox>
+												<!--<fx:Script>
+												<![CDATA[
+												protected function image1_clickHandler(event:MouseEvent):void {
+												var item:Object = outerDocument.dgMessages.selectedItem;
+												//outerDocument.acTrash.addItem(item);
+												var index:int = outerDocument.messages.getItemIndex(item);
+												outerDocument.messages.removeItemAt(index);
+												}
+												]]>
+												</fx:Script>-->
+												<s:Image source="@Embed('/images/messagesDelete.png')" toolTip="Delete" /><!--buttonMode="true" click="image1_clickHandler(event)"-->
+											</mx:VBox>
+										</fx:Component>
+									</mx:itemRenderer>
+								</mx:DataGridColumn>
+								
+							</components:columns> 
+							
+						</components:RowColorDataGrid>
+						
+						<mx:Text id="lblNoMessages" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
+								 htmlText="{'There are no matching search results for the requested search.&lt;br&gt;Please make sure all words are spelled correctly, or try different keywords.'}" />
+						
+						<mx:Text id="lblNoMessagesFolder" visible="false" includeInLayout="false" width="100%" textAlign="center" color="0xFFFFFF" fontSize="11" paddingTop="31"
+								 text="There are no messages in this folder." />
+						
+					</s:NavigatorContent>
+					
+					<s:NavigatorContent icon="@Embed('/images/messagesNew.png')">
+						
+					</s:NavigatorContent>
+					
+				</mx:ViewStack>
+				
+				<plus:TabBarPlus id="tabsMessages" gap="6" cornerRadius="4" styleName="messagesTabs" closePolicy="always" dataProvider="{viewStackMessages}" change="onTabChange(event)" />
+				
+			</s:Group>
+			
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	
+	
+</s:NavigatorContent>

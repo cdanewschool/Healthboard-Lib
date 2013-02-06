@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:net="flash.net.*"
+	width="341" height="{type != ExerciseType.YOGA ? 404 : 378}"
+	skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow" color="0x000000"
+	close="PopUpManager.removePopUp(this);">
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.controller.ExerciseController;
+			
+			import edu.newschool.piim.healthboard.enum.ExerciseType;
+			
+			import edu.newschool.piim.healthboard.events.ApplicationEvent;
+			
+			import edu.newschool.piim.healthboard.model.module.ExerciseModel;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.events.CalendarLayoutChangeEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
+			
+			import spark.components.TextInput;
+			import spark.events.DropDownEvent;
+			
+			[Bindable] public var type:String;
+			
+			[Bindable] public var controller:ExerciseController = AppProperties.getInstance().controller.exerciseController as ExerciseController;
+			[Bindable] public var model:ExerciseModel = controller.model as ExerciseModel;
+			
+			private function addRecord():void 
+			{
+				var exercise:Object = 
+					{
+						type: type, chartMin:15, chartMax:45, chartType:'trackable', 
+						chart: new ArrayCollection
+						(
+							[
+								{ 
+									data: new ArrayCollection()
+								}
+							]
+						)
+					};
+				
+				model.exerciseDataByMeasurePersonal.addItem( exercise );
+				model.exerciseDataByMeasurePersonal.refresh();
+				
+				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
+				event.data = "Your exercise has been recorded";
+				AppProperties.getInstance().controller.application.dispatchEvent( event );
+				
+				PopUpManager.removePopUp(this);
+			}
+			
+			private function browseAttachment(evt:MouseEvent):void 
+			{
+				fileReference.browse();
+			}
+			
+			private function fileReference_select(evt:Event):void 
+			{
+				fileReference.load();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		<net:FileReference 
+			id="fileReference"
+			select="fileReference_select(event);"
+			complete="addRecord();" />
+	</fx:Declarations>
+
+	<s:layout>
+		<s:VerticalLayout paddingTop="13" paddingBottom="13" paddingLeft="13" paddingRight="13" />
+	</s:layout>
+
+	<s:Label text="Add Trackable Exercise" fontWeight="bold" fontSize="16" color="0x4D4D4D" />
+	<s:Label text="{ExerciseType.getLabel(type)}" color="0x4D4D4D" fontWeight="bold" paddingTop="11" />
+	
+	<s:HGroup color="0x4D4D4D" paddingTop="10" paddingBottom="5" gap="2">
+		<s:Label text="Please select data you want to record for" />
+		<s:Label text="{ExerciseType.getLabel(type) + ':'}" fontWeight="bold" />
+	</s:HGroup>	
+	
+	<s:VGroup visible="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}" includeInLayout="{type != ExerciseType.SWIM &amp;&amp; type != ExerciseType.YOGA}">
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDate" label="Date" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDistance" label="Distance" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDuration" label="Duration" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkMaxSpeed" label="Max Speed" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkMinSpeed" label="Min Speed" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkCalories" label="Calories Burned" />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	<s:VGroup visible="{type == ExerciseType.SWIM}" includeInLayout="{type == ExerciseType.SWIM}">
+		
+		<s:HGroup verticalAlign="middle">
+			
+			<s:Label text="Type:" />
+			
+			<s:DropDownList id="dropSwimType" height="24" width="100" styleName="buttonText" selectedIndex="0">
+				<s:dataProvider>
+					<s:ArrayList>
+						<fx:Object label="Freestyle" data="freestyle" />
+						<fx:Object label="Backstroke" data="backstroke" />
+						<fx:Object label="Breaststroke" data="breaststroke" />
+						<fx:Object label="Butterfly" data="butterfly" />
+						<fx:Object label="Other" data="other" />
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDateTime" label="Date / Time" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20" verticalAlign="middle">
+			<s:CheckBox id="checkDistance2" label="Distance" />
+			<s:Label fontStyle="italic" text="(default item for graph view) -" paddingTop="4" paddingRight="-14" />
+			<mx:LinkButton id="btnChange" label="Change" paddingTop="1" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnChange.styleName='linkBtnUnderline';" rollOut="btnChange.styleName='linkBtn';" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDuration2" label="Duration" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkSpeed" label="Speed" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkCalories2" label="Calories Burned" />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	<s:VGroup visible="{type == ExerciseType.YOGA}" includeInLayout="{type == ExerciseType.YOGA}">
+		
+		<s:HGroup verticalAlign="middle">
+			
+			<s:Label text="Type:" />
+			
+			<s:DropDownList id="dropYogaType" height="24" width="100" styleName="buttonText" selectedIndex="0">
+				<s:dataProvider>
+					<s:ArrayList>
+						<fx:Object label="Ashtanga" data="Ashtanga" />
+						<fx:Object label="Vinyasa Flow" data="Vinyasa Flow" />
+						<fx:Object label="Iyengar" data="Iyengar" />
+						<fx:Object label="Jivamukti" data="Jivamukti" />
+						<fx:Object label="Kundalini" data="Kundalini" />
+						<fx:Object label="Bikram" data="Bikram" />
+						<fx:Object label="Power" data="Power" />
+						<fx:Object label="Other" data="Other" />
+					</s:ArrayList>
+				</s:dataProvider>
+			</s:DropDownList>
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkDateTime2" label="Date / Time" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20" verticalAlign="middle">
+			<s:CheckBox id="checkDuration3" label="Duration" />
+			<s:Label fontStyle="italic" text="(default item for graph view) -" paddingTop="4" paddingRight="-14" />
+			<mx:LinkButton id="btnChange2" label="Change" paddingTop="1" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnChange.styleName='linkBtnUnderline';" rollOut="btnChange.styleName='linkBtn';" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkPose" label="Number of Pose" />
+		</s:HGroup>
+		
+		<s:HGroup paddingLeft="20">
+			<s:CheckBox id="checkSequence" label="Number of Sequence" />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	<mx:LinkButton paddingLeft="36" id="btnAddMore" label="+ Add More" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnAddMore.styleName='linkBtnUnderline';" rollOut="btnAddMore.styleName='linkBtn';" />
+	
+	<s:Label text="OR" paddingTop="7" paddingBottom="6" />
+	
+	<s:HGroup width="100%">
+		<s:Label text="You can just use data from your device." paddingTop="6" />
+		<s:Spacer width="100%" />
+		<mx:LinkButton id="btnBrowseFile" label="Browse file >" color="0x064E71" textRollOverColor="0x064E71" textSelectedColor="0x064E71" skin="{null}" rollOver="btnBrowseFile.styleName='linkBtnUnderline';" rollOut="btnBrowseFile.styleName='linkBtn';" click="browseAttachment(event)" />
+	</s:HGroup>	
+
+	<s:HGroup paddingTop="15" paddingBottom="6">
+		<s:Line xFrom="0" xTo="312">
+			<s:stroke>
+				<s:SolidColorStroke color="0x4D4D4D" weight="1"/>
+			</s:stroke>
+		</s:Line>
+	</s:HGroup>
+	
+	<s:HGroup width="100%" horizontalAlign="right">
+		<s:Button label="Add" styleName="buttonText" height="24" click="addRecord()" />
+		<s:Button label="Cancel" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" width="55" />
+	</s:HGroup>
+	
+</s:TitleWindow>

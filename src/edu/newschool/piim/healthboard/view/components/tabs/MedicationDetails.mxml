@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx"
+	label="{medicationData.dose != '' ? medicationData.name + ' - ' + medicationData.dose : medicationData.name}" 
+	creationComplete="init()">
+	
+	<s:states>
+		<s:State name="default" />
+		<s:State name="provider" />
+	</s:states>
+	
+	<fx:Declarations>
+		<s:LinearGradient id="gradientFill" rotation="0">
+			<s:GradientEntry color="0xFFFFFF" alpha=".3" ratio="0" />
+			<s:GradientEntry color="0xDA2925" alpha=".3" ratio="1" />
+		</s:LinearGradient>
+	</fx:Declarations>
+			
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.view.components.medications.myRequestRenewalWindow;
+			import edu.newschool.piim.healthboard.controller.MedicationsController;
+			
+			import edu.newschool.piim.healthboard.model.module.MedicationsModel;
+			
+			import mx.managers.PopUpManager;
+			
+			import spark.components.TitleWindow;
+			
+			[Bindable] private var controller:MedicationsController = AppProperties.getInstance().controller.medicationsController as MedicationsController;
+			[Bindable] public var model:MedicationsModel = controller.model as MedicationsModel;
+			
+ 			private var _medicationData:Object;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				if( medicationData
+					&& currentState == "provider" 
+					&& container )
+				{
+					var isPending:Boolean = medicationData.renewalStatus == "Pending";
+					container.backgroundFill = isPending ? gradientFill : null;
+				}
+			}
+			
+			private function truncateComments(item:Object, column:DataGridColumn):String 
+			{
+				if(item.comments == null) return "";
+				return item.comments.length < 43 ? item.comments : item.comments.substr(0,43) + "...";
+			}
+			
+			private function requestRenewal():void 
+			{
+				var myRequestRenewal:myRequestRenewalWindow = myRequestRenewalWindow(PopUpManager.createPopUp(this, myRequestRenewalWindow) as spark.components.TitleWindow);
+				myRequestRenewal.medNameDosage = medicationData.dose != '' ? medicationData.name + ' - ' + medicationData.dose : medicationData.name;
+				
+				PopUpManager.centerPopUp(myRequestRenewal);
+			}
+			
+			[Bindable] private var medicationArray:ArrayCollection = new ArrayCollection;
+			
+			private function init():void 
+			{
+				for(var i:uint = 0; i < model.medicationsData.length; i++) 
+				{
+					if( model.medicationsData.getItemAt(i).name == medicationData.name 
+						&& model.medicationsData.getItemAt(i).taken) 
+					{
+						medicationArray.addItem( model.medicationsData.getItemAt(i) );
+						medicationArray.getItemAt( medicationArray.length - 1 ).recordedBy = "You";
+					}
+				}
+			}
+
+			[Bindable]
+			public function get medicationData():Object
+			{
+				return _medicationData;
+			}
+
+			public function set medicationData(value:Object):void
+			{
+				_medicationData = value;
+				
+				invalidateProperties();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:layout>
+		<s:VerticalLayout gap="0" />
+	</s:layout>
+	
+	<s:BorderContainer id="container" height="37" width="100%" backgroundColor="0x706F6F" creationComplete="invalidateProperties();">
+		
+		<s:layout>
+			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" />
+		</s:layout>
+
+		<s:Button label="Record Intake" height="24" styleName="buttonText" visible = "{currentState=='default'}" includeInLayout = "{currentState=='default'}" click="controller.onRecordIntakeClick(medicationData)" />
+		<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="requestRenewal()" />
+		<s:Button id="showRequests" label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
+		<s:Button label="Print" height="24" width="51" styleName="buttonText" />
+		<s:Button label="Export" height="24" width="51" styleName="buttonText" />
+		
+	</s:BorderContainer>
+	
+	<s:Scroller height="100%" horizontalScrollPolicy="off">	
+		
+		<s:HGroup paddingTop="6" paddingBottom="15" width="960">
+			
+			<s:VGroup width="325" gap="15">
+				
+				<s:Label text="Medication Details" styleName="greenBoldText" paddingLeft="20" paddingTop="13" />
+				
+				<s:VGroup color="#EDEDED" gap="4">
+					
+					<s:HGroup>
+						<s:Label text="Name / Dosage" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.dose != '' ? medicationData.name + ' - ' + medicationData.dose : medicationData.name}" paddingLeft="7" />
+					</s:HGroup>
+
+					<s:HGroup paddingTop="15">
+						<s:Label width="102" textAlign="right" fontWeight="bold" text="Drug Image" />
+						<s:HGroup paddingLeft="7">
+							<s:Image source="@Embed('/images/medicationsDrugImage.jpg')" />
+						</s:HGroup>
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="Status" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="Active" paddingLeft="7" />
+					</s:HGroup>
+
+					<s:HGroup paddingTop="15">
+						<s:Label text="Prescription #" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.prescription}" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Quantity" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="30" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Sig. / Directions" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.directions}" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Expanded Sig." width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="Take with a big glass of water" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Intake time" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="0900 (Morning)" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="{'Reason why\nyou are taking'}" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{'To treat high blood pressure\n(hypertension)'}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="Side Effects" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{'Alergic reaction, fainting, flu symptoms,\nchest pain, and weight gain'}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="Refills left" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.refillsLeft}" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Last filled date" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.lastFilledDate}" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="Provider" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="Dr. Gregirt Berg, Team 1" paddingLeft="7" />
+					</s:HGroup>
+					
+					<s:HGroup paddingTop="15">
+						<s:Label text="Pharmacy" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="{medicationData.pharmacy}" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Phone" width="102" textAlign="right" fontWeight="bold" />
+						<s:Label text="(202) 685-3100" paddingLeft="7" />
+					</s:HGroup>
+					<s:HGroup>
+						<s:Label text="Address" width="102" textAlign="right" fontWeight="bold" />
+						<s:VGroup>
+							<s:Label text="{'103 3rd Ave, SW\nWashington, DC 20319'}" paddingLeft="7" />
+							<s:VGroup paddingTop="-8">
+								<mx:LinkButton id="btnShowAllPharmacies" label="Show All Pharmacies" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" paddingLeft="3" rollOver="btnShowAllPharmacies.styleName='linkBtnUnderline';" rollOut="btnShowAllPharmacies.styleName='linkBtn';" />
+							</s:VGroup>
+						</s:VGroup>
+					</s:HGroup>
+					
+				</s:VGroup>
+				
+			</s:VGroup>
+			
+			<s:VGroup>
+				
+				<s:Label text="Refills and Renewals History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
+				
+				<mx:DataGrid 
+					width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
+					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="2"
+					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeader" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
+					borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
+					
+					<s:ArrayCollection>
+						<fx:Object refill="1" dateFilled="March 20, 2011" prescription="NB0987654" quantity="30" daysSupply="Not recorded" pharmacy="Walgreens" />
+						<fx:Object refill="2" dateFilled="April 23, 2011" prescription="NB1234567" quantity="30" daysSupply="Not recorded" pharmacy="Building 9 Pharmacy" />
+					</s:ArrayCollection>
+					
+					<mx:columns>
+						<mx:DataGridColumn dataField="refill" headerText="Refill #" width="61" paddingLeft="5" />
+						<mx:DataGridColumn dataField="dateFilled" headerText="Date Filled" width="96" paddingLeft="5" />
+						<mx:DataGridColumn dataField="prescription" headerText="Prescription #" width="102" paddingLeft="5" />
+						<mx:DataGridColumn dataField="quantity" headerText="Quantity" width="78" paddingLeft="5" />
+						<mx:DataGridColumn dataField="daysSupply" headerText="Days Supply" width="96" paddingLeft="5" />
+						<mx:DataGridColumn dataField="pharmacy" headerText="Pharmacy" paddingLeft="5" />
+					</mx:columns>
+					
+				</mx:DataGrid>
+				
+				<s:Label text="Intake History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
+				
+				<mx:DataGrid 
+					width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
+					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="{medicationArray.length > 10 ? 10 : medicationArray.length}"
+					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeader" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
+					borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false" dataProvider="{medicationArray}">
+					<!--<s:ArrayCollection>
+						<fx:Object dateTime="June 18, 2011 – 09:45 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 17, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 16, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 15, 2011 – 09:00 am" quantity="1" comments="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." recordedBy="Dr. Andrew Berg" />
+						<fx:Object dateTime="June 14, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 13, 2011 – 11:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 12, 2011 – 01:00 pm" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 11, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 10, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+						<fx:Object dateTime="June 9, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />
+					</s:ArrayCollection>-->
+					<mx:columns> 
+						<!--<mx:DataGridColumn dataField="dateP" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.dateP != null}" />
+						<mx:DataGridColumn dataField="dateO" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.dateO != null}" />
+						<mx:DataGridColumn dataField="dateS" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.dateS != null}" />
+						<mx:DataGridColumn dataField="dateH" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.dateH != null}" />-->
+						<mx:DataGridColumn dataField="date" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.date != null}" />
+						<mx:DataGridColumn dataField="dateAN" headerText="Date and Time" paddingLeft="5" width="148" visible="{medicationData.dateAN != null}" />
+						<mx:DataGridColumn dataField="intake" headerText="Quantity" paddingLeft="5" width="110" />
+						<mx:DataGridColumn dataField="comments" headerText="Comments" paddingLeft="5" width="205" color="0xAEDEE4" labelFunction="truncateComments" />
+						<mx:DataGridColumn dataField="recordedBy" headerText="Recorded By" paddingLeft="5" />
+					</mx:columns> 
+				</mx:DataGrid>
+				
+				<s:Label text="Pharmacy Comments" styleName="greenBoldText" paddingTop="22" />
+				
+				<s:VGroup paddingTop="8" paddingBottom="-7">
+					<s:Line xFrom="0" xTo="614">
+						<s:stroke>
+							<s:SolidColorStroke color="0x7C7C7C" weight="3" caps="square" />
+						</s:stroke>
+					</s:Line>
+				</s:VGroup>
+				
+				<s:BorderContainer width="618" backgroundColor="0xE3E3E3" color="0x3C3C3B">
+					<s:layout>
+						<s:VerticalLayout paddingLeft="20" paddingTop="19" paddingBottom="19" gap="19" />
+					</s:layout>
+					<s:HGroup width="433">
+						<s:Label text="Dr. Gregory Berg" color="0x1D6487" fontWeight="bold" />
+						<s:Spacer width="100%" />
+						<s:Label text="June 15, 2011 at 8:45pm" color="0x706F6F" fontSize="10" />
+					</s:HGroup>
+					<s:Label text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." width="433" />
+				</s:BorderContainer>
+				
+			</s:VGroup>
+			
+		</s:HGroup>
+		
+	</s:Scroller>
+	
+</s:NavigatorContent>

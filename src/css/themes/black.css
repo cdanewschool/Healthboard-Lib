@@ -1,9 +1,9 @@
 /* CSS file */
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
-@namespace enhancedtitlewindow "external.collapsibleTitleWindow.components.enhancedtitlewindow.*";
+@namespace enhancedtitlewindow "com.ninemmedia.code.collapsibleTitleWindow.components.enhancedtitlewindow.*";
 
-s|Application { skinClass: ClassReference("skins.general.backgroundGradient"); fontFamily: "myMyriad"; }
+s|Application { skinClass: ClassReference("edu.newschool.piim.healthboard.view.skins.general.backgroundGradient"); fontFamily: "myMyriad"; }
 
 enhancedtitlewindow|EnhancedTitleWindow {
 	borderColor: "0xBDBDBC";
@@ -13,7 +13,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	headerColor: "0xFFFFFF";
 	headerColorAlternate: "0x868686";
 	showExpandIndicator: true;
-	skinClass:ClassReference("external.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
+	skinClass:ClassReference("com.ninemmedia.code.collapsibleTitleWindow.skins.EnhancedTitleWindowSkin");
 }
 
 .standardDataGrid {
@@ -22,7 +22,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	color: "0xFFFFFF";
 	horizontalGridLineColor: "0x444442";
 	headerBackgroundColor: "0x3C3C3B";
-	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerBackgroundSkin: ClassReference("edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin");
 	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
 	headerStyleName: "dataGridHeader";
 	headerHeight: 30;
@@ -45,7 +45,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 	horizontalGridLineColor: "0x444442";
 	horizontalSeparatorSkin: ClassReference(null); 
 	headerBackgroundColor: "0x3C3C3B";
-	headerBackgroundSkin: ClassReference("skins.general.CustomDataGridHeaderBackgroundSkin");
+	headerBackgroundSkin: ClassReference("edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin");
 	headerSeparatorSkin: ClassReference("mx.skins.ProgrammaticSkin");
 	headerStyleName: "dataGridHeader";
 	headerHeight: 30;
@@ -96,7 +96,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 
 /*	button	*/
 .button { font-size: 11; color: "0x000000"; chromeColor: "0xB3B3B3"; }	/*	PublicHealthAdvisoryItemRenderer	*/
-.toggleButton { toggleBackgroundColor: "0x4A4A49"; skin: ClassReference("skins.general.MyLinkButtonSkin"); }	/*	PublicHealthAdvisoryItemRenderer	*/
+.toggleButton { toggleBackgroundColor: "0x4A4A49"; skin: ClassReference("edu.newschool.piim.healthboard.view.skins.general.MyLinkButtonSkin"); }	/*	PublicHealthAdvisoryItemRenderer	*/
 
 /*	border container	*/
 .borderContainer1 { backgroundColor: "0x4B4A4A"; borderColor: "0xBCBBBB"; borderAlpha: 0.5; cornerRadius: 4; }	/*	PublicHealthAdvisoryItemRenderer	*/
@@ -123,7 +123,7 @@ enhancedtitlewindow|EnhancedTitleWindow {
 .viewStack { backgroundColor: "0x4A4A49"; borderColor: "0xBDBCBC"; borderStyle: "solid"; cornerRadius: 2; }
 
 /*	POPUP STYLES	*/
-.headerlessPopup { skinClass: ClassReference("skins.general.myHeaderlessTitleWindow") }
+.headerlessPopup { skinClass: ClassReference("edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow") }
 .headerlessPopupTitle { fontWeight: "bold"; fontSize: 16 }
 .headerlessPopupInset { cornerRadius: 3; backgroundAlpha: 0; borderColor: "0x878787" }
 .headerlessPopupModuleHeaderBackground { backgroundColor: "0xCECECE"; font-style: italic; color: "0x4D4D4D" }
