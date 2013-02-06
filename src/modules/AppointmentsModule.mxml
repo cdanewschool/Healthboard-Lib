@@ -30,6 +30,7 @@
 			import controllers.AppointmentsController;
 			
 			import enum.AppointmentStatus;
+			import enum.AppointmentType;
 			import enum.DateRanges;
 			import enum.RecipientType;
 			
@@ -42,8 +43,11 @@
 			
 			import models.Message;
 			import models.NextStep;
+			import models.ProviderModel;
 			import models.modules.AppointmentsModel;
 			import models.modules.MedicalRecordsModel;
+			import models.modules.appointments.PatientAppointment;
+			import models.modules.medicalrecords.MedicalRecord;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.Sort;
@@ -59,6 +63,7 @@
 			
 			import util.DateFormatters;
 			import util.DateUtil;
+			import util.StringUtil;
 			
 			private static const STATE_DEFAULT:String = "default";
 			private static const STATE_PROVIDER:String = "provider";
@@ -175,18 +180,20 @@
 				
 				for(var i:uint = 0; i < appointments.length; i++) 
 				{
-					var obj:Object = appointments[i];
+					var obj:PatientAppointment = appointments[i] as PatientAppointment;
 					
-					if(leftColumnApptsCount < LEFTCOLUMNMAXAPPTS) {
+					if(leftColumnApptsCount < LEFTCOLUMNMAXAPPTS) 
+					{
 						var myUpcomingApptLabel:LinkButton = new MultilineLinkButton();
 						myUpcomingApptLabel.styleName = "linkBtnBlue";
 						myUpcomingApptLabel.setStyle('textAlign', "left");
 						myUpcomingApptLabel.addEventListener(MouseEvent.CLICK,onUpcomingAppointmentClick);
 						
-						if(obj.status != AppointmentStatus.COMPLETED) {
+						if(obj.status != AppointmentStatus.COMPLETED) 
+						{
 							myUpcomingApptLabel.data = obj;
 							
-							var title:String = obj.provider + " - " + obj.desc + "\n";
+							var title:String = (obj.provider && obj.provider is ProviderModel ? obj.provider.lastNameAbbreviated + " - " : obj.provider) + obj.description + "\n";
 							title += String(obj.date).substr(0,3) + ", " + String(obj.date).substr(4,3) + " " + obj.date.getDate() + ", " + (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " hrs";
 							
 							myUpcomingApptLabel.label = title;
@@ -200,7 +207,7 @@
 				}
 				
 				
-				var nextSteps:ArrayCollection = MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model).medicalRecordsNextSteps;
+				var nextSteps:ArrayCollection = model.nextSteps;
 				
 				nextStepsContainer.removeAllElements();
 				
@@ -273,7 +280,7 @@
 			{
 				var link:LinkButton = LinkButton(event.currentTarget);
 				
-				selectedAppointment = link.data;
+				selectedAppointment = link.data as PatientAppointment;
 			}
 			
 			private function onCancelAppointmentClick():void 
@@ -334,6 +341,21 @@
 			private function onDateChange():void
 			{
 				model.currentDate = new Date( dtPicker.displayedYear, dtPicker.displayedMonth, dtPicker.selectedDate.date );
+			}
+			
+			private function getTypeLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return StringUtil.titleCase(appointment.type);
+			}
+			
+			private function getHasNextStepsLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return appointment.nextSteps && appointment.nextSteps.length ? 'Yes' : '';
+			}
+			
+			private function getProviderLabel(appointment:PatientAppointment,column:DataGridColumn):String
+			{
+				return appointment.provider.lastNameAbbreviated;
 			}
 			
 			// function fires when a cell is being clicked from the Month View
@@ -415,18 +437,18 @@
 			
 			private function appointmentsListSelection():void 
 			{
-				selectedAppointment = appointmentsList.selectedItem;
+				selectedAppointment = appointmentsList.selectedItem as PatientAppointment;
 			}
 			
- 			private var _selectedAppointment:Object;
+ 			private var _selectedAppointment:PatientAppointment;
 
 			[Bindable]
-			public function get selectedAppointment():Object
+			public function get selectedAppointment():PatientAppointment
 			{
 				return _selectedAppointment;
 			}
 
-			public function set selectedAppointment(value:Object):void
+			public function set selectedAppointment(value:PatientAppointment):void
 			{
 				if( _selectedAppointment ) _selectedAppointment.selected = false;
 				
@@ -457,7 +479,7 @@
 				if( currentState == STATE_PROVIDER 
 					&& selectedAppointment.status == AppointmentStatus.COMPLETED ) 
 				{
-					MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingIndex = selectedAppointment.medRecIndex;
+					MedicalRecordsModel( AppProperties.getInstance().controller.medicalRecordsController.model ).pendingRecord = selectedAppointment.medicalRecords.getItemAt(0) as MedicalRecord;
 				}
 				
 				setApplicationState( Constants.MODULE_MEDICAL_RECORDS );
@@ -470,7 +492,7 @@
 				if( currentState == 'provider' )
 					message.recipients = [ selectedAppointment.patient ];
 				else
-					message.recipientType = type == "appointment" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
+					message.recipientType = type == "medical" ? RecipientType.PROVIDER : RecipientType.ADMINISTRATOR;
 				
 				var event:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE, true );
 				event.data = Constants.MODULE_MESSAGES;
@@ -719,6 +741,7 @@
 					<views:WeekViewTimeSlots id="weekView" timeSlots="{model.timeSlots}" currentDate="{model.currentDate}" label="Week View" x="0" y="0" horizontalScrollPolicy="off" showEffect="WipeDown" hideEffect="WipeUp" />
 					
 					<mx:VBox showEffect="WipeDown" hideEffect="WipeUp">
+						
 						<general:AppointmentsDataGrid
 							id="appointmentsList" dataProvider="{DataHolder.getInstance().dataProvider}" styleName="standardDataGrid"
 							width="100%" height="100%"
@@ -729,16 +752,17 @@
 							
 							<general:columns> 
 								<mx:DataGridColumn dataField="date" headerText="Date of Service" width="195" paddingLeft="10" labelFunction="appointmentDateLabelFunction" sortDescending="true"/> 
-								<mx:DataGridColumn dataField="type" headerText="Type" /> 
-								<mx:DataGridColumn dataField="provider" headerText="Provider"/> 
-								<mx:DataGridColumn dataField="desc" headerText="Description" width="135"/> 
-								<mx:DataGridColumn dataField="nextSteps" headerText="Next Steps"/> 
+								<mx:DataGridColumn dataField="type" headerText="Type" labelFunction="getTypeLabel" /> 
+								<mx:DataGridColumn dataField="provider" headerText="Provider" labelFunction="getProviderLabel" /> 
+								<mx:DataGridColumn dataField="description" headerText="Description" width="135"/> 
+								<mx:DataGridColumn dataField="nextSteps" headerText="Next Steps" labelFunction="getHasNextStepsLabel" />
 								<mx:DataGridColumn dataField="status" headerText="Status"/> 
 							</general:columns> 
 							
 						</general:AppointmentsDataGrid>
+						
 					</mx:VBox>
-					<!--<views:WeekView id="weekView" label="Week View" currentDate="{m_intCurrentDate}" horizontalScrollPolicy="off" showEffect="WipeDown" hideEffect="WipeUp" />-->
+					
 				</mx:ViewStack>
 				
 			</s:BorderContainer>
@@ -746,7 +770,7 @@
 			<s:VGroup id="rightColumn" width="{selectedAppointment!=null?166:0}" visible="{selectedAppointment!=null}" includeInLayout="{selectedAppointment!=null}">
 				
 				<s:Label text="Event Details" styleName="subtitles" textAlign="center" width="100%" paddingTop="15" />
-				<s:Label id="appointmentProvider" text="{selectedAppointment.type == 'Appointment' ? selectedAppointment.provider : selectedAppointment.desc}" textAlign="center" width="100%" styleName="smallText" paddingTop="12" />
+				<s:Label id="appointmentProvider" text="{selectedAppointment.type == AppointmentType.MEDICAL ? selectedAppointment.provider.lastNameAbbreviated : selectedAppointment.description}" textAlign="center" width="100%" styleName="smallText" paddingTop="12" />
 				
 				<s:Line xFrom="0" xTo="160" left="20">
 					<s:stroke>
@@ -770,11 +794,11 @@
 					</s:stroke>
 				</s:Line>
 				
-				<s:VGroup id="appointmentDetails" visible="{selectedAppointment.type == 'Appointment'}" includeInLayout="{selectedAppointment.type == 'Appointment'}">
+				<s:VGroup id="appointmentDetails" visible="{selectedAppointment.type == AppointmentType.MEDICAL}" includeInLayout="{selectedAppointment.type == AppointmentType.MEDICAL}">
 					
 					<s:HGroup>
 						<s:Label text="Type" textAlign="right" width="59" styleName="smallTextBold" />
-						<s:Label id="appointmentType" text="{selectedAppointment.type == 'Appointment' ? 'Routine' : 'Class'}" styleName="smallText" />
+						<s:Label id="appointmentType" text="{selectedAppointment.type == AppointmentType.MEDICAL ? 'Routine' : 'Class'}" styleName="smallText" />
 					</s:HGroup>
 					
 					<s:HGroup>
@@ -784,7 +808,7 @@
 					
 					<s:HGroup>
 						<s:Label text="RFV" textAlign="right" width="59" styleName="smallTextBold" />
-						<s:Label id="appointmentRFV" text="{selectedAppointment.desc}" styleName="smallText" />
+						<s:Label id="appointmentRFV" text="{selectedAppointment.description}" styleName="smallText" />
 					</s:HGroup>
 					
 					<s:Line xFrom="0" xTo="160" left="20">
@@ -805,22 +829,50 @@
 					
 				</s:VGroup>
 				
-				<s:Line id="nextStepsLine" xFrom="0" xTo="160" left="20" visible="{selectedAppointment.nextSteps == 'Yes'}" includeInLayout="{selectedAppointment.nextSteps == 'Yes'}">
+				<s:Line id="nextStepsLine" xFrom="0" xTo="160" left="20" visible="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" includeInLayout="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}">
 					<s:stroke>
 						<s:SolidColorStroke color="0x9E9E9E" weight="1"/>
 					</s:stroke>
 				</s:Line>
 				
-				<s:VGroup id="vgNextSteps" visible="{selectedAppointment.nextSteps == 'Yes'}" includeInLayout="{selectedAppointment.nextSteps == 'Yes'}" paddingLeft="3">
+				<s:VGroup id="vgNextSteps" visible="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" includeInLayout="{selectedAppointment.nextSteps &amp;&amp; selectedAppointment.nextSteps.length}" paddingLeft="3">
 					<s:Label text="Next Steps" styleName="smallTextBold" />
-					<s:Label id="lblNextSteps" styleName="smallText" width="155" text="{selectedAppointment.nextStepsText}" />
+					
+					<s:DataGroup dataProvider="{selectedAppointment.nextSteps}">
+						
+						<s:layout>
+							<s:VerticalLayout />
+						</s:layout>
+						
+						<s:itemRenderer>
+							
+							<fx:Component>
+								
+								<mx:HBox>
+									
+									<fx:Script>
+										<![CDATA[
+											import models.NextStep;
+										]]>
+									</fx:Script>
+									
+									<s:Label styleName="smallText" width="155" text="• {NextStep(data).task}" />
+									
+								</mx:HBox>
+								
+							</fx:Component>
+							
+						</s:itemRenderer>
+						
+					</s:DataGroup>
+					
 				</s:VGroup>
 				
-				<s:VGroup id="classDetails" visible="{selectedAppointment.type != 'Appointment'}" includeInLayout="{selectedAppointment.type != 'Appointment'}">
+				<s:VGroup id="classDetails" visible="{selectedAppointment.type != AppointmentType.MEDICAL}" includeInLayout="{selectedAppointment.type != AppointmentType.MEDICAL}">
 					
 					<s:HGroup>
 						<s:Label text="Instructor" textAlign="right" width="59" styleName="smallTextBold" />
-						<s:Label id="classInstructor" styleName="smallText" text="{selectedAppointment.provider}" />
+						<s:Label id="classInstructor" styleName="smallText" text="{selectedAppointment.provider &amp;&amp; selectedAppointment.provider is ProviderModel ? selectedAppointment.provider.fullName : selectedAppointment.provider}" />
 					</s:HGroup>
 					
 					<s:HGroup>
@@ -848,23 +900,17 @@
 				</s:Line>
 				
 				<s:HGroup width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5">
-					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == 'Appointment' ? (currentState == 'provider' ? selectedAppointment.patient.fullName : selectedAppointment.provider) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
+					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == AppointmentType.MEDICAL ? (currentState == 'provider' ? selectedAppointment.patient.fullName : selectedAppointment.provider.lastNameAbbreviated) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
 				</s:HGroup>
 				
-				<s:HGroup id="hgViewMedRec" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED}" includeInLayout="{selectedAppointment.status == AppointmentStatus.COMPLETED}">
+				<s:HGroup id="viewMedicalRecordLink" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED &amp;&amp; selectedAppointment.medicalRecords &amp;&amp; selectedAppointment.medicalRecords.length}" includeInLayout="{viewMedicalRecordLink.visible}">
 					<mx:LinkButton id="btnViewMedicalRecord" label="View Medical Record" click="viewMedicalRecord()" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="btnViewMedicalRecord.styleName='linkBtnUnderline';" rollOut="btnViewMedicalRecord.styleName='linkBtn';" />
 				</s:HGroup>
 				
 				<s:HGroup id="hgCancelAppt" horizontalAlign="center" width="100%" paddingTop="15">
-					<s:Button id="btnCancelAppointment" label="{selectedAppointment.type == 'Appointment' ? '- Cancel Appointment' : '- Cancel Reservation'}" height="24" styleName="buttonText" click="onCancelAppointmentClick()" />
+					<s:Button id="btnCancelAppointment" label="{selectedAppointment.type == AppointmentType.MEDICAL ? '- Cancel Appointment' : '- Cancel Reservation'}" height="24" styleName="buttonText" click="onCancelAppointmentClick()" />
 				</s:HGroup>
 				
-				<!--<s:Spacer height="100%" />
-				<mx:Button label="Add Event" click="{eventForm.visible=true;}" enabled="{eventForm.currentDate != null}" />
-				<mx:Button y="420" x="10" label="data set 1" click="setAvailable('set1')"/>
-				<mx:Button y="420" x="100" label="data set 2" click="setAvailable('set2')"/>
-				<comViews:EventForm id="eventForm" hour="{CommonUtils.hour}" meridiem="{CommonUtils.meridiem}" mins="{CommonUtils.mins}" currentDate="{CommonUtils.currentDate}" description="{CommonUtils.description}" visible="{eventForm.currentDate != null}" includeInLayout="{eventForm.currentDate != null}">
-				</comViews:EventForm>-->
 			</s:VGroup>
 			
 			<s:VGroup id="rightColumnEventCanceled" width="166" visible="{cancelledAppointment!=null}" includeInLayout="{cancelledAppointment!=null}">

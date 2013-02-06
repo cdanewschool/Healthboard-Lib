@@ -1,5 +1,6 @@
 package models
 {
+	[Bindable]
 	public class NextStep extends ModuleMappable
 	{
 		public var actionId:String;

@@ -7,6 +7,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import models.modules.AppointmentsModel;
 			import models.modules.MedicalRecordsModel;
 			
 			import mx.collections.ArrayCollection;
@@ -29,9 +30,10 @@
 				var myLblBullet:Text;
 				var myTxtDescription:Text;
 				
-				var medicalRecordsNextSteps:ArrayCollection = MedicalRecordsModel(AppProperties.getInstance().controller.medicalRecordsController.model).medicalRecordsNextSteps;
+				var medicalRecordsNextSteps:ArrayCollection = MedicalRecordsModel(AppProperties.getInstance().controller.medicalRecordsController.model).nextSteps;
 				
-				for(var i:uint = 0; i < medicalRecordsNextSteps.length; i++) {
+				for(var i:uint = 0; i < medicalRecordsNextSteps.length; i++) 
+				{
 					myVGroup = new VGroup();
 					myTxtNextStepHeader = new Text();
 					myTxtNextStepHeader.htmlText = '<b>' + medicalRecordsNextSteps[i].date + '</b> - ' + medicalRecordsNextSteps[i].provider;

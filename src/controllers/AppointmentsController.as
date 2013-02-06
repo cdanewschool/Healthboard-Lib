@@ -6,11 +6,18 @@ package controllers
 	
 	import enum.AppointmentStatus;
 	
+	import models.AppointmentCategory;
+	import models.ModuleMappable;
+	import models.NextStep;
 	import models.UserModel;
 	import models.modules.AppointmentsModel;
+	import models.modules.appointments.PatientAppointment;
+	import models.modules.medicalrecords.MedicalRecord;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
+	import mx.events.CollectionEvent;
+	import mx.rpc.events.ResultEvent;
 	import mx.utils.ObjectUtil;
 	
 	import util.DateUtil;
@@ -22,184 +29,85 @@ package controllers
 			super();
 			
 			model = new AppointmentsModel();
+			
+			model.dataService.url = "data/appointmentCategories.xml";
+			model.dataService.addEventListener( ResultEvent.RESULT, categoriesResultHandler );
+			
+			AppointmentsModel(model).dataService2.url = "data/appointments.xml";
+			AppointmentsModel(model).dataService2.addEventListener( ResultEvent.RESULT, dataResultHandler );
 		}
 		
 		override public function init():void
 		{
 			super.init();
 			
-			var model:AppointmentsModel = AppointmentsModel(model);
+			model.dataService.send();
+		}
+		
+		public function categoriesResultHandler(event:ResultEvent):void 
+		{
+			var model:AppointmentsModel = model as AppointmentsModel;
 			
-			var today:Date = AppProperties.getInstance().controller.model.today;
+			var results:ArrayCollection = event.result.categories.category;
+			
+			var categories:ArrayCollection = new ArrayCollection();
+			
+			var i:int = 0;
+			
+			for(i=0; i < results.length; i++) 
+			{
+				var category:AppointmentCategory = AppointmentCategory.fromObj( results.getItemAt(i) );
+				categories.addItem( category );
+			}
+			
+			model.appointmentCategories = categories;
+			
+			model.dataService2.send();
+		}
+		
+		override public function dataResultHandler(event:ResultEvent):void 
+		{
+			var model:AppointmentsModel = model as AppointmentsModel;
+			
+			var results:ArrayCollection = event.result.appointments.appointment;
 			
 			var appointments:ArrayCollection = new ArrayCollection();
 			
-			var daysToAddToReachWednesday:Array = [3,2,1,7,6,5,4];
-			var daysToAddToReachFriday:Array = [5,4,3,2,1,7,6];
-			var nextWeekButNotWednesday:uint = (today.day != 3) ? 7 : 8;
+			var appointment:PatientAppointment;
 			
-			var obj:Object;
+			var i:int = 0;
 			
-			obj = new Object();
-			obj.date = new Date( today.fullYear, today.month, today.date, 11 );
-			obj.desc = "Physical Examination";
-			obj.type = "Appointment";
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.SCHEDULED;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( today.fullYear, today.month, today.date + daysToAddToReachFriday[today.day], 9, 30 );;
-			obj.desc = "Allergies";
-			obj.type = "Appointment";
-			obj.provider = "Dr. Greenfield";
-			obj.status = AppointmentStatus.SCHEDULED;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( today.fullYear, today.month, today.date + nextWeekButNotWednesday, 11, 30 );	//aka "next week" (Anthony requested to make sure this doesn't happen on Wednesday, to avoid a usability test conflict with the other existing appointment on Wednesday).
-			obj.desc = "Flu Vaccination";
-			obj.type = "Appointment";
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.SCHEDULED;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( today.fullYear, today.month, today.date + daysToAddToReachWednesday[today.day], 13 ); //aka "next week"
-			obj.desc = "Physical Therapy";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.SCHEDULED;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-1/16/*" ) + " 11:00" ) );
-			obj.desc = "Physician Examination";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.nextSteps = "Yes";
-			obj.nextStepsText = "•Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time.\n\n•Continue to check blood sugar twice daily.";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 10;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-2/11/*" ) + " 11:00" ) );
-			obj.desc = "Consultation";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Hammond";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 9;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-2/11/*" ) + " 13:00" ) );
-			obj.desc = "Surgery";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 8;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "*/16/*" ) + " 11:00" ) );
-			obj.desc = "MRI";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 6;
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-1/16/*" ) + " 13:00" ) );
-			obj.desc = "MRI";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 5;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-2/11/*" ) + " 16:00" ) );
-			obj.desc = "Blood Test";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Rothstein";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 4;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-2/11/*" ) + " 19:00" ) );
-			obj.desc = "Cardiac Stress Test";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Hammond";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 3;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "*/07/*" ) + " 11:00" ) );
-			obj.desc = "Appendectomy";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 2;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "-3/07/*" ) + " 11:00" ) );
-			obj.desc = "Nasal Procedure";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 1;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			obj = new Object();
-			obj.date = new Date( Date.parse( DateUtil.modernizeDate( "*/07/*" ) + " 14:00" ) );
-			obj.desc = "Colonscopy";
-			obj.type = "Appointment";
-			obj.selected = false;
-			obj.provider = "Dr. Berg";
-			obj.status = AppointmentStatus.COMPLETED;
-			obj.medRecIndex = 0;
-			obj.patient = AppProperties.getInstance().controller.getUserById( 123, UserModel.TYPE_PATIENT );
-			appointments.addItem( obj );
-			
-			today = AppProperties.getInstance().controller.model.today;
-			
-			var defaultAppointment:Object;
+			for(i=0; i < results.length; i++) 
+			{
+				appointment = PatientAppointment.fromObj( results.getItemAt(i) );
+				appointments.addItem( appointment );
+			}
 			
 			var sort:Sort = new Sort();
 			sort.compareFunction = DateUtil.compareByDate;
 			appointments.sort = sort;
 			appointments.refresh();
 			
-			var appointment:Object;
+			var today:Date = AppProperties.getInstance().controller.model.today;
+			var defaultAppointment:PatientAppointment;
 			
-			for(var i:int=0;i<appointments.length;i++)
+			var nextSteps:ArrayCollection = new ArrayCollection();
+			
+			for(i=0;i<appointments.length;i++)
+			{
+				appointment = appointments[i];
+				
+				if( appointment.nextSteps ) 
+					for(var j:uint = 0; j < appointment.nextSteps.length; j++) 
+						nextSteps.addItem( appointment.nextSteps.getItemAt(j) );
+			}
+			
+			model.nextSteps = nextSteps;
+			model.nextSteps.addEventListener( CollectionEvent.COLLECTION_CHANGE, onNextStepsChange );
+			
+			onNextStepsChange();
+			
+			for(i=0;i<appointments.length;i++)
 			{
 				appointment = appointments[i];
 				
@@ -212,17 +120,28 @@ package controllers
 			
 			model.currentAppointmentIndex = defaultAppointment ? appointments.getItemIndex(defaultAppointment) : 0;
 			
-			for each(appointment in appointments)
-			{
-				appointment.hour = (appointment.date.hours % 12 ).toString();
-				appointment.meridiem = appointment.date.hours<12?"am":"pm";
-				appointment.mins = appointment.date.minutes;
-				
-				appointment.date = new Date( appointment.date.fullYear, appointment.date.month, appointment.date.date );
-			}
-			
 			model.appointments = appointments;
 			
+			super.dataResultHandler(event);
+		}
+		
+		private function onNextStepsChange(event:CollectionEvent=null):void
+		{
+			var model:AppointmentsModel = model as AppointmentsModel;
+			
+			model.nextStepsActive = new ArrayCollection( model.nextSteps.source.slice() );
+			model.nextStepsActive.filterFunction = filterByCompleted;
+			model.nextStepsActive.refresh();
+		}
+		
+		private function filterByCompleted( item:NextStep ):Boolean
+		{
+			return !item.completed;
+		}
+		
+		public function showNextStep( item:NextStep ):void
+		{
+			AppProperties.getInstance().controller.processModuleMappable( item as ModuleMappable );
 		}
 		
 		public function setAvailable(set:String, reason:String):void
@@ -317,6 +236,23 @@ package controllers
 			}
 			
 			model.timeSlots = timeSlots;
+		}
+		
+		public function getCategoryById( id:String ):AppointmentCategory
+		{
+			var model:AppointmentsModel = AppointmentsModel(model);
+
+			for each(var category:AppointmentCategory in model.appointmentCategories)
+			{
+				if( category.id == id ) return category;
+				
+				for each(var subCategory:AppointmentCategory in category.children)
+				{
+					if( subCategory.id == id) return subCategory;
+				}
+			}
+			
+			return null;
 		}
 	}
 }

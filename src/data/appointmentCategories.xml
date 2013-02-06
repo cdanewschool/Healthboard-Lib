@@ -1,0 +1,18 @@
+<categories>
+
+	<category id="doctor_visit" label="Doctor Visits">
+		<category id="primary_care" label="Primary Care" />
+		<category id="specialist" label="Specialist" />
+		<category id="er" label="ER" />
+	</category>
+	
+	<category id="test" label="Tests">
+		<category id="radiology" label="Radiology" />
+		<category id="lab" label="Labs" />
+		<category id="clinical_test" label="Clinical Test" />
+	</category>
+	
+	<category id="procedure" label="Procedures" />
+	<category id="surgery" label="Surgeries" />
+	
+</categories>

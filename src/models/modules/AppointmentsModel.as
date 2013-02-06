@@ -6,6 +6,7 @@ package models.modules
 	import models.modules.ModuleModel;
 	
 	import mx.collections.ArrayCollection;
+	import mx.rpc.http.mxml.HTTPService;
 	
 	[Bindable] 
 	public class AppointmentsModel extends ModuleModel
@@ -20,6 +21,7 @@ package models.modules
 		[Embed("/images/grayArrowRight.png")] public var grayArrowRight:Class;
 		
 		public var appointments:ArrayCollection;
+		public var appointmentCategories:ArrayCollection;
 		
 		public var currentAppointmentIndex:uint;
 		
@@ -39,9 +41,16 @@ package models.modules
 		
 		public var isRecommending:Boolean;
 		
+		public var dataService2:HTTPService;
+
+		public var nextSteps:ArrayCollection = new ArrayCollection();
+		public var nextStepsActive:ArrayCollection = new ArrayCollection();
+		
 		public function AppointmentsModel()
 		{
 			super();
+			
+			dataService2 = new HTTPService();
 		}
 	}
 }

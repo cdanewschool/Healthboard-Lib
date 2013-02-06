@@ -2,6 +2,8 @@ package models.modules
 {
 	import enum.DateRanges;
 	
+	import models.modules.medicalrecords.MedicalRecord;
+	
 	import mx.collections.ArrayCollection;
 	
 	[Bindable] 
@@ -9,26 +11,17 @@ package models.modules
 	{
 		public static const ID:String = "medicalrecords";
 		
-		public var medicalRecordsData:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsDataGrid:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsCategories:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsNextSteps:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsNextStepsActive:ArrayCollection = new ArrayCollection();
-		public var medicalRecordsProblemList:ArrayCollection = new ArrayCollection();
+		public var medicalRecords:ArrayCollection = new ArrayCollection();
 		
-		public var medicalRecordsCategoriesTree:ArrayCollection = new ArrayCollection
-			(
-				[
-					{category: "Doctor Visits", children: []},
-					{category: "Tests", children: []},
-					{category: "Procedures"},
-					{category: "Surgeries"}
-				]
-			);
+		public var problemList:ArrayCollection = new ArrayCollection();
 		
-		public var pendingIndex:int = -1;
+		public var categories:ArrayCollection = new ArrayCollection();	//	multi-dimensional
+		
+		public var pendingRecord:MedicalRecord;
 		
 		public var dateRange:String = DateRanges.YEAR;
+		
+		public var nextSteps:ArrayCollection;
 		
 		public function MedicalRecordsModel()
 		{

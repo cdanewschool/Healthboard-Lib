@@ -50,7 +50,7 @@
 						date: startDate.hours + ':' + startDate.minutes + ', ' + Constants.MONTHS[ startDate.month ] + ' ' + startDate.date + ', ' + startDate.fullYear
 					};
 				
-				model.medicalRecordsNextSteps.addItemAt( nextStep, 0 );
+				model.nextSteps.addItemAt( nextStep, 0 );
 				
 				close();
 			}

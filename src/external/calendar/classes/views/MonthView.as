@@ -4,6 +4,8 @@ package external.calendar.classes.views
 	
 	import components.appointments.monthViewLinkButton;
 	
+	import enum.AppointmentType;
+	
 	import events.AppointmentEvent;
 	
 	import external.calendar.classes.events.CustomEvents;
@@ -12,6 +14,8 @@ package external.calendar.classes.views
 	import external.calendar.mxml_views.monthCell;
 	
 	import flash.events.MouseEvent;
+	
+	import models.modules.appointments.PatientAppointment;
 	
 	import mx.containers.ApplicationControlBar;
 	import mx.containers.Canvas;
@@ -29,6 +33,8 @@ package external.calendar.classes.views
 	import skins.appointments.ToggleableLinkButtonSkin;
 	
 	import spark.components.TitleWindow;
+	
+	import util.DateUtil;
 	
 	/**
 	 * THIS CLASS WILL ALLOW TO GENERATE A GRID OF CURRENT MONTH
@@ -188,7 +194,7 @@ package external.calendar.classes.views
 					
 					var today:Date = new Date();
 					today.setHours(0,0,0,0);
-					if(ObjectUtil.dateCompare(today,objDayCell.data.date) == 0) {
+					if(DateUtil.dateCompare(today,objDayCell.data.date)) {
 						objDayCell.lblDate.styleName = "calendarSelectedDay";
 						objDayCell.styleName = "calendarSelectedCell";
 					}
@@ -197,13 +203,13 @@ package external.calendar.classes.views
 					// if YES then display event description
 					for(var j:int=0; j<DataHolder.getInstance().dataProvider.length; j++)
 					{
-						var obj:Object = DataHolder.getInstance().dataProvider[j];
+						var obj:PatientAppointment = DataHolder.getInstance().dataProvider[j];
 						
-						if(ObjectUtil.dateCompare(obj.date, objDayCell.data.date) == 0) 
+						if(DateUtil.dateCompare(obj.date, objDayCell.data.date)) 
 						{
 							var myLinkButton:LinkButton = new monthViewLinkButton();
 							myLinkButton.data = obj;
-							myLinkButton.label = (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " " + (obj.type == "Appointment" ? obj.provider : obj.desc);
+							myLinkButton.label = (obj.meridiem != "pm" ? obj.hour : int(obj.hour) + 12) + ":" + (obj.mins == 0 ? '00' : obj.mins) + " " + (obj.type == AppointmentType.MEDICAL ? obj.provider.lastNameAbbreviated : obj.description);
 							myLinkButton.selected = obj.selected;
 							myLinkButton.top = 25 + 15*(myCount-1);	//	here we're setting the top margin equal to 25, 40, 55, 70, etc respectively...
 							myLinkButton.addEventListener( MouseEvent.CLICK, onLinkClick );
