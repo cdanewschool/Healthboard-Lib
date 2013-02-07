@@ -13,9 +13,8 @@
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.controller.MessagesController;
-			
+			import edu.newschool.piim.healthboard.enum.UrgencyType;
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
-			
 			import edu.newschool.piim.healthboard.model.FileUpload;
 			import edu.newschool.piim.healthboard.model.module.MessagesModel;
 			
@@ -181,6 +180,12 @@
 				//Alert.show(ObjectUtil.toString(fileReference));
 				btnAttachment.label = "Attach another file";
 			}
+			
+			public function setSelectedUrgency(urgency:int):void {
+				for(var i:uint = 0; i < dropUrgency.dataProvider.length; i++) {
+					if(dropUrgency.dataProvider.getItemAt(i).data == urgency) dropUrgency.selectedIndex = i;
+				}
+			}
 		]]>
 	</fx:Script>
 	
@@ -270,9 +275,9 @@
 					<s:DropDownList id="dropUrgency" selectedIndex="0" styleName="buttonText" height="24" width="126" skinClass="edu.newschool.piim.healthboard.view.skins.messages.CustomDropdownListWithIcon">
 						<s:dataProvider>
 							<s:ArrayList>
-								<fx:Object label="Not urgent" />
-								<fx:Object label="Somewhat urgent" icon="@Embed('/images/messagesSomewhatUrgent.png')" />
-								<fx:Object label="Urgent" icon="@Embed('/images/messagesUrgent.png')" />
+								<fx:Object label="Not urgent" data="{UrgencyType.NOT_URGENT}" />
+								<fx:Object label="Somewhat urgent" icon="@Embed('/images/messagesSomewhatUrgent.png')" data="{UrgencyType.SOMEWHAT_URGENT}" />
+								<fx:Object label="Urgent" icon="@Embed('/images/messagesUrgent.png')" data="{UrgencyType.URGENT}" />
 							</s:ArrayList>							
 						</s:dataProvider>
 					</s:DropDownList>

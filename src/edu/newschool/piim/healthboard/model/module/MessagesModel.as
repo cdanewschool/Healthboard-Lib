@@ -25,6 +25,7 @@ package edu.newschool.piim.healthboard.model.module
 		public var pendingRecipients:Array;
 		public var pendingSubject:String;
 		public var pendingBody:String;
+		public var pendingUrgency:int;
 		
 		public var currentMainBox:String = INBOX;
 		
