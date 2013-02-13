@@ -301,6 +301,8 @@ package edu.newschool.piim.healthboard.controller
 		
 		protected function setState( state:String ):Boolean
 		{
+			closePopups();
+			
 			for each( var states:State in application.states )
 			{
 				if( states.name == state )
@@ -333,6 +335,19 @@ package edu.newschool.piim.healthboard.controller
 		{
 		}
 		
+		private function closePopups():void
+		{
+			var popups:ArrayCollection = getAllPopups();
+			
+			for each(var popup:IFlexDisplayObject in popups)
+			{
+				if( popup && popup.parent )
+				{
+					PopUpManager.removePopUp(popup);
+				}
+			}
+		}
+		
 		public function logout():void
 		{
 			sessionTimer.stop();
@@ -341,14 +356,7 @@ package edu.newschool.piim.healthboard.controller
 			CursorManager.removeAllCursors();
 			
 			//	close all popups
-			var popups:ArrayCollection = getAllPopups();
-			for each(var popup:IFlexDisplayObject in popups)
-			{
-				if( popup && popup.parent )
-				{
-					PopUpManager.removePopUp(popup);
-				}
-			}
+			closePopups();
 			
 			model.user = null;
 			
