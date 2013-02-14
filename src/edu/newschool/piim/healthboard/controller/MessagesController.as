@@ -35,10 +35,10 @@ package edu.newschool.piim.healthboard.controller
 			model.recipientTypes = new ArrayCollection
 				(
 					[
-						{label: "a Physician", data: RecipientType.PROVIDER},
-						{label:	"a Nurse", data: RecipientType.NURSE},
-						{label:	"an Administrator", data: RecipientType.ADMINISTRATOR},
-						{label:	"Front Desk", data: RecipientType.DESK}
+						{label: "Physician", data: RecipientType.PROVIDER, prefix: "a "},
+						{label:	"Nurse", data: RecipientType.NURSE, prefix: "a "},
+						{label:	"Administrator", data: RecipientType.ADMINISTRATOR, prefix: "an "},
+						{label:	"Front Desk", data: RecipientType.DESK, prefix: ""}
 					]
 				);
 			

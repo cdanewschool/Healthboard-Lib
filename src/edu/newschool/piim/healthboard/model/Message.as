@@ -7,10 +7,6 @@ package edu.newschool.piim.healthboard.model
 	[Bindable]
 	public class Message
 	{
-		/*public static const URGENCY_NOT_URGENT:String = "Not Urgent";
-		public static const URGENCY_URGENT:String = "Urgent";
-		public static const URGENCY_SOMEWHAT_URGENT:String = "Somewhat Urgent";*/
-		
 		public var recipientAlias:String;
 		public var recipients:Array;
 		public var recipientType:String;

@@ -4,6 +4,7 @@ package edu.newschool.piim.healthboard.enum
 	{
 		public static const ADMINISTRATOR:String = "administrator";
 		public static const DESK:String = "desk";
+		public static const PATIENT:String = "patient";
 		public static const PROVIDER:String = "provider";
 		public static const NURSE:String = "nurse";
 	}
