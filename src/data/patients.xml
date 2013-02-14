@@ -22,6 +22,7 @@
 	<patient id="132" lastName="Arnolds" firstName="Richard" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
 		<advisories updated="05/01/2012">
 			<advisory advisoryId="1" riskLevel="affected"  />
+			<advisory advisoryId="2" riskLevel="affected"  />
 		</advisories>
 		<location state="Washington DC" latitude="38.89636" longitude="-77.04227" />
 		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
@@ -32,6 +33,7 @@
 	<patient id="133" lastName="Barrett" firstName="John" birthdate="10/03/1973" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
 		<advisories updated="05/01/2012">
 			<advisory advisoryId="1" riskLevel="affected"  />
+			<advisory advisoryId="3" riskLevel="low"  />
 		</advisories>
 		<location city="Arlington" state="Virginia" latitude="38.87997" longitude="-77.10677" />
 		<contact email="goodman@hotmail.com" phone="(212) 111-2222" />
@@ -144,6 +146,9 @@
 	</patient>
 	
 	<patient id="126" lastName="Glover" firstName="Walter" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="2" riskLevel="affected"  />
+		</advisories>
 		<contact email="gloverw@hotmail.com" phone="(212) 111-2222" />
 		<location city="Arlington" state="Virginia" latitude="38.825801" longitude="-77.204704" />
 		<occupation professionalTitle="IT" serviceBranch="Army" serviceRank="Specialist" serviceStatus="Commissioned" />
@@ -384,6 +389,10 @@
 	</patient>
 	
 	<patient id="129" lastName="Lee" firstName="Berg" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="2" riskLevel="low"  />
+			<advisory advisoryId="3" riskLevel="high"  />
+		</advisories>
 		<contact email="blee@hotmail.com" phone="(212) 111-2222" />
 		<location city="Arlington" state="Virginia" latitude="38.812694" longitude="-77.097158" />
 		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private First Class" serviceStatus="Commissioned" />
@@ -391,6 +400,9 @@
 	</patient>
 	
 	<patient id="125" lastName="Roberts" firstName="Lance" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="2" riskLevel="affected"  />
+		</advisories>
 		<contact email="lrobinson@aol.com" phone="(212) 111-2222" />
 		<location city="Arlington" state="Virginia" latitude="38.823594" longitude="-77.056818" />
 		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
@@ -398,6 +410,10 @@
 	</patient>
 	
 	<patient id="124" lastName="Robinson" firstName="Michael" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="2" riskLevel="low"  />
+			<advisory advisoryId="4" riskLevel="affected"  />
+		</advisories>
 		<contact email="robinson.michael@gmail.com" phone="(212) 111-2222" />
 		<location city="Groveton" state="Virginia" latitude="38.771886" longitude="-77.093983" />
 		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Captain" serviceStatus="Commissioned" />
@@ -405,6 +421,9 @@
 	</patient>
 	
 	<patient id="128" lastName="Wunderlich" firstName="Michael" birthdate="01/01/1965" sex="1" photo="" ssn="213-42-1111" sponsorSSN="123-45-2357" race="Caucasian" available="0">
+		<advisories updated="05/01/2012">
+			<advisory advisoryId="4" riskLevel="high"  />
+		</advisories>
 		<contact email="wunderlich@comcast.net" phone="(212) 111-2222" />
 		<location city="Arlington" state="Virginia" latitude="38.813229" longitude="-77.071838" />
 		<occupation professionalTitle="Engineer" serviceBranch="Navy" serviceRank="Private First Class" serviceStatus="Commissioned" />

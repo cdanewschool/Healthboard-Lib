@@ -6,13 +6,13 @@
 	xmlns:components="edu.newschool.piim.healthboard.view.components.*" 
 	xmlns:plus="net.flexwiz.blog.tabbar.plus.*" 
 	xmlns:general="edu.newschool.piim.healthboard.view.components.general.*"
-	xmlns:nutrition="edu.newschool.piim.healthboard.view.components.nutrition.*"
 	initialize="updateNutritionDatesMonth('thisMonth');" 
-	creationComplete="init();">
+	creationComplete="init();" xmlns:nutrition="edu.newschool.piim.healthboard.view.components.nutrition.*" >
 	
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.enum.DietClassQuantifier;
+			
 			import edu.newschool.piim.healthboard.model.module.nutrition.FoodServing;
 			
 			import mx.collections.Sort;
@@ -170,7 +170,7 @@
 				
 				if( foodPlan )
 				{
-					if( planStartDate ) planStartDate.text = DateFormatters.monthShortDayNumberYearFull.format( foodPlan.startingDate );
+					if( planStartDate ) planStartDate.text = DateFormatters.monthShortDayNumberYearFull.format( foodPlan.startDate );
 					
 					if( fruitsLabel) fruitsLabel.serving = foodPlan.getFoodGroupById( FoodServing.FRUITS );
 					if( vegetablesLabel) vegetablesLabel.serving = foodPlan.getFoodGroupById( FoodServing.VEGETABLES );

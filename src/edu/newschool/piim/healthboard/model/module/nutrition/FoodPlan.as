@@ -17,7 +17,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 				"Average diet", 
 				"Maintain current weight and nutritive conditions",
 				"Eat well balanced meals and do not exceed the daily calorie budget",
-				new Date(),
+				new Date(),null,
 				new ArrayCollection
 				(
 					[
@@ -68,6 +68,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 				new ArrayCollection
 				(
 					[
+						new FoodServing( 'Calories', FoodServing.CALORIES, 'calories', DietClassQuantifier.EXACTLY, '2,000', false, true ),
 						new FoodServing( 'Fruits', FoodServing.FRUITS, 'servings', DietClassQuantifier.EXACTLY, '5-6', false, true ),
 						new FoodServing( 'Grains', FoodServing.GRAINS, 'servings', DietClassQuantifier.EXACTLY, '5-6', false, true ),
 						new FoodServing( 'Vegetables', FoodServing.VEGETABLES, 'servings', DietClassQuantifier.EXACTLY, '5-6', false, true ),
@@ -117,8 +118,8 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		private var _patient:UserModel;
 		private var _provider:UserModel;
 		private var _reasons:String;
-		private var _startingDate:Date;
-		
+		private var _startDate:Date;
+		private var _endDate:Date;
 		private var _servingCategories:ArrayCollection 
 		
 		private var _foodsToIncrease:ArrayCollection;
@@ -130,7 +131,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		
 		public var dirty:Boolean;
 		
-		public function FoodPlan( name:String = "", reasons:String = "", directions:String = "", startingDate:Date = null, 
+		public function FoodPlan( name:String = "", reasons:String = "", directions:String = "", startDate:Date = null, endDate:Date = null, 
 								  mealCategories:ArrayCollection = null, servingCategories:ArrayCollection = null, 
 								  foodsToLimit:ArrayCollection = null, foodsToIncrease:ArrayCollection = null, 
 								  notes:ArrayCollection = null, calorieBudget:int = 0,
@@ -139,7 +140,8 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 			this.name = name;
 			this.reasons = reasons;
 			this.directions = directions;
-			this.startingDate = startingDate ? startingDate : new Date();
+			this.startDate = startDate ? startDate : new Date();
+			this.endDate = endDate ? endDate : null;
 			
 			this.mealCategories = mealCategories ? mealCategories : new ArrayCollection();
 			this.servingCategories = servingCategories ? servingCategories : new ArrayCollection();
@@ -229,14 +231,26 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 			dirty = true;
 		}
 
-		public function get startingDate():Date
+		public function get startDate():Date
 		{
-			return _startingDate;
+			return _startDate;
 		}
 
-		public function set startingDate(value:Date):void
+		public function set startDate(value:Date):void
 		{
-			_startingDate = value;
+			_startDate = value;
+			
+			dirty = true;
+		}
+		
+		public function get endDate():Date
+		{
+			return _endDate;
+		}
+		
+		public function set endDate(value:Date):void
+		{
+			_endDate = value;
 			
 			dirty = true;
 		}

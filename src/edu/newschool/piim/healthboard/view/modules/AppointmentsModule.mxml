@@ -733,7 +733,7 @@
 				
 				<mx:ViewStack id="stackViews" width="100%" height="100%" creationPolicy="all" creationComplete="{stackViews.selectedIndex = currentState==STATE_PROVIDER?2:0}">	<!--setting creationPolicy="all" so that we can set appointmentsList.selectedItem when selecting an appointment from MonthView-->
 					
-					<views:MonthView id="monthView" label="Month View" horizontalScrollPolicy="off" verticalScrollPolicy="off" creationComplete="monthView.currentMonth=model.currentDate.month;monthView.currentYear=model.currentDate.fullYear" showEffect="WipeDown" hideEffect="WipeUp" width="100%" />
+					<views:MonthView id="monthView" label="Month View" horizontalScrollPolicy="off" verticalScrollPolicy="off" currentMonth="{dtPicker.displayedMonth}" currentYear="{dtPicker.displayedYear}" showEffect="WipeDown" hideEffect="WipeUp" width="100%" />
 					<views:WeekViewTimeSlots id="weekView" timeSlots="{model.timeSlots}" currentDate="{model.currentDate}" label="Week View" x="0" y="0" horizontalScrollPolicy="off" showEffect="WipeDown" hideEffect="WipeUp" />
 					
 					<mx:VBox showEffect="WipeDown" hideEffect="WipeUp">

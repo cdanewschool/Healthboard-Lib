@@ -18,7 +18,7 @@
 			
 			[Bindable] public var glasses:ArrayCollection;
 			
-			[Bindable] public var value:Number;
+			[Bindable] public var value:Number = 0;
 			
 			private var _max:int;
 			
@@ -63,7 +63,7 @@
 					<fx:Script>
 						<![CDATA[
 							
-							[Bindable] private var index:int;	//	1-based
+							[Bindable] private var index:int = -1;
 							
 							override public function set data(value:Object):void
 							{

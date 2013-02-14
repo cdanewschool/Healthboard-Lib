@@ -8,6 +8,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 	public class FoodServing
 	{
 		public static const ALCOHOL:String = "alochol";
+		public static const CALORIES:String = "calories";
 		public static const DAIRY:String = "dairy";
 		public static const FATS_AND_OILS:String = "fatsoils";
 		public static const FRUITS:String = "fruits";
@@ -19,12 +20,13 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		public static const WATER:String = "water";
 		
 		public var id:String;
+		public var isPrimary:Boolean;
 		public var listMinMax:Boolean;
 		public var quantifier:String;
 		public var servingSize:String;
+		public var servingSizeMax:String;
 		public var title:String;
 		public var unit:String;
-		public var isPrimary:Boolean;
 		
 		public function FoodServing( title:String, id:String = null, unit:String = 'servings', quantifier:String = null, servingSize:String = '1', listMinMax:Boolean = false, isPrimary:Boolean = false )
 		{

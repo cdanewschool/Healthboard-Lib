@@ -91,9 +91,14 @@ package org.flashcommander.components
 		
 		public function set dataProvider(value:Object):void{
 			if (value is Array)
-				collection = new ArrayCollection(value as Array);
+				collection = new ArrayCollection( (value as Array).slice() );
+			
 			else if (value is ListCollectionView){
-				collection = value as ListCollectionView;
+				if (value is ArrayCollection)
+					collection = new ArrayCollection( (value as ArrayCollection).source.slice() );
+				else
+					collection = value as ListCollectionView;
+				
 				collection.addEventListener(CollectionEvent.COLLECTION_CHANGE, collectionChange)
 			}
 
