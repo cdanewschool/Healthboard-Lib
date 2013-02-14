@@ -896,7 +896,7 @@
 				</s:Line>
 				
 				<s:HGroup width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5">
-					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == AppointmentType.MEDICAL ? (currentState == 'provider' ? selectedAppointment.patient.fullName : selectedAppointment.provider.lastNameAbbreviated) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
+					<mx:LinkButton id="btnAppointmentMessage" label="{'Message ' + (selectedAppointment.type == AppointmentType.MEDICAL ? (currentState == 'provider' ? 'Patient' : selectedAppointment.provider.lastNameAbbreviated) : 'class instructor')}" click="{sendMessage(selectedAppointment.type.toLowerCase())}" fontSize="10.5" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnAppointmentMessage.styleName='linkBtnUnderline';}" rollOut="btnAppointmentMessage.styleName='linkBtn';" />
 				</s:HGroup>
 				
 				<s:HGroup id="viewMedicalRecordLink" width="100%" horizontalAlign="center" paddingTop="-5" paddingBottom="-5" visible="{selectedAppointment.status == AppointmentStatus.COMPLETED &amp;&amp; selectedAppointment.medicalRecords &amp;&amp; selectedAppointment.medicalRecords.length}" includeInLayout="{viewMedicalRecordLink.visible}">

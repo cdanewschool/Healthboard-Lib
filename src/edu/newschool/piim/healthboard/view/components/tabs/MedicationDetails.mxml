@@ -99,14 +99,17 @@
 	<s:BorderContainer id="container" height="37" width="100%" backgroundColor="0x706F6F" creationComplete="invalidateProperties();">
 		
 		<s:layout>
-			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" />
+			<s:HorizontalLayout verticalAlign="middle" paddingLeft="7" gap="3" paddingRight="7" />
 		</s:layout>
 
-		<s:Button label="Record Intake" height="24" styleName="buttonText" visible = "{currentState=='default'}" includeInLayout = "{currentState=='default'}" click="controller.onRecordIntakeClick(medicationData)" />
+		<s:Button label="Record Intake" height="24" styleName="buttonText" visible="{currentState == 'default'}" includeInLayout="{currentState == 'default'}" click="controller.onRecordIntakeClick(medicationData)" />
 		<s:Button label="+ Request Renewal" height="24" styleName="buttonText" click="requestRenewal()" />
-		<s:Button id="showRequests" label="Show All Requests" height="24" styleName="buttonText" visible = "{currentState=='provider'}" includeInLayout = "{currentState=='provider'}"  />
+		<s:Button id="showRequests" label="Show All Requests" height="24" styleName="buttonText" visible="{currentState == 'provider'}" includeInLayout="{currentState == 'provider'}" />
 		<s:Button label="Print" height="24" width="51" styleName="buttonText" />
 		<s:Button label="Export" height="24" width="51" styleName="buttonText" />
+		
+		<s:Spacer width="100%" />
+		<s:Label visible="{medicationData.renewalStatus == 'Pending' &amp;&amp; currentState == 'provider'}" text="The Patient has requested a renewal for this medication." fontSize="16" fontStyle="italic" color="0xFFFFFF" paddingTop="2" />
 		
 	</s:BorderContainer>
 	

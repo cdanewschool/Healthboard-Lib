@@ -6,13 +6,13 @@
 	xmlns:components="edu.newschool.piim.healthboard.view.components.*" 
 	xmlns:plus="net.flexwiz.blog.tabbar.plus.*" 
 	xmlns:general="edu.newschool.piim.healthboard.view.components.general.*"
+	xmlns:nutrition="edu.newschool.piim.healthboard.view.components.nutrition.*"
 	initialize="updateNutritionDatesMonth('thisMonth');" 
-	creationComplete="init();" xmlns:nutrition="edu.newschool.piim.healthboard.view.components.nutrition.*" >
+	creationComplete="init();">
 	
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.enum.DietClassQuantifier;
-			
 			import edu.newschool.piim.healthboard.model.module.nutrition.FoodServing;
 			
 			import mx.collections.Sort;
@@ -45,7 +45,6 @@
 			
 			import edu.newschool.piim.healthboard.view.components.popups.nutrition.downloadWorksheetWindow;
 			import edu.newschool.piim.healthboard.view.components.popups.nutrition.help;
-			import edu.newschool.piim.healthboard.view.components.popups.nutrition.tips;
 			import edu.newschool.piim.healthboard.view.components.tooltips.nutrition.FoodJournalToolTip;
 			import edu.newschool.piim.healthboard.view.components.tooltips.nutrition.FoodPlanToolTip;
 			
@@ -620,20 +619,12 @@
 			private var ge6:GradientEntry = new GradientEntry(0xF6A763, 1);	
 			private var lgRed:LinearGradient = new LinearGradient();
 			
-			private function showTip():void 
-			{
-				var myTipWindow:tips = tips(PopUpManager.createPopUp(AppProperties.getInstance().controller.application, tips) as spark.components.TitleWindow);
-				PopUpManager.centerPopUp(myTipWindow);
-			}
-			
 			protected function init():void 
 			{
 				lgBlue.entries = [ge1, ge2, ge3];
 				lgBlue.rotation = 90;
 				lgRed.entries = [ge4, ge5, ge6];
 				lgRed.rotation = 90;
-				
-				if( currentState == "default" ) showTip();
 				
 				dateChooser.selectableRange = {rangeEnd: today}
 				dateChooser.selectedDate = today;
