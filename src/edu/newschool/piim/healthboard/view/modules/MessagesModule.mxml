@@ -20,17 +20,12 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import edu.newschool.piim.healthboard.view.components.tabs.messages.NewMessage;
-			import edu.newschool.piim.healthboard.view.components.tabs.messages.ViewMessage;
-			
 			import edu.newschool.piim.healthboard.controller.MessagesController;
-			
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
-			
-			import net.flexwiz.blog.tabbar.plus.TabPlus;
-			
 			import edu.newschool.piim.healthboard.model.UserModel;
 			import edu.newschool.piim.healthboard.model.module.MessagesModel;
+			import edu.newschool.piim.healthboard.view.components.tabs.messages.NewMessage;
+			import edu.newschool.piim.healthboard.view.components.tabs.messages.ViewMessage;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
@@ -41,6 +36,8 @@
 			import mx.events.CollectionEvent;
 			import mx.events.ListEvent;
 			import mx.utils.ObjectUtil;
+			
+			import net.flexwiz.blog.tabbar.plus.TabPlus;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -207,7 +204,7 @@
 				return returnArray;
 			}
 			
-			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null, subject:String = null, body:String = null ):void 
+			private function createNewMessage( recipients:Array = null, selectedRecipientType:String = null, subject:String = null, body:String = null, urgency:int = -1 ):void 
 			{
 				//	selectedRecipient is only != 0 when called from the appointments module
 				newMessage = new NewMessage();
@@ -244,6 +241,7 @@
 				
 				if( subject ) newMessage.cbSubjects.textInput.text = subject;
 				if( body ) newMessage.messageText.text = body;
+				if( urgency ) newMessage.setSelectedUrgency(urgency);
 			}
 			
 			private function onNewMessageClose( event:CloseEvent ):void
@@ -883,15 +881,16 @@
 					
 					model.pendingRecipientType = null;
 				}
-				else if( model.pendingBody || model.pendingSubject || model.pendingRecipients )
+				else if( model.pendingBody || model.pendingSubject || model.pendingRecipients || model.pendingUrgency )
 				{
-					createNewMessage( model.pendingRecipients, null, model.pendingSubject, model.pendingBody );
+					createNewMessage( model.pendingRecipients, null, model.pendingSubject, model.pendingBody, model.pendingUrgency );
 					
 					tabsMessages.selectedIndex = viewStackMessages.length - 2;
 					
 					model.pendingRecipients = null;
 					model.pendingSubject = null;
 					model.pendingBody = null;
+					model.pendingUrgency = -1;
 				}
 				else
 				{

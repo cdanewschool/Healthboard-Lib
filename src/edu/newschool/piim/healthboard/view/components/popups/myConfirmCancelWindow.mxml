@@ -36,7 +36,7 @@
 	</s:layout>
 	
 	<s:Label text="Are you sure you want to cancel this appointment?" fontWeight="bold" fontSize="16" />
-	<s:Label text="Once you cancel this apppointment, a message with be sent to your provider team informing them of your cancelation. This action cannot be undone." width="350" paddingTop="14" paddingBottom="8" />
+	<s:Label text="Once you cancel this apppointment, a message with be sent to your provider team informing them of your cancellation. This action cannot be undone." width="350" paddingTop="14" paddingBottom="8" />
 	<s:HGroup width="100%" horizontalAlign="right">
 		<s:Button label="Cancel Appointment" click="cancelAppt()" styleName="buttonText" height="24" />
 		<s:Button label="Do Not Cancel Appointment" click="PopUpManager.removePopUp(this);" styleName="buttonText" height="24" />
