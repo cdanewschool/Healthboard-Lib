@@ -137,6 +137,23 @@ package edu.newschool.piim.healthboard.controller
 			onInitialized();
 		}
 		
+		protected function onAppointmentsLoaded(event:ApplicationDataEvent):void
+		{
+			var medicalRecords:ArrayCollection = new ArrayCollection();
+			
+			for each(var appointment:PatientAppointment in AppointmentsModel(appointmentsController.model).appointments)
+			{
+				for each(var medicalRecord:MedicalRecord in appointment.medicalRecords)
+				{
+					medicalRecords.addItem( medicalRecord );
+				}
+			}
+			
+			MedicalRecordsModel( medicalRecordsController.model ).medicalRecords = medicalRecords;
+			MedicalRecordsModel( medicalRecordsController.model ).categories = AppointmentsModel(appointmentsController.model).appointmentCategories;
+			MedicalRecordsModel( medicalRecordsController.model ).nextSteps = AppointmentsModel(appointmentsController.model).nextSteps;
+		}
+		
 		public function getUserById( id:int, type:String = null ):UserModel
 		{
 			var user:UserModel;
