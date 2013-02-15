@@ -19,28 +19,17 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import edu.asu.chir.calendar.classes.events.CustomEvents;
+			import edu.asu.chir.calendar.classes.model.DataHolder;
+			import edu.asu.chir.calendar.mxml_views.monthCell;
 			import edu.newschool.piim.healthboard.Constants;
-			
-			import edu.newschool.piim.healthboard.view.components.general.MainLinkButton;
-			import edu.newschool.piim.healthboard.view.components.general.MultilineLinkButton;
-			import edu.newschool.piim.healthboard.view.components.popups.myAppointmentsWindow;
-			import edu.newschool.piim.healthboard.view.components.popups.myClassesWindow;
-			import edu.newschool.piim.healthboard.view.components.popups.myConfirmCancelWindow;
-			
 			import edu.newschool.piim.healthboard.controller.AppointmentsController;
-			
 			import edu.newschool.piim.healthboard.enum.AppointmentStatus;
 			import edu.newschool.piim.healthboard.enum.AppointmentType;
 			import edu.newschool.piim.healthboard.enum.DateRanges;
 			import edu.newschool.piim.healthboard.enum.RecipientType;
-			
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
 			import edu.newschool.piim.healthboard.events.AppointmentEvent;
-			
-			import edu.asu.chir.calendar.classes.events.CustomEvents;
-			import edu.asu.chir.calendar.classes.model.DataHolder;
-			import edu.asu.chir.calendar.mxml_views.monthCell;
-			
 			import edu.newschool.piim.healthboard.model.Message;
 			import edu.newschool.piim.healthboard.model.NextStep;
 			import edu.newschool.piim.healthboard.model.ProviderModel;
@@ -48,6 +37,15 @@
 			import edu.newschool.piim.healthboard.model.module.MedicalRecordsModel;
 			import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
 			import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			import edu.newschool.piim.healthboard.util.StringUtil;
+			import edu.newschool.piim.healthboard.view.components.general.MainLinkButton;
+			import edu.newschool.piim.healthboard.view.components.general.MultilineLinkButton;
+			import edu.newschool.piim.healthboard.view.components.popups.myAppointmentsWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.myClassesWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.myConfirmCancelWindow;
+			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
 			
 			import mx.collections.ArrayCollection;
 			import mx.collections.Sort;
@@ -58,12 +56,6 @@
 			import mx.events.DataGridEvent;
 			import mx.formatters.DateFormatter;
 			import mx.managers.PopUpManager;
-			
-			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
-			
-			import edu.newschool.piim.healthboard.util.DateFormatters;
-			import edu.newschool.piim.healthboard.util.DateUtil;
-			import edu.newschool.piim.healthboard.util.StringUtil;
 			
 			private static const STATE_DEFAULT:String = "default";
 			private static const STATE_PROVIDER:String = "provider";
@@ -355,7 +347,7 @@
 			
 			private function getProviderLabel(appointment:PatientAppointment,column:DataGridColumn):String
 			{
-				return appointment.provider.lastNameAbbreviated;
+				return appointment.provider is ProviderModel ? appointment.provider.lastNameAbbreviated : appointment.provider;
 			}
 			
 			// function fires when a cell is being clicked from the Month View
