@@ -18,12 +18,12 @@ package edu.newschool.piim.healthboard.view.components.general
 
 		private function onFocusIn( event:FocusEvent ):void
 		{
-			if( text == placeholder ) text = '';
+			if( super.text == placeholder ) text = '';
 		}
 
 		private function onFocusOut( event:FocusEvent ):void
 		{
-			if( text == '' ) text = placeholder;
+			if( super.text == '' ) text = placeholder;
 		}
 
 		public function get placeholder():String
@@ -36,6 +36,15 @@ package edu.newschool.piim.healthboard.view.components.general
 			_placeholder = value;
 			
 			text = placeholder;
+		}
+		
+		override public function get text():String
+		{
+			var text:String = super.text;
+			
+			if( text == placeholder ) return null;
+			
+			return text;
 		}
 	}
 }

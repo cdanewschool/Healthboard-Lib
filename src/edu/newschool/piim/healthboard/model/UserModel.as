@@ -1,8 +1,10 @@
 package edu.newschool.piim.healthboard.model
 {
-	import mx.collections.ArrayCollection;
-	
 	import edu.newschool.piim.healthboard.util.DateFormatters;
+	
+	import flash.utils.describeType;
+	
+	import mx.collections.ArrayCollection;
 
 	[Bindable]
 	public class UserModel extends PersonModel
@@ -94,6 +96,57 @@ package edu.newschool.piim.healthboard.model
 				return "assets/images/patients/" + size + "/" + lastName.toLowerCase() + ".jpg";
 			
 			return "assets/images/providers/" + size + "/" + lastName.toLowerCase() + ".jpg";
+		}
+		
+		public function clone():UserModel
+		{
+			var val:UserModel = new UserModel();
+			
+			var definition:XML = describeType(this);
+			
+			/*
+			for each(var prop:XML in definition..property)
+			{
+				if( prop.@access == "readonly" ) continue;
+				
+				if( val.hasOwnProperty( prop.@name ) )
+				{
+					try
+					{
+						if( this[prop.@name].hasOwnProperty('clone') 
+							&& this[prop.@name].clone is Function )
+							val[prop.@name] = this[prop.@name].clone();
+						if( this[prop.@name] is ArrayCollection )
+							val[prop.@name] = new ArrayCollection( (this[prop.@name].source as Array).slice() );
+						else
+							val[prop.@name] = this[prop.@name]; 
+					}
+					catch(e:Error){}
+				}
+			}
+			*/
+				
+			for each(var prop:XML in definition..accessor)
+			{
+				if( prop.@access == "readonly" ) continue;
+				
+				if( val.hasOwnProperty( prop.@name ) )
+				{
+					try
+					{
+						if( this[prop.@name].hasOwnProperty('clone') 
+							&& this[prop.@name].clone is Function )
+							val[prop.@name] = this[prop.@name].clone();
+						if( this[prop.@name] is ArrayCollection )
+							val[prop.@name] = new ArrayCollection( (this[prop.@name].source as Array).slice() );
+						else
+							val[prop.@name] = this[prop.@name]; 
+					}
+					catch(e:Error){}
+				}
+			}
+			
+			return val;
 		}
 		
 		public static function fromObj( data:Object ):UserModel

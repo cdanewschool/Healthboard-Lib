@@ -1,13 +1,16 @@
 package edu.newschool.piim.healthboard.model.module.nutrition
 {
 	import edu.newschool.piim.healthboard.enum.DietClassQuantifier;
+	import edu.newschool.piim.healthboard.model.UserModel;
 	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	
-	import edu.newschool.piim.healthboard.model.UserModel;
+	import flash.net.registerClassAlias;
+	import flash.utils.describeType;
 	
 	import mx.collections.ArrayCollection;
+	import mx.events.CollectionEvent;
+	import mx.utils.ObjectUtil;
 
 	[Bindable]
 	public class FoodPlan extends EventDispatcher
@@ -27,9 +30,9 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 							new ArrayCollection
 							(
 								[
-									new Meal( null, "3/4 cup bran flakes cereal; 1 medium banana; and1 cup low-fat milk." ),
-									new Meal( null, "1 slice whole wheat bread; 1 tsp soft (tub) margarine; and 1 cup orange juice" ),
-									new Meal( null, "1 slice French toast, whole grain: 1 medium egg (for French toast); 1 teaspoon oil;" ),
+									new Meal( "3/4 cup bran flakes cereal\n1 medium banana\n1 cup low-fat milk." ),
+									new Meal( "1 slice whole wheat bread\n1 tsp soft (tub) margarine\nand 1 cup orange juice" ),
+									new Meal( "1 slice French toast, whole grain\n1 medium egg (for French toast)\n1 teaspoon oil;" ),
 								]
 							)
 						), 
@@ -39,7 +42,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 							new ArrayCollection
 							(
 								[
-									new Meal( null, "Grilled chicken breast\nLentil soup\n1 glass of juice" )
+									new Meal( "Grilled chicken breast\nLentil soup\n1 glass of juice" )
 								]
 							)
 						), 
@@ -49,7 +52,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 							new ArrayCollection
 							(
 								[
-									new Meal( null, "2 fillets of trout; 4 pieces roasted beets; 3 cups of water" )
+									new Meal( "2 fillets of trout;\n4 pieces roasted beets;\n3 cups of water" )
 								]
 							)
 						), 
@@ -59,7 +62,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 							new ArrayCollection
 							(
 								[
-									new Meal( null, "16 pieces of baby carrots" )
+									new Meal( "16 pieces of baby carrots" )
 								]
 							)
 						), 
@@ -155,6 +158,17 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 			dirty = false;
 		}
 
+		public function clone():FoodPlan
+		{
+			registerClassAlias("edu.newschool.piim.healthboard.model.module.nutrition.FoodPlan",FoodPlan);
+			registerClassAlias("edu.newschool.piim.healthboard.model.module.nutrition.MealCategory",MealCategory);
+			registerClassAlias("edu.newschool.piim.healthboard.model.module.nutrition.Meal",Meal);
+			registerClassAlias("edu.newschool.piim.healthboard.model.module.nutrition.FoodServing",FoodServing);
+			registerClassAlias("edu.newschool.piim.healthboard.model.module.nutrition.Food",Food);
+			
+			return ObjectUtil.clone(this) as FoodPlan;
+		}
+		
 		public function addNote( note:Object ):void
 		{
 			notes && notes.length ? notes.addItem( note ) : notes = new ArrayCollection( [ note ] );
@@ -262,7 +276,11 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 
 		public function set servingCategories(value:ArrayCollection):void
 		{
+			if( _servingCategories ) _servingCategories.removeEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
+			
 			_servingCategories = value;
+			
+			if( _servingCategories ) _servingCategories.addEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
 			
 			dirty = true;
 		}
@@ -274,7 +292,11 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 
 		public function set foodsToIncrease(value:ArrayCollection):void
 		{
+			if( _foodsToIncrease ) _foodsToIncrease.removeEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
+			
 			_foodsToIncrease = value;
+			
+			if( _foodsToIncrease ) _foodsToIncrease.addEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
 			
 			dirty = true;
 		}
@@ -286,7 +308,11 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 
 		public function set foodsToLimit(value:ArrayCollection):void
 		{
+			if( _foodsToLimit ) _foodsToLimit.removeEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
+			
 			_foodsToLimit = value;
+			
+			if( _foodsToLimit ) _foodsToLimit.addEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
 			
 			dirty = true;
 		}
@@ -298,7 +324,11 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 
 		public function set mealCategories(value:ArrayCollection):void
 		{
+			if( _mealCategories ) _mealCategories.removeEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
+			
 			_mealCategories = value;
+			
+			if( _mealCategories ) _mealCategories.addEventListener(CollectionEvent.COLLECTION_CHANGE,onCollectionChange);
 			
 			dirty = true;
 		}
@@ -311,6 +341,13 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		public function set notes(value:ArrayCollection):void
 		{
 			_notes = value;
+			
+			dirty = true;
+		}
+		
+		private function onCollectionChange(event:CollectionEvent):void
+		{
+			dirty = true;
 		}
 	}
 }

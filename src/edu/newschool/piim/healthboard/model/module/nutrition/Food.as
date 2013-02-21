@@ -9,7 +9,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		public var directions:String;
 		public var image:*;
 		
-		public function Food( name:String, directions:String = null, image:* = null )
+		public function Food( name:String = null, directions:String = null, image:* = null )
 		{
 			this.name = name;
 			this.directions = directions;

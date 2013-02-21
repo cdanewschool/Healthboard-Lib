@@ -58,7 +58,7 @@ package edu.newschool.piim.healthboard.model
 			return (role == 'MD' ? 'Dr. ' : '') + lastName;
 		}
 		
-		public function clone():ProviderModel
+		override public function clone():UserModel
 		{
 			var val:ProviderModel = new ProviderModel();
 			
@@ -68,7 +68,20 @@ package edu.newschool.piim.healthboard.model
 			{
 				if( prop.@access == "readonly" ) continue;
 				
-				val[prop.@name] = this[prop.@name];
+				if( val.hasOwnProperty( prop.@name ) )
+				{
+					try
+					{
+						if( this[prop.@name].hasOwnProperty('clone') 
+							&& this[prop.@name].clone is Function )
+							val[prop.@name] = this[prop.@name].clone();
+						if( this[prop.@name] is ArrayCollection )
+							val[prop.@name] = new ArrayCollection( (this[prop.@name].source as Array).slice() );
+						else
+							val[prop.@name] = this[prop.@name]; 
+					}
+					catch(e:Error){}
+				}
 			}
 			
 			return val;

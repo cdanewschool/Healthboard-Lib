@@ -28,7 +28,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		public var title:String;
 		public var unit:String;
 		
-		public function FoodServing( title:String, id:String = null, unit:String = 'servings', quantifier:String = null, servingSize:String = '1', listMinMax:Boolean = false, isPrimary:Boolean = false )
+		public function FoodServing( title:String=null, id:String = null, unit:String = 'servings', quantifier:String = null, servingSize:String = '1', listMinMax:Boolean = false, isPrimary:Boolean = false )
 		{
 			this.title = title;
 			this.id = id;
