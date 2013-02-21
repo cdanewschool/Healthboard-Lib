@@ -136,7 +136,7 @@ package edu.newschool.piim.healthboard.controller
 		
 		private function filterByCompleted( item:NextStep ):Boolean
 		{
-			return !item.completed;
+			return !item.completed && !item.removed;
 		}
 		
 		public function showNextStep( item:NextStep ):void
