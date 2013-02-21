@@ -1237,11 +1237,10 @@
 								itemRollOver="runChartRolloverEventHandler(event)" itemRollOut="runChartRolloutEventHandler(event)" itemClick="viewExercises(event)">
 								
 								<mx:series>
-									<mx:LineSeries yField="target" xField="date" interactive="false">
-										<mx:lineStroke>
-											<s:SolidColorStroke color="0xFAFDFF" weight="2" alpha=".5" />
-										</mx:lineStroke>
-									</mx:LineSeries>
+									
+									<chart:DashedLineSeries 
+										yField="target" xField="date" interactive="false" dashingPattern="[5,5]" lineStroke="{dashedStroke}" />
+									
 									<mx:LineSeries id="myLineSeriesRun" yField="value" xField="date" itemRenderer="edu.newschool.piim.healthboard.view.components.itemrenderers.chart.MyCircleItemRendererIndividual" radius="6" adjustedRadius="4" fillFunction="{controller.fillFunction}"><!--form="curve" -->
 										<mx:lineStroke>
 											<s:SolidColorStroke color="0xFFFFFF" weight="4" /><!--4-->
@@ -1250,6 +1249,7 @@
 											<mx:SolidColorStroke color="0xFFFFFF" weight="1"/>
 										</mx:stroke>
 									</mx:LineSeries>
+									
 								</mx:series>
 								
 								<mx:horizontalAxis>
