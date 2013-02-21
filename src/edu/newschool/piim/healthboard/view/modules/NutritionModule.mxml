@@ -807,9 +807,9 @@
 						
 						<s:VGroup paddingTop="21" paddingLeft="13" >
 							
-							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="{glassesTaken = WaterIntakeMeter(event.target).value}" mouseChildren="{currentState=='default'}" />
+							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="glassesTaken = WaterIntakeMeter(event.target).value" mouseChildren="{currentState=='default'}" />
 
-							<s:Label text="{glassesTaken != waterIntake.max ? glassesTaken + ' cups' : waterIntake.max + '+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
+							<s:Label text="{glassesTaken + (glassesTaken &gt;= waterIntake.max ? '+' : '') + ' cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
 							
 						</s:VGroup>
 
