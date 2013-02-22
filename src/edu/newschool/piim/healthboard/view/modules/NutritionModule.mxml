@@ -807,9 +807,9 @@
 						
 						<s:VGroup paddingTop="21" paddingLeft="13" >
 							
-							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="{glassesTaken = WaterIntakeMeter(event.target).value}" mouseChildren="{currentState=='default'}" />
+							<nutrition:WaterIntakeMeter id="waterIntake" paddingTop="4" max="8" value="{glassesTaken}" change="glassesTaken = WaterIntakeMeter(event.target).value" mouseChildren="{currentState=='default'}" />
 
-							<s:Label text="{glassesTaken != waterIntake.max ? glassesTaken + ' cups' : waterIntake.max + '+ cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
+							<s:Label text="{glassesTaken + (glassesTaken &gt;= waterIntake.max ? '+' : '') + ' cups'}" color="0xFFFFFF" fontSize="12" paddingTop="-1" paddingLeft="{glassesTaken &lt;= 1 ? -6 : (-6 + 30*(glassesTaken-1))}" />
 							
 						</s:VGroup>
 
@@ -1525,7 +1525,7 @@
 							
 							<s:HGroup paddingBottom="10" gap="26">
 								
-								<s:BorderContainer width="454" maxHeight="242" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+								<s:BorderContainer width="454" maxHeight="242" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}">
 									
 									<s:layout>
 										<s:VerticalLayout paddingTop="17" />
@@ -1610,7 +1610,7 @@
 									
 								</s:BorderContainer>
 								
-								<s:BorderContainer width="325" maxHeight="255" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+								<s:BorderContainer id="suggestedMeals" width="{currentState=='provider'?805:325}" maxHeight="255" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
 									
 									<s:layout>
 										<s:VerticalLayout paddingTop="17" />
@@ -1618,7 +1618,7 @@
 									
 									<s:Label text="Suggested Meals for a Day" styleName="greenBoldText" paddingLeft="23" />
 									
-									<s:Scroller id="mealsScroller" width="{mealsScroller.verticalScrollBar.visible?309:325}" maxHeight="210" horizontalScrollPolicy="off">
+									<s:Scroller id="mealsScroller" width="{mealsScroller.verticalScrollBar.visible?suggestedMeals.width-16:suggestedMeals.width}" maxHeight="210" horizontalScrollPolicy="off">
 										
 										<s:DataGroup width="100%" dataProvider="{foodPlan.mealCategories}">
 											

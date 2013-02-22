@@ -46,7 +46,7 @@
 			
 			private function lblAge(item:Object, column:DataGridColumn):String 
 			{
-				return item.Date == '-' ? '-' : String(int(item.date.substr(6)) - 1965);
+				return item.Date == '-' ? '-' : String( int( item.date.substr( String(item.date).lastIndexOf('/')+1 ) ) - 1965 );
 			}
 			
 			private function lblStatus(item:Object, column:DataGridColumn):String 

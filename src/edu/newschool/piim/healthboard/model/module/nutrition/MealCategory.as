@@ -12,7 +12,7 @@ package edu.newschool.piim.healthboard.model.module.nutrition
 		public var name:String;
 		public var meals:ArrayCollection;
 		
-		public function MealCategory( name:String, meals:ArrayCollection = null )
+		public function MealCategory( name:String = null, meals:ArrayCollection = null )
 		{
 			this.name = name;
 			this.meals = meals ? meals : new ArrayCollection();

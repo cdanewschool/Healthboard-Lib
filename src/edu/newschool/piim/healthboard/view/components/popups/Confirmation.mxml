@@ -19,7 +19,8 @@
 			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
-			[Bindable] public var confirmationText:String;
+			[Bindable] public var confirmationText:String = "Confirmed";
+			[Bindable] public var buttonText:String = "Confirm";
 			
 			private function close():void
 			{
@@ -42,7 +43,7 @@
 	<s:Label width="100%" text="{confirmationText}" styleName="darkGrayBold16" textAlign="center" paddingTop="12" />
 	
 	<s:HGroup horizontalAlign="center" width="100%" bottom="14">
-		<s:Button label="Confirm" height="24" click="close()" />
+		<s:Button label="{buttonText}" height="24" click="close()" />
 	</s:HGroup>
 	
 </s:TitleWindow>

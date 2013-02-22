@@ -22,7 +22,7 @@
 			
 			private var _max:int;
 			
-			public function get max():int{ return value; }
+			public function get max():int{ return _max; }
 			
 			[Bindable] public var horizontalGap:int = 10;
 			
@@ -41,7 +41,10 @@
 			
 			public function updateValue( value:Number ):void
 			{
-				this.value = value;
+				if( value == this.value ) 
+					this.value -= 1;
+				else 
+					this.value = value;
 				
 				dispatchEvent( new Event( Event.CHANGE, true ) );
 			}
@@ -75,7 +78,7 @@
 					</fx:Script>
 					
 					<s:Image source="@Embed('/images/nutritionGlassEmpty.png')" buttonMode="true" click="outerDocument.updateValue( index );" visible="{outerDocument.value &lt; index}" includeInLayout="{outerDocument.value &lt; index}" />
-					<s:Image source="@Embed('/images/nutritionGlassFullNew.png')" buttonMode="true" click="outerDocument.updateValue( outerDocument.value >= index ? index-1 : index );" visible="{outerDocument.value >= (index)}" includeInLayout="{outerDocument.value >= (index)}" />
+					<s:Image source="@Embed('/images/nutritionGlassFullNew.png')" buttonMode="true" click="outerDocument.updateValue( index );" visible="{outerDocument.value >= (index)}" includeInLayout="{outerDocument.value >= (index)}" />
 					
 				</mx:HBox>
 				
