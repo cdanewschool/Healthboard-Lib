@@ -42,7 +42,7 @@ package edu.newschool.piim.healthboard.view.components.general
 		{
 			var text:String = super.text;
 			
-			if( text == placeholder ) return null;
+			if( text == placeholder ) return '';
 			
 			return text;
 		}
