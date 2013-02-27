@@ -50,8 +50,6 @@
 			
 			private var model:ApplicationModel;
 			
-			public var adminUsername:String = 'pipi';
-			
 			[Bindable] public var allowAccountCreation:Boolean = true;
 			
 			private function clearValidationErrors():void 
@@ -97,7 +95,7 @@
 				var enteredUsername:String = userID.text;
 				var enteredPassword:String = password.text;
 				
-				var isDebug:Boolean = enteredUsername == adminUsername || (enteredUsername == Constants.ADMIN_USERNAME && enteredPassword == Constants.ADMIN_PASSWORD);
+				var isDebug:Boolean = (enteredUsername == Constants.ADMIN_USERNAME && enteredPassword == Constants.ADMIN_PASSWORD);
 				
 				var user:UserModel;
 				
