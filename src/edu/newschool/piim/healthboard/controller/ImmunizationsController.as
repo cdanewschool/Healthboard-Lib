@@ -84,7 +84,8 @@ package edu.newschool.piim.healthboard.controller
 			
 			for(var i:uint = 0; i < model.immunizationsData.source.length; i++) 
 			{
-				var immunizationDate:Date = new Date( model.immunizationsData[i].date.substr(6), model.immunizationsData[i].date.substr(0,2)-1, model.immunizationsData[i].date.substr(3,2));
+				var immunizationDate:Date = new Date();
+				immunizationDate.setTime( Date.parse( model.immunizationsData[i].date ) );
 				var todayWithTime:Date = new Date();
 				var today:Date = new Date(todayWithTime.getFullYear(),todayWithTime.getMonth(),todayWithTime.getDate());
 				
