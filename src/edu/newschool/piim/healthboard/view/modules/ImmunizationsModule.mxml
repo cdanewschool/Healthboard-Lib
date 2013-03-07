@@ -34,36 +34,30 @@
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.Constants;
-			import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
-			
-			import edu.newschool.piim.healthboard.view.components.tabs.ImmunizationDetails;
-			
 			import edu.newschool.piim.healthboard.controller.ImmunizationsController;
-			
 			import edu.newschool.piim.healthboard.enum.DateRanges;
-			
 			import edu.newschool.piim.healthboard.events.ApplicationDataEvent;
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
-			
 			import edu.newschool.piim.healthboard.model.module.ImmunizationsModel;
+			import edu.newschool.piim.healthboard.util.ChartLabelFunctions;
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			import edu.newschool.piim.healthboard.view.components.tabs.ImmunizationDetails;
+			import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
+			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
 			
 			import mx.charts.ChartItem;
 			import mx.charts.HitData;
 			import mx.charts.events.ChartItemEvent;
 			import mx.charts.series.items.PlotSeriesItem;
 			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
 			import mx.formatters.DateFormatter;
 			import mx.graphics.IFill;
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
 			
 			import spark.events.IndexChangeEvent;
-			
-			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
-			
-			import edu.newschool.piim.healthboard.util.ChartLabelFunctions;
-			import edu.newschool.piim.healthboard.util.DateFormatters;
-			import edu.newschool.piim.healthboard.util.DateUtil;
 			
 			[Bindable] public var controller:ImmunizationsController = AppProperties.getInstance().controller.immunizationsController;
 			[Bindable] private var model:ImmunizationsModel = controller.model as ImmunizationsModel;
@@ -150,6 +144,12 @@
 				//this.immunizationItemDrillDown.source = e.hitData.item.details.source;
 				//immunizationsDetails.visible = true;
 			}
+			
+			private function showImmunizationDetailsDataGrid(e:ListEvent):void
+			{
+				viewImmunizationDetails( e.itemRenderer.data );
+			}
+			
 			
 			private function viewImmunizationDetails(immunization:Object):void 
 			{
@@ -608,12 +608,11 @@
 							
 							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 							<mx:DataGrid
-								id="immunizationsList" dataProvider="{model.immunizationsDataFiltered}" fontFamily="myMyriadNoCFF"
+								id="immunizationsList" dataProvider="{model.immunizationsDataFiltered}" itemClick="{showImmunizationDetailsDataGrid(event)}"
+								styleName="standardDataGrid" headerStyleName="dataGridHeaderAlternative"
 								width="100%" height="100%"
-								alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false"
-								color="0xFFFFFF" fontSize="10" verticalAlign="middle"
-								headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerStyleName="dataGridHeaderAlternative" headerHeight="30" paddingTop="6"
-								borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"-->
+								fontSize="10" paddingTop="6"
+								rowHeight="27" horizontalGridLines="false">
 								
 								<mx:columns> 
 									
@@ -663,7 +662,7 @@
 												</fx:Script>
 												</mx:Label>
 												</mx:HBox>-->
-												<mx:LinkButton click="outerDocument.showImmunizationDetailsAxis(label)" textAlign="left" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" fontFamily="myMyriad">
+												<mx:LinkButton textAlign="left" click="event.stopImmediatePropagation(); outerDocument.showImmunizationDetailsAxis(label)" toolTip="{this.myTip}" color="{this.myColor}" textRollOverColor="{this.myColor}" textSelectedColor="{this.myColor}" fontWeight="{this.myWeight}" fontStyle="{this.myStyle}" skin="{null}" rollOver="{if(this.myColor == 0xAEDEE4) this.styleName='linkBtnUnderline';}" rollOut="this.styleName='linkBtn';" fontFamily="myMyriad">
 													<fx:Script>
 														<![CDATA[
 															[Bindable] private var myTip:String;

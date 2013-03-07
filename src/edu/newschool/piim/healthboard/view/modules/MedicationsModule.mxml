@@ -726,13 +726,12 @@
 							<!--I (WAS) adding the defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer" because without it, it's not displaying the text... See http://help.adobe.com/en_US/flex/using/WSda78ed3a750d6b8f-26a13bbf123c441239d-8000.html fpr details -->
 							<mx:DataGrid 
 								id="medicationsList" 
-								dataProvider="{model.medicationsDataList}" fontFamily="myMyriad" 
+								dataProvider="{model.medicationsDataList}" styleName="standardDataGrid" fontFamily="myMyriad"
 								width="100%" height="100%"  
 								itemClick="showMedicationDetailsDataGrid(event)"
-								alternatingItemColors="[0x303030,0x3c3c3b]" selectionColor="0x00ADEE" rollOverColor="0x00ADEE"
-								color="0xFFFFFF" fontSize="10" verticalAlign="middle"
-								headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkin" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="30" paddingTop="6" headerStyleName="dataGridHeaderAlternative"
-								borderVisible="false" rowHeight="27" horizontalGridLines="false"><!--Here I'm using fontFamily="myMyriad" instead of fontFamily="myMyriadNoCFF" because each column has an itemRenderer--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
+								fontSize="10"
+								paddingTop="6" headerStyleName="dataGridHeaderAlternative"
+								rowHeight="27" horizontalGridLines="false"><!--Here I'm using fontFamily="myMyriad" instead of fontFamily="myMyriadNoCFF" because each column has an itemRenderer--><!--defaultDataGridItemRenderer="mx.controls.dataGridClasses.FTEDataGridItemRenderer"-->
 								
 								<mx:columns>
 									<mx:DataGridColumn dataField="name" headerText="Medication Name / Dosage" width="200" paddingLeft="5" labelFunction="medicationsNameDoseLabelFunction" itemRenderer="edu.newschool.piim.healthboard.view.components.itemrenderers.datagridcolumn.CustomRowColorAlternative" />

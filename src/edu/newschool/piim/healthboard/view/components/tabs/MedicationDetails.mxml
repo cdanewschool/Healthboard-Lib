@@ -211,11 +211,10 @@
 				
 				<s:Label text="Refills and Renewals History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
 				
-				<mx:DataGrid 
-					width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
-					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="2"
-					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeader" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
-					borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
+				<mx:DataGrid styleName="standardDataGrid"
+					width="617" fontSize="10" rowCount="2"
+					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerHeight="25"
+					borderVisible="true" borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
 					
 					<s:ArrayCollection>
 						<fx:Object refill="1" dateFilled="March 20, 2011" prescription="NB0987654" quantity="30" daysSupply="Not recorded" pharmacy="Walgreens" />
@@ -235,11 +234,10 @@
 				
 				<s:Label text="Intake History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
 				
-				<mx:DataGrid 
-					width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
-					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="{medicationArray.length > 10 ? 10 : medicationArray.length}"
-					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeader" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
-					borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false" dataProvider="{medicationArray}">
+				<mx:DataGrid dataProvider="{medicationArray}" styleName="standardDataGrid"
+					width="617" fontSize="10" rowCount="{medicationArray.length > 10 ? 10 : medicationArray.length}"
+					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerHeight="25"
+					borderVisible="true" borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
 					<!--<s:ArrayCollection>
 						<fx:Object dateTime="June 18, 2011 – 09:45 am" quantity="1" comments="" recordedBy="You" />
 						<fx:Object dateTime="June 17, 2011 – 09:00 am" quantity="1" comments="" recordedBy="You" />

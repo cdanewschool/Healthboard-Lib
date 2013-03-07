@@ -188,10 +188,11 @@
 				
 				<s:Label text="Vaccination History" styleName="greenBoldText" paddingTop="13" paddingBottom="9" />
 				<mx:DataGrid 
-					dataProvider="{immunizationHistory}" width="617" fontFamily="myMyriadNoCFF" alternatingItemColors="[0x303030,0x3c3c3b]" selectable="false" 
-					color="0xFFFFFF" fontSize="10" verticalAlign="middle" rowCount="16"
-					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerSeparatorSkin="mx.skins.ProgrammaticSkin" headerHeight="25" headerStyleName="dataGridHeaderAlternative" rollOverColor="0x00ADEE" selectionColor="0x00ADEE"
-					 borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
+					dataProvider="{immunizationHistory}" styleName="standardDataGrid" headerStyleName="dataGridHeaderAlternative" 
+					width="617"
+					fontSize="10" rowCount="16"
+					headerBackgroundSkin="edu.newschool.piim.healthboard.view.skins.general.CustomDataGridHeaderBackgroundSkinLight" headerHeight="25"
+					borderVisible="true" borderColor="0xBDBCBC" rowHeight="27" horizontalGridLines="false">
 					
 					<mx:columns> 
 						<mx:DataGridColumn dataField="number" headerText="Number" paddingLeft="5" width="78" />
