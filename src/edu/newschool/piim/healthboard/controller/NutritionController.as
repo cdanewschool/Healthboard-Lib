@@ -40,12 +40,7 @@ package edu.newschool.piim.healthboard.controller
 			
 			model.savedMeals = new ArrayCollection
 				(
-					[
-						new ArrayCollection(['Cereal','Yogurt with cereal bar','Orange juice']),
-						new ArrayCollection(['Gnocchi with sausage','Tuna Salad','Turkey Sandwich']),
-						new ArrayCollection(['Cereal Bar','Ham and cheese sandwich','Nuts','Peanut butter and jelly']),
-						new ArrayCollection(['Spinach Lasagna','Fajitas (Chicken with Onions, Green Pepper)','Chipotle Veggie Burrito','Tuna Noodle Casserole'])
-					]
+					['Cereal','Yogurt with cereal bar','Orange juice','Gnocchi with sausage','Tuna Salad','Turkey Sandwich','Cereal Bar','Ham and cheese sandwich','Nuts','Peanut butter and jelly','Spinach Lasagna','Fajitas (Chicken with Onions, Green Pepper)','Chipotle Veggie Burrito','Tuna Noodle Casserole']
 				);
 			
 			model.summaryCalories = new ArrayCollection

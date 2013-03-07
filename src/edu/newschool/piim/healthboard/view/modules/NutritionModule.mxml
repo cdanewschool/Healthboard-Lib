@@ -734,7 +734,7 @@
 									</s:ArrayCollection>							
 								</s:dataProvider>
 							</s:DropDownList>
-							<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a favorite meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals.getItemAt(dropDownNutritionMealType.selectedIndex) as ArrayCollection}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
+							<s:DropDownList id="dropDownNutritionSavedMeal" prompt="Add a favorite meal" styleName="buttonText" height="24" width="142" dataProvider="{model.savedMeals}" /><!--change="dropDownVitalToEdit_changeHandler(event)"-->
 						</s:HGroup>
 						
 						<s:Label text="Or submit a new food:" color="0xB3B3B3" fontStyle="italic" paddingTop="5" paddingBottom="-4" />
@@ -923,7 +923,7 @@
 																 
 																var item:Object = outerDocument.nutritionJournal.selectedItem;
 																var index:int = outerDocument.nutritionJournal.dataProvider.getItemIndex(item);
-																outerDocument.model.savedMeals[ outerDocument.mealTypes.indexOf( outerDocument.nutritionJournal.dataProvider.getItemAt(index).meal ) ].addItem( outerDocument.nutritionJournal.dataProvider.getItemAt(index).ingredients );
+																outerDocument.model.savedMeals.addItem( outerDocument.nutritionJournal.dataProvider.getItemAt(index).ingredients );
 																
 																var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SHOW_STATUS, true );
 																evt.data = "Your meal has been saved as a favorite";
@@ -934,11 +934,11 @@
 															
 															private function removeSavedMeal():void
 															{
-																var index:int = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients );
+																var index:int = outerDocument.model.savedMeals.getItemIndex( data.ingredients );
 																
 																if( index > -1 )
 																{
-																	ArrayCollection( outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ) ).removeItemAt( index );
+																	ArrayCollection( outerDocument.model.savedMeals ).removeItemAt( index );
 																}
 																
 																update();
@@ -946,7 +946,7 @@
 															
 															private function update():void
 															{
-																mealSaved = outerDocument.model.savedMeals.getItemAt( outerDocument.mealTypes.indexOf( data.meal ) ).getItemIndex( data.ingredients ) > -1;
+																mealSaved = outerDocument.model.savedMeals.getItemIndex( data.ingredients ) > -1;
 															}
 														]]>
 													</fx:Script>
@@ -1525,92 +1525,7 @@
 							
 							<s:HGroup paddingBottom="10" gap="26">
 								
-								<s:BorderContainer width="454" maxHeight="242" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3" visible="{currentState=='default'}" includeInLayout="{currentState=='default'}">
-									
-									<s:layout>
-										<s:VerticalLayout paddingTop="17" />
-									</s:layout>
-									
-									<s:HGroup width="100%" paddingRight="7" paddingTop="-1" paddingLeft="23" paddingBottom="6">
-										
-										<s:Label text="Notes from My Doctors" styleName="greenBoldText" paddingTop="1" />
-										
-										<s:Spacer width="100%" />
-										
-										<mx:LinkButton id="btnNotesHistory" label="History" fontSize="11" paddingTop="-6" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNotesHistory.styleName='linkBtnUnderline';}" rollOut="btnNotesHistory.styleName='linkBtn';" />
-									
-									</s:HGroup>
-									
-									<s:Label text="Dr. Berg" color="0xFFFFFF" fontWeight="bold" fontSize="11" paddingLeft="23" />
-									
-									<mx:DataGrid 
-										id="dgNutritionNotes" 
-										dataProvider="{foodPlan.notes}" 
-										width="100%" height="100%" 
-										fontSize="12" color="0xEDEDED" selectable="false" headerHeight="0" borderVisible="false" rowHeight="64" 
-										verticalGridLines="false" horizontalGridLines="false" alternatingItemColors="[0x303030,0x3C3C3B]">
-										<mx:columns>
-											
-											<mx:DataGridColumn dataField="note" paddingLeft="23" width="325">
-												
-												<mx:itemRenderer>
-													
-													<fx:Component>		
-														
-														<mx:HBox paddingTop="8">
-															
-															<s:Label text="•" fontSize="6" paddingTop="2" />
-															
-															<mx:VBox verticalGap="3">
-																
-																<s:Label text="{data.note}" width="274" lineHeight="16" />
-																
-																<mx:HBox visible="{data.recommendation != ''}" includeInLayout="{data.recommendation != ''}">
-																	<s:Label text="Recommendation:" paddingTop="4" /><!--paddingTop was 2 when fontFamily="myMyriadNoCFF"-->
-																	<mx:LinkButton id="btnNextStepsRecommendation" label="{data.recommendation}" paddingTop="-5" paddingLeft="-7" color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsRecommendation.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation.styleName='linkBtn';" /><!--click="{outerDocument.handleRecommendation(data.recommendation)}" //COMMENTED OUT BECAUSE IT'S THROWING AN ERROR THAT DOESN'T MAKE ANY SENSE (about closing the popup, error doesn't appear on Chrome)-->
-																</mx:HBox>
-																
-															</mx:VBox>
-															
-														</mx:HBox>
-														
-													</fx:Component>
-													
-												</mx:itemRenderer>
-											</mx:DataGridColumn>
-											
-											<mx:DataGridColumn dataField="completed">
-												
-												<mx:itemRenderer>
-													
-													<fx:Component>
-														
-														<mx:HBox paddingTop="13" horizontalGap="-2" horizontalScrollPolicy="off" verticalScrollPolicy="off">
-															
-															<mx:VBox paddingTop="2">
-																<s:Image source="@Embed('/images/checkmarkNextSteps.png')" toolTip="Completed" visible="{data.completed}" />
-															</mx:VBox>
-															
-															<mx:VBox verticalGap="1" paddingTop="-2"><!--vgap was 3, no paddingTop-->
-																<mx:LinkButton id="btnNextStepsMarkCompleted" label="{data.completed ? 'Unmark completed' : 'Mark completed'}" paddingTop="-5" color="0xAEDEE4" click="{data.completed = !data.completed; outerDocument.foodPlan.notes.refresh();}" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsMarkCompleted.styleName='linkBtnUnderline';}" rollOut="btnNextStepsMarkCompleted.styleName='linkBtn';" />
-																<mx:LinkButton id="btnNextStepsDelete" label="Remove" color="0xAEDEE4" textRollOverColor="0xAEDEE4" click="{outerDocument.foodPlan.notes.removeItemAt(outerDocument.foodPlan.notes.getItemIndex(data))}" textSelectedColor="0xAEDEE4" skin="{null}" rollOver="{btnNextStepsDelete.styleName='linkBtnUnderline';}" rollOut="btnNextStepsDelete.styleName='linkBtn';" />
-															</mx:VBox>
-															
-														</mx:HBox>
-														
-													</fx:Component>
-													
-												</mx:itemRenderer>
-												
-											</mx:DataGridColumn>
-											
-										</mx:columns>
-										
-									</mx:DataGrid>
-									
-								</s:BorderContainer>
-								
-								<s:BorderContainer id="suggestedMeals" width="{currentState=='provider'?805:325}" maxHeight="255" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
+								<s:BorderContainer id="suggestedMeals" width="805" maxHeight="255" backgroundColor="0x3C3C3B" borderColor="0xBDBDBC" cornerRadius="3">
 									
 									<s:layout>
 										<s:VerticalLayout paddingTop="17" />
