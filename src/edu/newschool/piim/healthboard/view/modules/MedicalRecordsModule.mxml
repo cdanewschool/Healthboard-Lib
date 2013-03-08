@@ -737,7 +737,7 @@
 								<!--ADDING THIS AXIS RENDERER ONLY SO WE CAN HAVE THE HORIZONTAL LINES IN THE CHART (ie minorTicks)-->
 								<mx:verticalAxisRenderers>
 									
-									<mx:AxisRenderer id="vAxisRendMedicalRecords" axis="{vAxisMedicalRecords}" tickPlacement="none" minorTickPlacement="inside" minorTickLength="845" showLabels="false"> <!--labelAlign="bottom"-->
+									<mx:AxisRenderer id="vAxisRendMedicalRecords" axis="{vAxisMedicalRecords}" tickPlacement="none" minorTickPlacement="none" showLabels="false"> <!--minorTickPlacement="inside" minorTickLength="845" labelAlign="bottom"-->
 										<mx:minorTickStroke><s:SolidColorStroke color="#FFFFFF" weight="1" alpha=".3" /></mx:minorTickStroke>
 										<mx:axisStroke><mx:SolidColorStroke color="#FFFFFF" weight="1" alpha=".1" /></mx:axisStroke>
 									</mx:AxisRenderer>
