@@ -7,6 +7,9 @@ package edu.newschool.piim.healthboard
 		public static const ADMIN_USERNAME:String = "piim";
 		public static const ADMIN_PASSWORD:String = "password";
 		
+		public static const GUEST_USERNAME:String = "hma";
+		public static const GUEST_PASSWORD:String = "welcome";
+		
 		public static const STATE_DEFAULT:String = "default";
 		public static const STATE_LOGGED_IN:String = "loggedIn";
 		public static const STATE_WIDGET_VIEW:String = "widgetView";

@@ -95,7 +95,7 @@
 				var enteredUsername:String = userID.text;
 				var enteredPassword:String = password.text;
 				
-				var isDebug:Boolean = (enteredUsername == Constants.ADMIN_USERNAME && enteredPassword == Constants.ADMIN_PASSWORD);
+				var isDebug:Boolean = (enteredUsername == Constants.ADMIN_USERNAME && enteredPassword == Constants.ADMIN_PASSWORD) || (enteredUsername == Constants.GUEST_USERNAME && enteredPassword == Constants.GUEST_PASSWORD);
 				
 				var user:UserModel;
 				
