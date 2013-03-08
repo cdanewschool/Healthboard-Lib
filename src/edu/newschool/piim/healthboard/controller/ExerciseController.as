@@ -317,10 +317,10 @@ package edu.newschool.piim.healthboard.controller
 							new ArrayCollection
 							(
 								[
-									new ExerciseActivity( "Run/Walk", "assets/images/exercise/run.png", null, null, 3, 'weeks' ),
-									new ExerciseActivity( "Bike", "assets/images/exercise/bike.png", null, null, 1, 'weeks' ),
-									new ExerciseActivity( "Elliptical Machine", "assets/images/exercise/elliptical.png", null, null, 1, 'weeks' ),
-									new ExerciseActivity( "Swim", "assets/images/exercise/swim.png", null, null, 1, 'weeks' ),
+									new ExerciseActivity( "Run/Walk", "assets/images/exercise/run.png", null, null, 3, 'week' ),
+									new ExerciseActivity( "Bike", "assets/images/exercise/bike.png", null, null, 1, 'week' ),
+									new ExerciseActivity( "Elliptical Machine", "assets/images/exercise/elliptical.png", null, null, 1, 'week' ),
+									new ExerciseActivity( "Swim", "assets/images/exercise/swim.png", null, null, 1, 'week' ),
 								]
 							)
 						),

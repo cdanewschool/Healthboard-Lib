@@ -19,9 +19,9 @@ package edu.newschool.piim.healthboard.model.module.exercise
 		
 		public function ExerciseActivity(	name:String, icon:* = null, 
 										 	startDate:Date = null, acheiveByDate:Date = null, 
-										  	frequency:int = 0, frequencyUnit:String = null, 
-										  	duration:int = 0, durationUnit:String = null,
-											distance:int = 0, distanceUnit:String = null, 
+										  	frequency:int = 0, frequencyUnit:String = 'day', 
+										  	duration:int = 0, durationUnit:String = 'minutes',
+											distance:int = 0, distanceUnit:String = 'miles', 
 											intensity:String = null, directions:String = null, urgency:int = 0 )
 		{
 			this.name = name;
