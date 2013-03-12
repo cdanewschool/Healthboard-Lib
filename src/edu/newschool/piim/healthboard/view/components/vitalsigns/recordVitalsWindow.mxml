@@ -25,7 +25,7 @@
 			[Bindable] private var controller:VitalSignsController = AppProperties.getInstance().controller.vitalSignsController as VitalSignsController;
 			[Bindable] private var model:VitalSignsModel = controller.model as VitalSignsModel;
 			
-			//THE FOLLOWING TWO ARE MONSTER FUNCTIONS THAT PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
+			//THE FOLLOWING TWO FUNCTIONS PREVENT THE DROPDOWN FROM CLOSING WHEN CLICKING ON THE CALENDAR
 			//SEE http://www.blastanova.com/blog/2010/06/23/a-custom-multi-selection-spark-dropdownlist/ FOR REFERENCE
 			protected function dropDownCalendar_openHandler(event:DropDownEvent):void 
 			{
