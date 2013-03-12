@@ -5,7 +5,7 @@ DESCRIPTION
 
 Funded through the Telemedicine and Advanced Technology Research Center (TATRC) and driven by consultations with the Walter Reed National Military Medical Center (WRNMMC), HealthBoard is a visual dashboard <b>prototype</b> that is designed to improve better patient care through better design. Consisting of two portals—the "<b>Patient Portal</b>" and the "<b>Provider Portal</b>"—HealthBoard is designed to serve both communities through better information.
 
-This repository includes the source for the "<b>Shared Library</b>", which both the <b>Patient Portal</b> and <b>Provider Portal</b> must reference in order for them to run. The <b>Patient Portal</b> and <b>Provider Portal</b> are available separately at https://github.com/piim/TATRAC2-VisualDashboard-Patient and https://github.com/piim/TATRC2-VisualDashboard-Provider respectively.
+This repository includes the source for the "<b>Shared Library</b>", which both the <b>Patient Portal</b> and <b>Provider Portal</b> must reference in order for them to run. The <b>Patient Portal</b> and <b>Provider Portal</b> are available separately at https://github.com/piim/TATRC2-VisualDashboard-Patient and https://github.com/piim/TATRC2-VisualDashboard-Provider respectively.
 
 
 MORE INFORMATION
