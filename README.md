@@ -7,6 +7,8 @@ Funded through the Telemedicine and Advanced Technology Research Center (TATRC) 
 
 This repository includes the source for the "<b>Shared Library</b>", which both the <b>Patient Portal</b> and <b>Provider Portal</b> must reference in order for them to run. The <b>Patient Portal</b> and <b>Provider Portal</b> are available separately at https://github.com/piim/TATRC2-VisualDashboard-Patient and https://github.com/piim/TATRC2-VisualDashboard-Provider respectively.
 
+Detailed instructions for proper set-up will be added soon.
+
 
 MORE INFORMATION
 
