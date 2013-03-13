@@ -2,64 +2,40 @@ package edu.newschool.piim.healthboard.model.module.appointments
 {
 	import edu.newschool.piim.healthboard.enum.AppointmentStatus;
 	import edu.newschool.piim.healthboard.enum.AppointmentType;
-	
 	import edu.newschool.piim.healthboard.model.NextStep;
 	import edu.newschool.piim.healthboard.model.ProviderModel;
 	import edu.newschool.piim.healthboard.model.UserModel;
 	import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+	import edu.newschool.piim.healthboard.util.DateUtil;
 	
 	import mx.collections.ArrayCollection;
-	
-	import edu.newschool.piim.healthboard.util.DateUtil;
 
 	[Bindable]
-	public class PatientAppointment
+	public class PatientAppointment extends TimeSlot
 	{
 		public var classification:String;
-		public var description:String;
 		public var medicalRecords:ArrayCollection;
 		public var nextSteps:ArrayCollection;
 		public var patient:UserModel;
 		public var provider:*;
-		public var selected:Boolean;
 		public var status:String;
 		
 		public var type:String = AppointmentType.MEDICAL;
 		
-		private var _date:Date;
-		public var endDate:Date;
-		
 		public function PatientAppointment()
 		{
+			_scheduled = true;
 		}
 		
-		public function get meridiem():String
-		{
-			return date.hours < 12?"am":"pm";
-		}
+		public function get date():Date{ return from; }
 		
-		public function get hour():String
+		override public function set from(value:Date):void
 		{
-			return (date.hours % 12 ).toString();
-		}
-
-		public function get mins():int
-		{
-			return date.minutes;
-		}
-		
-		public function get date():Date
-		{
-			return _date;
-		}
-
-		public function set date(value:Date):void
-		{
-			_date = value;
+			super.from = value;
 			
-			if( date )
+			if( from )
 			{
-				status = date.time < new Date().time ? AppointmentStatus.COMPLETED : AppointmentStatus.SCHEDULED;
+				status = from.time < new Date().time ? AppointmentStatus.COMPLETED : AppointmentStatus.SCHEDULED;
 			}
 		}
 		
@@ -76,7 +52,18 @@ package edu.newschool.piim.healthboard.model.module.appointments
 				}
 			}
 			
-			val.date = new Date( Date.parse( DateUtil.modernizeDate( data.date ) ) );
+			if( data.hasOwnProperty('from') ) val.from = new Date( Date.parse( DateUtil.modernizeDate( data.from ) ) );
+			if( data.hasOwnProperty('to') ) 
+			{
+				val.to = new Date( Date.parse( DateUtil.modernizeDate( data.to ) ) );
+			}
+			else if( val.from )
+			{
+				var to:Date = new Date();
+				to.time = val.from.time + (1000 * 60 * 30);
+				val.to = to;
+			}
+			
 			val.patient =  AppProperties.getInstance().controller.getUserById( data.patient_id, UserModel.TYPE_PATIENT );
 			val.provider = AppProperties.getInstance().controller.getUserById( data.provider_id, UserModel.TYPE_PROVIDER ) as ProviderModel;
 			
@@ -91,7 +78,7 @@ package edu.newschool.piim.healthboard.model.module.appointments
 				for each(result in results) 
 				{
 					var nextStep:NextStep = NextStep.fromObj(result)
-					nextStep.dateAssigned = val.date;
+					nextStep.dateAssigned = val.from;
 					nextStep.assignee = val.provider.fullName;
 					
 					nextSteps.addItem( nextStep );
@@ -110,7 +97,7 @@ package edu.newschool.piim.healthboard.model.module.appointments
 					var medicalRecord:MedicalRecord = MedicalRecord.fromObj(result);
 					medicalRecord.classification = val.classification;
 					medicalRecord.category = AppProperties.getInstance().controller.appointmentsController.getCategoryById( medicalRecord.category_id );
-					medicalRecord.date = val.date;
+					medicalRecord.date = val.from;
 					medicalRecord.patient = val.patient;
 					medicalRecord.provider = val.provider;
 					medicalRecord.nextSteps = val.nextSteps;

@@ -1,5 +1,18 @@
 <categories>
 
+				<!-- 
+				<fx:Object label="General Consultation (30 min)" />
+				<fx:Object label="Physical Examination (30 min)" />
+				<fx:Object label="Follow Up (15 min)" />
+				<fx:Object label="Immunization (15 min)" />
+				<fx:Object label="Appointment Type #5 (30 min)" />
+				<fx:Object label="Appointment Type #6 (30 min)" />
+				<fx:Object label="Appointment Type #7 (30 min)" />
+				<fx:Object label="Appointment Type #8 (30 min)" />
+				<fx:Object label="Appointment Type #9 (30 min)" />
+				<fx:Object label="Appointment Type #10 (30 min)" />
+				 -->
+				 
 	<category id="doctor_visit" label="Doctor Visits">
 		<category id="primary_care" label="Primary Care" />
 		<category id="specialist" label="Specialist" />

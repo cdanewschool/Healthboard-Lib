@@ -12,13 +12,19 @@
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.Constants;
-			
 			import edu.newschool.piim.healthboard.controller.MedicalRecordsController;
-			
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
 			import edu.newschool.piim.healthboard.events.AppointmentEvent;
+			import edu.newschool.piim.healthboard.model.AppointmentCategory;
 			
 			[Bindable] public var controller:MedicalRecordsController = AppProperties.getInstance().controller.medicalRecordsController;
+			
+			private function onRecommendationClick():void
+			{
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true, false, 'yogaGentle' );
+				evt.category = new AppointmentCategory( 'class' );
+				dispatchEvent( evt );
+			}
 			
 			private function showModule():void
 			{
@@ -57,7 +63,7 @@
 			color="0xAEDEE4" textRollOverColor="0xAEDEE4" textSelectedColor="0xAEDEE4" 
 			skin="{null}" 
 			rollOver="{btnNextStepsRecommendation2.styleName='linkBtnUnderline';}" rollOut="btnNextStepsRecommendation2.styleName='linkBtn';" 
-			click="dispatchEvent( new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, 'yogaGentle' ))" />
+			click="onRecommendationClick()" />
 		
 	</s:HGroup>
 	

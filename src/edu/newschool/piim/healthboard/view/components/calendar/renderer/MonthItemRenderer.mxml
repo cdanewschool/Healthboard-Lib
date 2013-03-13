@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	autoDrawBackground="false" 
+	resizeMode="noScale" 
+	implements="edu.newschool.piim.healthboard.view.components.calendar.renderer.ICalendarDayItemRenderer" 
+	preinitialize="preinitialize()">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.view.components.calendar.CalendarEvent;
+			import edu.newschool.piim.healthboard.view.components.calendar.ICalendarItem;
+			import edu.newschool.piim.healthboard.enum.AppointmentType;
+			import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.formatters.DateTimeFormatter;
+			
+			private var _appointments:ArrayCollection;
+			
+			private var dirty:Boolean;
+			
+			public var _selectable:Boolean;
+			
+			[Bindable]
+			public function set selectable(value:Boolean):void{ _selectable = value; }
+			public function get selectable():Boolean { return _selectable; }
+			
+			private var timeFormatter:DateTimeFormatter;
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				border.styleName = selected ? 'cellSelected' : 'cell';
+				
+				if( dateLabel 
+					&& date )
+				{
+					dateLabel.styleName = selected  ? 'monthDayLabelSelected' : 'monthDayLabel';
+					dateLabel.text = (data as Date).date.toString();
+				}
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				invalidateProperties();
+			}
+			
+			[Bindable]
+			public function set appointments(value:ArrayCollection):void
+			{
+				_appointments = value;
+			}
+			
+			public function get appointments():ArrayCollection{ return _appointments; }
+			
+			private var _date:Date;
+			
+			public function get date():Date{ return data as Date; }
+			
+			public function getLabel(item:PatientAppointment):String
+			{
+				return timeFormatter.format( item.from ) + ' ' + (item.type == AppointmentType.MEDICAL ? item.provider.lastNameAbbreviated : item.description).toString();
+			}
+			
+			public function toggle(event:MouseEvent, data:ICalendarItem):void
+			{
+				data.selected = !data.selected;
+				
+				var evt:CalendarEvent = new CalendarEvent( CalendarEvent.SELECT, true );
+				evt.data = data;
+				dispatchEvent( evt );
+			}
+			
+			private function preinitialize():void
+			{
+				timeFormatter = new DateTimeFormatter();
+				timeFormatter.dateTimePattern = "H:mm";
+			}
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer id="border" width="{width}" height="{height}" minWidth="0" minHeight="0">
+		
+		<s:layout>
+			<s:VerticalLayout />
+		</s:layout>
+		
+		<mx:Label id="dateLabel" width="100%"/>
+		
+		<s:DataGroup width="100%" dataProvider="{appointments}">
+			
+			<s:layout>
+				<s:VerticalLayout gap="0" />
+			</s:layout>
+			
+			<s:itemRenderer>
+				
+				<fx:Component>
+					
+					<mx:HBox width="100%">
+						<fx:Script>
+							<![CDATA[
+								import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
+								import edu.newschool.piim.healthboard.view.components.calendar.ICalendarItem;
+							]]>
+						</fx:Script>
+						
+						<mx:LinkButton 
+							width="100%" toggle="true" 
+							label="{outerDocument.getLabel(data as PatientAppointment)}" 
+							styleName="monthViewLinkButton" textAlign="left" 
+							selected="{(data as ICalendarItem).selected}" 
+							click="outerDocument.toggle(event,data as ICalendarItem)" />
+						
+					</mx:HBox>
+				
+				</fx:Component>
+				
+			</s:itemRenderer>
+			
+		</s:DataGroup>
+		
+	</s:BorderContainer>
+	
+</s:ItemRenderer>

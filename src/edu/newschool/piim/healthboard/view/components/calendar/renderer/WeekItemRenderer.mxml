@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	autoDrawBackground="false"
+	resizeMode="noScale" minWidth="0" minHeight="0"
+	implements="edu.newschool.piim.healthboard.view.components.calendar.renderer.ICalendarDayItemRenderer" 
+	click="onClick(event)">
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import edu.newschool.piim.healthboard.view.components.calendar.CalendarEvent;
+			import edu.newschool.piim.healthboard.view.components.calendar.ICalendarItem;
+			import edu.newschool.piim.healthboard.enum.AppointmentType;
+			import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
+			
+			import mx.collections.ArrayCollection;
+			
+			private var _appointments:ArrayCollection;
+			
+			private var dirty:Boolean;
+			
+			private var SECOND:int = 1000;
+			
+			private var _selectable:Boolean;
+			
+			[Bindable]
+			public function set selectable(value:Boolean):void{ _selectable = value; }
+			public function get selectable():Boolean { return _selectable; }
+			
+			override protected function commitProperties():void
+			{
+				super.commitProperties();
+				
+				border.styleName = selected ? 'cellSelected' : 'cell';
+			}
+			
+			override public function set data(value:Object):void
+			{
+				super.data = value;
+				
+				invalidateProperties();
+			}
+			
+			private function onClick(event:Event):void
+			{
+				if( event.currentTarget is ItemRenderer && !selectable )
+				{
+					event.stopImmediatePropagation();
+					return;
+				}
+			}
+			
+			[Bindable]
+			public function set appointments(value:ArrayCollection):void
+			{
+				_appointments = value;
+			}
+			
+			public function get appointments():ArrayCollection{ return _appointments; }
+			
+			private var _date:Date;
+			
+			public function get date():Date{ return data as Date; }
+			
+			public function getLabel(item:ICalendarItem):String
+			{
+				return item.isScheduled ? item.description : '+ Click to Request';
+			}
+			
+			override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+			{
+				super.updateDisplayList(unscaledWidth,unscaledHeight);
+				
+			}
+			public function toggle(event:MouseEvent, data:ICalendarItem):void
+			{
+				data.selected = !data.selected;
+				
+				var evt:CalendarEvent = new CalendarEvent( CalendarEvent.SELECT, true );
+				evt.data = data;
+				dispatchEvent( evt );
+			}
+		]]>
+	</fx:Script>
+	
+	<s:BorderContainer id="border" width="{width}" height="{height}" minWidth="0" minHeight="0" x="-1">
+		
+		<s:DataGroup width="100%" dataProvider="{appointments}">
+			
+			<s:itemRenderer>
+				
+				<fx:Component>
+					
+					<mx:HBox width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="off" rollOver="over=true" rollOut="over=false">
+						
+						<fx:Script>
+							<![CDATA[
+								import edu.newschool.piim.healthboard.view.components.calendar.ICalendarItem;
+								
+								override public function set data(value:Object):void
+								{
+									super.data = value;
+									
+									invalidateProperties();
+									invalidateDisplayList();
+								}
+								
+								override protected function commitProperties():void
+								{
+									super.commitProperties();
+									
+									if( data && data is ICalendarItem && !ICalendarItem(data).isScheduled )
+										bg.styleName = "hourCellRequested";
+									else if( data && data is ICalendarItem && ICalendarItem(data).isScheduled )
+										bg.styleName = (data as ICalendarItem).selected?'hourCellSelected':'hourCell';
+									else
+										bg.styleName = "hourCell";
+								}
+								
+								override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+								{
+									super.updateDisplayList(unscaledWidth, unscaledHeight);
+									
+									if( data )
+									{
+										var appt:ICalendarItem = data as ICalendarItem;
+										var minuteHeight:Number = outerDocument.height/60;
+										var lengthInMinutes:Number = (data as ICalendarItem).to ? ((appt.to.time - appt.from.time)/1000/60) : 30;
+										
+										height = minuteHeight * lengthInMinutes;
+										y = (data as ICalendarItem).from.minutes * minuteHeight;
+									}
+								}
+								
+								[Bindable] private var over:Boolean;
+							]]>
+						</fx:Script>
+						
+						<s:BorderContainer id="bg" width="100%" click="outerDocument.toggle(event,data as ICalendarItem)" buttonMode="true" mouseChildren="false" x="-1" y="-1">
+							<s:Label styleName="{over?'hourCellLabelOver':'hourCellLabel'}" text="{outerDocument.getLabel(data as ICalendarItem)}" />
+						</s:BorderContainer>
+						
+					</mx:HBox>
+				
+				</fx:Component>
+				
+			</s:itemRenderer>
+			
+		</s:DataGroup>
+		
+	</s:BorderContainer>
+	
+	<mx:VRule height="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6" />
+	
+	<mx:HRule x="0" y="0" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".6"/>
+	<mx:HRule x="0" y="{height*.25}" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1" />
+	<mx:HRule x="0" y="{height*.5}" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+	<mx:HRule x="0" y="{height*.75}" width="100%" strokeColor="#FFFFFF" strokeWidth="1" alpha=".1"/>
+	
+</s:ItemRenderer>

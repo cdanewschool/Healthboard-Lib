@@ -37,28 +37,25 @@
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.Constants;
-			import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
-			
-			import edu.newschool.piim.healthboard.view.components.popups.medicalrecords.MyNextStepsHistoryWindow;
-			import edu.newschool.piim.healthboard.view.components.popups.medicalrecords.SetNextStepsPopup;
-			import edu.newschool.piim.healthboard.view.components.tabs.ServiceDetails;
-			
 			import edu.newschool.piim.healthboard.controller.MedicalRecordsController;
-			
 			import edu.newschool.piim.healthboard.enum.AppointmentClassificationType;
 			import edu.newschool.piim.healthboard.enum.DateRanges;
-			
 			import edu.newschool.piim.healthboard.events.ApplicationDataEvent;
 			import edu.newschool.piim.healthboard.events.ApplicationEvent;
 			import edu.newschool.piim.healthboard.events.AppointmentEvent;
-			
-			import net.flexwiz.blog.tabbar.plus.TabPlus;
-			
 			import edu.newschool.piim.healthboard.model.AppointmentCategory;
 			import edu.newschool.piim.healthboard.model.NextStep;
 			import edu.newschool.piim.healthboard.model.module.AppointmentsModel;
 			import edu.newschool.piim.healthboard.model.module.MedicalRecordsModel;
 			import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+			import edu.newschool.piim.healthboard.util.ChartLabelFunctions;
+			import edu.newschool.piim.healthboard.util.DateFormatters;
+			import edu.newschool.piim.healthboard.util.DateUtil;
+			import edu.newschool.piim.healthboard.view.components.popups.medicalrecords.MyNextStepsHistoryWindow;
+			import edu.newschool.piim.healthboard.view.components.popups.medicalrecords.SetNextStepsPopup;
+			import edu.newschool.piim.healthboard.view.components.tabs.ServiceDetails;
+			import edu.newschool.piim.healthboard.view.components.tooltips.MyCustomDataTip;
+			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
 			
 			import mx.charts.ChartItem;
 			import mx.charts.HitData;
@@ -71,14 +68,10 @@
 			import mx.graphics.SolidColor;
 			import mx.managers.PopUpManager;
 			
+			import net.flexwiz.blog.tabbar.plus.TabPlus;
+			
 			import spark.components.TitleWindow;
 			import spark.events.IndexChangeEvent;
-			
-			import edu.newschool.piim.healthboard.view.styles.ChartStyles;
-			
-			import edu.newschool.piim.healthboard.util.ChartLabelFunctions;
-			import edu.newschool.piim.healthboard.util.DateFormatters;
-			import edu.newschool.piim.healthboard.util.DateUtil;
 			
 			private const SEARCH_PLACEHOLDER:String = "Search medical records";
 			
@@ -447,7 +440,9 @@
 			
 			public function requestClass(recommendation:String):void 
 			{
-				dispatchEvent( new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, recommendation ) );
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true, false, recommendation );
+				evt.category = new AppointmentCategory( 'class' );
+				dispatchEvent( evt );
 			}
 			
 			public function searchFilterMedRed():void 
