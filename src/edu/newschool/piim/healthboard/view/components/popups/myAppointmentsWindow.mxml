@@ -1,22 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:TitleWindow xmlns:fx="http://ns.adobe.com/mxml/2009" 
-			   xmlns:s="library://ns.adobe.com/flex/spark" 
-			   xmlns:mx="library://ns.adobe.com/flex/mx" width="320" height="213"
-			   close="PopUpManager.removePopUp(this);" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow"
-			   fontSize="12">
+<s:TitleWindow 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" width="320" height="213"
+	close="PopUpManager.removePopUp(this);" skinClass="edu.newschool.piim.healthboard.view.skins.general.myHeaderlessTitleWindow"
+	fontSize="12">
+	
 	<fx:Script>
 		<![CDATA[
 			import edu.newschool.piim.healthboard.events.AppointmentEvent;
 			
+			import mx.events.CloseEvent;
 			import mx.managers.PopUpManager;
 			
 			private function viewAvailability():void 
 			{
-				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.VIEW_AVAILABILITY );
-				evt.data = dropAppointmentType.selectedItem.label;		//txtReason.text;
+				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.VIEW_AVAILABILITY, true );
+				evt.description = txtReason.text;
 				dispatchEvent( evt );
 				
-				PopUpManager.removePopUp(this);
+				dispatchEvent( new CloseEvent( CloseEvent.CLOSE, true ) );
 			}
 			
 		]]>

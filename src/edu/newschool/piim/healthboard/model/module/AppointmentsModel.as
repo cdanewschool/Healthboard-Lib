@@ -2,7 +2,6 @@ package edu.newschool.piim.healthboard.model.module
 {
 	import edu.newschool.piim.healthboard.enum.AppointmentStatus;
 	import edu.newschool.piim.healthboard.enum.DateRanges;
-	
 	import edu.newschool.piim.healthboard.model.module.ModuleModel;
 	
 	import mx.collections.ArrayCollection;
@@ -25,15 +24,6 @@ package edu.newschool.piim.healthboard.model.module
 		
 		public var currentAppointmentIndex:uint;
 		
-		public var timeSlots:Object = 
-			{
-				'date-10-7-2011:04pm': 
-				{
-					'firstSlot': true,
-					'secondSlot': false
-				}
-			};
-		
 		public var currentDate:Date = new Date();
 		
 		public var dateRange:String = DateRanges.YEAR;
@@ -41,16 +31,20 @@ package edu.newschool.piim.healthboard.model.module
 		
 		public var isRecommending:Boolean;
 		
-		public var dataService2:HTTPService;
+		public var appointmentTypesDataService:HTTPService;
+		public var slotsDataService:HTTPService;
 
 		public var nextSteps:ArrayCollection = new ArrayCollection();
 		public var nextStepsActive:ArrayCollection = new ArrayCollection();
+		
+		public var pendingDescription:String;
 		
 		public function AppointmentsModel()
 		{
 			super();
 			
-			dataService2 = new HTTPService();
+			appointmentTypesDataService = new HTTPService();
+			slotsDataService = new HTTPService();
 		}
 	}
 }

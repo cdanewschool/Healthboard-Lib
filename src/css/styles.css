@@ -450,22 +450,6 @@ mx|PlotChart {
 	fontWeight: normal;
 }
 
-/*APPOINTMENTS*/
-.calendarSelectedDay {
-	color: "0xFF931E";
-	fontWeight: bold;
-}
-
-.calendarNonSelectedDay {
-	color: "0xEDEDED";
-}
-
-.calendarSelectedCell {
-	backgroundColor: "0x545454";
-	borderStyle: solid;
-	borderColor: #6E6E6E;
-}
-
 /*USED FOR THE "NEW MESSAGE" FORM*/
 s|FormItem {
 	skinClass: ClassReference("spark.skins.spark.StackedFormItemSkin");

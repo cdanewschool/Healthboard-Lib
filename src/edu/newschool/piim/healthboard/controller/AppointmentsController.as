@@ -1,29 +1,32 @@
 package edu.newschool.piim.healthboard.controller
 {
 	import edu.newschool.piim.healthboard.Constants;
-	
-	import edu.newschool.piim.healthboard.controller.BaseModuleController;
-	
-	import edu.newschool.piim.healthboard.enum.AppointmentStatus;
-	
+	import edu.newschool.piim.healthboard.events.ApplicationEvent;
+	import edu.newschool.piim.healthboard.events.AppointmentEvent;
 	import edu.newschool.piim.healthboard.model.AppointmentCategory;
 	import edu.newschool.piim.healthboard.model.ModuleMappable;
 	import edu.newschool.piim.healthboard.model.NextStep;
-	import edu.newschool.piim.healthboard.model.UserModel;
 	import edu.newschool.piim.healthboard.model.module.AppointmentsModel;
 	import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
-	import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+	import edu.newschool.piim.healthboard.model.module.appointments.TimeSlot;
+	import edu.newschool.piim.healthboard.util.DateUtil;
+	import edu.newschool.piim.healthboard.view.components.popups.myAppointmentsWindow;
+	import edu.newschool.piim.healthboard.view.components.popups.myClassesWindow;
 	
 	import mx.collections.ArrayCollection;
 	import mx.collections.Sort;
+	import mx.events.CloseEvent;
 	import mx.events.CollectionEvent;
+	import mx.managers.PopUpManager;
 	import mx.rpc.events.ResultEvent;
-	import mx.utils.ObjectUtil;
 	
-	import edu.newschool.piim.healthboard.util.DateUtil;
+	import spark.components.Application;
+	import spark.components.TitleWindow;
 	
 	public class AppointmentsController extends BaseModuleController
 	{
+		private var application:Application;
+		
 		public function AppointmentsController()
 		{
 			super();
@@ -33,13 +36,19 @@ package edu.newschool.piim.healthboard.controller
 			model.dataService.url = "data/appointmentCategories.xml";
 			model.dataService.addEventListener( ResultEvent.RESULT, categoriesResultHandler );
 			
-			AppointmentsModel(model).dataService2.url = "data/appointments.xml";
-			AppointmentsModel(model).dataService2.addEventListener( ResultEvent.RESULT, dataResultHandler );
+			AppointmentsModel(model).appointmentTypesDataService.url = "data/appointments.xml";
+			AppointmentsModel(model).appointmentTypesDataService.addEventListener( ResultEvent.RESULT, dataResultHandler );
+			
+			AppointmentsModel(model).slotsDataService.addEventListener( ResultEvent.RESULT, onSlotsLoaded );
 		}
 		
 		override public function init():void
 		{
 			super.init();
+			
+			application = AppProperties.getInstance().controller.application;
+			application.addEventListener( AppointmentEvent.CONFIRM_APPOINTMENT, onConfirmAppointment );
+			application.addEventListener( AppointmentEvent.REQUEST_APPOINTMENT, onAppointmentRequest );
 			
 			model.dataService.send();
 		}
@@ -62,7 +71,7 @@ package edu.newschool.piim.healthboard.controller
 			
 			model.appointmentCategories = categories;
 			
-			model.dataService2.send();
+			model.appointmentTypesDataService.send();
 		}
 		
 		override public function dataResultHandler(event:ResultEvent):void 
@@ -111,7 +120,7 @@ package edu.newschool.piim.healthboard.controller
 			{
 				appointment = appointments[i];
 				
-				if( appointment.date.time >= today.time )
+				if( appointment.from.time >= today.time )
 				{
 					defaultAppointment = appointment;
 					break;
@@ -144,98 +153,98 @@ package edu.newschool.piim.healthboard.controller
 			AppProperties.getInstance().controller.processModuleMappable( item as ModuleMappable );
 		}
 		
-		public function setAvailable(set:String, reason:String):void
+		protected function onAppointmentRequest( event:AppointmentEvent ):void 
 		{
-			var model:AppointmentsModel = AppointmentsModel(model);
+			var model:AppointmentsModel = model as AppointmentsModel;
 			
-			var currentDate:Date = new Date();
+			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
+			evt.data = Constants.MODULE_APPOINTMENTS;
+			application.dispatchEvent( evt );
 			
-			var myDate1:String = 'date-' + (currentDate.getMonth()+1) + '-' + currentDate.getDate() + '-' + currentDate.getFullYear() + ':12pm';
-			var myDate2:String = 'date-' + (currentDate.getMonth()+1) + '-' + (currentDate.getDate()+1) + '-' + currentDate.getFullYear() + ':10am';
-			var myDate3:String = 'date-' + (currentDate.getMonth()+1) + '-' + (currentDate.getDate()+1) + '-' + currentDate.getFullYear() + ':07am';
-			var myDate4:String = 'date-' + (currentDate.getMonth()+1) + '-' + (currentDate.getDate()+7) + '-' + currentDate.getFullYear() + ':07am';
-			var myDate5:String = 'date-' + (currentDate.getMonth()+2) + '-6-' + currentDate.getFullYear() + ':08am';
-			var myDate6:String = 'date-' + (currentDate.getMonth()+1) + '-' + (currentDate.getDate()+7) + '-' + currentDate.getFullYear() + ':08am';
-			var myDate7:String = 'date-' + (currentDate.getMonth()+2) + '-6-' + currentDate.getFullYear() + ':07am';
-			
-			var timeSlots:Object = ObjectUtil.clone( model.timeSlots );
-			
-			if(set == 'set1')
+			if( event.category 
+				&& event.category.id == "class" )
 			{
-				timeSlots[myDate3] = 
-					{
-						'firstSlot': true,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "class",
-						'has hour slot': function():String
-						{
-							return 'adsf';
-						}
-					};
-				timeSlots[myDate4] = 
-					{
-						'firstSlot': true,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "class"
-					};
-				timeSlots[myDate5] = 
-					{
-						'firstSlot': true,
-						'secondSlot': false,
-						'reason': reason,
-						'type': "class"
-					};
+				model.isRecommending = true;
+				
+				var myClass:myClassesWindow = myClassesWindow( PopUpManager.createPopUp( application, myClassesWindow ) as TitleWindow );
+				myClass.addEventListener( AppointmentEvent.VIEW_AVAILABILITY, onViewAvailability );
+				myClass.addEventListener( CloseEvent.CLOSE, onSchedulingPopupClose );
+				PopUpManager.centerPopUp( myClass );
+				
+				var classID:String = event.data;
+				if( classID ) 
+					myClass.showClass( classID );
 			}
 			else
 			{
-				/*_timeSlots = {
-				'date-3-22-2012:12pm': {
-				'firstSlot': true,
-				'secondSlot': true,
-				'reason': reason,
-				'type': "appointment"
-				},
-				'date-3-23-2012:10am': {
-				'firstSlot': false,
-				'secondSlot': true,
-				'reason': reason,
-				'type': "appointment"
-				}
-				};*/
+				var myAppointment:myAppointmentsWindow = myAppointmentsWindow( PopUpManager.createPopUp( application, myAppointmentsWindow ) as TitleWindow );
+				myAppointment.addEventListener( AppointmentEvent.VIEW_AVAILABILITY, onViewAvailability );
 				
-				timeSlots[myDate1] = 
-					{
-						'firstSlot': true,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "appointment"
-					}
-				timeSlots[myDate2] = 
-					{
-						'firstSlot': false,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "appointment"
-					}
-				timeSlots[myDate6] = 
-					{
-						'firstSlot': true,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "appointment"
-					}
-				timeSlots[myDate7] =
-					{
-						'firstSlot': false,
-						'secondSlot': true,
-						'reason': reason,
-						'type': "appointment"
-					}
+				PopUpManager.centerPopUp( myAppointment );
+			}
+		}
+		
+		private function onSchedulingPopupClose(event:CloseEvent):void
+		{
+			TitleWindow(event.currentTarget).removeEventListener( AppointmentEvent.VIEW_AVAILABILITY, onViewAvailability );
+		}
+		
+		protected function onViewAvailability( event:AppointmentEvent ):void
+		{
+			getAvailable( event.category, event.description );
+		}
+		
+		protected function getAvailable( type:AppointmentCategory = null, description:String = null ):void
+		{
+			var model:AppointmentsModel = model as AppointmentsModel;
+			model.pendingDescription = description;
+			
+			AppointmentsModel(model).slotsDataService.url = "data/slots/" + (type && type.id == "class" ? "classes" : "appointments" ) + ".xml";	//	temp
+			
+			model.slotsDataService.send();
+		}
+		
+		private function onSlotsLoaded(event:ResultEvent):void
+		{
+			var model:AppointmentsModel = model as AppointmentsModel;
+			
+			var results:ArrayCollection = event.result.appointments.appointment;
+			
+			var slots:ArrayCollection = new ArrayCollection();
+			
+			for(var i:int=0; i < results.length; i++) 
+			{
+				var slot:TimeSlot = TimeSlot.fromObj( results.getItemAt(i) );
+				slot.description = model.pendingDescription;
+				slots.addItem( slot );
 			}
 			
-			model.timeSlots = timeSlots;
+			model.pendingDescription = null;
+			
+			var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.AVAILABILITY_LOADED, true );
+			evt.data = slots;
+			dispatchEvent( evt );
+		}
+		
+		public function onConfirmAppointment( event:AppointmentEvent ):void
+		{
+			var slot:TimeSlot = event.data as TimeSlot;
+			
+			var appointment:PatientAppointment = new PatientAppointment();
+			appointment.description = slot.description;
+			appointment.from = slot.from;
+			appointment.provider = '';
+			appointment.to = slot.to;
+			
+			var model:AppointmentsModel = AppointmentsModel(model);
+			model.appointments.addItem( appointment );
+			
+			onConfirmSlot( appointment );
+		}
+		
+		private function onConfirmSlot( appointment:PatientAppointment ):void
+		{
+			dispatchEvent( new AppointmentEvent( AppointmentEvent.CONFIRM_APPOINTMENT_SUCCESS, true, false, appointment ) );
 		}
 		
 		public function getCategoryById( id:String ):AppointmentCategory

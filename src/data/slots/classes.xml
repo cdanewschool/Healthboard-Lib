@@ -1,0 +1,11 @@
+<appointments>
+	
+	<appointment from="*/+1/* 07:00" to="*/+1/* 07:30" description="" />
+	<appointment from="*/+1/* 07:30" to="*/+1/* 08:00" description="" />
+	
+	<appointment from="*/+7/* 07:00" to="*/*/* 07:30" description="" />
+	<appointment from="*/+7/* 07:30" to="*/*/* 08:00" description="" />
+	
+	<appointment from="+1/6/* 08:00" to="+1/*6/* 08:30" description="" />
+	
+</appointments>

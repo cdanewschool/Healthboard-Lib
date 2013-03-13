@@ -1,33 +1,17 @@
 package edu.newschool.piim.healthboard.controller
 {
 	import edu.newschool.piim.healthboard.Constants;
-	
-	import edu.newschool.piim.healthboard.view.components.popups.myAppointmentsWindow;
-	import edu.newschool.piim.healthboard.view.components.popups.myClassesWindow;
-	
 	import edu.newschool.piim.healthboard.enum.ViewModeType;
-	
 	import edu.newschool.piim.healthboard.events.ApplicationDataEvent;
 	import edu.newschool.piim.healthboard.events.ApplicationEvent;
 	import edu.newschool.piim.healthboard.events.AppointmentEvent;
 	import edu.newschool.piim.healthboard.events.AuthenticationEvent;
-	
-	import net.flexwiz.blog.tabbar.plus.TabPlus;
-	
-	import flash.display.DisplayObject;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
-	import flash.net.SharedObject;
-	import flash.utils.Timer;
-	import flash.utils.getTimer;
-	
 	import edu.newschool.piim.healthboard.model.ApplicationModel;
+	import edu.newschool.piim.healthboard.model.AppointmentCategory;
 	import edu.newschool.piim.healthboard.model.ModuleMappable;
 	import edu.newschool.piim.healthboard.model.NextStep;
 	import edu.newschool.piim.healthboard.model.PatientsModel;
 	import edu.newschool.piim.healthboard.model.Preferences;
-	import edu.newschool.piim.healthboard.model.ProviderModel;
 	import edu.newschool.piim.healthboard.model.ProvidersModel;
 	import edu.newschool.piim.healthboard.model.UserModel;
 	import edu.newschool.piim.healthboard.model.module.AppointmentsModel;
@@ -36,6 +20,15 @@ package edu.newschool.piim.healthboard.controller
 	import edu.newschool.piim.healthboard.model.module.MedicationsModel;
 	import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
 	import edu.newschool.piim.healthboard.model.module.medicalrecords.MedicalRecord;
+	import edu.newschool.piim.healthboard.util.DateUtil;
+	
+	import flash.display.DisplayObject;
+	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.net.SharedObject;
+	import flash.utils.Timer;
+	import flash.utils.getTimer;
 	
 	import mx.collections.ArrayCollection;
 	import mx.core.FlexGlobals;
@@ -47,14 +40,12 @@ package edu.newschool.piim.healthboard.controller
 	import mx.events.StyleEvent;
 	import mx.managers.CursorManager;
 	import mx.managers.PopUpManager;
-	import mx.rpc.events.ResultEvent;
 	import mx.states.State;
 	
-	import spark.components.Application;
-	import spark.components.TitleWindow;
-	import spark.events.IndexChangeEvent;
+	import net.flexwiz.blog.tabbar.plus.TabPlus;
 	
-	import edu.newschool.piim.healthboard.util.DateUtil;
+	import spark.components.Application;
+	import spark.events.IndexChangeEvent;
 	
 	public class Controller
 	{
@@ -100,8 +91,6 @@ package edu.newschool.piim.healthboard.controller
 			application.addEventListener( ApplicationDataEvent.LOAD, onLoadDataRequest );
 			application.addEventListener( ApplicationEvent.NAVIGATE, onNavigate );
 			application.addEventListener( ApplicationEvent.SET_STATE, onSetState );
-			application.addEventListener( AppointmentEvent.REQUEST_APPOINTMENT, onHandleAppointmentRequest );
-			application.addEventListener( AppointmentEvent.REQUEST_CLASS, onHandleAppointmentRequest );
 			application.addEventListener( TabPlus.CLOSE_TAB_EVENT, onTabClose );
 			application.addEventListener( FlexEvent.APPLICATION_COMPLETE, onApplicationComplete );
 			application.addEventListener( MouseEvent.CLICK, onActivity );
@@ -272,48 +261,8 @@ package edu.newschool.piim.healthboard.controller
 			setState( event.data );
 		}
 		
-		protected function onHandleAppointmentRequest( event:AppointmentEvent ):void 
-		{
-			var evt:ApplicationEvent = new ApplicationEvent( ApplicationEvent.SET_STATE );
-			evt.data = Constants.MODULE_APPOINTMENTS;
-			application.dispatchEvent( evt );
-			
-			if( event.type == AppointmentEvent.REQUEST_APPOINTMENT )
-			{
-				var myAppointment:myAppointmentsWindow = myAppointmentsWindow( PopUpManager.createPopUp( application, myAppointmentsWindow ) as TitleWindow );
-				myAppointment.addEventListener( AppointmentEvent.VIEW_AVAILABILITY, onViewAvailability );
-				
-				PopUpManager.centerPopUp( myAppointment );
-			}
-			else
-			{
-				var classID:String = event.data;
-				
-				if( event.data == 'Gentle Chair Yoga Class' ) 
-				{
-					classID = 'yogaGentle';
-				}
-				else if( event.data == 'Nutrition Workshop') 
-				{
-					classID = 'hLifeWeight';
-				}
-				
-				AppointmentsModel(appointmentsController.model).isRecommending = true;
-				
-				var myClass:myClassesWindow = myClassesWindow( PopUpManager.createPopUp( application, myClassesWindow ) as TitleWindow );
-				PopUpManager.centerPopUp( myClass );
-				
-				if( classID ) myClass.showClass( classID );
-			}
-		}
-		
 		protected function onTabClose( event:ListEvent ):void
 		{
-		}
-		
-		protected function onViewAvailability( event:AppointmentEvent ):void
-		{
-			appointmentsController.setAvailable( 'set2', event.data.toString() );
 		}
 		
 		protected function setState( state:String ):Boolean
@@ -440,10 +389,13 @@ package edu.newschool.piim.healthboard.controller
 				if( item is NextStep 
 					&& (item as NextStep).recommendation )
 				{
+					evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
+					
 					if( item.type == "class" )
-						evt = new AppointmentEvent( AppointmentEvent.REQUEST_CLASS, true, false, (item as NextStep).actionId );
-					else
-						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true );
+					{
+						evt = new AppointmentEvent( AppointmentEvent.REQUEST_APPOINTMENT, true, false, (item as NextStep).actionId );
+						AppointmentEvent(evt).category = new AppointmentCategory( 'class' );
+					}
 					
 					AppProperties.getInstance().controller.application.dispatchEvent( evt );
 					

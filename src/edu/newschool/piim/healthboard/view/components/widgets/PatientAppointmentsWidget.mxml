@@ -35,7 +35,7 @@
 					month.text = Constants.MONTHS[ selectedAppointment.date.month ].toUpperCase();
 					date.text = selectedAppointment.date.date.toString();
 					
-					appointmentTime.label = Constants.DAYS[ selectedAppointment.date.day ].toUpperCase() + ' ' + StringUtil.leftPad(selectedAppointment.hour) + ':' + StringUtil.leftPad(selectedAppointment.mins.toString()) + ' ' + selectedAppointment.meridiem.toUpperCase();
+					appointmentTime.label = Constants.DAYS[ selectedAppointment.date.day ].toUpperCase() + ' ' + StringUtil.leftPad(selectedAppointment.date.hours.toString()) + ':' + StringUtil.leftPad(selectedAppointment.date.minutes.toString()) + ' ' + String(selectedAppointment.date.hours>=12?'pm':'am').toUpperCase();
 					
 					details.text = selectedAppointment.description + '\n' + selectedAppointment.provider.fullNameAbbreviated + '\n(999) 999-9999';
 				}

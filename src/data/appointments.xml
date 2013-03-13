@@ -1,16 +1,16 @@
 <appointments>
 	
-	<appointment date="*/*/* 11:00" description="Physical Examination" provider_id="1" patient_id="123" />
+	<appointment from="*/*/* 11:00" description="Physical Examination" provider_id="1" patient_id="123" />
 	
-	<appointment date="*/>5/* 9:30" description="Allergies" provider_id="2" patient_id="123" />
+	<appointment from="*/>5/* 9:30" description="Allergies" provider_id="2" patient_id="123" />
 	
 	<!-- nextWeekButNotWednesday, aka "next week" (Anthony requested to make sure this doesn't happen on Wednesday, to avoid a usability test conflict with the other existing appointment on Wednesday). -->
-	<appointment date="*/>5/* 11:30" description="Flu Vaccination" provider_id="1" patient_id="123" />
+	<appointment from="*/>5/* 11:30" description="Flu Vaccination" provider_id="1" patient_id="123" />
 	
 	<!-- next wednesday -->
-	<appointment date="*/>3/* 13:00" description="Physical Therapy" provider_id="1" patient_id="123" />
+	<appointment from="*/>3/* 13:00" description="Physical Therapy" provider_id="1" patient_id="123" />
 	
-	<appointment date="-1/16/* 11:00" description="Physician Examination" provider_id="1" patient_id="123" classification="outpatient">
+	<appointment from="-1/16/* 11:00" description="Physician Examination" provider_id="1" patient_id="123" classification="outpatient">
 	
 		<medicalRecord category_id="primary_care">
 			<summary>
@@ -21,12 +21,12 @@
 			</summary>
 		</medicalRecord>
 		
-		<nextStep task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" date="17:22, October 7, 2012"  area="appointments" type="class" actionId="yogaGentle"/>
-		<nextStep task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Continue to check blood sugar twice daily - Set a Reminder" date="17:23, October 7, 2012" area="vitalsigns" />		
+		<nextStep task="Start the Physical Rehabilitation regimen we spoke about. Our Gentle Chair Yoga class would be beneficial if you find the time." completed="false" removed="false" recommendation="Take Gentle Chair Yoga Class" from="17:22, October 7, 2012"  area="appointments" type="class" actionId="yogaGentle"/>
+		<nextStep task="Continue to check blood sugar twice daily." completed="false" removed="false" recommendation="Continue to check blood sugar twice daily - Set a Reminder" from="17:23, October 7, 2012" area="vitalsigns" />		
 	
 	</appointment>
 	
-	<appointment date="-2/11/* 12:00" description="Consultation" provider_id="3" patient_id="123" classification="outpatient">
+	<appointment from="-2/11/* 12:00" description="Consultation" provider_id="3" patient_id="123" classification="outpatient">
 		
 		<medicalRecord category_id="specialist" end_date="-2/11/* 13:00">
 			<summary>
@@ -39,7 +39,7 @@
 		
 	</appointment>
 	
-	<appointment date="-2/11/* 13:00" description="Surgery" provider_id="1" patient_id="123" classification="outpatient" >
+	<appointment from="-2/11/* 13:00" description="Surgery" provider_id="1" patient_id="123" classification="outpatient" >
 	
 		<medicalRecord description="Brain Surgery" category_id="er">
 			<summary>
@@ -52,7 +52,7 @@
 		
 	</appointment>
 	
-	<appointment date="*/16/* 11:00" description="MRI" provider_id="1" patient_id="123" classification="inpatient">
+	<appointment from="*/16/* 11:00" description="MRI" provider_id="1" patient_id="123" classification="inpatient">
 		
 		<medicalRecord category_id="radiology" interpreter="Dr. Sam Huntsman, Team 1">
 			
@@ -80,7 +80,7 @@
 		
 	</appointment>
 	
-	<appointment date="-1/16/* 13:00" description="MRI" provider_id="1" patient_id="123" classification="outpatient">
+	<appointment from="-1/16/* 13:00" description="MRI" provider_id="1" patient_id="123" classification="outpatient">
 		
 		<medicalRecord category_id="radiology" interpreter="Dr. Sam Huntsman, Team 1">
 			
@@ -110,13 +110,13 @@
 	
 	</appointment>
 	
-	<appointment date="-2/11/* 16:00" description="Blood Test" provider_id="4" patient_id="123" classification="outpatient">
+	<appointment from="-2/11/* 16:00" description="Blood Test" provider_id="4" patient_id="123" classification="outpatient">
 	
 		<medicalRecord category_id="lab">
 		
-			<testResult orderDate="-2/11/*" collectionDate="-2/11/*">
+			<testResult orderfrom="-2/11/*" collectionfrom="-2/11/*">
 				
-				<comment date="-2/11/* 15:45" owner_type="provider" owner_id="4" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." />
+				<comment from="-2/11/* 15:45" owner_type="provider" owner_id="4" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." />
 				
 				<result name="Albumin" site="Serum" result="4.4" units="g/dl" comments="" warning="false" />
 				<result name="Alk Phos" site="Serum" result="88" units="IU/I" comments="" warning="false" />
@@ -129,7 +129,7 @@
 				<result name="Creatinine, Serum/plasma" site="Serum" result="1.1" units="MG/DL" comments="" warning="false" />
 				<result name="GGT" site="Serum" result="80" units="IU/I" comments="" warning="false" />
 				<result name="Glucose" site="Serum" result="210" units="MG/DL" warning="true">
-					<comment date="-2/11/*" owner_type="provider" owner_id="4" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." />
+					<comment from="-2/11/*" owner_type="provider" owner_id="4" text="Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea comoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur." />
 				</result>
 				<result name="LCH" site="Serum" result="600" units="IU/I" comments="" warning="false" />
 				<result name="Phosphate" site="Serum" result="4.6" units="MG/DL" comments="" warning="false" />
@@ -144,7 +144,7 @@
 	
 	</appointment>
 	
-	<appointment date="-2/11/* 19:00" description="Cardiac Stress Test" provider_id="3" patient_id="123" classification="outpatient">
+	<appointment from="-2/11/* 19:00" description="Cardiac Stress Test" provider_id="3" patient_id="123" classification="outpatient">
 	
 		<medicalRecord category_id="clinical_test">
 			
@@ -163,7 +163,7 @@
 		
 	</appointment>
 	
-	<appointment date="*/07/* 11:00" description="Appendectomy" provider_id="1" patient_id="123" classification="inpatient">
+	<appointment from="*/07/* 11:00" description="Appendectomy" provider_id="1" patient_id="123" classification="inpatient">
 		
 		<medicalRecord category_id="surgery" end_date="*/07/* 13:00" interpreter="Dr. Sam Huntsman, Team 1">
 		
@@ -191,7 +191,7 @@
 		
 	</appointment>
 	
-	<appointment date="-3/07/* 11:00" description="Nasal Procedure" provider_id="1" patient_id="123" classification="inpatient">
+	<appointment from="-3/07/* 11:00" description="Nasal Procedure" provider_id="1" patient_id="123" classification="inpatient">
 	
 		<medicalRecord name="Nasal Procedure" category_id="procedure" interpreter="Dr. Sam Huntsman, Team 1">
 		
@@ -219,6 +219,6 @@
 		
 	</appointment>
 	
-	<appointment date="*/07/* 14:00" description="Colonscopy" provider_id="1" patient_id="123" classification="inpatient" />
+	<appointment from="*/07/* 14:00" description="Colonscopy" provider_id="1" patient_id="123" classification="inpatient" />
 			
 </appointments>

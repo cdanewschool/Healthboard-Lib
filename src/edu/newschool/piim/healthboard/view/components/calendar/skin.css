@@ -1,0 +1,85 @@
+@namespace s "library://ns.adobe.com/flex/spark";
+
+/*	GLOBAL	*/
+.cell
+{
+	backgroundColor: #3C3C3B;
+	borderStyle: solid;
+	borderColor: #6E6E6E;
+}
+
+.cellSelected
+{
+	backgroundColor: #545454;
+	borderStyle: solid;
+	borderColor: #6E6E6E;
+}
+
+/*	MONTH VIEW	*/
+.monthDayLabel
+{
+	color: #EDEDED;
+	fontSize: 12;
+	paddingTop: 5;
+	paddingRight: 5;
+	textAlign: right;
+}
+
+.monthDayLabelSelected 
+{
+	color: #FF931E;
+	fontSize: 12;
+	fontWeight: bold;
+	paddingTop: 5;
+	paddingRight: 5;
+	textAlign: right;
+}
+
+.monthViewLinkButton
+{
+	skin: ClassReference("edu.newschool.piim.healthboard.view.skins.appointments.ToggleableLinkButtonSkin");
+	color: "0xFFFFFF";
+	textRollOverColor: "0xFFFFFF";
+	textSelectedColor: "0xFFFFFF";
+	fontFamily: "myMyriad";
+	paddingLeft: 1;
+	paddingTop: -2;
+	paddingRight: 1;
+	paddingBottom: 0;
+	fontSize: 10;
+}
+
+/*	WEEK VIEW	*/
+.hourCell
+{
+	backgroundColor: #999999;
+	borderColor: #ffffff;
+}
+
+.hourCellSelected
+{
+	backgroundColor: #EDA006;
+	borderColor: #ffffff;
+}
+
+.hourCellRequested
+{
+	backgroundColor: #00ADEE;
+	borderColor: #ffffff;
+}
+
+.hourCellLabel
+{
+	color: #fff;
+	fontSize: 9;
+	paddingLeft: 5;
+	paddingTop: 5;
+}
+
+.hourCellLabelOver
+{
+	color: #000;
+	fontSize: 9;
+	paddingLeft: 5;
+	paddingTop: 5;
+}
