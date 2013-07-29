@@ -22,6 +22,7 @@
 	fontSize: 12;
 	paddingTop: 5;
 	paddingRight: 5;
+	paddingBottom: -8;
 	textAlign: right;
 }
 
@@ -32,6 +33,7 @@
 	fontWeight: bold;
 	paddingTop: 5;
 	paddingRight: 5;
+	paddingBottom: -8;
 	textAlign: right;
 }
 

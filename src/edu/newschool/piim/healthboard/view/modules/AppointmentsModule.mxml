@@ -305,7 +305,7 @@
 					var obj:PatientAppointment = selectedAppointment;
 					
 					if( appointmentDateStart ) appointmentDateStart.text = dateFormatter2.format( obj.from );
-					if( appointmentDateEnd ) appointmentDateEnd.text = dateFormatter2.format( obj.from );
+					if( appointmentDateEnd ) appointmentDateEnd.text = dateFormatter2.format( obj.to );
 					if( appointmentsList ) appointmentsList.selectedItem = selectedAppointment;
 					
 					cancelledAppointment = null;
@@ -570,6 +570,26 @@
 				invalidateProperties();
 			}
 			
+			private function navigate( direction:int = 1 ):void
+			{
+				var date:Date = new Date();
+				date.time = model.currentDate.time;
+				
+				if(direction == 0) {
+					date = today;
+				}
+				else if(stackViews.selectedIndex == 0) {		//month view
+					date.time += (DateUtil.MONTH * direction);
+				}
+				else if(stackViews.selectedIndex == 1) {		//week view
+					date.time += (DateUtil.WEEK * direction);
+				}
+				
+				model.currentDate = date;
+				
+				invalidateProperties();
+			}
+			
 			private function onKeyDown( event:KeyboardEvent ):void
 			{
 				if( event.keyCode == 37 )
@@ -726,7 +746,13 @@
 					<s:Button label="Export" height="24" styleName="buttonText" />
 					<s:Spacer width="100%" />
 					
-					<s:HGroup gap="0">
+					<s:HGroup gap="-1" visible="{stackViews.selectedIndex != 2}">
+						<s:Button width="26" height="24" skinClass="edu.newschool.piim.healthboard.view.skins.general.IconButtonSkin" icon="@Embed('/images/arrowLeft.png')" click="navigate(-1)" /><!---->
+						<s:Button width="26" height="24" skinClass="edu.newschool.piim.healthboard.view.skins.general.IconButtonSkin" icon="@Embed('/images/diamond.png')" click="navigate(0)" /><!---->
+						<s:Button width="26" height="24" skinClass="edu.newschool.piim.healthboard.view.skins.general.IconButtonSkin" icon="@Embed('/images/arrowRight.png')" click="navigate(1)" /><!---->
+					</s:HGroup>
+					
+					<s:HGroup gap="-1">
 						<s:Button id="btnCalendarMonth" width="29" height="24" icon="@Embed('/images/btnCalendarMonth.png')" click="onMonthClick()" chromeColor="0xFF931E" />
 						<s:Button id="btnCalendarWeek" width="29" height="24" icon="@Embed('/images/btnCalendarWeek.png')" click="onWeekClick()" chromeColor="0xB3B3B3" />
 						<s:Button id="btnCalendarList" width="29" height="24" icon="@Embed('/images/btnCalendarList.png')" click="onListClick()" chromeColor="0xB3B3B3" />

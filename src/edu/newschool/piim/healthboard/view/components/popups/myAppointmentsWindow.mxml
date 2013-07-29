@@ -16,7 +16,7 @@
 			private function viewAvailability():void 
 			{
 				var evt:AppointmentEvent = new AppointmentEvent( AppointmentEvent.VIEW_AVAILABILITY, true );
-				evt.description = txtReason.text;
+				evt.description = dropAppointmentType.selectedItem.label;
 				dispatchEvent( evt );
 				
 				dispatchEvent( new CloseEvent( CloseEvent.CLOSE, true ) );

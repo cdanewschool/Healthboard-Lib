@@ -6,6 +6,7 @@ package edu.newschool.piim.healthboard.controller
 	import edu.newschool.piim.healthboard.model.AppointmentCategory;
 	import edu.newschool.piim.healthboard.model.ModuleMappable;
 	import edu.newschool.piim.healthboard.model.NextStep;
+	import edu.newschool.piim.healthboard.model.UserModel;
 	import edu.newschool.piim.healthboard.model.module.AppointmentsModel;
 	import edu.newschool.piim.healthboard.model.module.appointments.PatientAppointment;
 	import edu.newschool.piim.healthboard.model.module.appointments.TimeSlot;
@@ -233,7 +234,7 @@ package edu.newschool.piim.healthboard.controller
 			var appointment:PatientAppointment = new PatientAppointment();
 			appointment.description = slot.description;
 			appointment.from = slot.from;
-			appointment.provider = '';
+			appointment.provider = AppProperties.getInstance().controller.getUserById( 1, UserModel.TYPE_PROVIDER );
 			appointment.to = slot.to;
 			
 			var model:AppointmentsModel = AppointmentsModel(model);
