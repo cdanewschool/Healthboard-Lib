@@ -620,6 +620,7 @@ package edu.newschool.piim.healthboard.view.components.calendar
 				x += sidebar.width;
 				
 				width -= x;
+				width += 6;
 				
 				//	grid
 				grid.x = x;
