@@ -74,6 +74,7 @@
 			private var dateFormatter:DateTimeFormatter;
 			private var dateFormatter2:DateTimeFormatter;
 			private var dateFormatter3:DateTimeFormatter;
+			private var dateFormatter4:DateTimeFormatter;
 			
 			override public function set currentState(value:String):void
 			{
@@ -106,7 +107,7 @@
 				appointmentsList.setStyle( 'alternatingItemColors', currentState == STATE_PROVIDER ? [0x303030,0x303030] : [0x303030,0x3c3c3b]);
 				
 				if( monthViewLabel )
-					monthViewLabel.text = Constants.MONTHS[model.currentDate.month] + ' ' + model.currentDate.fullYear;
+					monthViewLabel.text = dateFormatter4.format( model.currentDate );
 			}
 			
 			private function showAppointment():void
@@ -629,6 +630,9 @@
 				
 				dateFormatter3 = new DateTimeFormatter();
 				dateFormatter3.dateTimePattern = "EEE, MMM d, H:mm 'hrs'";
+				
+				dateFormatter4 = new DateTimeFormatter();
+				dateFormatter4.dateTimePattern = "MMM yyyy";
 			}
 			
 			private function onCreationComplete():void
